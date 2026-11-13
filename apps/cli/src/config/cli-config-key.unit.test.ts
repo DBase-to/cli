@@ -336,7 +336,7 @@ describe("pickCliConfigKey attributes", () => {
   it("never consults the document for a key without a document path", () => {
     const password = optionalCliConfigKey({
       path: "linkedDb.password",
-      env: ["SUPABASE_DB_PASSWORD"],
+      env: ["DBASE_DB_PASSWORD", "SUPABASE_DB_PASSWORD"],
       codec: stringCodec,
       document: false,
     });

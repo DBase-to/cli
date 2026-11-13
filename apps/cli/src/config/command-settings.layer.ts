@@ -23,6 +23,7 @@ import { DebugLogger, type DebugLoggerShape } from "../shared/output/debug-logge
 import { RuntimeInfo } from "../shared/runtime/runtime-info.service.ts";
 import { CliEnvNames } from "./cli-config-keys.ts";
 import { CommandSettings } from "./command-settings.service.ts";
+import { configOptionBoth } from "../shared/config/env-names.ts";
 import { resolveSupabaseHomeValue } from "../shared/config/supabase-home.ts";
 import {
   actionability,
@@ -134,8 +135,8 @@ export const commandSettingsLayer = Layer.unwrap(
         const runtimeInfo = yield* RuntimeInfo;
         const provider = yield* ConfigProvider.ConfigProvider;
         const read = <A>(config: Config.Config<A>) => config.parse(provider);
-        const profileEnvValue = yield* read(Config.option(Config.String("SUPABASE_PROFILE")));
-        const supabaseHome = yield* read(Config.option(Config.String("SUPABASE_HOME")));
+        const profileEnvValue = yield* read(configOptionBoth("DBASE_PROFILE", "SUPABASE_PROFILE"));
+        const supabaseHome = yield* read(configOptionBoth("DBASE_HOME", "SUPABASE_HOME"));
         const resolvedSupabaseHome = resolveSupabaseHomeValue(
           path,
           supabaseHome,
@@ -170,7 +171,9 @@ export const commandSettingsLayer = Layer.unwrap(
           Option.map((value) => Redacted.make(value, { label: "GITHUB_TOKEN" })),
         );
 
-        const rawAccessToken = yield* read(Config.option(Config.String("SUPABASE_ACCESS_TOKEN")));
+        const rawAccessToken = yield* read(
+          configOptionBoth("DBASE_ACCESS_TOKEN", "SUPABASE_ACCESS_TOKEN"),
+        );
         const accessToken = Option.filter(rawAccessToken, (value) => value.length > 0).pipe(
           Option.map((value) => Redacted.make(value, { label: "SUPABASE_ACCESS_TOKEN" })),
         );
@@ -178,7 +181,7 @@ export const commandSettingsLayer = Layer.unwrap(
         const rawProjectId = yield* read(Config.option(Config.String(CliEnvNames.projectId.name)));
         const projectId = Option.filter(rawProjectId, (value) => value.length > 0);
 
-        const workdirEnvValue = yield* read(Config.option(Config.String("SUPABASE_WORKDIR")));
+        const workdirEnvValue = yield* read(configOptionBoth("DBASE_WORKDIR", "SUPABASE_WORKDIR"));
         const { workdir, explicit: explicitWorkdir } = yield* resolveWorkdir(
           workdirFlag,
           workdirEnvValue,
@@ -189,7 +192,7 @@ export const commandSettingsLayer = Layer.unwrap(
         // Empty means unset, like the other SUPABASE_* settings; anything else must be plain
         // digits, rejected here before a command reaches the network.
         const rawApiMaxRetries = yield* read(
-          Config.option(Config.String("SUPABASE_API_MAX_RETRIES")),
+          configOptionBoth("DBASE_API_MAX_RETRIES", "SUPABASE_API_MAX_RETRIES"),
         );
         const apiMaxRetries = yield* Option.match(
           Option.filter(rawApiMaxRetries, (value) => value.length > 0),
@@ -200,7 +203,7 @@ export const commandSettingsLayer = Layer.unwrap(
                 ? Effect.succeed(Option.some(Number(value)))
                 : Effect.fail(
                     new ApiMaxRetriesError({
-                      message: `invalid SUPABASE_API_MAX_RETRIES "${value}": expected a non-negative integer`,
+                      message: `invalid DBASE_API_MAX_RETRIES "${value}": expected a non-negative integer`,
                     }),
                   ),
           },

@@ -73,7 +73,7 @@ const loginRoleEntry = {
   kind: "required",
   when: [{ flag: "password", present: false }],
   context:
-    "no database password supplied by the command (an empty one still mints a login role) or set in SUPABASE_DB_PASSWORD or the project .env (an ad-hoc project ref ignores the last two)",
+    "no database password supplied by the command (an empty one still mints a login role) or set in DBASE_DB_PASSWORD (or the legacy SUPABASE_DB_PASSWORD) or the project .env (an ad-hoc project ref ignores the last two)",
 } as const satisfies Omit<OperationEntry, "source">;
 
 const poolerConfigEntry = {
@@ -147,7 +147,7 @@ const poolerFallbackEntries: ReadonlyArray<Omit<OperationEntry, "source">> = [
     kind: "required",
     when: [{ flag: "password", present: false }],
     context:
-      "the same retry, and no database password supplied by the command (an empty one still mints a login role) or set in SUPABASE_DB_PASSWORD or the project .env (an ad-hoc project ref ignores the last two)",
+      "the same retry, and no database password supplied by the command (an empty one still mints a login role) or set in DBASE_DB_PASSWORD (or the legacy SUPABASE_DB_PASSWORD) or the project .env (an ad-hoc project ref ignores the last two)",
   },
   {
     operationId: "v1-list-all-network-bans",
@@ -214,7 +214,7 @@ const missingPrivilegedRoleError = (ref: string, error: Errors.DbConfigLoginRole
     projectRef: ref,
     message: `failed to create a temporary login role, likely because the project database is missing supabase_privileged_role: ${error.body}`,
     suggestion:
-      "Connect with your database password instead, which skips the temporary login role: --password where the command supports it, SUPABASE_DB_PASSWORD for the linked project, or a Postgres URL that includes the password (--db-url, or --from/--to for db diff). Contact support at https://supabase.com/dashboard/support/new to repair the project's roles.",
+      "Connect with your database password instead, which skips the temporary login role: --password where the command supports it, DBASE_DB_PASSWORD (or the legacy SUPABASE_DB_PASSWORD) for the linked project, or a Postgres URL that includes the password (--db-url, or --from/--to for db diff). Contact support at https://supabase.com/dashboard/support/new to repair the project's roles.",
   });
 
 const listBansErrorMapper = mapHttpError({

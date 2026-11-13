@@ -219,7 +219,7 @@ export const CLI_CONFIG_LINKED_KEYS: ReadonlyArray<CliConfigKeyDef> = [
     path: "linkedDb.password",
     codec: stringCodec,
     optional: true,
-    env: ["SUPABASE_DB_PASSWORD"],
+    env: ["DBASE_DB_PASSWORD", "SUPABASE_DB_PASSWORD"],
     document: false,
     envScope: "linkedTarget",
   },

@@ -564,7 +564,7 @@ describe("commandSettingsLayer", () => {
           : undefined;
         expect(error).toBeInstanceOf(ApiMaxRetriesError);
         expect(error).toMatchObject({
-          message: `invalid SUPABASE_API_MAX_RETRIES "${value}": expected a non-negative integer`,
+          message: `invalid DBASE_API_MAX_RETRIES "${value}": expected a non-negative integer`,
         });
       }
     }),

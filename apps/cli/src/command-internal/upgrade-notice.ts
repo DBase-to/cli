@@ -275,7 +275,12 @@ export interface UpgradeCheckOutcome {
 export const runUpgradeNotice = Effect.fnUntraced(function* (
   deps: UpgradeNoticeDeps,
 ): Effect.fn.Return<UpgradeCheckOutcome | undefined, never, FileSystem.FileSystem | Path.Path> {
-  if (updateNotifierDisabled(deps.env["SUPABASE_NO_UPDATE_NOTIFIER"])) return;
+  if (
+    updateNotifierDisabled(
+      deps.env["DBASE_NO_UPDATE_NOTIFIER"] ?? deps.env["SUPABASE_NO_UPDATE_NOTIFIER"],
+    )
+  )
+    return;
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
 
@@ -294,8 +299,10 @@ export const runUpgradeNotice = Effect.fnUntraced(function* (
     : yield* projectDotenvValues(base, deps.env);
   // A shell env that defines a key at all beats the project dotenv chain,
   // even when set to an empty or unparseable value.
-  const effectiveEnv = (key: string): string | undefined =>
-    deps.env[key] !== undefined ? deps.env[key] : projectEnv[key];
+  const effectiveEnv = (key: string): string | undefined => {
+    const twin = key.startsWith("SUPABASE_") ? `DBASE_${key.slice("SUPABASE_".length)}` : key;
+    return deps.env[twin] ?? deps.env[key] ?? projectEnv[twin] ?? projectEnv[key];
+  };
   if (updateNotifierDisabled(effectiveEnv("SUPABASE_NO_UPDATE_NOTIFIER"))) return;
   const debug = debugEnabled(deps, builtin, effectiveEnv("SUPABASE_DEBUG"));
   const supabaseDir = path.join(base, "supabase");

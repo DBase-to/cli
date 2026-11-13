@@ -1,4 +1,5 @@
 import { Config, ConfigProvider, Effect, Layer, Option, Path, Redacted } from "effect";
+import { configOptionBoth, configStringBoth } from "./env-names.ts";
 import { resolveSupabaseHomeValue } from "./supabase-home.ts";
 import { RuntimeInfo } from "../runtime/runtime-info.service.ts";
 import { resolvePosthogConfig } from "../telemetry/posthog-config.ts";
@@ -23,29 +24,39 @@ const makeCliSettings = Effect.gen(function* () {
   });
   const read = <A>(config: Config.Config<A>) => config.parse(provider);
   const posthogConfig = yield* resolvePosthogConfig(provider);
-  const supabaseHome = yield* read(Config.option(Config.String("SUPABASE_HOME")));
+  const supabaseHome = yield* read(configOptionBoth("DBASE_HOME", "SUPABASE_HOME"));
 
   return CliSettings.of({
     apiUrl: yield* read(
-      Config.String("SUPABASE_API_URL").pipe(Config.withDefault(SUPABASE_API_URL)),
+      configStringBoth("DBASE_API_URL", "SUPABASE_API_URL").pipe(
+        Config.withDefault(SUPABASE_API_URL),
+      ),
     ),
     dashboardUrl: yield* read(
-      Config.String("SUPABASE_DASHBOARD_URL").pipe(Config.withDefault(SUPABASE_DASHBOARD_URL)),
+      configStringBoth("DBASE_DASHBOARD_URL", "SUPABASE_DASHBOARD_URL").pipe(
+        Config.withDefault(SUPABASE_DASHBOARD_URL),
+      ),
     ),
     projectHost: yield* read(
-      Config.String("SUPABASE_PROJECT_HOST").pipe(Config.withDefault(SUPABASE_PROJECT_HOST)),
+      configStringBoth("DBASE_PROJECT_HOST", "SUPABASE_PROJECT_HOST").pipe(
+        Config.withDefault(SUPABASE_PROJECT_HOST),
+      ),
     ),
     telemetryPosthogHost: posthogConfig.host,
     telemetryPosthogKey: posthogConfig.key,
     accessToken: Option.map(
-      yield* read(Config.option(Config.String("SUPABASE_ACCESS_TOKEN"))),
-      (token) => Redacted.make(token, { label: "SUPABASE_ACCESS_TOKEN" }),
+      yield* read(configOptionBoth("DBASE_ACCESS_TOKEN", "SUPABASE_ACCESS_TOKEN")),
+      (token) => Redacted.make(token, { label: "DBASE_ACCESS_TOKEN" }),
     ),
-    noKeyring: yield* read(Config.option(Config.String("SUPABASE_NO_KEYRING"))),
+    noKeyring: yield* read(configOptionBoth("DBASE_NO_KEYRING", "SUPABASE_NO_KEYRING")),
     supabaseHome: resolveSupabaseHomeValue(path, supabaseHome, runtimeInfo.homeDir),
-    debug: yield* read(Config.option(Config.String("SUPABASE_DEBUG"))),
-    telemetryDebug: yield* read(Config.option(Config.String("SUPABASE_TELEMETRY_DEBUG"))),
-    telemetryDisabled: yield* read(Config.option(Config.String("SUPABASE_TELEMETRY_DISABLED"))),
+    debug: yield* read(configOptionBoth("DBASE_DEBUG", "SUPABASE_DEBUG")),
+    telemetryDebug: yield* read(
+      configOptionBoth("DBASE_TELEMETRY_DEBUG", "SUPABASE_TELEMETRY_DEBUG"),
+    ),
+    telemetryDisabled: yield* read(
+      configOptionBoth("DBASE_TELEMETRY_DISABLED", "SUPABASE_TELEMETRY_DISABLED"),
+    ),
     doNotTrack: yield* read(Config.option(Config.String("DO_NOT_TRACK"))),
   });
 });

@@ -1,11 +1,11 @@
 import { Effect, Option, type Path } from "effect";
 
-import { envOption } from "./env-option.ts";
+import { envOptionBoth } from "./env-option.ts";
 
 /**
  * Resolves the global Supabase CLI state root.
  *
- * `SUPABASE_HOME` overrides the location when set to a non-empty value after trimming
+ * `DBASE_HOME` (then `SUPABASE_HOME`) overrides the location when set to a non-empty value after trimming
  * surrounding whitespace (an absolute path is expected; the value is used verbatim). Otherwise it
  * defaults to `<homeDir>/.supabase`. Callers resolve through it with their own
  * home directory, keeping the contract in one place.
@@ -22,6 +22,6 @@ export const resolveSupabaseHomeValue = (
 };
 
 export const readSupabaseHome = (path: Pick<Path.Path, "join">, homeDir: string) =>
-  envOption("SUPABASE_HOME").pipe(
+  envOptionBoth("DBASE_HOME", "SUPABASE_HOME").pipe(
     Effect.map((value) => resolveSupabaseHomeValue(path, value, homeDir)),
   );

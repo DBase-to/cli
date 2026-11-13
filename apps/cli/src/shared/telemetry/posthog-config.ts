@@ -1,6 +1,7 @@
 // PostHog connection config shared by the analytics layers.
 // Release builds inject the shipped host/key via apps/cli/scripts/build.ts.
 import { Config, ConfigProvider, Effect, Option } from "effect";
+import { readNonEmptyConfigBoth } from "../config/env-names.ts";
 
 declare const SUPABASE_CLI_POSTHOG_HOST: string | undefined;
 declare const SUPABASE_CLI_POSTHOG_KEY: string | undefined;
@@ -16,21 +17,15 @@ function nonEmptyString(value: string): Option.Option<string> {
   return value === "" ? Option.none() : Option.some(value);
 }
 
-function readNonEmptyString(
-  provider: ConfigProvider.ConfigProvider,
-  name: string,
-): Effect.Effect<Option.Option<string>, Config.ConfigError> {
-  return Config.option(Config.String(name))
-    .parse(provider)
-    .pipe(Effect.map(Option.flatMap(nonEmptyString)));
-}
-
 function readShippedValue(
   injected: string | undefined,
-  name: string,
+  dbaseName: string,
+  supabaseName: string,
 ): Effect.Effect<Option.Option<string>, Config.ConfigError> {
   return injected === undefined
-    ? Effect.suspend(() => readNonEmptyString(ConfigProvider.fromEnv(), name))
+    ? Effect.suspend(() =>
+        readNonEmptyConfigBoth(ConfigProvider.fromEnv(), dbaseName, supabaseName),
+      )
     : Effect.succeed(nonEmptyString(injected));
 }
 
@@ -38,14 +33,23 @@ export function resolvePosthogConfig(
   provider: ConfigProvider.ConfigProvider,
 ): Effect.Effect<PosthogConfig, Config.ConfigError> {
   return Effect.gen(function* () {
-    const host = yield* readNonEmptyString(provider, "SUPABASE_TELEMETRY_POSTHOG_HOST");
-    const key = yield* readNonEmptyString(provider, "SUPABASE_TELEMETRY_POSTHOG_KEY");
+    const host = yield* readNonEmptyConfigBoth(
+      provider,
+      "DBASE_TELEMETRY_POSTHOG_HOST",
+      "SUPABASE_TELEMETRY_POSTHOG_HOST",
+    );
+    const key = yield* readNonEmptyConfigBoth(
+      provider,
+      "DBASE_TELEMETRY_POSTHOG_KEY",
+      "SUPABASE_TELEMETRY_POSTHOG_KEY",
+    );
     return {
       host: Option.getOrElse(
         Option.isSome(host)
           ? host
           : yield* readShippedValue(
               typeof SUPABASE_CLI_POSTHOG_HOST === "string" ? SUPABASE_CLI_POSTHOG_HOST : undefined,
+              "DBASE_CLI_POSTHOG_HOST",
               "SUPABASE_CLI_POSTHOG_HOST",
             ),
         () => DEFAULT_HOST,
@@ -54,6 +58,7 @@ export function resolvePosthogConfig(
         ? key
         : yield* readShippedValue(
             typeof SUPABASE_CLI_POSTHOG_KEY === "string" ? SUPABASE_CLI_POSTHOG_KEY : undefined,
+            "DBASE_CLI_POSTHOG_KEY",
             "SUPABASE_CLI_POSTHOG_KEY",
           ),
     };

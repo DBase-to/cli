@@ -6,7 +6,7 @@ import {
   VALUE_CONSUMING_LONG_FLAGS,
   VALUE_CONSUMING_SHORT_FLAGS,
 } from "../shared/cli/value-consuming-flags.ts";
-import { envValue } from "../shared/config/env-option.ts";
+import { envValueBoth } from "../shared/config/env-option.ts";
 import {
   parseEnvBool,
   supabaseEnvBool,
@@ -216,7 +216,7 @@ export const resolveYesSource = Effect.gen(function* () {
     return Option.none<YesSource>();
   }
   if (explicit ?? flag) return Option.some<YesSource>({ via: "flag" });
-  const raw = yield* envValue("SUPABASE_YES");
+  const raw = yield* envValueBoth("DBASE_YES", "SUPABASE_YES");
   return raw !== undefined && parseEnvBool(raw)
     ? Option.some<YesSource>({ via: "env" })
     : Option.none<YesSource>();

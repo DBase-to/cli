@@ -184,7 +184,7 @@ describe("config key registry", () => {
     expect(CliConfigKeys.db.password.env).toEqual([]);
     expect(CliConfigKeys.db.rootKey.secret).toBe(true);
     expect(CliConfigKeys.linkedDb.password).toMatchObject({
-      env: ["SUPABASE_DB_PASSWORD"],
+      env: ["DBASE_DB_PASSWORD", "SUPABASE_DB_PASSWORD"],
       document: false,
       envScope: "linkedTarget",
     });

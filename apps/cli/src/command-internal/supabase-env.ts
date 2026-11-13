@@ -8,9 +8,12 @@
 
 import { Effect } from "effect";
 
-import { envValue } from "../shared/config/env-option.ts";
+import { envValueBoth } from "../shared/config/env-option.ts";
 
 const TRUE_VALUES = new Set(["1", "t", "T", "TRUE", "true", "True"]);
+
+const twinName = (name: string) =>
+  name.startsWith("SUPABASE_") ? `DBASE_${name.slice("SUPABASE_".length)}` : name;
 
 /** Truthiness for an already-resolved env value (see module doc). */
 export function parseEnvBool(raw: string | undefined): boolean {
@@ -18,7 +21,8 @@ export function parseEnvBool(raw: string | undefined): boolean {
 }
 
 /** Reads a single `SUPABASE_*` boolean env var from the ambient config provider (see module doc). */
-export const supabaseEnvBool = (name: string) => Effect.map(envValue(name), parseEnvBool);
+export const supabaseEnvBool = (name: string) =>
+  Effect.map(envValueBoth(twinName(name), name), parseEnvBool);
 
 /**
  * Resolves a `SUPABASE_*` boolean where a project `supabase/.env` value may
@@ -33,8 +37,8 @@ export const supabaseEnvBoolWithProjectFallback = (
   projectEnv: Record<string, string>,
   opts: { readonly whenUnset?: boolean } = {},
 ) =>
-  Effect.map(envValue(name), (shell) => {
-    const raw = shell ?? projectEnv[name];
+  Effect.map(envValueBoth(twinName(name), name), (shell) => {
+    const raw = shell ?? projectEnv[twinName(name)] ?? projectEnv[name];
     return raw === undefined ? (opts.whenUnset ?? false) : parseEnvBool(raw);
   });
 
@@ -47,4 +51,8 @@ export const supabaseEnvBoolWithProjectFallback = (
 export const supabaseEnvStringWithProjectFallback = (
   name: string,
   projectEnv: Record<string, string>,
-) => Effect.map(envValue(name), (shell) => shell ?? projectEnv[name] ?? "");
+) =>
+  Effect.map(
+    envValueBoth(twinName(name), name),
+    (shell) => shell ?? projectEnv[twinName(name)] ?? projectEnv[name] ?? "",
+  );

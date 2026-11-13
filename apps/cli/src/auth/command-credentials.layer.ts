@@ -1,5 +1,4 @@
 import {
-  Config,
   ConfigProvider,
   Effect,
   FileSystem,
@@ -11,6 +10,7 @@ import {
   Result,
 } from "effect";
 import type { PlatformError } from "effect/PlatformError";
+import { configOptionBoth } from "../shared/config/env-names.ts";
 
 import { RuntimeInfo } from "../shared/runtime/runtime-info.service.ts";
 import { normalizeKeyringToken } from "../shared/auth/keyring-token.ts";
@@ -399,7 +399,7 @@ export const accessTokenForProfile = Effect.fn("CommandCredentials.accessTokenFo
       return Option.some(cliSettings.accessToken.value);
     }
 
-    const noKeyring = yield* Config.option(Config.String("SUPABASE_NO_KEYRING")).parse(
+    const noKeyring = yield* configOptionBoth("DBASE_NO_KEYRING", "SUPABASE_NO_KEYRING").parse(
       configProvider,
     );
     const keyringModule = yield* loadKeyringModule(fs, noKeyring);
@@ -432,7 +432,7 @@ const makeCommandCredentials = Effect.gen(function* () {
   const runtimeInfo = yield* RuntimeInfo;
   const cliSettings = yield* CommandSettings;
   const configProvider = yield* ConfigProvider.ConfigProvider;
-  const noKeyring = yield* Config.option(Config.String("SUPABASE_NO_KEYRING")).parse(
+  const noKeyring = yield* configOptionBoth("DBASE_NO_KEYRING", "SUPABASE_NO_KEYRING").parse(
     configProvider,
   );
   const debugLogger = yield* DebugLogger;
