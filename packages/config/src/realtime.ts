@@ -4,7 +4,7 @@ import { stringEnum } from "./lib/schema.ts";
 const links = [
   {
     name: "DBase Realtime",
-    link: "https://supabase.com/docs/guides/realtime",
+    link: "https://dbase.to/docs/guides/realtime",
   },
 ];
 
@@ -28,7 +28,7 @@ export const realtime = Schema.Struct({
     links: [
       {
         name: "DBase Realtime Configuration",
-        link: "https://supabase.com/docs/guides/realtime/self-hosting",
+        link: "https://dbase.to/docs/guides/realtime/self-hosting",
       },
     ],
   }).pipe(Schema.withDecodingDefaultKey(Effect.succeed(defaultIpVersion))),

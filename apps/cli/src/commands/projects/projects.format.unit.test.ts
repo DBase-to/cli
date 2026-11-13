@@ -47,7 +47,7 @@ describe("dashboardUrlForProfile", () => {
   it("resolves the built-in profile dashboard URLs", () => {
     expect(dashboardUrlForProfile("dbase")).toBe("https://dbase.to");
     expect(dashboardUrlForProfile("dbase-test")).toBe("https://test.dbase.to");
-    expect(dashboardUrlForProfile("supabase")).toBe("https://supabase.com/dashboard");
+    expect(dashboardUrlForProfile("supabase")).toBe("https://dbase.to/dashboard");
     expect(dashboardUrlForProfile("supabase-staging")).toBe("https://supabase.green/dashboard");
     expect(dashboardUrlForProfile("supabase-local")).toBe("http://localhost:8082");
   });

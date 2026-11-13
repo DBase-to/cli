@@ -5,7 +5,7 @@ import { stringEnum } from "./lib/schema.ts";
 const links = [
   {
     name: "Self-hosted Logflare Configuration",
-    link: "https://supabase.com/docs/reference/self-hosting-analytics/list-endpoints#getting-started",
+    link: "https://dbase.to/docs/reference/self-hosting-analytics/list-endpoints#getting-started",
   },
 ];
 

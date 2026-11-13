@@ -1,6 +1,6 @@
 # CLI reference
 
-Source content for the [CLI reference](https://supabase.com/docs/reference/cli) published on the DBase docs site.
+Source content for the [CLI reference](https://dbase.to/docs/reference/cli) published on the DBase docs site.
 
 - `supabase/` — long-form command descriptions, one file per command path
 - `templates/examples.yaml` — per-command usage examples, keyed by doc id
@@ -35,7 +35,7 @@ bun scripts/generate-docs-spec.ts <version> | bun scripts/publish-docs-spec.ts -
 The same job then publishes the config, project-config and `supabase.lock` JSON Schemas from
 `apps/docs/public/schemas` with `scripts/publish-schemas.ts`. It copies each schema's current
 (highest) `v<N>.json` into `apps/www/public/schemas` on the `cli/schemas` branch in supabase/supabase,
-serving it at `https://supabase.com/schemas/<name>/v<N>.json`, opens a PR when the files differ, and
+serving it at `https://dbase.to/schemas/<name>/v<N>.json`, opens a PR when the files differ, and
 arms auto-merge, which squash-merges once a reviewer approves. Lower versions are frozen: the script
 never writes them and refuses to run when supabase.com already serves a higher version than the
 current one. Both publishers share the clone, branch, commit and PR flow in

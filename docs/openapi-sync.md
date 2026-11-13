@@ -1,9 +1,7 @@
 # OpenAPI Sync Workflows
 
-> Extracted from [ADR 0005](adr/0005-openapi-driven-code-generation.md). This
-> document covers the GitHub Actions workflows that keep checked-in OpenAPI
-> types in sync with the live Management API. For the generation strategy and
-> architectural decisions, see the ADR.
+> This document covers the GitHub Actions workflows that keep checked-in OpenAPI
+> types in sync with the live Management API.
 
 Two workflows keep the generated clients in sync with the Management API:
 

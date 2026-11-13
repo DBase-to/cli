@@ -536,7 +536,7 @@ NON_EMPTY = "config-value"
   );
 
   it.effect(
-    "does not crash when config.toml has env(NUMERIC_PORT) on an unrelated numeric field (CLI-1489 regression guard)",
+    "does not crash when config.toml has env(NUMERIC_PORT) on an unrelated numeric field",
     () => {
       const { layer, api } = setup({ env: { SUPABASE_ANALYTICS_PORT: "54327" } });
       return Effect.gen(function* () {

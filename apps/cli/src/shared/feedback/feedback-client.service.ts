@@ -77,7 +77,7 @@ interface FeedbackClientShape {
   /**
    * `deleted: false` means the delete matched zero rows: wrong token, already
    * deleted, or a project-ref/user-id context mismatch — the backend cannot
-   * distinguish these. The CLI never reads a row (CLI-2406).
+   * distinguish these. The CLI never reads a row.
    */
   readonly delete: (
     token: string,

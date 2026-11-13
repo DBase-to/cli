@@ -244,7 +244,7 @@ describe("gen bearer-jwt integration", () => {
   });
 
   it.effect(
-    "computes iat with a sub-second --valid-for, truncating only the final timestamp (CLI-1961)",
+    "computes iat with a sub-second --valid-for, truncating only the final timestamp",
     () => {
       const { layer, out } = setup();
       return Effect.gen(function* () {
@@ -295,7 +295,7 @@ describe("gen bearer-jwt integration", () => {
   );
 
   it.effect(
-    "ignores an ancestor project's signing_keys_path when the resolved workdir has no config.toml of its own (CLI-1961)",
+    "ignores an ancestor project's signing_keys_path when the resolved workdir has no config.toml of its own",
     () => {
       const nestedWorkdir = `${tempRoot.current}/nested/deeper`;
       const { layer, out } = setup({ workdir: nestedWorkdir, pipedAnswer: "" });
@@ -511,45 +511,39 @@ describe("gen bearer-jwt integration", () => {
     },
   );
 
-  it.effect(
-    "Branch A: rejects a pasted JWK with a non-string key_ops element (CLI-1961 Codex review finding)",
-    () => {
-      const { layer } = setup({
-        pipedAnswer: jsonTextSync({ kty: "oct", alg: "ES256", key_ops: ["sign", 1] }),
-      });
-      return Effect.gen(function* () {
-        const exit = yield* Effect.exit(genBearerJwt(baseFlags));
-        expect(Exit.isFailure(exit)).toBe(true);
-        if (Exit.isFailure(exit)) {
-          const json = Cause.pretty(exit.cause);
-          expect(json).toContain("GenBearerJwtKeyParseError");
-          expect(json).toContain(
-            "failed to parse JWK: invalid JWK field key_ops: expected a string, got number",
-          );
-        }
-      }).pipe(Effect.provide(layer));
-    },
-  );
+  it.effect("Branch A: rejects a pasted JWK with a non-string key_ops element", () => {
+    const { layer } = setup({
+      pipedAnswer: jsonTextSync({ kty: "oct", alg: "ES256", key_ops: ["sign", 1] }),
+    });
+    return Effect.gen(function* () {
+      const exit = yield* Effect.exit(genBearerJwt(baseFlags));
+      expect(Exit.isFailure(exit)).toBe(true);
+      if (Exit.isFailure(exit)) {
+        const json = Cause.pretty(exit.cause);
+        expect(json).toContain("GenBearerJwtKeyParseError");
+        expect(json).toContain(
+          "failed to parse JWK: invalid JWK field key_ops: expected a string, got number",
+        );
+      }
+    }).pipe(Effect.provide(layer));
+  });
 
-  it.effect(
-    "Branch A: rejects a pasted JWK with ext given as a string instead of a bool (CLI-1961 Codex review finding)",
-    () => {
-      const { layer } = setup({
-        pipedAnswer: jsonTextSync({ kty: "oct", alg: "ES256", ext: "true" }),
-      });
-      return Effect.gen(function* () {
-        const exit = yield* Effect.exit(genBearerJwt(baseFlags));
-        expect(Exit.isFailure(exit)).toBe(true);
-        if (Exit.isFailure(exit)) {
-          const json = Cause.pretty(exit.cause);
-          expect(json).toContain("GenBearerJwtKeyParseError");
-          expect(json).toContain(
-            "failed to parse JWK: invalid JWK field ext: expected a boolean, got string",
-          );
-        }
-      }).pipe(Effect.provide(layer));
-    },
-  );
+  it.effect("Branch A: rejects a pasted JWK with ext given as a string instead of a bool", () => {
+    const { layer } = setup({
+      pipedAnswer: jsonTextSync({ kty: "oct", alg: "ES256", ext: "true" }),
+    });
+    return Effect.gen(function* () {
+      const exit = yield* Effect.exit(genBearerJwt(baseFlags));
+      expect(Exit.isFailure(exit)).toBe(true);
+      if (Exit.isFailure(exit)) {
+        const json = Cause.pretty(exit.cause);
+        expect(json).toContain("GenBearerJwtKeyParseError");
+        expect(json).toContain(
+          "failed to parse JWK: invalid JWK field ext: expected a boolean, got string",
+        );
+      }
+    }).pipe(Effect.provide(layer));
+  });
 
   it.effect("Branch A: rejects a pasted JWK with a non-string kid", () => {
     const { layer } = setup({
@@ -567,7 +561,7 @@ describe("gen bearer-jwt integration", () => {
   });
 
   it.effect(
-    "Branch A: rejects a pasted JWK with a duplicate kid where the earlier occurrence is malformed (CLI-1961 Codex review finding)",
+    "Branch A: rejects a pasted JWK with a duplicate kid where the earlier occurrence is malformed",
     () => {
       const { layer } = setup({
         pipedAnswer: '{"kty":"oct","alg":"ES256","kid":1,"kid":"k1"}',
@@ -585,7 +579,7 @@ describe("gen bearer-jwt integration", () => {
   );
 
   it.effect(
-    "Branch A: rejects a pasted JWK with a duplicate alg where the earlier occurrence fails the allowlist, even though the later one is allowed (CLI-1961 Codex review finding)",
+    "Branch A: rejects a pasted JWK with a duplicate alg where the earlier occurrence fails the allowlist, even though the later one is allowed",
     () => {
       const { layer } = setup({
         pipedAnswer: '{"kty":"oct","alg":"HS256","alg":"ES256"}',
@@ -649,7 +643,7 @@ describe("gen bearer-jwt integration", () => {
   });
 
   it.effect(
-    "Branch A: rejects a pasted JWK with a case-variant duplicate kid where the earlier occurrence is malformed (CLI-1961 Codex review finding)",
+    "Branch A: rejects a pasted JWK with a case-variant duplicate kid where the earlier occurrence is malformed",
     () => {
       const { layer } = setup({
         pipedAnswer: '{"kty":"oct","alg":"ES256","KID":1,"kid":"k1"}',
@@ -682,31 +676,28 @@ describe("gen bearer-jwt integration", () => {
     }).pipe(Effect.provide(layer));
   });
 
-  it.effect(
-    "Branch B: rejects a stored signing key with a non-string key_ops element (CLI-1961 Codex review finding)",
-    () => {
-      const { layer } = setup();
-      return Effect.gen(function* () {
-        yield* writeConfig('[auth]\nsigning_keys_path = "./signing_keys.json"\n');
-        yield* writeSigningKeys(
-          yield* jsonText([{ kty: "oct", alg: "ES256", kid: "k1", key_ops: ["sign", 1] }]),
+  it.effect("Branch B: rejects a stored signing key with a non-string key_ops element", () => {
+    const { layer } = setup();
+    return Effect.gen(function* () {
+      yield* writeConfig('[auth]\nsigning_keys_path = "./signing_keys.json"\n');
+      yield* writeSigningKeys(
+        yield* jsonText([{ kty: "oct", alg: "ES256", kid: "k1", key_ops: ["sign", 1] }]),
+      );
+
+      const exit = yield* Effect.exit(genBearerJwt(baseFlags));
+      expect(Exit.isFailure(exit)).toBe(true);
+      if (Exit.isFailure(exit)) {
+        const json = Cause.pretty(exit.cause);
+        expect(json).toContain("GenBearerJwtDecodeError");
+        expect(json).toContain(
+          "failed to decode signing keys: failed to parse response body: invalid JWK field key_ops: expected a string, got number",
         );
-
-        const exit = yield* Effect.exit(genBearerJwt(baseFlags));
-        expect(Exit.isFailure(exit)).toBe(true);
-        if (Exit.isFailure(exit)) {
-          const json = Cause.pretty(exit.cause);
-          expect(json).toContain("GenBearerJwtDecodeError");
-          expect(json).toContain(
-            "failed to decode signing keys: failed to parse response body: invalid JWK field key_ops: expected a string, got number",
-          );
-        }
-      }).pipe(Effect.provide(layer));
-    },
-  );
+      }
+    }).pipe(Effect.provide(layer));
+  });
 
   it.effect(
-    "Branch B: rejects a stored signing key with a duplicate kid where the earlier occurrence is malformed (CLI-1961 Codex review finding)",
+    "Branch B: rejects a stored signing key with a duplicate kid where the earlier occurrence is malformed",
     () => {
       const { layer } = setup();
       return Effect.gen(function* () {
@@ -727,7 +718,7 @@ describe("gen bearer-jwt integration", () => {
   );
 
   it.effect(
-    "Branch B: rejects a stored signing key with a duplicate alg where the earlier occurrence fails the allowlist (CLI-1961 Codex review finding)",
+    "Branch B: rejects a stored signing key with a duplicate alg where the earlier occurrence fails the allowlist",
     () => {
       const { layer } = setup();
       return Effect.gen(function* () {
@@ -799,7 +790,7 @@ describe("gen bearer-jwt integration", () => {
   });
 
   it.effect(
-    "Branch B: resolves signing_keys_path = env(KEYS_PATH) from supabase/.env.development, a file @supabase/config's own default env resolution doesn't read (CLI-1961 Codex review finding)",
+    "Branch B: resolves signing_keys_path = env(KEYS_PATH) from supabase/.env.development, a file @supabase/config's own default env resolution doesn't read",
     () => {
       // The dotenv cascade runs before the TOML decoder resolves `env(...)`
       // references, so `KEYS_PATH` from `.env.development` is visible to
@@ -877,7 +868,7 @@ describe("gen bearer-jwt integration", () => {
   );
 
   it.effect(
-    "Branch B: rejects a nested array entry in signing_keys_path instead of partially accepting a later valid key (CLI-1961 Codex review finding)",
+    "Branch B: rejects a nested array entry in signing_keys_path instead of partially accepting a later valid key",
     () => {
       const { layer } = setup();
       return Effect.gen(function* () {
@@ -897,7 +888,7 @@ describe("gen bearer-jwt integration", () => {
   );
 
   it.effect(
-    "Branch B: accepts a null entry AFTER a valid key in signing_keys_path, signing with an exact kid match (CLI-1961 Codex review finding)",
+    "Branch B: accepts a null entry AFTER a valid key in signing_keys_path, signing with an exact kid match",
     () => {
       const validKey = generateEcJwk("valid-kid");
       const { layer, out } = setup({ pipedAnswer: "valid-kid" });

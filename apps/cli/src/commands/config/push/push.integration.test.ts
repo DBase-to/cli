@@ -2008,83 +2008,74 @@ secret = "my-plaintext-secret"
     },
   );
 
-  it.effect(
-    "decrypts a dotenvx encrypted: captcha secret and pushes the plaintext (CLI-1881)",
-    () => {
-      const toml = `project_id = "test"
+  it.effect("decrypts a dotenvx encrypted: captcha secret and pushes the plaintext", () => {
+    const toml = `project_id = "test"
 [auth.captcha]
 enabled = true
 provider = "hcaptcha"
 secret = "${DOTENVX_ENCRYPTED_VALUE}"
 `;
-      const { layer, apiMock } = setupService({
-        toml,
-        yes: true,
-        v1: { updateAuthServiceConfig: () => Effect.succeed({}) },
-      });
-      return withEnvVar(
-        "DOTENV_PRIVATE_KEY",
-        DOTENVX_PRIVATE_KEY,
-        Effect.gen(function* () {
-          yield* configPush({ remote: Option.none(), projectRef: Option.none() });
-          const update = apiMock.requests.find((r) => r.method === "updateAuthServiceConfig");
-          expect(update).toBeDefined();
-          const input = yield* decodeJsonRecord(update?.input);
-          expect(input["security_captcha_secret"]).toBe("value");
-        }).pipe(Effect.provide(layer)),
-      );
-    },
-  );
+    const { layer, apiMock } = setupService({
+      toml,
+      yes: true,
+      v1: { updateAuthServiceConfig: () => Effect.succeed({}) },
+    });
+    return withEnvVar(
+      "DOTENV_PRIVATE_KEY",
+      DOTENVX_PRIVATE_KEY,
+      Effect.gen(function* () {
+        yield* configPush({ remote: Option.none(), projectRef: Option.none() });
+        const update = apiMock.requests.find((r) => r.method === "updateAuthServiceConfig");
+        expect(update).toBeDefined();
+        const input = yield* decodeJsonRecord(update?.input);
+        expect(input["security_captcha_secret"]).toBe("value");
+      }).pipe(Effect.provide(layer)),
+    );
+  });
 
-  it.effect(
-    "aborts before any network call when an encrypted: secret cannot be decrypted (CLI-1881)",
-    () => {
-      const toml = `project_id = "test"
+  it.effect("aborts before any network call when an encrypted: secret cannot be decrypted", () => {
+    const toml = `project_id = "test"
 [auth.captcha]
 enabled = true
 provider = "hcaptcha"
 secret = "${DOTENVX_ENCRYPTED_VALUE}"
 `;
-      const { layer, api } = setup({ toml, yes: true });
-      return withEnvVar(
-        "DOTENV_PRIVATE_KEY",
-        undefined,
-        Effect.gen(function* () {
-          const message = yield* configPush({
-            remote: Option.none(),
-            projectRef: Option.none(),
-          }).pipe(Effect.catchTag("CliConfigValueError", (error) => Effect.succeed(error.message)));
-          expect(message).toBe("failed to parse config: missing private key");
-          expect(api.requests).toHaveLength(0);
-        }).pipe(Effect.provide(layer)),
-      );
-    },
-  );
+    const { layer, api } = setup({ toml, yes: true });
+    return withEnvVar(
+      "DOTENV_PRIVATE_KEY",
+      undefined,
+      Effect.gen(function* () {
+        const message = yield* configPush({
+          remote: Option.none(),
+          projectRef: Option.none(),
+        }).pipe(Effect.catchTag("CliConfigValueError", (error) => Effect.succeed(error.message)));
+        expect(message).toBe("failed to parse config: missing private key");
+        expect(api.requests).toHaveLength(0);
+      }).pipe(Effect.provide(layer)),
+    );
+  });
 
-  it.effect(
-    "aborts on an undecryptable secret config push never itself reads or pushes (CLI-1881)",
-    () => {
-      // No encoder in `push.encoders.ts` reads `studio.*`, so this proves the pre-check is
-      // document-wide.
-      const toml = `project_id = "test"
+  it.effect("aborts on an undecryptable secret config push never itself reads or pushes", () => {
+    // No encoder in `push.encoders.ts` reads `studio.*`, so this proves the pre-check is
+    // document-wide.
+    const toml = `project_id = "test"
 [studio]
 openai_api_key = "${DOTENVX_ENCRYPTED_VALUE}"
 `;
-      const { layer, api } = setup({ toml, yes: true });
-      return withEnvVar(
-        "DOTENV_PRIVATE_KEY",
-        undefined,
-        Effect.gen(function* () {
-          const message = yield* configPush({
-            remote: Option.none(),
-            projectRef: Option.none(),
-          }).pipe(Effect.catchTag("CliConfigValueError", (error) => Effect.succeed(error.message)));
-          expect(message).toBe("failed to parse config: missing private key");
-          expect(api.requests).toHaveLength(0);
-        }).pipe(Effect.provide(layer)),
-      );
-    },
-  );
+    const { layer, api } = setup({ toml, yes: true });
+    return withEnvVar(
+      "DOTENV_PRIVATE_KEY",
+      undefined,
+      Effect.gen(function* () {
+        const message = yield* configPush({
+          remote: Option.none(),
+          projectRef: Option.none(),
+        }).pipe(Effect.catchTag("CliConfigValueError", (error) => Effect.succeed(error.message)));
+        expect(message).toBe("failed to parse config: missing private key");
+        expect(api.requests).toHaveLength(0);
+      }).pipe(Effect.provide(layer)),
+    );
+  });
 
   it.effect("aborts on an undecryptable secret an env() reference reads from the root .env", () => {
     const toml = `project_id = "test"
@@ -2112,7 +2103,7 @@ secret = "env(CAPTCHA_SECRET_FROM_ROOT_ENV)"
     );
   });
 
-  it.effect("aborts on an undecryptable [db.vault] secret (CLI-1881)", () => {
+  it.effect("aborts on an undecryptable [db.vault] secret", () => {
     const toml = `project_id = "test"
 [db.vault]
 my_secret = "${DOTENVX_ENCRYPTED_VALUE}"
@@ -2334,7 +2325,7 @@ allowed_cidrs_v6 = ["::1/128"]
   });
 
   it.effect(
-    "auth disabled locally with the remote at defaults reports up to date, not disabled (CLI-2314)",
+    "auth disabled locally with the remote at defaults reports up to date, not disabled",
     () => {
       // `auth.enabled = false` means "don't run local GoTrue"; it doesn't gate the resource. With
       // nothing else declared and the remote at defaults, there's genuinely no diff to push.
@@ -2358,7 +2349,7 @@ allowed_cidrs_v6 = ["::1/128"]
   );
 
   it.effect(
-    "storage disabled locally with the remote at defaults reports up to date, not disabled (CLI-2314)",
+    "storage disabled locally with the remote at defaults reports up to date, not disabled",
     () => {
       // `storage.enabled = false` is a local Docker toggle, not a hosted management opt-out.
       const { layer, out, apiMock } = setupService({
@@ -2380,13 +2371,11 @@ allowed_cidrs_v6 = ["::1/128"]
     },
   );
 
-  it.effect(
-    "auth disabled locally still pushes an explicitly declared hosted auth change (CLI-2314)",
-    () => {
-      // Local GoTrue is off, but the declared hosted SMTP setting still differs from the
-      // remote's, so `config push` must act on it.
-      const { layer, out, apiMock } = setupService({
-        toml: `project_id = "test"
+  it.effect("auth disabled locally still pushes an explicitly declared hosted auth change", () => {
+    // Local GoTrue is off, but the declared hosted SMTP setting still differs from the
+    // remote's, so `config push` must act on it.
+    const { layer, out, apiMock } = setupService({
+      toml: `project_id = "test"
 [auth]
 enabled = false
 
@@ -2399,38 +2388,37 @@ pass = "hunter2"
 admin_email = "admin@mine.example.com"
 sender_name = "My Project"
 `,
-        yes: true,
-        format: "json",
-        v2: {
-          status: 200,
-          body: v2Response({
-            attributes: (a) => ({
-              ...a,
-              auth: {
-                ...asJsonRecord(a["auth"]),
-                smtp_host: "smtp.remote.example.com",
-              },
-            }),
+      yes: true,
+      format: "json",
+      v2: {
+        status: 200,
+        body: v2Response({
+          attributes: (a) => ({
+            ...a,
+            auth: {
+              ...asJsonRecord(a["auth"]),
+              smtp_host: "smtp.remote.example.com",
+            },
           }),
-        },
-        v1: { updateAuthServiceConfig: () => Effect.succeed(authWriteResponseFixture()) },
+        }),
+      },
+      v1: { updateAuthServiceConfig: () => Effect.succeed(authWriteResponseFixture()) },
+    });
+    return Effect.gen(function* () {
+      yield* configPush({ remote: Option.none(), projectRef: Option.none() });
+      expect(methodsOf(apiMock)).toContain("updateAuthServiceConfig");
+      const success = out.messages.find((m) => m.type === "success");
+      const data = yield* decodeJsonRecord(success?.data);
+      const services = yield* decodeJsonRecords(data["services"]);
+      expect(services.find((s) => s["service"] === "auth")).toMatchObject({
+        service: "auth",
+        status: "updated",
       });
-      return Effect.gen(function* () {
-        yield* configPush({ remote: Option.none(), projectRef: Option.none() });
-        expect(methodsOf(apiMock)).toContain("updateAuthServiceConfig");
-        const success = out.messages.find((m) => m.type === "success");
-        const data = yield* decodeJsonRecord(success?.data);
-        const services = yield* decodeJsonRecords(data["services"]);
-        expect(services.find((s) => s["service"] === "auth")).toMatchObject({
-          service: "auth",
-          status: "updated",
-        });
-      }).pipe(Effect.provide(layer));
-    },
-  );
+    }).pipe(Effect.provide(layer));
+  });
 
   it.effect(
-    "auth disabled locally does not push an undeclared field that merely drifted from default (CLI-2314)",
+    "auth disabled locally does not push an undeclared field that merely drifted from default",
     () => {
       // Local never mentions captcha at all; the remote reports a provider configured, so this
       // drift surfaces as remote-only, unaffected by `auth.enabled`.
@@ -3414,7 +3402,7 @@ function setupLinkedBranchPush(
   });
 }
 
-describe("config push branch/project target detection (CLI-2168)", () => {
+describe("config push branch/project target detection", () => {
   it.effect(
     "the realistic 'link <branch>' then flag-less push flow proceeds without inferring a branch from the cache",
     () => {
@@ -3730,7 +3718,7 @@ const pushRemoteBranch = (name: string) => ({
   projectRef: Option.none<string>(),
 });
 
-describe("config push --remote branch name/UUID resolution (CLI-2289)", () => {
+describe("config push --remote branch name/UUID resolution", () => {
   it.effect(
     "--remote=<branch-name> resolves via the already-known parent, no extra live probe",
     () => {
@@ -3775,7 +3763,7 @@ describe("config push --remote branch name/UUID resolution (CLI-2289)", () => {
     }).pipe(Effect.provide(layer));
   });
 
-  it.effect("--remote=<uuid> resolves without any linked project (CLI-2289 regression)", () => {
+  it.effect("--remote=<uuid> resolves without any linked project", () => {
     const { layer, out, api } = setup({
       toml: BRANCH_PUSH_TOML,
       yes: true,

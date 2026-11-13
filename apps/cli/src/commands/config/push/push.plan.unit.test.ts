@@ -237,7 +237,7 @@ describe("pushResourceEnabled", () => {
     expect(pushResourceEnabled("db.ssl_enforcement", config, {})).toBe(false);
   });
 
-  it("is always true for auth and storage, regardless of their local enabled toggle (CLI-2314)", () => {
+  it("is always true for auth and storage, regardless of their local enabled toggle", () => {
     // `auth.enabled`/`storage.enabled` control only the local GoTrue/Storage Docker service; a
     // resource-wide gate on them would drop a declared hosted change whenever unused locally.
     const base = getDefaultCliConfig();

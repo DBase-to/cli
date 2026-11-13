@@ -392,7 +392,7 @@ const testCliConfigLayer = (workdir: string, explicitWorkdir: boolean) =>
         apiUrl: "https://api.supabase.com",
         projectHost: "supabase.co",
         poolerHost: "pooler.supabase.com",
-        dashboardUrl: "https://supabase.com/dashboard",
+        dashboardUrl: "https://dbase.to/dashboard",
         accessToken: Option.some(Redacted.make("sbp_test")),
         projectId: Option.none(),
         workdir,

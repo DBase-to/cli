@@ -641,7 +641,7 @@ export const planConfigPullRun = Effect.fn("ConfigPull.plan")(function* (
     destination,
   };
 
-  // See ADR 0019 rule 2: `executeRaw` + lenient decode; the caller owns the status check,
+  // `executeRaw` + lenient decode; the caller owns the status check,
   // `fromApiProjectConfig`'s lenient decode owns the body.
   const fetching =
     output.format === "text" ? yield* output.task("Fetching remote config...") : undefined;
@@ -676,7 +676,7 @@ export const planConfigPullRun = Effect.fn("ConfigPull.plan")(function* (
   yield* fetching?.clear ?? Effect.void;
 
   // Normalizes and classifies the response through the config family's shared
-  // typed/defect boundary (ADR 0021).
+  // typed/defect boundary.
   const remote = yield* configProjectConfigTry(() => fromApiProjectConfig(responseJson));
   const initialChangeSet = yield* configProjectConfigTry(() =>
     diffProjectConfig({ local: loaded, remote }),
@@ -688,7 +688,7 @@ export const planConfigPullRun = Effect.fn("ConfigPull.plan")(function* (
   );
   yield* output.raw(configScopeLine(scope), "stderr");
 
-  // Projecting a round's writes can un-gate sibling fields ADR 0021 otherwise excludes as
+  // Projecting a round's writes can un-gate sibling fields the convergence rules otherwise exclude as
   // unmanaged (e.g. flipping a disabled SMS provider's `enabled` on un-gates its credential
   // fields), so `expandConfigPullChangeSet` repeats until nothing new appears.
   const fixpoint = yield* configProjectConfigTry(() =>

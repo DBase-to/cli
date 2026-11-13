@@ -10,8 +10,7 @@ import { readExistingState } from "../telemetry/telemetry-state.layer.ts";
  * Session identity stitching. On the first Management API response of a
  * session carrying `X-Gotrue-Id`, stamps the user id in memory in every
  * runtime (including CI, Docker, `npx supabase`), and on a persistent machine
- * also aliases the device id and persists `distinct_id` to `telemetry.json` —
- * see docs/adr/0013-hybrid-stitch-stamp-identity-attribution.md.
+ * also aliases the device id and persists `distinct_id` to `telemetry.json`.
  * {@link IdentityStitch} guards this to at most once per command, shared
  * across every transport (typed client, raw advisor GETs, linked-project
  * cache) that command touches.
@@ -91,8 +90,7 @@ const makeIdentityStitcher: Effect.Effect<
       const enabled = prior?.enabled ?? true;
       if (!enabled) return;
 
-      // Alias and telemetry.json write only happen where the file survives;
-      // see docs/adr/0013-hybrid-stitch-stamp-identity-attribution.md.
+      // Alias and telemetry.json write only happen where the file survives.
       runtime.identity.stamp(gotrueId);
       if (isEphemeralIdentityRuntime(runtime)) return;
 

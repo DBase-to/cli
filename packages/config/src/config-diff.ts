@@ -16,10 +16,10 @@ import { getDefaultCliConfig } from "./sparse.ts";
  * effective remote configuration reported by the Management API
  * (`GET /v2/projects/{ref}/config`). Pure and synchronous: fetching the
  * response, resolving the target, and rendering output are the caller's job
- * (`supabase config diff`, and `config pull` after it). See ADR 0022.
+ * (`supabase config diff`, and `config pull` after it). .
  *
  * Both operands are convergence projections from this package's normalizers
- * (ADR 0021): the local operand is derived here from the loaded `{config,
+ *: the local operand is derived here from the loaded `{config,
  * document}` pair via `fromConfigDocument` (raw-presence-masked,
  * canonicalized, secrets omitted), and the caller builds `remote` with
  * `fromApiProjectConfig(response)`. The comparable surface is the mapping
@@ -88,7 +88,7 @@ export interface ConfigChangeSet {
   /**
    * Comparable non-secret paths the file declares but the local projection
    * dropped — declared state no actor's write path can express, because the
-   * owning feature is switched off (see ADR 0021's addendum for examples). The
+   * owning feature is switched off. The
    * reason isn't always self-contained: a path can be pruned because a
    * different, sibling path is undeclared. Never compared on the local side,
    * so — like `masked` — a clean `changes` list is only a partial claim;
@@ -381,7 +381,7 @@ export function diffProjectConfig(options: DiffProjectConfigOptions): ConfigChan
   // communicate them, so they were never compared locally.
   // `comparableProjectConfigPaths` already excludes secret rows, so this never
   // overlaps `masked`. Hoisted above the classification loop and excluded
-  // there first — an unmanaged path (ADR 0022) must never reach a branch that
+  // there first — an unmanaged path must never reach a branch that
   // compares it against the remote report.
   const unmanaged = comparableProjectConfigPaths
     .filter(

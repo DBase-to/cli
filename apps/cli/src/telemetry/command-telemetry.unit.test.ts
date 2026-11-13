@@ -1426,7 +1426,7 @@ describe("withCommandTelemetry", () => {
       message: "unexpected create branch status 402",
       entitlement: {
         feature: "branching_limit",
-        upgrade_url: "https://supabase.com/dashboard/org/env-org/billing",
+        upgrade_url: "https://dbase.to/dashboard/org/env-org/billing",
       },
     });
     const runGated = () => {

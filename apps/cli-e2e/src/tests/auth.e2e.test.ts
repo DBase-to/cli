@@ -1,6 +1,6 @@
 import { describe, it } from "vitest";
 
-// TODO(CLI-1365): implement auth e2e tests once the CLI can opt out of keychain
+// TODO: implement auth e2e tests once the CLI can opt out of keychain
 // access (e.g. SUPABASE_NO_KEYRING) — without it, login/logout spawn a macOS
 // keychain dialog that blocks the subprocess indefinitely.
 

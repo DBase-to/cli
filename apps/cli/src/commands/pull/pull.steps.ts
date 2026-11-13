@@ -44,7 +44,7 @@ export const pullConfigStep = Effect.fnUntraced(function* (input: {
 
 /**
  * `migration_history` step: fetches the remote migration history into `supabase/migrations` from
- * `context.target` (ADR 0024); the orchestrator's confirmation replaces its overwrite prompt.
+ * `context.target`; the orchestrator's confirmation replaces its overwrite prompt.
  */
 export const pullMigrationHistoryStep = Effect.fnUntraced(function* (context: PullStepContext) {
   const cliSettings = yield* CommandSettings;
@@ -61,7 +61,7 @@ export const pullMigrationHistoryStep = Effect.fnUntraced(function* (context: Pu
 
 /**
  * `db` step: pulls the linked project's schema in migration mode under the orchestrator's consent.
- * `DbPullInSyncError` is reported as `in_sync`, a finding rather than a failure (ADR 0024).
+ * `DbPullInSyncError` is reported as `in_sync`, a finding rather than a failure.
  */
 export const pullDbStep = Effect.fnUntraced(function* (context: PullStepContext) {
   const cliSettings = yield* CommandSettings;

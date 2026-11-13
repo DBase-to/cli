@@ -106,7 +106,7 @@ One `result` event on success.
   `postgres_engine` respectively in the request body. Both target
   fields that the upstream Management API OpenAPI spec deliberately hides (typed as
   `{"deprecated": true, "type": "null"}`) even though `POST /v1/projects` accepts them — restored via
-  `packages/api/scripts/openapi-overrides.json` (CLI-2180). Both flags are hidden and require
+  `packages/api/scripts/openapi-overrides.json`. Both flags are hidden and require
   `--experimental` (or the `DBASE_EXPERIMENTAL` env var); setting either one without either
   fails with `must set the --experimental flag to run this command` and makes no API call.
 - The `--plan` flag is hidden and reserved.

@@ -33,7 +33,7 @@ const testBranchesCommand = branchesCommand.pipe(
  * `rootCommand` avoids needing to provide or mock its full production layer graph, since the
  * `ShowHelp` failure these tests care about fires before any leaf handler body runs.
  */
-describe("group command exit codes (CLI-1906)", () => {
+describe("group command exit codes", () => {
   const layerFor = (args: ReadonlyArray<string>) =>
     Layer.mergeAll(
       CliOutput.layer(textCliOutputFormatter()),
@@ -91,7 +91,7 @@ describe("group command exit codes (CLI-1906)", () => {
  * `Command.make` runs through the same `Command.runWith`/`showHelp()` machinery without that
  * overhead. A real subprocess run against `sso add` is covered end to end by `sso.e2e.test.ts`.
  */
-describe("withoutParseErrorHelpDump (CLI-1901)", () => {
+describe("withoutParseErrorHelpDump", () => {
   const layerFor = (args: ReadonlyArray<string>, console: Console.Console) =>
     Layer.mergeAll(
       CliOutput.layer(textCliOutputFormatter()),

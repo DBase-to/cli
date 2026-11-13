@@ -194,7 +194,7 @@ describe("projects list integration", () => {
     }).pipe(Effect.provide(layer));
   });
 
-  describe("parent-fallback marker after linking a branch (CLI-2167 follow-up)", () => {
+  describe("parent-fallback marker after linking a branch", () => {
     it.effect(
       "marks the parent's row (via linked-project.json) when the linked ref is a branch not in the list, asserting both the bullet and json linked:true",
       () => {

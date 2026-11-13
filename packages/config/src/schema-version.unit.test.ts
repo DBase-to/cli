@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 import type { ConfigFormat } from "./config-format.ts";
 import { readCliConfigSchemaDeclaration } from "./schema-version.ts";
 
-const versioned = (n: string) => `https://supabase.com/schemas/config/v${n}.json`;
+const versioned = (n: string) => `https://dbase.to/schemas/config/v${n}.json`;
 
 describe("readCliConfigSchemaDeclaration", () => {
   const cases: ReadonlyArray<{
@@ -136,8 +136,8 @@ describe("readCliConfigSchemaDeclaration", () => {
       name: "reads the legacy docs URL as v1",
       text: "",
       format: "json",
-      document: { $schema: "https://supabase.com/docs/cli/config.schema.json" },
-      expected: { ref: "https://supabase.com/docs/cli/config.schema.json", version: 1n },
+      document: { $schema: "https://dbase.to/docs/cli/config.schema.json" },
+      expected: { ref: "https://dbase.to/docs/cli/config.schema.json", version: 1n },
     },
     {
       name: "reads a node_modules package path with forward slashes as v1",

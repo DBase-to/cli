@@ -3,7 +3,7 @@ import { CliConfigSchema, type CliConfig } from "./base.ts";
 
 /**
  * A deeply partial `T` used for sparse config overlays; arrays are kept as whole units
- * rather than partialized element-wise. See `docs/adr/0018-sparse-config-subtraction.md`.
+ * rather than partialized element-wise.
  */
 export type DeepPartial<T> =
   T extends ReadonlyArray<unknown>
@@ -192,7 +192,6 @@ export function subtractValue(value: unknown, baseline: unknown): unknown {
  * Both operands must be effective — every present key holds its fully-resolved value. A
  * standalone-decoded `[remotes.*]` block does not qualify: decoding it alone materializes
  * defaults it meant to inherit from the base config. See
- * `docs/adr/0018-sparse-config-subtraction.md`.
  */
 export function subtractCliConfig(
   config: EffectiveConfig,

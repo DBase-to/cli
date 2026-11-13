@@ -437,7 +437,7 @@ export function mockCommandSettings(opts: {
     apiUrl: opts.apiUrl ?? DEFAULT_API_URL,
     projectHost: opts.projectHost ?? "supabase.co",
     poolerHost: opts.poolerHost ?? "supabase.com",
-    dashboardUrl: opts.dashboardUrl ?? "https://supabase.com/dashboard",
+    dashboardUrl: opts.dashboardUrl ?? "https://dbase.to/dashboard",
     accessToken: opts.accessToken ?? Option.some(Redacted.make(VALID_TOKEN)),
     projectId: opts.projectId ?? Option.some(VALID_REF),
     workdir: opts.workdir,
@@ -683,9 +683,7 @@ export function mockCommandPlatformApiService(
   });
 
   // No typed v2 operation has stub support here: the CLI's only v2 call (the
-  // effective-project-config read) bypasses the typed `v2.*` surface for `executeRaw` (ADR 0019
-  // rule 2 — the generated client's strict schema would reject the forward-compatible shapes the
-  // read needs to tolerate), so any typed `v2.*` call from command code is a wiring bug.
+  // effective-project-config read) bypasses the typed `v2.*` surface for `executeRaw`, so any typed `v2.*` call from command code is a wiring bug.
   const v2Proxy = new Proxy({} as ApiClient["v2"], {
     get(_target, prop: string) {
       return () => Effect.die(`Unmocked CommandPlatformApi.v2.${prop}`);

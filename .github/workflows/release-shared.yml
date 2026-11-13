@@ -47,33 +47,15 @@ on:
         required: false
       GH_APP_PRIVATE_KEY:
         required: false
-      ANTHROPIC_API_KEY:
-        required: false
       DF_FIREWALL_TOKEN:
         required: false
-      LINEAR_CLI_STABLE_RELEASE_ACCESS_KEY:
-        required: false
-      LINEAR_CLI_BETA_RELEASE_ACCESS_KEY:
-        required: false
 jobs:
-  build-blacksmith:
-    name: Build CLI artifacts (Blacksmith)
+  build:
+    name: Build CLI artifacts
     uses: ./.github/workflows/build-cli-artifacts.yml
     with:
       version: ${{ inputs.version }}
-    secrets:
-      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-      POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
-      POSTHOG_ENDPOINT: ${{ secrets.POSTHOG_ENDPOINT }}
-      DF_FIREWALL_TOKEN: ${{ secrets.DF_FIREWALL_TOKEN }}
-
-  build-github:
-    name: Build CLI artifacts (GitHub hosted)
-    uses: ./.github/workflows/build-cli-artifacts.yml
-    with:
-      version: ${{ inputs.version }}
-      runner: large-linux-x86
-      cache_key_suffix: -github
+      runner: ubuntu-latest
       timeout_minutes: 45
       build_timeout_minutes: 20
     secrets:
@@ -84,13 +66,13 @@ jobs:
 
   smoke-test:
     needs:
-      - build-blacksmith
+      - build
     strategy:
       fail-fast: false
       matrix:
         runner:
-          - blacksmith-8vcpu-ubuntu-2404
-          - blacksmith-8vcpu-windows-2025
+          - ubuntu-latest
+          - windows-latest
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 30
     env:
@@ -129,7 +111,7 @@ jobs:
           sudo systemctl restart docker
           docker info --format '{{.DriverStatus}}'
 
-      # The host's binfmt_misc must be mounted before installing QEMU. On cold Blacksmith VMs it
+      # The host's binfmt_misc must be mounted before installing QEMU. On cold runners it
       # isn't mounted by default, so setup-qemu-action's privileged installer registers the qemu
       # interpreters inside its own mount namespace — they vanish when the container exits, and
       # `docker run --platform linux/arm64` fails with "exec format error" (only on cold-VM runs,
@@ -217,7 +199,7 @@ jobs:
 
   smoke-test-macos:
     needs:
-      - build-github
+      - build
     runs-on: macos-latest
     timeout-minutes: 25
     env:
@@ -240,7 +222,7 @@ jobs:
           path: |
             packages/cli-*/bin/
             dist/
-          key: cli-build-${{ github.run_id }}-${{ inputs.version }}-github-v1
+          key: cli-build-${{ github.run_id }}-${{ inputs.version }}-v1
           enableCrossOsArchive: true
           fail-on-cache-miss: true
 
@@ -254,21 +236,17 @@ jobs:
 
   publish:
     needs:
-      - build-github
+      - build
       - smoke-test
       - smoke-test-macos
-    if: ${{ !cancelled() && !inputs.dry_run && needs.build-github.result == 'success' && needs.smoke-test.result == 'success' && needs.smoke-test-macos.result == 'success' }}
-    # npm provenance verification rejects non-GitHub-hosted runners with E422; Blacksmith runners
-    # count as self-hosted from sigstore's POV, so this job must stay on a github-hosted runner
-    # (it's short and not compute-bound, so the cost is negligible).
+    if: ${{ !cancelled() && !inputs.dry_run && needs.build.result == 'success' && needs.smoke-test.result == 'success' && needs.smoke-test-macos.result == 'success' }}
+    # npm provenance verification needs a github-hosted runner.
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
       CHANNEL: ${{ inputs.channel }}
       NPM_TAG: ${{ inputs.npm_tag }}
       VERSION: ${{ inputs.version }}
-      LINEAR_CLI_STABLE_RELEASE_ACCESS_KEY: ${{ secrets.LINEAR_CLI_STABLE_RELEASE_ACCESS_KEY }}
-      LINEAR_CLI_BETA_RELEASE_ACCESS_KEY: ${{ secrets.LINEAR_CLI_BETA_RELEASE_ACCESS_KEY }}
     permissions:
       attestations: write
       contents: write
@@ -303,7 +281,7 @@ jobs:
           path: |
             packages/cli-*/bin/
             dist/
-          key: cli-build-${{ github.run_id }}-${{ inputs.version }}-github-v1
+          key: cli-build-${{ github.run_id }}-${{ inputs.version }}-v1
           enableCrossOsArchive: true
           fail-on-cache-miss: true
 
@@ -428,62 +406,11 @@ jobs:
           fi
           gh release edit "v${VERSION}" "${args[@]}"
 
-      - name: Sync stable release to Linear
-        if: ${{ inputs.channel == 'stable' && env.LINEAR_CLI_STABLE_RELEASE_ACCESS_KEY != '' }}
-        uses: linear/linear-release-action@53ad0f863963e7f8e270fba18426bbb55ef55384 # v0
-        with:
-          access_key: ${{ env.LINEAR_CLI_STABLE_RELEASE_ACCESS_KEY }}
-          version: v${{ inputs.version }}
-          name: Supabase CLI v${{ inputs.version }}
-          links: |
-            GitHub Release=https://github.com/${{ github.repository }}/releases/tag/v${{ inputs.version }}
-            Release workflow=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
-      - name: Sync beta release to Linear
-        if: ${{ inputs.channel == 'beta' && env.LINEAR_CLI_BETA_RELEASE_ACCESS_KEY != '' }}
-        uses: linear/linear-release-action@53ad0f863963e7f8e270fba18426bbb55ef55384 # v0
-        with:
-          access_key: ${{ env.LINEAR_CLI_BETA_RELEASE_ACCESS_KEY }}
-          version: v${{ inputs.version }}
-          name: Supabase CLI v${{ inputs.version }}
-          links: |
-            GitHub Release=https://github.com/${{ github.repository }}/releases/tag/v${{ inputs.version }}
-            Release workflow=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
-  # Changelog backfill only needs tag + published GH release (from publish).
-  # Runs in parallel with brew/scoop/smoke; must not gate distribution.
-  backfill-release-notes:
-    uses: ./.github/workflows/backfill-release-notes.yml
-    needs: publish
-    if: ${{ !cancelled() && !inputs.dry_run && needs.publish.result == 'success' }}
-    with:
-      tag: v${{ inputs.version }}
-      apply: true
-      non_blocking: true
-    secrets:
-      DF_FIREWALL_TOKEN: ${{ secrets.DF_FIREWALL_TOKEN }}
-
-  # Once the raw semantic-release block is in the release body, asks Claude to rewrite it into
-  # user-centric notes and open a PR for human approval. Stable only — prereleases and
-  # maintenance lines keep the raw body. Non-blocking so an LLM hiccup never gates a published release; reviewers can propose
-  # beta notes manually via workflow_dispatch.
-  propose-release-notes:
-    uses: ./.github/workflows/propose-release-notes.yml
-    needs: backfill-release-notes
-    if: ${{ !inputs.dry_run && !inputs.prerelease && inputs.channel != 'maintenance' && needs.backfill-release-notes.result == 'success' }}
-    with:
-      tag: v${{ inputs.version }}
-      non_blocking: true
-    secrets:
-      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-      GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
-      DF_FIREWALL_TOKEN: ${{ secrets.DF_FIREWALL_TOKEN }}
-
   publish-homebrew:
     needs: publish
     if: ${{ !cancelled() && !inputs.dry_run && inputs.publish_brew_scoop && needs.publish.result == 'success' }}
-    # github-hosted to share a cache store with build-github/publish, whose
-    # -github-v1 artifacts this job's checksums must match.
+    # github-hosted to share a cache store with build/publish, whose
+    # -v1 artifacts this job's checksums must match.
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -500,17 +427,15 @@ jobs:
         with:
           dependency-firewall-token: ${{ secrets.DF_FIREWALL_TOKEN }}
 
-      # Restores the github-hosted build (-github-v1) — the same artifacts the publish job
-      # uploads to the GitHub Release. Bun-compiled binaries aren't byte-for-byte reproducible
-      # across the blacksmith and github builds, so the blacksmith checksums.txt doesn't match
-      # the released tarballs, and a formula built from it rejects the downloaded archive.
+      # Restores this workflow's build, the same artifacts the publish job uploads
+      # to the GitHub Release, so the formula's checksums match the released tarballs.
       - name: Restore build artifacts cache
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
             packages/cli-*/bin/
             dist/
-          key: cli-build-${{ github.run_id }}-${{ inputs.version }}-github-v1
+          key: cli-build-${{ github.run_id }}-${{ inputs.version }}-v1
           enableCrossOsArchive: true
           fail-on-cache-miss: true
 
@@ -543,8 +468,8 @@ jobs:
   publish-scoop:
     needs: publish
     if: ${{ !cancelled() && !inputs.dry_run && inputs.publish_brew_scoop && needs.publish.result == 'success' }}
-    # github-hosted to share a cache store with build-github/publish, whose
-    # -github-v1 artifacts this job's checksums must match.
+    # github-hosted to share a cache store with build/publish, whose
+    # -v1 artifacts this job's checksums must match.
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -561,17 +486,15 @@ jobs:
         with:
           dependency-firewall-token: ${{ secrets.DF_FIREWALL_TOKEN }}
 
-      # Restores the github-hosted build (-github-v1) — the same artifacts the publish job
-      # uploads to the GitHub Release. Bun-compiled binaries aren't byte-for-byte reproducible
-      # across the blacksmith and github builds, so the blacksmith checksums.txt doesn't match
-      # the released tarballs, and a manifest built from it rejects the downloaded archive.
+      # Restores this workflow's build, the same artifacts the publish job uploads
+      # to the GitHub Release, so the manifest's hashes match the released tarballs.
       - name: Restore build artifacts cache
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
             packages/cli-*/bin/
             dist/
-          key: cli-build-${{ github.run_id }}-${{ inputs.version }}-github-v1
+          key: cli-build-${{ github.run_id }}-${{ inputs.version }}-v1
           enableCrossOsArchive: true
           fail-on-cache-miss: true
 

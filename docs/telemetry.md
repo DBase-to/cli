@@ -1,10 +1,10 @@
 # Telemetry Implementation
 
-> Extracted from [ADR 0002](adr/0002-cli-product-metrics.md). This document covers the implementation details of the CLI telemetry system. For the metric categories, event schema contract, and architectural decisions, see the ADR.
+> Implementation details of the CLI telemetry system: metric categories, event schema contract, and collection architecture.
 
 ## Unified Infrastructure
 
-ADR 0001 Pillar 5 and ADR 0002 share infrastructure. No separate metrics SDK and tracing SDK — one telemetry event schema, one write path, one consent model. A single OpenTelemetry-based pipeline handles all concerns, with the backend evolving in phases:
+Metrics and tracing share infrastructure. No separate metrics SDK and tracing SDK — one telemetry event schema, one write path, one consent model. A single OpenTelemetry-based pipeline handles all concerns, with the backend evolving in phases:
 
 | Phase       | Backend                        | Purpose                                                          | Status |
 | ----------- | ------------------------------ | ---------------------------------------------------------------- | ------ |
@@ -33,15 +33,15 @@ collector       (opt-in)      (opt-in)
      │             │         ┌─────┴─────┐
      ▼             ▼         ▼           ▼
 Observability  Observability Sentry    Grafana
-(ADR 0027)     (ADR 0027)   (Phase 1) (Phase 2,
+(tracing)      (tracing)    (Phase 1) (Phase 2,
                                        future)
 ```
 
-Sentry receives every command span via its native OpenTelemetry integration and powers error diagnostics, performance monitoring, and product analytics dashboards for all 5 metric categories from ADR 0002. In Phase 2, spans will also be exported to a company-owned Grafana instance via OTLP for long-term retention and custom analytics. The CLI code does not change between phases — only the exporter configuration.
+Sentry receives every command span via its native OpenTelemetry integration and powers error diagnostics, performance monitoring, and product analytics dashboards for all 5 metric categories. In Phase 2, spans will also be exported to a company-owned Grafana instance via OTLP for long-term retention and custom analytics. The CLI code does not change between phases — only the exporter configuration.
 
-The trace file and user-owned OTLP collector are chosen per run with `SUPABASE_TRACE_FILE` or
-`SUPABASE_OTLP_ENDPOINT`, and the span console with `SUPABASE_DEBUG=1` or
-`SUPABASE_TELEMETRY_DEBUG=1`; see [ADR 0027](adr/0027-cli-tracing-conventions.md).
+The trace file and user-owned OTLP collector are chosen per run with `DBASE_TRACE_FILE` or
+`DBASE_OTLP_ENDPOINT`, and the span console with `DBASE_DEBUG=1` or
+`DBASE_TELEMETRY_DEBUG=1`; see the [tracing how-to](../apps/cli/docs/tracing-monitoring.md).
 
 ## Collection Architecture
 
@@ -122,7 +122,7 @@ command({
 
 `is_first_run`: true only on the very first CLI execution ever (when `telemetry.json` doesn't exist yet). Powers the Onboarding metrics.
 
-Note: `user_id` (Supabase account UUID) is a future enhancement, pending a profile endpoint that returns the account UUID from the auth token. When available, it will be attached as `cli.user_id` resource attribute and will enable cross-device identity linking.
+Note: `user_id` (DBase account UUID) is a future enhancement, pending a profile endpoint that returns the account UUID from the auth token. When available, it will be attached as `cli.user_id` resource attribute and will enable cross-device identity linking.
 
 **OTel resource attributes**:
 
@@ -160,12 +160,11 @@ Privacy guarantees:
 
 ## Local Traces
 
-Local traces are opt-in per run: `SUPABASE_TRACE_FILE` appends sanitized OTLP/JSON batches to a
-file, `SUPABASE_OTLP_ENDPOINT` sends them to a collector the user runs, and `SUPABASE_DEBUG=1` or
+Local traces are opt-in per run: `DBASE_TRACE_FILE` appends sanitized OTLP/JSON batches to a
+file, `DBASE_OTLP_ENDPOINT` sends them to a collector the user runs, and `DBASE_DEBUG=1` or
 `SUPABASE_TELEMETRY_DEBUG=1` prints the top of the span tree and every failed span to stderr.
 `--debug` does not print spans. The CLI no longer writes `<SUPABASE_HOME or ~/.supabase>/traces/`. See
-the [tracing how-to](../apps/cli/docs/tracing-monitoring.md) and
-[ADR 0027](adr/0027-cli-tracing-conventions.md).
+the [tracing how-to](../apps/cli/docs/tracing-monitoring.md).
 
 ## Remote Export
 
@@ -293,7 +292,7 @@ span.end();
 // Sentry alerts if AUTH_TOKEN_EXPIRED spikes across devices
 ```
 
-**Workflow command** — `supabase dev` with child spans (connects to ADR 0007):
+**Workflow command** — `supabase dev` with child spans:
 
 ```typescript
 // Root span for the command
@@ -354,7 +353,7 @@ Is TTY? ──No──→ consent = "denied" (no prompt for CI/LLMs)
      │
      ▼
 Prompt user (via Clack):
-"Help improve the Supabase CLI by sending anonymous usage data? (y/N)"
+"Help improve the DBase CLI by sending anonymous usage data? (y/N)"
      │
      ├─ y → consent = "granted"
      └─ N → consent = "denied"
@@ -406,7 +405,7 @@ Completeness check — every span attribute is used by at least one metric:
 | `span.cli.command`                       | Command frequency, churn by command, drop-off funnel |
 | `span.cli.exit_code`                     | Command success rate                                 |
 | `span.cli.duration_ms`                   | p50/p95 latency                                      |
-| `span.cli.startup_ms`                    | Performance monitoring (ADR 0001 budgets)            |
+| `span.cli.startup_ms`                    | Performance monitoring (startup budgets)             |
 | `span.cli.error_code`                    | Error code distribution                              |
 | `span.cli.is_tty`                        | LLM vs human split                                   |
 | `span.cli.is_ci`                         | LLM vs human split (refinement)                      |
@@ -417,7 +416,7 @@ Completeness check — every span attribute is used by at least one metric:
 | `span.cli.api_request_errors`            | Quality analysis (backend reliability)               |
 | child spans (phases)                     | Per-phase latency breakdown for workflow commands    |
 
-Note: `cli.user_id` (Supabase account UUID) is omitted from v1. It will be added as a future enhancement when a profile endpoint is available, enabling cross-device identity linking and per-account error lookup.
+Note: `cli.user_id` (DBase account UUID) is omitted from v1. It will be added as a future enhancement when a profile endpoint is available, enabling cross-device identity linking and per-account error lookup.
 
 Performance impact:
 

@@ -45,7 +45,7 @@ describe("buildBearerJwtClaims", () => {
     expect(claims["iat"]).toBe(2_000_000_000 - 1800);
   });
 
-  it("floors only the FINAL iat, applying a sub-second --valid-for before truncating (CLI-1961)", () => {
+  it("floors only the FINAL iat, applying a sub-second --valid-for before truncating", () => {
     const claims = buildBearerJwtClaims({
       role: "anon",
       sub: Option.none(),
@@ -57,7 +57,7 @@ describe("buildBearerJwtClaims", () => {
     expect(claims["iat"]).toBe(1_893_455_998);
   });
 
-  it("preserves a fractional --exp through the iat subtraction, flooring only the final result (CLI-1961 Codex review finding)", () => {
+  it("preserves a fractional --exp through the iat subtraction, flooring only the final result", () => {
     const claims = buildBearerJwtClaims({
       role: "anon",
       sub: Option.none(),
@@ -69,7 +69,7 @@ describe("buildBearerJwtClaims", () => {
     expect(claims["iat"]).toBe(1_893_455_999);
   });
 
-  it("floors exp down (never rounds up) for a near-second nanosecond --exp fraction (CLI-1961 Codex review finding)", () => {
+  it("floors exp down (never rounds up) for a near-second nanosecond --exp fraction", () => {
     const claims = buildBearerJwtClaims({
       role: "anon",
       sub: Option.none(),
@@ -80,7 +80,7 @@ describe("buildBearerJwtClaims", () => {
     expect(claims["exp"]).toBe(1_893_456_000);
   });
 
-  it("adds a sub-second --valid-for to the unfloored current time when --exp is omitted (CLI-1961 Codex review finding)", () => {
+  it("adds a sub-second --valid-for to the unfloored current time when --exp is omitted", () => {
     const claims = buildBearerJwtClaims({
       role: "anon",
       sub: Option.none(),
@@ -92,7 +92,7 @@ describe("buildBearerJwtClaims", () => {
     expect(claims["exp"]).toBe(NOW + 1);
   });
 
-  it("sets is_anonymous when --sub is explicitly passed as an empty string (CLI-1961)", () => {
+  it("sets is_anonymous when --sub is explicitly passed as an empty string", () => {
     const claims = buildBearerJwtClaims({
       role: "authenticated",
       sub: Option.some(""),
@@ -207,7 +207,7 @@ describe("mergeBearerJwtPayload", () => {
     );
   });
 
-  it("rejects an overflowing number nested in an object payload instead of silently signing Infinity-as-null (CLI-1961 Codex review finding)", () => {
+  it("rejects an overflowing number nested in an object payload instead of silently signing Infinity-as-null", () => {
     expect(() => mergeBearerJwtPayload({ role: "anon" }, '{"extra":1e309}')).toThrow(
       "invalid claims: number 1e309 is out of range",
     );

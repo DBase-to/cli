@@ -21,7 +21,7 @@ import * as PortReservations from "./namespace/PortReservations.ts";
 import type { Holder } from "./namespace/PortReservations.ts";
 
 const portBase = 20000;
-/** Stays below the Linux ephemeral range, per the [architecture ADR](../../../docs/adr/0017-simplified-managed-stack-architecture.md). */
+/** Stays below the Linux ephemeral range. */
 const portSpan = 12768;
 /** Co-prime with the span, so the scan visits every port once and steps past reserved ranges. */
 const portStride = 257;
@@ -141,7 +141,7 @@ export const probeVacant =
  * Disjoint from the public auto range (`portBase`..`portBase + portSpan`) and contiguous below it,
  * and a pinned public port inside it is rejected, so a native backend's direct bind can never land
  * on a port the per-user registry is reserving for a public listener. Both ranges stay below the
- * OS ephemeral range (ADR 0017).
+ * OS ephemeral range.
  */
 export const nativePortBase = 10000;
 export const nativePortSpan = portBase - nativePortBase;

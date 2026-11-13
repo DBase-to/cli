@@ -47,6 +47,6 @@ export function buildRlsAdvisory(tables: ReadonlyArray<string>): Option.Option<A
       "Do not auto-apply the remediation SQL: enabling RLS without policies will block all access to these tables. " +
       "Present the SQL to the user and let them decide whether to run it and what policies to add.",
     remediation_sql: remediationSql,
-    doc_url: "https://supabase.com/docs/guides/database/postgres/row-level-security",
+    doc_url: "https://dbase.to/docs/guides/database/postgres/row-level-security",
   });
 }

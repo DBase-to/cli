@@ -147,5 +147,5 @@ the handler, which asks for the name or fails for want of anywhere to ask.
 
 ## Notes
 
-- A non-existent `--workdir`/`DBASE_WORKDIR` now fails before any directory or file is created (CLI-2285) — previously a typo'd `--workdir` could scaffold a fresh `supabase/compute/…` tree (plus a new `config.toml`) at the wrong path.
+- A non-existent `--workdir`/`DBASE_WORKDIR` now fails before any directory or file is created — previously a typo'd `--workdir` could scaffold a fresh `supabase/compute/…` tree (plus a new `config.toml`) at the wrong path.
 - The `Created new Compute at <path>` line (and the equivalent machine-format `source` field) shows the absolute path when `--workdir`/`DBASE_WORKDIR` was set explicitly, since the scaffolded directory is then not necessarily relative to the terminal the command was run from.

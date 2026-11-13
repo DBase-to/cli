@@ -143,7 +143,7 @@ describe("init", () => {
       }).pipe(Effect.provide(layer));
 
       const content = yield* readTextFile(tempDir, "supabase", "config.toml");
-      expect(content.split("\n")[0]).toBe("#:schema https://supabase.com/schemas/config/v1.json");
+      expect(content.split("\n")[0]).toBe("#:schema https://dbase.to/schemas/config/v1.json");
       expect(content).toContain("major_version = 17");
       expect(content).toContain("port = 54321");
       expect(content).not.toContain("stack = true");
@@ -469,7 +469,7 @@ describe("init", () => {
         "editor.fontSize": 14,
         "json.schemaDownload.trustedDomains": {
           "https://example.com/": true,
-          "https://supabase.com/schemas/": true,
+          "https://dbase.to/schemas/": true,
         },
         "[typescript]": {
           "editor.tabSize": 4,

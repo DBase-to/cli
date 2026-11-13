@@ -195,7 +195,7 @@ describe("pullPayload", () => {
     });
   });
 
-  it("shapes a failed-with-partial-write aggregate: no step changed anything, but a failed step's own written is non-empty, wrote:true (Fix D, CLI-1272 review)", () => {
+  it("shapes a failed-with-partial-write aggregate: no step changed anything, but a failed step's own written is non-empty, wrote:true", () => {
     const results: ReadonlyArray<PullStepResult> = [
       { step: "config", status: "unchanged", written: [], detail: {} },
       {

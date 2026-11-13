@@ -203,7 +203,7 @@ describe("branches delete integration", () => {
   });
 
   it.effect(
-    "resolves a branch NAME against the linked PARENT (not the branch's own ref) after `dbase link <branch>` (CLI-2167 follow-up)",
+    "resolves a branch NAME against the linked PARENT (not the branch's own ref) after `dbase link <branch>`",
     () => {
       const PARENT_REF = "parentprojectrefxxxx";
       const BRANCH_OWN_REF = "branchownrefyyyyyyyy";

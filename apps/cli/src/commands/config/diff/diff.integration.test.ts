@@ -875,7 +875,7 @@ describe("config diff integration", () => {
   });
 
   it.effect("an out-of-domain mapped value in the response keeps its typed parse error", () => {
-    // See ADR 0021: this stays a typed ProjectConfigParseError, not a network failure.
+    // this stays a typed ProjectConfigParseError, not a network failure.
     const { layer } = setup({
       toml: 'project_id = "test"\n',
       v2: {
@@ -906,7 +906,7 @@ describe("config diff integration", () => {
   });
 
   it.effect("an unknown enum value in the response degrades instead of failing", () => {
-    // ADR 0019: executeRaw bypasses the generated client's closed enums, so a new platform enum
+    // executeRaw bypasses the generated client's closed enums, so a new platform enum
     // value degrades instead of failing.
     const { layer, out } = setup({
       toml: 'project_id = "test"\n',

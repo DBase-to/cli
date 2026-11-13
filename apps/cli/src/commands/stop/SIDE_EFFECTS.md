@@ -13,7 +13,7 @@ falls back to the legacy backend; an invalid environment override remains an err
 Talks directly to Docker via subprocess
 (`docker`/`podman`), using a fixed label-filtering and container-naming
 scheme — it does not go through `@supabase/stack/effect`'s orchestration
-model (see the CLI-1324 plan's "Critical architectural finding" for why).
+model.
 
 ## Files Read
 
@@ -182,4 +182,4 @@ flags.noBackup`. `--backup=false` alone does **not** delete volumes; only
   captured per-container the way a direct SDK error would be.
 - No e2e test is planned: there is no Docker-daemon-free golden path for this command,
   and the e2e harness (`runSupabase()`) does not provision a real local stack. See the
-  CLI-1324 plan's "E2e tests" section for the full justification.
+  plan's "E2e tests" section for the full justification.

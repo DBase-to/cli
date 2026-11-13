@@ -94,7 +94,7 @@
       "deprecated": true,
       "type": "null"
     },
-    "$comment": "CLI-2180: the public spec deliberately hides this field (upstream marks it deprecated/null) even though POST /v1/projects accepts it; enum mirrors CreateBranchBody.release_channel in the same spec."
+    "$comment": ": the public spec deliberately hides this field (upstream marks it deprecated/null) even though POST /v1/projects accepts it; enum mirrors CreateBranchBody.release_channel in the same spec."
   },
   {
     "op": "replace",
@@ -112,7 +112,7 @@
       "deprecated": true,
       "type": "null"
     },
-    "$comment": "CLI-2180: the public spec deliberately hides this field (upstream marks it deprecated/null) even though POST /v1/projects accepts it; enum mirrors CreateBranchBody.postgres_engine in the same spec."
+    "$comment": ": the public spec deliberately hides this field (upstream marks it deprecated/null) even though POST /v1/projects accepts it; enum mirrors CreateBranchBody.postgres_engine in the same spec."
   },
   {
     "op": "replace",

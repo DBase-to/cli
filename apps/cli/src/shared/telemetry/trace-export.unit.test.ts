@@ -151,7 +151,7 @@ const debugSettings = (debug: Partial<Record<"debug" | "telemetryDebug", string>
     CliSettings,
     CliSettings.of({
       apiUrl: "https://api.supabase.com",
-      dashboardUrl: "https://supabase.com/dashboard",
+      dashboardUrl: "https://dbase.to/dashboard",
       projectHost: "supabase.co",
       telemetryPosthogHost: "https://eu.i.posthog.com",
       telemetryPosthogKey: Option.none(),

@@ -55,11 +55,10 @@ bun scripts/build.ts --version X.Y.Z
 This:
 
 1. Compiles the TS CLI to a Bun SFE for each platform → `packages/cli-{platform}/bin/dbase`
-2. Signs the macOS binaries before archiving, so every channel ships the signed bytes — see [release-process.md § Code signing (macOS)](./release-process.md#code-signing-macos) and [ADR 0014](../../../docs/adr/0014-macos-code-signing-and-notarization.md)
+2. Signs the macOS binaries before archiving, so every channel ships the signed bytes — see [release-process.md § Code signing (macOS)](./release-process.md#code-signing-macos) and
 3. Bundles the binary into the platform archives (`.tar.gz` / `.zip`)
 4. Includes the binary in the Linux package manager packages (deb/rpm/apk)
 
 ## See Also
 
-- [ADR 0011](../../../docs/adr/0011-cli-release-and-distribution-strategy.md) — the release & distribution strategy decision (binary packaging choice, per-channel publish mechanisms, CI pipeline design, open blockers).
 - [`release-process.md`](./release-process.md) — operational playbook for local, PoC, and production releases.

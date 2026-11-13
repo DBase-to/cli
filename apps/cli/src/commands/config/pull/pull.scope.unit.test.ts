@@ -158,7 +158,7 @@ describe("resolveConfigPullDestination", () => {
     });
   });
 
-  test("a branch-derived label naming an existing block for a different project is a collision (CLI-2064 item A)", () => {
+  test("a branch-derived label naming an existing block for a different project is a collision", () => {
     const rawRemotes = { staging: { project_id: OTHER_REF } };
     expect(
       resolveConfigPullDestination({

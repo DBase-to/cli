@@ -1991,7 +1991,7 @@ describe("functions download", () => {
     }).pipe(Effect.provide(layer));
   });
 
-  describe("Config.Validate / dotenv / env-override parity (CLI-1963)", () => {
+  describe("Config.Validate / dotenv / env-override parity", () => {
     it.effect(
       "fails before any Docker/API work when config.toml has an explicit empty project_id",
       () => {
@@ -2077,7 +2077,7 @@ describe("functions download", () => {
           expect(error).toBeInstanceOf(Error);
           expect(error).toMatchObject({
             message:
-              "Postgres version 12.x is unsupported. To use the CLI, either start a new project or follow project migration steps here: https://supabase.com/docs/guides/database#migrating-between-projects.",
+              "Postgres version 12.x is unsupported. To use the CLI, either start a new project or follow project migration steps here: https://dbase.to/docs/guides/database#migrating-between-projects.",
           });
           expect(api.requests).toEqual([]);
           expect(child.spawned).toEqual([]);

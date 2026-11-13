@@ -5,7 +5,7 @@ const tags = ["auth"];
 
 const link = (name: string, slug: string) => ({
   name,
-  link: `https://supabase.com/docs/guides/auth/auth-hooks/${slug}`,
+  link: `https://dbase.to/docs/guides/auth/auth-hooks/${slug}`,
 });
 
 const defaultHook = {};

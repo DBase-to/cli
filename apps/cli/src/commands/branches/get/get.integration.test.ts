@@ -351,24 +351,21 @@ describe("branches get integration", () => {
     }).pipe(Effect.provide(layer));
   });
 
-  it.effect(
-    "keeps env-map keys verbatim for --output toml (map payload, exempt from CLI-1975)",
-    () => {
-      const { layer, out, api } = setup({ outputFlag: "toml" });
-      return Effect.gen(function* () {
-        yield* branchesGet({ ...baseFlags, name: Option.some(BRANCH_UUID) });
-        assertPermissionDrift({
-          command: "branches get",
-          activeFlags: { output: "toml" },
-          requests: api.requests,
-          exact: true,
-        });
-        // Map payloads are exempt from the struct-field PascalCase key remap; keys stay verbatim.
-        expect(out.stdoutText).toContain('SUPABASE_URL = "');
-        expect(out.stdoutText).toContain('POSTGRES_URL = "');
-      }).pipe(Effect.provide(layer));
-    },
-  );
+  it.effect("keeps env-map keys verbatim for --output toml", () => {
+    const { layer, out, api } = setup({ outputFlag: "toml" });
+    return Effect.gen(function* () {
+      yield* branchesGet({ ...baseFlags, name: Option.some(BRANCH_UUID) });
+      assertPermissionDrift({
+        command: "branches get",
+        activeFlags: { output: "toml" },
+        requests: api.requests,
+        exact: true,
+      });
+      // Map payloads are exempt from the struct-field PascalCase key remap; keys stay verbatim.
+      expect(out.stdoutText).toContain('SUPABASE_URL = "');
+      expect(out.stdoutText).toContain('POSTGRES_URL = "');
+    }).pipe(Effect.provide(layer));
+  });
 
   it.effect("emits standard-env map for --output env (env-format encoder)", () => {
     const { layer, out, api } = setup({ outputFlag: "env" });

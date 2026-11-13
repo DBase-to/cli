@@ -940,7 +940,7 @@ export const start = Effect.fn("start")(function* (flags: StartFlags) {
           if (dockerSocketPlan.isNpipe && output.format === "text") {
             yield* output.raw(
               `${yellow("WARNING:")} Analytics on Windows requires Docker daemon exposed on tcp://localhost:2375.\n` +
-                "See https://supabase.com/docs/guides/local-development/cli/getting-started?queryGroups=platform&platform=windows#running-supabase-locally for more details.\n",
+                "See https://dbase.to/docs/guides/local-development/cli/getting-started?queryGroups=platform&platform=windows#running-supabase-locally for more details.\n",
               "stderr",
             );
           }

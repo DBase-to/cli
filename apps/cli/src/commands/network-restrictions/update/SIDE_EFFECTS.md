@@ -99,7 +99,7 @@ Restrictions applied successfully: true
 This command's own text-mode output ignores `-o` entirely — both the POST and PATCH
 branches always print the same three-line template shown above. There is no real
 struct output for these formats to mirror, so they use the generic map-shaped
-`encodeYaml`/`encodeToml` helpers (not the CLI-1975 struct-spec ones): JSON is
+`encodeYaml`/`encodeToml` helpers: JSON is
 alphabetical with trailing newline; env follows the standard flattening rules.
 
 ### `--output pretty`

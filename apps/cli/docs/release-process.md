@@ -9,8 +9,7 @@ covers three environments ("rings"):
 2. **Ring 2 — User-owned PoC repos.** End-to-end validation through the same
    Homebrew / Scoop / GitHub-Release code paths production uses, but pointed at
    a reviewer's own GitHub account and a non-`dbase` artifact name. This is how
-   ADR 0011 gates 2 and 3 are validated without risking the production
-   channels.
+   the local and PoC rings validate the release before production.
 3. **Ring 3 — Production.** The `@dbase/cli` npm package +
    `DBase-to/homebrew-tap` + `DBase-to/scoop-bucket` + GitHub Releases on
    `DBase-to/cli`. Driven by GitHub Actions (`release.yml`, which dispatches
@@ -28,18 +27,13 @@ flowchart LR
 Move outward one ring at a time. Only promote to production after Ring 2 has
 exercised the full channel end-to-end on a fresh machine.
 
-See [ADR 0011](../../../docs/adr/0011-cli-release-and-distribution-strategy.md)
-for the decision record behind this process (why Bun SFE, why npm
-`optionalDependencies`, why nfpm, why no hosted apt/rpm repo, why unsigned).
-
 ## First release checklist
 
 Before the first production cut:
 
 - [ ] `main` exists. The stable channel and the install-script URL
       (`raw.githubusercontent.com/DBase-to/cli/main/install`) both require it.
-      The weekly `deploy.yml` PR, or the `fast-forward` job on an approved
-      `develop` → `main` PR, creates it.
+      Create it from `develop` before the first stable release.
 - [ ] The npm package name is registered. This fork publishes as
       `@dbase/cli`; the unscoped `dbase` name is owned by an unrelated package.
 - [ ] Each npm package has a trusted publisher configured for the **calling**
@@ -53,6 +47,7 @@ Before the first production cut:
       both, because with `true` and a missing app grant every release fails at
       the tap/bucket push after npm has already published.
 - [ ] A `dry_run=true` dispatch is green, including the macOS smoke legs.
+- [ ] Only then set the repository variable `RELEASE_ENABLED=true`.
 
 ---
 
@@ -285,9 +280,8 @@ dispatches two channels into
 | stable  | push: main (post-FF) | latest       | dbase           | latest     | `X.Y.Z`        |
 
 `beta` publishes on every merge to `develop` that produces a releasable commit.
-`stable` publishes after a develop→main fast-forward, which happens when the
-weekly [`deploy.yml`](../../../.github/workflows/deploy.yml) PR is approved (the
-push to `main` re-fires `release.yml` via `push: branches: [main]`).
+`stable` publishes after a reviewed `develop` → `main` PR is merged (the push to
+`main` fires `release.yml` via `push: branches: [main]`).
 
 Beta + stable versions are computed by `cycjimmy/semantic-release-action` from
 the first line of each squash commit (the PR title). Conventional commit titles
@@ -301,19 +295,17 @@ config lives in `apps/cli/package.json` and uses `prerelease: beta` on
 flowchart TD
     pushDev[push: develop] --> plan
     pushMain[push: main] --> plan
-    pr[PR develop→main approved] --> ff[fast-forward job<br/>git push origin main via App token]
-    ff --> pushMain
+    pr[PR develop→main merged] --> pushMain
     dispatch[workflow_dispatch<br/>channel + version] --> plan
 
     plan["plan (ubuntu-latest)<br/>workspace setup + semantic-release dry run<br/>computes channel, version, npm_tag, brew/scoop name"]
     plan --> shared
 
     shared["release-shared.yml"]
-    shared --> build["build (Blacksmith + GitHub runners)<br/>sync-versions, build.ts, nfpm<br/>cache build artifacts"]
+    shared --> build["build (ubuntu-latest)<br/>sync-versions, build.ts, nfpm<br/>cache build artifacts"]
     build --> smoke["smoke-test<br/>ubuntu + windows<br/>smoke-test-macos<br/>macos-latest"]
     smoke --> pub["publish (ubuntu-latest)<br/>id-token: write (OIDC trusted publishing)<br/>pnpm publish --provenance × 8 platform pkgs<br/>then the umbrella dbase package"]
     pub --> rel["softprops/action-gh-release<br/>(draft) → gh release edit --draft=false"]
-    rel --> notes["backfill + propose release notes<br/>(non-blocking)"]
     rel --> hb["publish-homebrew<br/>App-token-authed clone of homebrew-tap<br/>update-homebrew.ts --name <brew_name>"]
     rel --> sc["publish-scoop<br/>App-token-authed clone of scoop-bucket<br/>update-scoop.ts --name <scoop_name>"]
     hb --> vic["verify-install-channels<br/>real brew/scoop/install-script installs<br/>against the live channels"]
@@ -322,10 +314,15 @@ flowchart TD
 
 ### Trigger
 
-Most releases are automatic — merge a PR into `develop` (beta) or approve the
-weekly Prod-Deploy PR into `main` (stable). Hotfixes use the same production
-gate: a reviewed `hotfix/*` PR targets `main`, and the resulting `main` push
-triggers the stable release path. For a one-off override, dispatch manually:
+Automatic releases are disabled until the repository variable
+`RELEASE_ENABLED` is set to `true`. With the gate off, pushes still run tests but
+the release job is skipped. `workflow_dispatch` always runs, so the first release
+can be a dry run.
+
+When the gate is on, merging into `develop` computes a beta and pushing to `main`
+computes a stable release. Hotfixes use the same production gate: a reviewed
+`hotfix/*` PR targets `main`, and the resulting `main` push triggers the stable
+release path. For a one-off override, dispatch manually:
 
 ```sh
 # Manual beta or stable override (operator-supplied version):
@@ -389,7 +386,7 @@ or stale-bytes release.
    version, npm tag, prerelease flag, and brew/scoop names. A
    `workflow_dispatch` supplies those values directly instead.
 
-**`build` (Blacksmith + GitHub-hosted runners):**
+**`build` (ubuntu-latest):**
 
 1. [`sync-versions.ts`](../scripts/sync-versions.ts) writes the release version
    into every `package.json` (umbrella + eight platform packages).
@@ -412,9 +409,10 @@ The macOS leg also verifies each binary's signature (`codesign --verify
 1. Re-runs `sync-versions.ts` (the cache restores file modes but not the JSON
    mutations).
 2. [`publish.ts`](../scripts/publish.ts) publishes the eight platform packages
-   via OIDC trusted publishing (`pnpm publish --provenance`, no `NPM_TOKEN`),
-   then the umbrella package last so `optionalDependencies` resolve cleanly at
-   install time.
+   via OIDC trusted publishing (`pnpm publish --provenance`). The very first
+   publish of a new package needs the `NPM_TOKEN` secret; later publishes use
+   the trusted publisher. The umbrella package goes last so
+   `optionalDependencies` resolve cleanly at install time.
 3. Pushes the version tag to `origin`, then attaches a channel note for
    prerelease tags so semantic-release keeps computing forward versions.
 4. `softprops/action-gh-release` creates a **draft** Release `v<version>` on
@@ -466,12 +464,11 @@ version from the Actions tab.
 The macOS binaries (`dbase`, `darwin-arm64` and `darwin-x64`) are signed inside `build.ts` between compilation and archiving, so
 the signed bytes flow into every channel that consumes
 `packages/cli-darwin-*/bin/` — npm platform packages, Homebrew, and the GitHub
-Release tarballs (which also feed the `install` script). Background:
-[ADR 0014](../../../docs/adr/0014-macos-code-signing-and-notarization.md).
+Release tarballs (which also feed the `install` script).
 
 Why this exists: `bun build --compile` emits only a degenerate
 "linker-signed" ad-hoc signature (identifier `a.out`, no requirements blob).
-macOS 26+ AMFI rejects it and SIGKILLs the process at launch (CLI-1621 /
+macOS 26+ AMFI rejects it and SIGKILLs the process at launch ( /
 [#5556](https://github.com/supabase/cli/issues/5556)). A full ad-hoc signature
 fixes it.
 
@@ -504,8 +501,7 @@ fixes it.
 > **Phase 2 (Developer ID + notarization)** is not yet enabled. It only matters
 > for the _direct-download_ path (a quarantined `.tar.gz`/`.zip` from the
 > GitHub Release), not for Homebrew/npm/Scoop. It will be added behind Apple
-> credential secrets — see
-> [ADR 0014](../../../docs/adr/0014-macos-code-signing-and-notarization.md).
+> credential secrets.
 
 ### Verification
 
@@ -553,9 +549,6 @@ There is no cross-channel state to reconcile.
 
 ## See Also
 
-- [ADR 0011](../../../docs/adr/0011-cli-release-and-distribution-strategy.md) —
-  the decision record. Channel choices, signing rationale, open pre-cutover
-  gates.
 - [`apps/cli/docs/binary-distribution.md`](./binary-distribution.md) — how each
   platform package ships and resolves its binary at runtime.
 - [`tools/release/local-release.ts`](../../../tools/release/local-release.ts) —
@@ -567,7 +560,5 @@ There is no cross-channel state to reconcile.
   [`update-scoop.ts`](../scripts/update-scoop.ts) — release script
   implementations.
 - [`.github/workflows/release.yml`](../../../.github/workflows/release.yml),
-  [`release-shared.yml`](../../../.github/workflows/release-shared.yml),
-  [`deploy.yml`](../../../.github/workflows/deploy.yml),
-  [`deploy-check.yml`](../../../.github/workflows/deploy-check.yml) — Ring 3
+  [`release-shared.yml`](../../../.github/workflows/release-shared.yml) — Ring 3
   pipeline.

@@ -59,7 +59,7 @@ describe("convert format", () => {
         "",
         "  ⚠ Could not update .vscode/settings.json",
         "    Could not parse JSON in .vscode/settings.json: bad.",
-        '    Add "https://supabase.com/schemas/": true under "json.schemaDownload.trustedDomains" to trust the config schema.',
+        '    Add "https://dbase.to/schemas/": true under "json.schemaDownload.trustedDomains" to trust the config schema.',
       ].join("\n"),
     );
   });

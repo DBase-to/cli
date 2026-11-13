@@ -8,7 +8,7 @@ export const FUNCTIONS_NEW_DENO_JSON = `{
 
 export const FUNCTIONS_NEW_NPMRC = `# Configuration for private npm package dependencies
 # For more information on using private registries with Edge Functions, see:
-# https://supabase.com/docs/guides/functions/import-maps#importing-from-private-registries
+# https://dbase.to/docs/guides/functions/import-maps#importing-from-private-registries
 `;
 
 const INDEX_AUTH_MODE_NONE = `// Follow this setup guide to integrate the Deno language server with your editor:
@@ -35,7 +35,7 @@ export default {
 
 /* To invoke locally:
 
-  1. Run \`dbase start\` (see: https://supabase.com/docs/reference/cli/supabase-start)
+  1. Run \`dbase start\` (see: https://dbase.to/docs/reference/cli/supabase-start)
   2. Make an HTTP request:
 
   curl -i --location --request POST '__URL__' \\
@@ -83,7 +83,7 @@ export default {
 
 /* To invoke locally:
 
-  1. Run \`dbase start\` (see: https://supabase.com/docs/reference/cli/supabase-start)
+  1. Run \`dbase start\` (see: https://dbase.to/docs/reference/cli/supabase-start)
   2. Make an HTTP request:
 
   curl -i --location --request POST '__URL__' \\
@@ -116,7 +116,7 @@ export default {
 
 /* To invoke locally:
 
-  1. Run \`dbase start\` (see: https://supabase.com/docs/reference/cli/supabase-start)
+  1. Run \`dbase start\` (see: https://dbase.to/docs/reference/cli/supabase-start)
   2. Make an HTTP request:
 
   curl -i --location --request POST '__URL__' \\

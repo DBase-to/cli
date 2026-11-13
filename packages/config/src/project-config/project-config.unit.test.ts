@@ -477,7 +477,7 @@ describe("fromConfigDocument", () => {
   });
 });
 
-describe("fromConfigDocument — CLI-only field exclusion (CLI-2316)", () => {
+describe("fromConfigDocument — CLI-only field exclusion", () => {
   function readAtPath(root: unknown, path: ReadonlyArray<string>): unknown {
     let current = root;
     for (const segment of path) {
@@ -1303,7 +1303,7 @@ describe("fromApiProjectConfig — auth section", () => {
   });
 });
 
-describe("fromApiProjectConfig — secrets (ADR 0019 rule 5)", () => {
+describe("fromApiProjectConfig — secrets", () => {
   test.each([
     ["smtp_pass", ["auth", "email", "smtp", "pass"]],
     ["external_github_secret", ["auth", "external", "github", "secret"]],
@@ -1380,7 +1380,7 @@ describe("fromApiProjectConfig — unknown/API-ahead fields", () => {
   });
 });
 
-describe("fromApiProjectConfig — _apiResponse (ADR 0019 rules 1/3/4)", () => {
+describe("fromApiProjectConfig — _apiResponse", () => {
   test("is an own, non-enumerable, frozen deep clone of the unwrapped attributes", () => {
     const attributes = { api: { max_rows: 5 } };
     const result = fromApiProjectConfig(apiEnvelope(attributes));
@@ -1418,7 +1418,7 @@ describe("fromApiProjectConfig — _apiResponse (ADR 0019 rules 1/3/4)", () => {
   });
 });
 
-describe("fromApiProjectConfig — clone/freeze robustness (CLI-2230)", () => {
+describe("fromApiProjectConfig — clone/freeze robustness", () => {
   // Attaching `_apiResponse` clones and freezes the raw attributes; these payload shapes must
   // throw the package's own `ProjectConfigParseError`, not a raw uncaught error.
   test("a pathologically deep raw attributes payload throws ProjectConfigParseError, not an uncaught RangeError", () => {
@@ -1649,7 +1649,7 @@ describe("unmappedApiFields", () => {
   // The guard remains as defense in depth.
 });
 
-describe("review round: numeric and provider narrowing (CLI-2230)", () => {
+describe("review round: numeric and provider narrowing", () => {
   test("a fractional value on an integer-typed field throws with its apiPath", () => {
     let thrown: unknown;
     try {
@@ -1706,7 +1706,7 @@ describe("review round: numeric and provider narrowing (CLI-2230)", () => {
   });
 });
 
-describe("review round: aliasing, unknown-empty sections, path encoding (CLI-2230)", () => {
+describe("review round: aliasing, unknown-empty sections, path encoding", () => {
   test("object elements inside hosted arrays are copied, not aliased", () => {
     // `api.schemas` is used as a probe for the array-of-objects copy path: a `Record<string,
     // unknown>` operand is assignable to `EffectiveConfig` (every property optional) without a
@@ -1755,7 +1755,7 @@ describe("review round: aliasing, unknown-empty sections, path encoding (CLI-223
   });
 });
 
-describe("review round: oauth_server rows, known-empty pruning, DAG walk (CLI-2230)", () => {
+describe("review round: oauth_server rows, known-empty pruning, DAG walk", () => {
   test("oauth_server settings map, including the authorization path rename", () => {
     const result = fromApiProjectConfig({
       auth: {
@@ -1817,7 +1817,7 @@ describe("review round: oauth_server rows, known-empty pruning, DAG walk (CLI-22
   });
 });
 
-describe("review round: pre-decode depth guard, caller-misuse reason, readonly metadata (CLI-2230)", () => {
+describe("review round: pre-decode depth guard, caller-misuse reason, readonly metadata", () => {
   test("a pathologically deep value under auth throws typed before schema decode", () => {
     let node: Record<string, unknown> = { leaf: true };
     for (let level = 0; level < 200; level++) {
@@ -1883,7 +1883,7 @@ describe("review round: pre-decode depth guard, caller-misuse reason, readonly m
   });
 });
 
-describe("review round: deep-readonly metadata, integer frequencies, provider narrowing (CLI-2230)", () => {
+describe("review round: deep-readonly metadata, integer frequencies, provider narrowing", () => {
   test("nested _apiResponse arrays are readonly under a readonly-preserving guard and frozen at runtime", () => {
     // `Array.isArray` narrows to a mutable `any[]` view (microsoft/TypeScript#17002); a
     // readonly-preserving guard like this one is needed for mutation to not compile. Runtime
@@ -1925,7 +1925,7 @@ describe("review round: deep-readonly metadata, integer frequencies, provider na
   });
 });
 
-describe("review round: operand guards, empty-entry preservation, duration bounds (CLI-2230)", () => {
+describe("review round: operand guards, empty-entry preservation, duration bounds", () => {
   test("a non-object fromConfigDocument operand throws the typed caller-misuse error", () => {
     for (const operand of [null, undefined, ["not", "a", "config"]]) {
       let thrown: unknown;
@@ -1987,7 +1987,7 @@ describe("review round: operand guards, empty-entry preservation, duration bound
   });
 });
 
-describe("review round: sibling validation, formatter overflow, prototype lookups (CLI-2230)", () => {
+describe("review round: sibling validation, formatter overflow, prototype lookups", () => {
   test("a malformed additional_client_ids throws even when the main client id is null", () => {
     let thrown: unknown;
     try {
@@ -2029,7 +2029,7 @@ describe("review round: sibling validation, formatter overflow, prototype lookup
   });
 });
 
-describe("review round: duration/size bounds and freeze failures (CLI-2230)", () => {
+describe("review round: duration/size bounds and freeze failures", () => {
   test("an out-of-range *_max_frequency throws instead of formatting an unparsable duration", () => {
     let thrown: unknown;
     try {
@@ -2079,7 +2079,7 @@ describe("review round: duration/size bounds and freeze failures (CLI-2230)", ()
   });
 });
 
-describe("review round: absent anchors, exponent-free seconds, non-plain values (CLI-2230)", () => {
+describe("review round: absent anchors, exponent-free seconds, non-plain values", () => {
   test("a malformed additional_client_ids throws even when the anchor key is absent", () => {
     let thrown: unknown;
     try {
@@ -2128,7 +2128,7 @@ describe("review round: absent anchors, exponent-free seconds, non-plain values 
   });
 });
 
-describe("review round: clone taxonomy, precision bound, type discriminator, secret validation (CLI-2230)", () => {
+describe("review round: clone taxonomy, precision bound, type discriminator, secret validation", () => {
   test("a non-cloneable raw value carries the caller-misuse reason", () => {
     let thrown: unknown;
     try {
@@ -2179,7 +2179,7 @@ describe("review round: clone taxonomy, precision bound, type discriminator, sec
   });
 });
 
-describe("review round: safe integers, truncation, bigint, fractional-hour bound (CLI-2230)", () => {
+describe("review round: safe integers, truncation, bigint, fractional-hour bound", () => {
   test("an unsafe integer throws instead of laundering JSON parse rounding", () => {
     let thrown: unknown;
     try {
@@ -2215,7 +2215,7 @@ describe("review round: safe integers, truncation, bigint, fractional-hour bound
   });
 });
 
-describe("review round: non-JSON primitives, tiny hours, readonly report, whole-second frequencies, disabled sentinel (CLI-2230)", () => {
+describe("review round: non-JSON primitives, tiny hours, readonly report, whole-second frequencies, disabled sentinel", () => {
   // `undefined` and `NaN` have no JSON.parse-reachable spelling, so both stay caller-misuse;
   // ±Infinity is JSON-reachable (`1e400` overflows to it) and is handled by the sibling test below.
   test("undefined and NaN raw values throw the typed caller-misuse error", () => {
@@ -2353,7 +2353,7 @@ describe("review round: non-JSON primitives, tiny hours, readonly report, whole-
   });
 });
 
-describe("review round: fraction exactness, hour round-trip, bigint discriminator (CLI-2230)", () => {
+describe("review round: fraction exactness, hour round-trip, bigint discriminator", () => {
   test("18-digit duration fractions canonicalize to the push parser's reading", () => {
     const projected = fromConfigDocument({
       auth: { sessions: { timebox: "0.999999999999999999s" } },
@@ -2383,7 +2383,7 @@ describe("review round: fraction exactness, hour round-trip, bigint discriminato
   });
 });
 
-describe("review round: fraction order, mu units, realms, disabled-gate validation (CLI-2230)", () => {
+describe("review round: fraction order, mu units, realms, disabled-gate validation", () => {
   test("short decimal fractions scale exactly", () => {
     const projected = fromConfigDocument({ auth: { sessions: { timebox: "0.2593ms" } } });
     // int64(f * (unit/scale)) = 2593 * 100 = 259300ns exactly; the reverse operand
@@ -2425,7 +2425,7 @@ describe("review round: fraction order, mu units, realms, disabled-gate validati
   });
 });
 
-describe("review round: int64-range sessions, SMTP/provider/storage disabled sentinels (CLI-2230)", () => {
+describe("review round: int64-range sessions, SMTP/provider/storage disabled sentinels", () => {
   test("year-scale whole-hour durations parse and map inside the int64 range", () => {
     // "8760h" is a valid push-side value; single whole-unit components stay exact at any
     // magnitude inside the int64 range.
@@ -2511,7 +2511,7 @@ describe("review round: int64-range sessions, SMTP/provider/storage disabled sen
   });
 });
 
-describe("review round: exactness parsing, cross-arm disabled sentinels (CLI-2230)", () => {
+describe("review round: exactness parsing, cross-arm disabled sentinels", () => {
   test("multi-component long durations parse when every addition is float-exact", () => {
     const zeroTail = fromConfigDocument({ auth: { sessions: { timebox: "8760h0m" } } });
     expect(zeroTail.auth?.sessions?.timebox).toBe("8760h0m0s");
@@ -2997,7 +2997,7 @@ describe("review round: exactness parsing, cross-arm disabled sentinels (CLI-223
     expect(Object.hasOwn(ok, "auth")).toBe(false);
   });
 
-  test("documents with auth or storage disabled still project their other declared fields (CLI-2314)", () => {
+  test("documents with auth or storage disabled still project their other declared fields", () => {
     // `auth.enabled`/`storage.enabled` are local Docker toggles with no hosted counterpart, so a
     // document that declares `enabled = false` alongside a real hosted field keeps that field.
     const projected = fromConfigDocument({
@@ -3037,7 +3037,7 @@ describe("review round: exactness parsing, cross-arm disabled sentinels (CLI-223
   });
 });
 
-describe("review round: oauth_server disabled sentinel (CLI-2230)", () => {
+describe("review round: oauth_server disabled sentinel", () => {
   test("a disabled OAuth server projects only its toggle on the API arm (real hosted state)", () => {
     const api = fromApiProjectConfig({
       auth: { oauth_server_enabled: false, oauth_server_authorization_path: "/stale" },
@@ -3072,7 +3072,7 @@ describe("review round: oauth_server disabled sentinel (CLI-2230)", () => {
   });
 });
 
-describe("DISABLED_SENTINEL_PRUNES — cross-arm symmetry re-derived from the data model (CLI-2314)", () => {
+describe("DISABLED_SENTINEL_PRUNES — cross-arm symmetry re-derived from the data model", () => {
   /**
    * One disabled-state fixture pair per {@link DISABLED_SENTINEL_PRUNES} entry, machine-checking
    * that each rule is re-derived from something the platform's data model already enforces on
@@ -3221,7 +3221,7 @@ describe("DISABLED_SENTINEL_PRUNES — cross-arm symmetry re-derived from the da
   }
 });
 
-describe("review round: clone-snapshot validation, provenance, digit exactness (CLI-2230)", () => {
+describe("review round: clone-snapshot validation, provenance, digit exactness", () => {
   test("a getter that changes answers cannot desynchronize validation from the attached snapshot", () => {
     // Clone-first ordering: structuredClone reads the getter exactly once, and the validated
     // value is the clone, so either the snapshot is plain JSON and attaches coherently (this
@@ -3273,7 +3273,7 @@ describe("review round: clone-snapshot validation, provenance, digit exactness (
   });
 });
 
-describe("review round: unified snapshot, exact scaling, signed frequencies, endpoint (CLI-2230)", () => {
+describe("review round: unified snapshot, exact scaling, signed frequencies, endpoint", () => {
   test("decode, mapping, and metadata all read one snapshot", () => {
     let reads = 0;
     const flippy: Record<string, unknown> = {};
@@ -3311,7 +3311,7 @@ describe("review round: unified snapshot, exact scaling, signed frequencies, end
   });
 });
 
-describe("review round: fractional-addition exactness (CLI-2230)", () => {
+describe("review round: fractional-addition exactness", () => {
   test("a fractional addition that rounds onto a large whole component stays verbatim", () => {
     const projected = fromConfigDocument({
       auth: { sessions: { timebox: "9000000000000.001ms" } },
@@ -3332,7 +3332,7 @@ describe("fromConfigDocument — raw-presence masking (CliConfigWithRawPresence,
     expect(topLevelKeys).not.toContain("document");
   });
 
-  test("without a document, decode-materialized defaults leak through (the presence-relativity limit ADR 0021 documents)", () => {
+  test("without a document, decode-materialized defaults leak through", () => {
     const config = decodeCliConfig({});
     const projected = fromConfigDocument(config);
     // All 19 providers present with their schema-defaulted shape — the limit

@@ -74,7 +74,7 @@ YAML document of the sorted secret array.
 
 ### `--output toml`
 
-TOML document wrapping the sorted array as `[[secrets]]` (CLI-1975): PascalCase field names (`Name`, `UpdatedAt`, `Value`), 2-space indentation, fields omitted when absent.
+TOML document wrapping the sorted array as `[[secrets]]`: PascalCase field names (`Name`, `UpdatedAt`, `Value`), 2-space indentation, fields omitted when absent.
 
 ### `--output env`
 

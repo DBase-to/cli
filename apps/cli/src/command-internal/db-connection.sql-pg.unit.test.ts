@@ -277,7 +277,7 @@ describe("sslConfigsFor (fallback list)", () => {
   });
 });
 
-describe("tlsExplicitlyRequested (CLI-2366: --db-url TLS against a local target)", () => {
+describe("tlsExplicitlyRequested", () => {
   const base: PgConnInput = {
     host: "127.0.0.1",
     port: 54322,

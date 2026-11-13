@@ -4,11 +4,11 @@ Target: account, no consent — see [Command target](../../../../docs/command-ta
 
 ## Files Read
 
-| Path                                           | Format                    | When                                                                                                                                  |
-| ---------------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `~/.supabase/access-token`                     | plain text (token string) | when `DBASE_ACCESS_TOKEN` unset and keyring unavailable                                                                               |
-| `<workdir>/supabase/.temp/project-ref`         | plain text (ref string)   | always (soft) — used only to flag the linked project                                                                                  |
-| `<workdir>/supabase/.temp/linked-project.json` | JSON (`ref` field)        | only when the linked ref doesn't match any fetched project row — PARENT-chain fallback for the marker (CLI-2167 follow-up, see Notes) |
+| Path                                           | Format                    | When                                                                                                  |
+| ---------------------------------------------- | ------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `~/.supabase/access-token`                     | plain text (token string) | when `DBASE_ACCESS_TOKEN` unset and keyring unavailable                                               |
+| `<workdir>/supabase/.temp/project-ref`         | plain text (ref string)   | always (soft) — used only to flag the linked project                                                  |
+| `<workdir>/supabase/.temp/linked-project.json` | JSON (`ref` field)        | only when the linked ref doesn't match any fetched project row — PARENT-chain fallback for the marker |
 
 ## Files Written
 

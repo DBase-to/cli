@@ -77,7 +77,7 @@ import { ambientEnvironment } from "../config/cli-config-provider.layer.ts";
 const COMPRESSED_ESZIP_MAGIC = "EZBR";
 const DEPLOY_RATE_LIMIT_MAX_RETRIES = 8;
 const SUPABASE_FUNCTIONS_DIR = "supabase/functions";
-const IMPORT_MAP_GUIDE_URL = "https://supabase.com/docs/guides/functions/import-maps";
+const IMPORT_MAP_GUIDE_URL = "https://dbase.to/docs/guides/functions/import-maps";
 const WINDOWS_ABSOLUTE_PATH = /^[A-Za-z]:\//;
 const importPathPattern =
   /(?:import|export)\s+(?:type\s+)?(?:{[^{}]+}|.*?)\s*(?:from)?\s*['"](.*?)['"]|import\(\s*(?:"([^"\r\n]*)"|'([^'\r\n]*)')\s*[,)]/gi;

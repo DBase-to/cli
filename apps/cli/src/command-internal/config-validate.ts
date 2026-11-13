@@ -286,12 +286,12 @@ export function validateResolvedConfig(input: ConfigValidationInput): void {
   }
   if (input.db.majorVersion === 12) {
     throw new ConfigValidateError(
-      "Postgres version 12.x is unsupported. To use the CLI, either start a new project or follow project migration steps here: https://supabase.com/docs/guides/database#migrating-between-projects.",
+      "Postgres version 12.x is unsupported. To use the CLI, either start a new project or follow project migration steps here: https://dbase.to/docs/guides/database#migrating-between-projects.",
     );
   }
   if (input.db.majorVersion === 13) {
     throw new ConfigValidateError(
-      "Postgres version 13.x is unsupported. To use the CLI, upgrade your project to Postgres 17, then set db.major_version = 17 in your project config: https://supabase.com/docs/guides/platform/upgrading.",
+      "Postgres version 13.x is unsupported. To use the CLI, upgrade your project to Postgres 17, then set db.major_version = 17 in your project config: https://dbase.to/docs/guides/platform/upgrading.",
     );
   }
   if (![14, 15, 17].includes(input.db.majorVersion)) {

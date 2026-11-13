@@ -1,6 +1,6 @@
 ## dbase-login
 
-Connect the DBase CLI to your DBase account by logging in with your [personal access token](https://supabase.com/dashboard/account/tokens).
+Connect the DBase CLI to your DBase account by logging in with your [personal access token](https://dbase.to/dashboard/account/tokens).
 
 Your access token is stored securely in native credentials storage (the operating system keyring). If native credentials storage is unavailable, it will be written to a plain text file at `<DBASE_HOME or ~/.supabase>/access-token`.
 

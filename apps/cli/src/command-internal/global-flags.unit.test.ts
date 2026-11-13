@@ -21,44 +21,41 @@ import {
 } from "./global-flags.ts";
 
 describe("globalFlagValues", () => {
-  it.live(
-    "resolves every flag declared in GLOBAL_FLAGS by id (CLI-1896 drift guard: an 11th global flag added here without a matching read in globalFlagValues fails this test instead of silently redacting forever)",
-    () => {
-      const layer = Layer.mergeAll(
-        Layer.succeed(AgentFlag, "yes" as const),
-        Layer.succeed(CreateTicketFlag, true),
-        Layer.succeed(DebugFlag, true),
-        Layer.succeed(DnsResolverFlag, "https" as const),
-        Layer.succeed(ExperimentalFlag, true),
-        Layer.succeed(NetworkIdFlag, Option.some("my-network")),
-        Layer.succeed(OutputFlag, Option.some("json" as const)),
-        Layer.succeed(ProfileFlag, "custom-profile"),
-        Layer.succeed(WorkdirFlag, Option.some("/tmp/project")),
-        Layer.succeed(YesFlag, true),
-      );
+  it.live("resolves every flag declared in GLOBAL_FLAGS by id", () => {
+    const layer = Layer.mergeAll(
+      Layer.succeed(AgentFlag, "yes" as const),
+      Layer.succeed(CreateTicketFlag, true),
+      Layer.succeed(DebugFlag, true),
+      Layer.succeed(DnsResolverFlag, "https" as const),
+      Layer.succeed(ExperimentalFlag, true),
+      Layer.succeed(NetworkIdFlag, Option.some("my-network")),
+      Layer.succeed(OutputFlag, Option.some("json" as const)),
+      Layer.succeed(ProfileFlag, "custom-profile"),
+      Layer.succeed(WorkdirFlag, Option.some("/tmp/project")),
+      Layer.succeed(YesFlag, true),
+    );
 
-      return globalFlagValues.pipe(
-        Effect.provide(layer),
-        Effect.tap((values) =>
-          Effect.sync(() => {
-            expect(Object.keys(values).sort()).toEqual(GLOBAL_FLAGS.map((flag) => flag.id).sort());
-            expect(values).toEqual({
-              agent: "yes",
-              "create-ticket": true,
-              debug: true,
-              "dns-resolver": "https",
-              experimental: true,
-              "network-id": Option.some("my-network"),
-              output: Option.some("json"),
-              profile: "custom-profile",
-              workdir: Option.some("/tmp/project"),
-              yes: true,
-            });
-          }),
-        ),
-      );
-    },
-  );
+    return globalFlagValues.pipe(
+      Effect.provide(layer),
+      Effect.tap((values) =>
+        Effect.sync(() => {
+          expect(Object.keys(values).sort()).toEqual(GLOBAL_FLAGS.map((flag) => flag.id).sort());
+          expect(values).toEqual({
+            agent: "yes",
+            "create-ticket": true,
+            debug: true,
+            "dns-resolver": "https",
+            experimental: true,
+            "network-id": Option.some("my-network"),
+            output: Option.some("json"),
+            profile: "custom-profile",
+            workdir: Option.some("/tmp/project"),
+            yes: true,
+          });
+        }),
+      ),
+    );
+  });
 
   it.live("omits every flag when no global-flag context is provided", () => {
     return globalFlagValues.pipe(

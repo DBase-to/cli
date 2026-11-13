@@ -1373,7 +1373,7 @@ major_version = 16
     expect(schemaString).not.toContain("versions");
   });
 
-  test("resolves env() on numeric port fields (CLI-1489)", () =>
+  test("resolves env() on numeric port fields", () =>
     runConfigEffect(
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
@@ -3609,7 +3609,7 @@ describe("decodeCliConfigDocumentForValidationEffect", () => {
 });
 
 describe("config io schema version", () => {
-  const v = (n: string) => `https://supabase.com/schemas/config/v${n}.json`;
+  const v = (n: string) => `https://dbase.to/schemas/config/v${n}.json`;
 
   const writeConfig = (name: string, content: string) =>
     Effect.gen(function* () {
@@ -3870,7 +3870,7 @@ describe("config io schema version", () => {
     {
       name: "legacy docs URL",
       file: "config.json",
-      content: `{"$schema": "https://supabase.com/docs/cli/config.schema.json", "project_id": "x"}`,
+      content: `{"$schema": "https://dbase.to/docs/cli/config.schema.json", "project_id": "x"}`,
     },
     {
       name: "legacy node_modules path",

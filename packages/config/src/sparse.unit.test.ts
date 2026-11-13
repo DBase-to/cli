@@ -151,7 +151,7 @@ describe("subtractCliConfig", () => {
   });
 });
 
-describe("EffectiveConfig operand widening (CLI-2230)", () => {
+describe("EffectiveConfig operand widening", () => {
   test("subtractCliConfig: equal sparse operands cancel out entirely", () => {
     expect(subtractCliConfig({ api: { max_rows: 100 } }, { api: { max_rows: 100 } })).toEqual({});
   });

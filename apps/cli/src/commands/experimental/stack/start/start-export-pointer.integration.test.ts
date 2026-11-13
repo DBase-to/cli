@@ -201,7 +201,7 @@ const runStatusEnv = (input: {
           apiUrl: "https://api.supabase.com",
           projectHost: "supabase.co",
           poolerHost: "supabase.com",
-          dashboardUrl: "https://supabase.com/dashboard",
+          dashboardUrl: "https://dbase.to/dashboard",
           accessToken: Option.none(),
           githubToken: Option.none(),
           projectId: Option.none(),

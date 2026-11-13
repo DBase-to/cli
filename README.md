@@ -26,11 +26,15 @@ Install the CLI with the install script:
 curl -fsSL https://raw.githubusercontent.com/DBase-to/cli/main/install | bash
 ```
 
-Linux packages (`.apk`, `.deb`, and `.rpm`) are available from
-[Releases](https://github.com/DBase-to/cli/releases).
+Or install it from npm:
 
-npm, Homebrew, and Scoop channels are planned. Until they are published, run
-the CLI from source as described in [Developing](#developing).
+```sh
+npm install -g @dbase/cli
+```
+
+Linux packages (`.apk`, `.deb`, and `.rpm`) are available from
+[Releases](https://github.com/DBase-to/cli/releases). Homebrew and Scoop
+channels are rolling out.
 
 ## Start Local Development
 

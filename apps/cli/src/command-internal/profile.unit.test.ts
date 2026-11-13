@@ -39,7 +39,7 @@ describe("dashboardUrl", () => {
   it("maps built-in profile names to the dashboard_url", () => {
     expect(dashboardUrl("dbase")).toBe("https://dbase.to");
     expect(dashboardUrl("dbase-test")).toBe("https://test.dbase.to");
-    expect(dashboardUrl("supabase")).toBe("https://supabase.com/dashboard");
+    expect(dashboardUrl("supabase")).toBe("https://dbase.to/dashboard");
     expect(dashboardUrl("supabase-staging")).toBe("https://supabase.green/dashboard");
     expect(dashboardUrl("supabase-local")).toBe("http://localhost:8082");
   });
@@ -52,7 +52,7 @@ describe("dashboardUrl", () => {
 describe("billingUrl", () => {
   it("composes the dashboard URL with /org/<slug>/billing", () => {
     expect(billingUrl("dbase", "acme")).toBe("https://dbase.to/org/acme/billing");
-    expect(billingUrl("supabase", "acme")).toBe("https://supabase.com/dashboard/org/acme/billing");
+    expect(billingUrl("supabase", "acme")).toBe("https://dbase.to/dashboard/org/acme/billing");
     expect(billingUrl("supabase-staging", "acme")).toBe(
       "https://supabase.green/dashboard/org/acme/billing",
     );

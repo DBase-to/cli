@@ -150,7 +150,7 @@ the project lease. See `link`'s `SIDE_EFFECTS.md` for the format.
   with nothing written. The one confirmation also covers the push into the new project
   (migrations, roles, seed, vault), so the native push step asks nothing further and every
   retry reuses it.
-- **Native migration push, sharing `db push`'s own core (CLI-1953).** The push step calls
+- **Native migration push, sharing `db push`'s own core.** The push step calls
   `dbPushCore` — the same handler `db push`'s own command extracts its business logic into
   — directly with `{ includeAll: false, includeRoles: true, includeSeed: true, includeVault: true,
 dryRun: false }` and the consent above as its `preapproved` proof.
@@ -184,7 +184,7 @@ dryRun: false }` and the consent above as its `preapproved` proof.
 - **Password**: bootstrap never forwards a password to its internal push call on a separate
   channel — it always reuses the create-resolved password (`created.dbPassword`). There is no
   flag-vs-env distinction to preserve once the call is in-process (unlike the former subprocess
-  delegation, CLI-1617, which had to route the resolved password across process boundaries).
+  delegation, which had to route the resolved password across process boundaries).
 - **Retry**: the native push step is wrapped in the same `bootstrapRetryNotify` +
   `Effect.retry(retry)` policy as the api-keys and health-poll steps. A retried attempt re-runs
   the whole push (connect, list pending migrations/seeds/roles, apply).
@@ -197,4 +197,4 @@ dryRun: false }` and the consent above as its `preapproved` proof.
   attempt: failures 1-2 go to the debug logger (shown only under `--debug`), failures 3+ to
   stderr; the final exhausted attempt prints no notice.
 - `Downloading:` / progress banners are gated to text mode to keep machine stdout payload-only
-  (CLI-1546).
+  .

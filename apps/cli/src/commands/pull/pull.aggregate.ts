@@ -106,7 +106,7 @@ export type PullDbStepOutcome =
 
 /**
  * `db` step: `planned` for a dry run; `unchanged` for `db pull`'s "already in sync" finding
- * (a finding, not a failure, at the `pull` level — see ADR 0024); `changed` once a schema was
+ *; `changed` once a schema was
  * written.
  */
 export function pullDbStepResult(outcome: PullDbStepOutcome): PullStepResult {

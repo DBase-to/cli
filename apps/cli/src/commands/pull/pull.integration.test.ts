@@ -106,7 +106,7 @@ import { pullHandler } from "./pull.command.ts";
 import { warningsOf } from "../../../tests/helpers/remote-selection.ts";
 
 /**
- * Scenario-oriented integration coverage for `dbase pull` (ADR 0024), driving the real
+ * Scenario-oriented integration coverage for `dbase pull`, driving the real
  * exported `pullHandler` against a fully mocked db-pull/migration-fetch/functions-download
  * substrate. `PgDeltaEngine` is mocked directly to force the pg-delta diff engine; `DbConnection`
  * shares one fake Postgres session across the migration-history and db steps, since both read

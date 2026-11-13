@@ -49,7 +49,7 @@
         // The CLI under test in apps/cli/tests/smoke-test-{macos,windows}.ts.
         "dbase",
       ],
-      // TODO(CLI-2424): spawned through a node_modules/.bin path in scripts/publish-docs-spec.ts.
+      // TODO: spawned through a node_modules/.bin path in scripts/publish-docs-spec.ts.
       "ignoreDependencies": ["prettier"],
     },
     "apps/docs": {

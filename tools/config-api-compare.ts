@@ -389,7 +389,7 @@ function renderMarkdownSummary(
     "",
     `Comparing \`${baseLabel}\` against \`${headLabel}\` for \`@supabase/config\`'s compiled ` +
       "declaration surface. Advisory only — the release-time hard gate is " +
-      "`tools/config-release-gate.ts`, run by the Release Config workflow (CLI-2233).",
+      "`tools/config-release-gate.ts`, run by the Release Config workflow.",
     "",
   ];
   if (result.identical) {

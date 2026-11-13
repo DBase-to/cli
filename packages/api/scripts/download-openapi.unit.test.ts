@@ -289,7 +289,7 @@ describe("download-openapi", () => {
     ).toThrow('Conflicting OpenAPI schema "Shared" found in both the v1 and v2 documents.');
   });
 
-  test("throws on duplicate operationId across the v2 webhook paths (CLI-2157 platform bug)", () => {
+  test("throws on duplicate operationId across the v2 webhook paths", () => {
     const document = {
       paths: {
         "/v2/projects/{ref}/webhooks/endpoints": {

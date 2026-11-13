@@ -585,8 +585,8 @@ describe("CliConfigValues JSON config files", () => {
 });
 
 describe("CliConfigValues schema declaration", () => {
-  const V2 = "https://supabase.com/schemas/config/v2.json";
-  const V1 = "https://supabase.com/schemas/config/v1.json";
+  const V2 = "https://dbase.to/schemas/config/v2.json";
+  const V1 = "https://dbase.to/schemas/config/v1.json";
 
   const load = (root: string) =>
     CliConfigValues.use((values) => values.load({ workdir: root, projectRef: Option.none() }));
@@ -631,7 +631,7 @@ describe("CliConfigValues schema declaration", () => {
 
       expect(loaded.materialized.config.db.port).toBe(54777);
       expect(output.stderrText).toBe(
-        "WARN: supabase/config.json declares schema https://example.com/x.json, which is not the DBase CLI config schema, so it is read as v1. Set it to https://supabase.com/schemas/config/v1.json to remove this warning.\n",
+        "WARN: supabase/config.json declares schema https://example.com/x.json, which is not the DBase CLI config schema, so it is read as v1. Set it to https://dbase.to/schemas/config/v1.json to remove this warning.\n",
       );
       expect(output.stdoutText).toBe("");
       expect(output.messages).toEqual([]);
@@ -646,7 +646,7 @@ describe("CliConfigValues schema declaration", () => {
     [
       "the legacy docs URL",
       "config.json",
-      '{"$schema": "https://supabase.com/docs/cli/config.schema.json"}',
+      '{"$schema": "https://dbase.to/docs/cli/config.schema.json"}',
     ],
     [
       "the built dist/schema.json path",
@@ -817,7 +817,7 @@ describe("CliConfigValues schema declaration", () => {
       );
 
       expect(warnings.stderr).toBe(
-        "WARN: supabase/config.json declares schema https://example.com/\\u001b[31mx.json, which is not the DBase CLI config schema, so it is read as v1. Set it to https://supabase.com/schemas/config/v1.json to remove this warning.\n",
+        "WARN: supabase/config.json declares schema https://example.com/\\u001b[31mx.json, which is not the DBase CLI config schema, so it is read as v1. Set it to https://dbase.to/schemas/config/v1.json to remove this warning.\n",
       );
       expect(warnings.stderr.includes("\u001b")).toBe(false);
     }).pipe(Effect.scoped),

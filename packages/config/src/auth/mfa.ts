@@ -5,15 +5,15 @@ const tags = ["auth"];
 const links = {
   mfa: {
     name: "Multi-Factor Authentication",
-    link: "https://supabase.com/docs/guides/auth/auth-mfa",
+    link: "https://dbase.to/docs/guides/auth/auth-mfa",
   },
   totp: {
     name: "Multi-Factor Authentication (TOTP)",
-    link: "https://supabase.com/docs/guides/auth/auth-mfa/totp",
+    link: "https://dbase.to/docs/guides/auth/auth-mfa/totp",
   },
   phone: {
     name: "Multi-Factor Authentication (Phone)",
-    link: "https://supabase.com/docs/guides/auth/auth-mfa/phone",
+    link: "https://dbase.to/docs/guides/auth/auth-mfa/phone",
   },
 };
 

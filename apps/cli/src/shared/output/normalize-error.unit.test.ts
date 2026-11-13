@@ -361,7 +361,7 @@ describe("normalizeCliError", () => {
     expect(result.message).toContain("Unrecognized flag: --bogus-two in command supabase branches");
   });
 
-  test("ShowHelp envelope unwraps a single InvalidValue with an already-clean expected message (not the CLI-1898 doubled-prefix bug)", () => {
+  test("ShowHelp envelope unwraps a single InvalidValue with an already-clean expected message", () => {
     const error = {
       _tag: "ShowHelp",
       commandPath: ["sso", "add"],

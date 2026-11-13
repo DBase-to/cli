@@ -1,11 +1,11 @@
 blank_issues_enabled: false
 contact_links:
   - name: 📖 Contribution workflow
-    url: https://github.com/supabase/cli/blob/develop/CONTRIBUTING.md
-    about: Read this before opening an issue or pull request — PRs must link a labeled, open issue.
-  - name: Supabase support
-    url: https://supabase.com/support
-    about: Get help with your Supabase project, account, billing, or hosted services.
-  - name: Supabase documentation
-    url: https://supabase.com/docs/reference/cli
-    about: Read the Supabase CLI command reference and guides.
+    url: https://github.com/DBase-to/cli/blob/develop/CONTRIBUTING.md
+    about: Read this before opening an issue or pull request.
+  - name: DBase support
+    url: https://dbase.to/support
+    about: Get help with your DBase project, account, billing, or hosted services.
+  - name: DBase documentation
+    url: https://dbase.to/docs/reference/cli
+    about: Read the DBase CLI command reference and guides.

@@ -382,7 +382,7 @@ describe("branches list integration", () => {
     },
   );
 
-  describe("parent-scoped resolution after linking a branch (CLI-2167 follow-up)", () => {
+  describe("parent-scoped resolution after linking a branch", () => {
     it.effect(
       "resolves the linked PARENT (not the branch's own ref) when linked to a branch, and renders the table",
       () => {
@@ -600,7 +600,7 @@ describe("branches list integration", () => {
     );
   });
 
-  describe("active-branch marker in the pretty table (CLI-2167 follow-up)", () => {
+  describe("active-branch marker in the pretty table", () => {
     const OTHER_BRANCH: Branches[number] = {
       ...SAMPLE_BRANCH,
       id: "66666666-7777-4888-8999-999999999999",

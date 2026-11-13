@@ -8,7 +8,7 @@ This file applies to the `apps/cli` workspace. Read it fully before touching any
 > `shared/` tier became `src/command-internal/`), and the prefix was stripped from identifiers, file
 > names, trace spans, and service tags. Do not reintroduce a `legacy/` or `next/` directory,
 > shell-isolation rules, or a naming prefix. Treat "legacy shell"/"next shell" wording in older
-> ADRs, PRs, and commit messages as historical context only.
+> PRs and commit messages as historical context only.
 
 ---
 
@@ -26,7 +26,7 @@ src/
 
 ## Source of Truth
 
-The Go→TypeScript port is **complete**. `src/` is the source of truth for the Supabase CLI's
+The Go→TypeScript port is **complete**. `src/` is the source of truth for the DBase CLI's
 behavior. The old Go CLI (`apps/cli-go/`) is **not** a reference anymore: it survives only as the
 residual delegation surface documented in
 [`docs/go-cli-porting-status.md`](./docs/go-cli-porting-status.md), and everything Go-related is
@@ -41,9 +41,9 @@ What this means in practice:
 - **Do not write new comments, doc sections, or helper names framed as "Go parity" or "matches
   Go".** Describe behavior in its own terms. When touching code that carries old Go-parity
   framing, clean it up opportunistically.
-- For history: Go source for ported commands was deleted in CLI-1970; the last commit with it
-  intact is `7b469f5b3` (`internal/start` was deleted separately in CLI-1966; its pin is
-  `a253ccba2`). [ADR 0016](../../docs/adr/0016-port-completion-and-go-cli-authority-scope.md)
+- For history: Go source for ported commands was deleted in; the last commit with it
+  intact is `7b469f5b3` (`internal/start` was deleted separately in; its pin is
+  `a253ccba2`).
   records the earlier transition policy; this section supersedes its day-to-day guidance.
 
 ---
@@ -130,7 +130,7 @@ export const orgsList = Effect.fn("orgs.list")(function* (_flags: OrgsListFlags)
 
 Shrinking the surface means replacing a wrapper with a **native TS implementation** — it does not
 license removing the user-facing command. Several wrapped commands are retained indefinitely
-precisely because dropping them was ruled a breaking change (CLI-1964; see the "Why it stays"
+precisely because dropping them was ruled a breaking change (; see the "Why it stays"
 column in the delegation table). Deleting a public command path is a product decision, never a
 cleanup task.
 
@@ -166,7 +166,7 @@ src/commands/<command>/
   <command>.layers.ts         # runtime layer composition for the command family
   <command>.format.ts         # text formatters (timestamps, regions, booleans)
   <command>.encoders.ts       # machine-format encoders (JSON / YAML / TOML / env)
-  <command>.go-payload.ts     # struct specs that drive `-o yaml|toml` key casing (CLI-1975)
+  <command>.go-payload.ts # struct specs that drive `-o yaml|toml` key casing
   SIDE_EFFECTS.md
 ```
 
@@ -275,7 +275,7 @@ Verify each applicable item when adding or reworking a command:
 
 5. **`Layer.provide` does not share to siblings inside `Layer.mergeAll`** — if two sibling layers each require `CommandSettings`, provide it to both explicitly. Smoke-test the bundled binary (`bun run build && ./dist/supabase …`) when changing production layer wiring; in-process tests don't always catch the missing-service panic. Reference: commit `a816b12e`, `backups.layers.ts:32-46`.
 
-6. **Both `-o`/`--output` (the machine-format flag inherited from the Go CLI) and `--output-format` must be honored** — `--output` (`pretty|json|yaml|toml|env`) takes priority when set. Pattern in `backups/list/list.handler.ts:85-113`: branch on the `--output` flag first, then fall through to `--output-format` text/json/stream-json. Exception: a net-new TS-only command with no Go-compat contract may instead reject `-o`/`--output` outright (every value, including `pretty`) with an error pointing at `--output-format` — decided on CLI-2156, with `config diff` (and, following it, `config pull`) as the precedent.
+6. **Both `-o`/`--output` (the machine-format flag inherited from the Go CLI) and `--output-format` must be honored** — `--output` (`pretty|json|yaml|toml|env`) takes priority when set. Pattern in `backups/list/list.handler.ts:85-113`: branch on the `--output` flag first, then fall through to `--output-format` text/json/stream-json. Exception: a net-new TS-only command with no Go-compat contract may instead reject `-o`/`--output` outright (every value, including `pretty`) with an error pointing at `--output-format` — decided on, with `config diff` (and, following it, `config pull`) as the precedent.
 
 7. **Telemetry follows the established catalog and payload shapes** — see the next section.
 
@@ -288,9 +288,9 @@ The CLI sends PostHog events to the product analytics pipeline. Drift is silent 
 - **The canonical catalog is `shared/telemetry/event-catalog.ts`.** Reference its exported constants (`EventCommandExecuted`, `PropFlags`, `EnvSignalPresenceKeys`, …) instead of writing bare strings. The TS catalog is the source of truth for event names and property keys.
 - **Native commands wrap with `withCommandTelemetry`** (from `telemetry/command-telemetry.ts`) — _not_ the shared `withCommandInstrumentation`. The command-level variant emits the established property shape: a single `flags` map (vs `flags_used`/`flag_values`), `is_agent: boolean` (vs `ai_tool: string`), and `env_signals`.
 - **Pass `flags` to the wrapper** so boolean flag values can be detected and logged verbatim: `handler(flags).pipe(withCommandTelemetry({ flags }), ...)`. Sensitive values become the literal string `"<redacted>"`.
-- **Use `safeFlags: ["flag-name"]`** to whitelist flags whose values are safe to log verbatim. The established list: `--project-ref` (sso, branches, link, functions, projects/api-keys, config push/diff/pull), `--project-id` (gen/types), `--org-id` (projects/create), and `--version` (migration/squash). Extend it only for flags whose values carry no user data. When a `--project-ref` also accepts branch names (link, config diff, config pull — CLI-2167 vocabulary), gate the whitelist on `PROJECT_REF_PATTERN.test(...)` so a user-created branch name is never logged verbatim.
+- **Use `safeFlags: ["flag-name"]`** to whitelist flags whose values are safe to log verbatim. The established list: `--project-ref` (sso, branches, link, functions, projects/api-keys, config push/diff/pull), `--project-id` (gen/types), `--org-id` (projects/create), and `--version` (migration/squash). Extend it only for flags whose values carry no user data. When a `--project-ref` also accepts branch names, gate the whitelist on `PROJECT_REF_PATTERN.test(...)` so a user-created branch name is never logged verbatim.
 - **Pass `config` (the command's own flag config record) to the wrapper** if it has any `Flag.choice`/`Flag.choiceWithValue` flags: `withCommandTelemetry({ flags, config })`. Every choice flag declared in that command's own `config` is auto-detected and treated as safe — closed enums carry no user data — and it stays correct as choices are added or removed. A command's own `config` only ever contains its own locally-declared flags, so this cannot cover the 3 global choice flags (`--output`, `--dns-resolver`, `--agent` in `command-internal/global-flags.ts`) — those are handled separately, see below.
-- **Global/persistent flags (`command-internal/global-flags.ts`) resolve automatically** — the wrapper reads `globalFlagValues` (via `Effect.serviceOption`, so it's a no-op outside the real CLI tree) and falls back to it whenever a changed flag name isn't in the handler's own `flags` record. No per-command wiring needed. This gives two flag families their real value automatically, via the boolean-is-safe rule and the choice-is-safe rule (`GLOBAL_CHOICE_FLAG_NAMES` — CLI-1904) respectively:
+- **Global/persistent flags (`command-internal/global-flags.ts`) resolve automatically** — the wrapper reads `globalFlagValues` (via `Effect.serviceOption`, so it's a no-op outside the real CLI tree) and falls back to it whenever a changed flag name isn't in the handler's own `flags` record. No per-command wiring needed. This gives two flag families their real value automatically, via the boolean-is-safe rule and the choice-is-safe rule respectively:
   - Boolean globals: `--debug`, `--yes`, `--experimental`, `--create-ticket`.
   - Choice globals: `--output`, `--dns-resolver`, `--agent`.
 
@@ -308,7 +308,7 @@ The CLI sends PostHog events to the product analytics pipeline. Drift is silent 
 
   See `commands/login/` (handler + `SIDE_EFFECTS.md`) for the reference pattern.
 
-  `link` extension (CLI-2167): when `link` resolves a branch name/UUID (`[ref-or-branch]`
+  `link` extension: when `link` resolves a branch name/UUID (`[ref-or-branch]`
   positional or `--project-ref`) to its project ref, it additionally fires `cli_project_linked`
   with `linked_via: "branch"` and `parent_project_ref` set, plus a `project` group association (no
   `groupIdentify` call, since no org/name metadata exists for a branch).
@@ -407,9 +407,9 @@ yield * creating.clear(); // dismiss without a message
 yield * creating.succeed("Branch created");
 ```
 
-### Invariant: `-o json|yaml|toml|env` must suppress the spinner (CLI-1546)
+### Invariant: `-o json|yaml|toml|env` must suppress the spinner
 
-The `-o`/`--output` machine-format flag (`OutputFlag`, values `env|pretty|json|toml|yaml`, inherited from the Go CLI) is **independent** of `--output-format`. It does not change `output.format`, so a command run with `-o json` (and no `--output-format`) keeps `output.format === "text"` and the spinner gate `output.format === "text"` stays `true`. If the plain `textOutputLayer` is active, clack writes spinner ANSI (e.g. the hide-cursor `\x1b[?25l`) to **stdout** and corrupts the machine payload the handler emits via `output.raw` — exactly the CLI-1546 regression (`branches list -o json` → broken `JSON.parse`).
+The `-o`/`--output` machine-format flag (`OutputFlag`, values `env|pretty|json|toml|yaml`, inherited from the Go CLI) is **independent** of `--output-format`. It does not change `output.format`, so a command run with `-o json` (and no `--output-format`) keeps `output.format === "text"` and the spinner gate `output.format === "text"` stays `true`. If the plain `textOutputLayer` is active, clack writes spinner ANSI (e.g. the hide-cursor `\x1b[?25l`) to **stdout** and corrupts the machine payload the handler emits via `output.raw` — exactly the regression (`branches list -o json` → broken `JSON.parse`).
 
 `cli/root.ts` therefore selects **`quietProgressTextOutputLayer`** (in `output/`) for any machine format (`json|yaml|toml|env`). It is a thin wrapper over the shared `textOutputLayer` that no-ops only `task` and `progress`; everything else — `format: "text"`, `raw`, logs, and error rendering (red text on **stderr**) — delegates unchanged, so established output stays byte-identical.
 
@@ -442,7 +442,7 @@ Read https://www.effect.solutions/testing for Effect testing patterns. Note that
 - `*.unit.test.ts` belongs to the `unit` Vitest project and is the default for unit-style and other fast in-process tests.
 - `*.integration.test.ts` belongs to the `integration` project and is for in-process integration tests that exercise real handler or service behavior with layered dependency replacement.
 - `*.e2e.test.ts` belongs to the `e2e` Vitest project and is for black-box CLI subprocess tests.
-- `*.live.test.ts` belongs to the `live` Vitest project and is for black-box CLI subprocess tests whose asserted command reaches a real Supabase platform or project data plane — see "Live tests" below.
+- `*.live.test.ts` belongs to the `live` Vitest project and is for black-box CLI subprocess tests whose asserted command reaches a real DBase platform or project data plane — see "Live tests" below.
 
 ### Testing policy
 

@@ -189,7 +189,7 @@ export function pullDirtyWarningMessage(dirtyPaths: ReadonlyArray<string>): stri
 /**
  * The single aggregated confirmation prompt's disclosure body, printed before the yes/no
  * question. `db pull` and `functions download` get one qualitative line each (no preview
- * machinery); migration history only gets a line when it will actually run (see ADR 0024).
+ * machinery); migration history only gets a line when it will actually run.
  */
 export function pullConfirmMessage(input: PullConfirmMessageInput): string {
   // Sanitized before interpolation (CWE-117): a branch name containing CR/LF could otherwise

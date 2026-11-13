@@ -32,7 +32,7 @@ export class TestDbRunError extends Data.TaggedError("TestDbRunError")<{
 /**
  * `pg_prove` ran but found nothing to execute. It reports that as `Result: NOTESTS`
  * and still exits 0, so without this the command reports success for a run that
- * executed zero tests (CLI-2194).
+ * executed zero tests.
  */
 export class TestDbNoTestsError extends Data.TaggedError("TestDbNoTestsError")<{
   readonly message: string;

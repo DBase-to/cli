@@ -226,7 +226,7 @@ describe("issue", () => {
 
     return Effect.gen(function* () {
       yield* issueDocs({
-        link: Option.some("https://supabase.com/docs/guides/cli"),
+        link: Option.some("https://dbase.to/docs/guides/cli"),
         issueType: Option.some("Incorrect documentation"),
         problem: Option.some("The output example is stale"),
         improvement: Option.some("Update the output block"),
@@ -236,7 +236,7 @@ describe("issue", () => {
 
       const params = issueParams(browser.openedUrls[0] ?? "");
       expect(params.get("template")).toBe("docs.yml");
-      expect(params.get("link")).toBe("https://supabase.com/docs/guides/cli");
+      expect(params.get("link")).toBe("https://dbase.to/docs/guides/cli");
       expect(params.get("issue-type")).toBe("Incorrect documentation");
       expect(params.get("problem")).toBe("The output example is stale");
       expect(params.get("improvement")).toBe("Update the output block");

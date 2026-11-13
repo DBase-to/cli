@@ -4,7 +4,7 @@ Target: hosted, consent default No — see [Command target](../../../docs/comman
 
 Orchestrates four existing pull-style commands — `config pull`, an optional `migration fetch`,
 `db pull`, and `functions download` — behind one target resolution, one consent, and one
-aggregated result (ADR 0024). Each reused step is invoked through its own **run-core** (a typed
+aggregated result. Each reused step is invoked through its own **run-core** (a typed
 outcome, no `output.success` call of its own), so only `pull` itself resolves the target, asks for
 consent, and emits — the sub-steps never fire their own prompt, confirmation, or telemetry event
 when run this way. This file documents only what `pull` itself owns; for a sub-step's own file-by-file/API
@@ -36,7 +36,7 @@ initial-pull `pg_dump` container). See "Consent", "Database writes" and "Docker"
 Each executed sub-step also performs its own file reads exactly as documented in its own
 `SIDE_EFFECTS.md` (config, db, functions, and — when it runs — migration history), since `pull`
 passes the already-resolved linked target to each step instead of having each step re-resolve it
-(ADR 0024's "resolve once" decision). The only extra read is `<workdir>/supabase/.temp/project-ref`,
+("resolve once"). The only extra read is `<workdir>/supabase/.temp/project-ref`,
 which decides whether the resolved ref is the checkout's linked project (a missing or unreadable
 file counts as "not linked").
 
@@ -67,11 +67,11 @@ same underlying mechanism `config pull` uses for its own config-only guard
 directly by `pull` itself, not delegated to any sub-step's own guard (none of the reused run-cores
 run a git check of their own):
 
-| Path                                        | Spawns                                                                         | Checked when                                                                                                                                                                                                                                                                                                         |
-| ------------------------------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `<workdir>/supabase/config.toml` or `.json` | `git status --porcelain -- config.toml` (cwd: the config file's own directory) | `--force` is absent AND the config step's own plan has work to write (`runPlan.hasWork` — CLI-2064 bug A: a converged config never spawns `git status` at all)                                                                                                                                                       |
-| `<workdir>/supabase/migrations`             | `git status --porcelain -- migrations` (cwd: `<workdir>/supabase`)             | `--force` is absent. Unconditional otherwise — the db step always attempts to run and has no preview machinery of its own to know ahead of time whether it will find schema drift and write into this directory (ADR 0024), so this is checked regardless of whether the migration-history step itself will also run |
-| `<workdir>/supabase/functions`              | `git status --porcelain -- functions` (cwd: `<workdir>/supabase`)              | `--force` is absent. Unconditional — the functions step always runs, with no "does it have work" signal available without calling the API first                                                                                                                                                                      |
+| Path                                        | Spawns                                                                         | Checked when                                                                                                                                                                                                                                                                                              |
+| ------------------------------------------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `<workdir>/supabase/config.toml` or `.json` | `git status --porcelain -- config.toml` (cwd: the config file's own directory) | `--force` is absent AND the config step's own plan has work to write                                                                                                                                                                                                                                      |
+| `<workdir>/supabase/migrations`             | `git status --porcelain -- migrations` (cwd: `<workdir>/supabase`)             | `--force` is absent. Unconditional otherwise — the db step always attempts to run and has no preview machinery of its own to know ahead of time whether it will find schema drift and write into this directory, so this is checked regardless of whether the migration-history step itself will also run |
+| `<workdir>/supabase/functions`              | `git status --porcelain -- functions` (cwd: `<workdir>/supabase`)              | `--force` is absent. Unconditional — the functions step always runs, with no "does it have work" signal available without calling the API first                                                                                                                                                           |
 
 Each location's dirty state is tracked separately, so the confirmation body and the abort error
 each name exactly which path(s) are actually dirty (e.g. `supabase/config.toml has uncommitted or
@@ -93,11 +93,11 @@ each location's check is independent, so a spawn failure on one does not affect 
 
 ## API Routes
 
-| #   | Purpose                 | Method | Path                             | When                                                                                                                                                                                                        |
-| --- | ----------------------- | ------ | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1a  | branch list             | GET    | `/v1/projects/{parent}/branches` | `--remote` is a branch name or UUID and a project is linked — resolved once, up front (ADR 0024 "resolve once"); `{parent}` is `DBASE_PROJECT_ID`, else the linked project, resolved from local state first |
-| 1b  | branch by UUID          | GET    | `/v1/branches/{id}`              | `--remote` is a branch UUID and no usable project is linked; needs no parent project                                                                                                                        |
-| 2   | effective remote config | GET    | `/v2/projects/{ref}/config`      | the config step's own fetch (`planConfigPullRun`) — guaranteed single by the plan/apply split, never repeated for a dry run or a real apply                                                                 |
+| #   | Purpose                 | Method | Path                             | When                                                                                                                                                                                               |
+| --- | ----------------------- | ------ | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1a  | branch list             | GET    | `/v1/projects/{parent}/branches` | `--remote` is a branch name or UUID and a project is linked — resolved once, up front ("resolve once"); `{parent}` is `DBASE_PROJECT_ID`, else the linked project, resolved from local state first |
+| 1b  | branch by UUID          | GET    | `/v1/branches/{id}`              | `--remote` is a branch UUID and no usable project is linked; needs no parent project                                                                                                               |
+| 2   | effective remote config | GET    | `/v2/projects/{ref}/config`      | the config step's own fetch (`planConfigPullRun`) — guaranteed single by the plan/apply split, never repeated for a dry run or a real apply                                                        |
 
 Every other route belongs to a reused sub-step, called with the already-resolved `ref` (no
 re-resolution): the db step's own routes (temp login role, IPv4 pooler config, linked-project
@@ -277,7 +277,7 @@ above.
 
 ### `-o`/`--output` (machine formats)
 
-Not supported. `pull` does not accept `-o`/`--output` (CLI-2156). Any
+Not supported. `pull` does not accept `-o`/`--output`. Any
 `-o`/`--output` value — every machine-format value AND `pretty` — is rejected outright before any
 config load, target resolution, or network call:
 
@@ -287,12 +287,10 @@ the -o/--output flag is not supported by pull; use --output-format json|stream-j
 
 ## Notes
 
-- **Steps run sequentially, not in parallel**, refining ADR 0004's "runs all sub-syncs in parallel"
-  aspiration for `pull` specifically — see [ADR
-  0024](../../../../../docs/adr/0024-top-level-pull-orchestration.md) for the two real data
-  dependencies (config → db via `db.major_version`; migration history → db via the local
-  `supabase/migrations` directory db pull reconciles against) and the shared-terminal-progress
-  constraint that also rules out concurrency.
+- **Steps run sequentially, not in parallel**, refining the earlier "runs all sub-syncs in
+  parallel" aspiration for `pull` specifically — the two real data dependencies (config → db via
+  `db.major_version`; migration history → db via the local `supabase/migrations` directory db pull
+  reconciles against) and the shared-terminal-progress constraint rule out concurrency.
 - **Migration history auto-runs on a fresh checkout**, even without `--with-migration-history`:
   whenever `supabase/migrations` is missing, or a raw (unfiltered) directory listing of it is
   empty, the step runs anyway, since there is nothing local to overwrite and a bootstrap checkout
@@ -318,8 +316,8 @@ the -o/--output flag is not supported by pull; use --output-format json|stream-j
 - **Storage buckets are deliberately absent from this command in v1.** The Management API's bucket
   list endpoint (`v1ListAllBuckets`) does not return `file_size_limit`/`allowed_mime_types`/
   `objects_path`, so there is no faithful way to populate `storage.buckets` config from it
-  (BRA-268, unstarted upstream). Adding a storage step later is additive — see ADR 0024's
-  non-goals.
+  (BRA-268, unstarted upstream). Adding a storage step later is additive — the same
+  orchestration applies.
 - **The config step never runs its own dirty guard or its own no-work short-circuit prompt-skip.**
   `pull` calls `planConfigPullRun`/`applyConfigPullRun` directly (the plan/apply split),
   never `runConfigPull` — so standalone `config pull`'s own git check and its "nothing to do,

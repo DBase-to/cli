@@ -59,10 +59,10 @@ always discard this process's stderr, so an upgrade message would never be seen.
 
 ## Exit Codes
 
-| Code | Condition                                                                                                                                                                                                                                                                                                          |
-| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `0`  | success — completion script for the chosen shell printed to stdout; also `__complete`/`__completeNoDesc`'s normal case (candidates + `:<directive>` line, even when zero candidates match)                                                                                                                         |
-| `1`  | unknown shell subcommand, or bare `completion` with no shell subcommand — **see Notes (CLI-1906)**; also `__complete`/`__completeNoDesc` invoked with no completion args at all (`dbase __complete` alone) — realistically unreachable, since every generated script always appends at least an empty trailing arg |
+| Code | Condition                                                                                                                                                                                                                                                                                               |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `0`  | success — completion script for the chosen shell printed to stdout; also `__complete`/`__completeNoDesc`'s normal case (candidates + `:<directive>` line, even when zero candidates match)                                                                                                              |
+| `1`  | unknown shell subcommand, or bare `completion` with no shell subcommand — **see Notes**; also `__complete`/`__completeNoDesc` invoked with no completion args at all (`dbase __complete` alone) — realistically unreachable, since every generated script always appends at least an empty trailing arg |
 
 ## Output
 
@@ -105,7 +105,7 @@ right after the `=`.
 
 - Effect CLI's `--completions` global flag remains exposed at the root; it is not
   the compatibility path and is not what this subcommand routes through.
-- **Known exit-code bug (CLI-1906):** the CLI currently exits `1` for both bare
+- **Known exit-code bug:** the CLI currently exits `1` for both bare
   `completion` (no shell subcommand) AND `completion <unknown-shell>`. The
   intended behavior is to print help and exit `0` for both. This is a systemic
   exit-code bug in the shared CLI harness (`shared/cli/run.ts`), not

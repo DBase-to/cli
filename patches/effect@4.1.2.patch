@@ -22,7 +22,7 @@ index 0561587191e2fe2fff812729b955db15b3224568..8285aac8ee9a25894744100a11299822
        });
        if (!hasEntry) continue;
 -      const [, value] = yield* flag.flag.parse(emptyArgs).pipe(toShowHelp);
-+      // TODO(CLI-2922): keeps 4.0's plain error (no help dump) for an invalid global flag until the next major.
++      // TODO: keeps 4.0's plain error (no help dump) for an invalid global flag until the next major.
 +      const [, value] = yield* flag.flag.parse(emptyArgs);
        if (flag === GlobalFlag.Wizard) {
          const {
@@ -32,7 +32,7 @@ index 0561587191e2fe2fff812729b955db15b3224568..8285aac8ee9a25894744100a11299822
      // 7. Provide setting values
      let program = commandImpl.handle(input, [command.name]);
 -    const logLevel = activeFlags.includes(GlobalFlag.LogLevel) ? (yield* GlobalFlag.LogLevel.flag.parse(emptyArgs).pipe(toShowHelp))[1] : Option.none();
-+    // TODO(CLI-2922): keeps 4.0's plain error (no help dump) for an invalid global flag until the next major.
++    // TODO: keeps 4.0's plain error (no help dump) for an invalid global flag until the next major.
 +    const logLevel = activeFlags.includes(GlobalFlag.LogLevel) ? (yield* GlobalFlag.LogLevel.flag.parse(emptyArgs))[1] : Option.none();
      program = Effect.provideService(program, GlobalFlag.LogLevel, logLevel);
      for (const flag of activeFlags) {
@@ -51,7 +51,7 @@ index 843c67241055adb98092c84e1bf982025ba293f2..d1993f3fdeade431f24d0c29c894bcc4
   */
  export const Completions = /*#__PURE__*/Action({
 -  flag: /*#__PURE__*/Flag.ChoiceWithValue("completions", [["bash", "bash"], ["zsh", "zsh"], ["fish", "fish"], ["powershell", "powershell"], ["sh", "bash"], ["pwsh", "powershell"]]).pipe(Flag.optional, /*#__PURE__*/Flag.withMetavar("<bash|zsh|fish|powershell|sh|pwsh>"), /*#__PURE__*/Flag.withDescription("Print shell completion script")),
-+  // TODO(CLI-2922): keeps 4.0's shell choices (no powershell/pwsh) until the next major.
++  // TODO: keeps 4.0's shell choices (no powershell/pwsh) until the next major.
 +  flag: /*#__PURE__*/Flag.Literals("completions", ["bash", "zsh", "fish", "sh"]).pipe(Flag.optional, /*#__PURE__*/Flag.map(v => Option.map(v, s => s === "sh" ? "bash" : s)), /*#__PURE__*/Flag.withMetavar("<bash|zsh|fish|sh>"), /*#__PURE__*/Flag.withDescription("Print shell completion script")),
    run: /*#__PURE__*/Effect.fnUntraced(function* (shell, {
      command
@@ -86,7 +86,7 @@ index c7d92426383c57362b517d89c8739a36eb69fc4a..f20326850994b8e715e52cb716c07b81
        }
      case "Path":
 -      return `${helpers.paths} ${type.pathType === "directory" ? "-d" : "-f"} "$cur" "$_comp_word"`;
-+      // TODO(CLI-2922): keeps 4.0's plain compgen path completion until the next major.
++      // TODO: keeps 4.0's plain compgen path completion until the next major.
 +      if (type.pathType === "directory") return `COMPREPLY=( $(compgen -d -- "$cur") )`;
 +      return `COMPREPLY=( $(compgen -f -- "$cur") )`;
      default:
@@ -109,7 +109,7 @@ index c8ea8917cfef77b940484443a41d986c95bd9abe..561d27462af270f0504b19c60a876443
  // ---------------------------------------------------------------------------
  const escapeZsh = s => s.replace(/\\/g, "\\\\").replace(/'/g, "'\\''").replace(/:/g, "\\:");
 -const escapeZshExplanation = s => escapeZsh(s).replace(/]/g, "\\]");
-+// TODO(CLI-2922): keeps 4.0's unescaped `]` in descriptions until the next major.
++// TODO: keeps 4.0's unescaped `]` in descriptions until the next major.
 +const escapeZshExplanation = escapeZsh;
  /** Escape choices for the second parse of a Zsh `_arguments` action. */
  const escapeZshChoice = s => s.replace(/[^A-Za-z0-9_.,/@%+-]/gu, "\\$&").replace(/'/g, "'\\''");
@@ -122,7 +122,7 @@ index 7bc8443b159de35d44f3d6a03b791dcd72ba0e2d..8efe8a1e700a9cf0e8b4394e837e4b77
        break;
      }
    }
-+  // TODO(CLI-2922): keeps 4.0's help doc shape (inherited flags merged into flags) until the next major.
++  // TODO: keeps 4.0's help doc shape (inherited flags merged into flags) until the next major.
    return {
      ...baseDoc,
 -    inheritedFlags,

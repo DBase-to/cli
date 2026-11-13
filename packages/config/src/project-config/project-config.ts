@@ -58,7 +58,7 @@ export type ReadonlyJsonValue =
  *
  * Not every field in the seven hosted sections is comparable on both arms; use
  * {@link comparableProjectConfigPaths}/{@link isComparableProjectConfigPath} to restrict a
- * comparison to fields both sides speak for. Per ADR 0021, values are canonicalized toward the
+ * comparison to fields both sides speak for. Values are canonicalized toward the
  * state `config push` would converge on rather than mirroring their source verbatim.
  *
  * Every {@link DOCUMENT_ONLY_LOCAL_PATHS} path is excluded from the shape itself, not just from
@@ -244,7 +244,7 @@ function unwrapConfigDocumentSource(input: Record<string, unknown>): {
  * every {@link DOCUMENT_ONLY_LOCAL_PATHS} entry, and canonicalizing fields a registry row's
  * `normalizeDocument` covers. The result is always a fresh copy and never carries `_apiResponse`.
  *
- * Not a verbatim projection of `config` (ADR 0021): this and {@link fromApiProjectConfig} both
+ * Not a verbatim projection of `config`: this and {@link fromApiProjectConfig} both
  * build convergence projections so a local and hosted config compare like for like, applying
  * {@link applySmsProviderPrecedence} and {@link applyDisabledSentinels} in addition to secret
  * omission and canonicalization. Do not render this value to a user as "your local config".
@@ -931,7 +931,7 @@ function attachFrozenApiResponse<T extends Record<string, unknown>>(
  * attributes as a non-enumerable `_apiResponse` so {@link unmappedApiFields} can still reach
  * whatever the registry didn't map.
  *
- * Not a verbatim projection of the response (ADR 0021): a `null` on a gating boolean canonicalizes
+ * Not a verbatim projection of the response: a `null` on a gating boolean canonicalizes
  * to `enabled: false`, {@link applyDisabledSentinels} pruning runs here too, and an out-of-domain
  * value on a mapped field throws rather than canonicalizing to a wrong value — so an API-sourced
  * and a document-sourced `ProjectConfig` compare like for like.

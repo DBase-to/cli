@@ -1,6 +1,6 @@
-#:schema https://supabase.com/schemas/config/v1.json
+#:schema https://dbase.to/schemas/config/v1.json
 # For detailed configuration reference documentation, visit:
-# https://supabase.com/docs/guides/local-development/cli/config
+# https://dbase.to/docs/guides/local-development/cli/config
 # A string used to distinguish different DBase projects on the same host. Defaults to the
 # working directory name when running `dbase init`.
 project_id = "{{ .ProjectId }}"

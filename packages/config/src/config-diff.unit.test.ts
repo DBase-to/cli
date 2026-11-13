@@ -103,7 +103,7 @@ describe("diffProjectConfig classification", () => {
   });
 
   test("raw-presence-masked sections suppress zero-valued remotes", () => {
-    // db.ssl_enforcement is raw-presence-masked (ADR 0021): its local projection stays silent
+    // db.ssl_enforcement is raw-presence-masked: its local projection stays silent
     // when the file never declares it, so the platform's unconfigured state is not drift.
     const clean = diffWith({}, { database: { ssl_enforced: false } });
     expect(changeAt(clean.changes, ["db", "ssl_enforcement", "enabled"])).toBeUndefined();
@@ -364,7 +364,7 @@ describe("diffProjectConfig classification", () => {
   });
 
   test("a push-unmanaged sibling is excluded from classification even when the remote AGREES with it", () => {
-    // Matching values here proves the exclusion itself, not an accidental match (ADR 0022):
+    // Matching values here proves the exclusion itself, not an accidental match:
     // unmanaged paths can never classify, even when local and remote agree.
     const result = diffWith(
       { auth: { oauth_server: { enabled: false, authorization_url_path: "/consent" } } },
@@ -500,7 +500,7 @@ describe("diffProjectConfig classification", () => {
 
   test("byte-size values converge across representations", () => {
     // Local "50MiB" and the wire's byte count both canonicalize through the
-    // convergence normalizers (ADR 0021), so they compare equal.
+    // convergence normalizers, so they compare equal.
     const equal = diffWith(
       { storage: { file_size_limit: "50MiB" } },
       { storage: { file_size_limit: 52428800 } },

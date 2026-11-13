@@ -209,7 +209,7 @@ export const x = 1;
   });
 
   test("does not mistake a URL inside a string literal for a line comment", () => {
-    const source = `export const link = "https://supabase.com/docs";\nimport { foo } from "./foo.ts";`;
+    const source = `export const link = "https://dbase.to/docs";\nimport { foo } from "./foo.ts";`;
     expect(extractSpecifiers(source)).toEqual(["./foo.ts"]);
   });
 
@@ -580,7 +580,7 @@ describe("package.json exports map", () => {
   // ["bun"]` must resolve straight to `src/*.ts` instead of `dist/*.d.ts`, which requires `bun`
   // to win the exports-map lookup ahead of `types`. `types` only needs to precede `default`, not
   // be first outright, so a plain `nodenext` consumer still resolves `types` -> `dist/*.d.ts`.
-  test("'types' precedes 'default' in every conditional export object (CLI-2234)", () => {
+  test("'types' precedes 'default' in every conditional export object", () => {
     const conditionObjects = [
       packageJson.exports["."],
       packageJson.exports["./effect"],
@@ -595,7 +595,7 @@ describe("package.json exports map", () => {
     }
   });
 
-  test("'.', './effect', and './internal' lead with the 'bun' condition (CLI-2234)", () => {
+  test("'.', './effect', and './internal' lead with the 'bun' condition", () => {
     for (const key of [".", "./effect", "./internal"] as const) {
       expect(Object.keys(packageJson.exports[key])[0]).toBe("bun");
     }

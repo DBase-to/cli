@@ -157,7 +157,7 @@ describe("planConfigPull", () => {
     expect(plan.skipped).toEqual([{ change: c, reason: "unwritable" }]);
   });
 
-  test("a remote value spelled as env() is skipped as remote_env_reference, never written verbatim (CLI-2064 security finding)", () => {
+  test("a remote value spelled as env() is skipped as remote_env_reference, never written verbatim", () => {
     const path = ["auth", "site_url"];
     const c = change({
       path,
@@ -584,7 +584,7 @@ describe("expandConfigPullChangeSet", () => {
     expect(result.residual).toEqual(initialChangeSet);
   });
 
-  test("absorbs a sibling ADR 0021 gates as unmanaged, once the gate itself is projected (CLI-2064 live-bug repro)", () => {
+  test("absorbs a sibling gate as unmanaged, once the gate itself is projected", () => {
     // [auth.sms.twilio] is disabled locally with empty placeholders; remote has it enabled with
     // real credentials. Round 1 only sees `enabled` (the sids are unmanaged pre-write); round 2
     // must absorb both once `enabled: true` un-gates them.

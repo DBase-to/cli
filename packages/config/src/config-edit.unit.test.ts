@@ -506,7 +506,7 @@ max_rows = 1000
 
 describe("applyConfigEdits (toml): full realistic config.toml golden", () => {
   const source = `# For detailed configuration reference documentation, visit:
-# https://supabase.com/docs/guides/local-development/cli/config
+# https://dbase.to/docs/guides/local-development/cli/config
 project_id = "demo"
 
 [api]
@@ -546,7 +546,7 @@ max_enrolled_factors = 10
       { path: ["remotes", "staging", "project_id"], value: "bbbbbbbbbbbbbbbbbbbb" },
     ]);
     expect(applied(outcome).text).toBe(`# For detailed configuration reference documentation, visit:
-# https://supabase.com/docs/guides/local-development/cli/config
+# https://dbase.to/docs/guides/local-development/cli/config
 project_id = "demo"
 
 [api]

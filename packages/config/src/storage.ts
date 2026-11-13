@@ -5,7 +5,7 @@ import { withRecordValueDecodingDefault } from "./lib/schema.ts";
 const links = [
   {
     name: "Storage server configuration",
-    link: "https://supabase.com/docs/guides/self-hosting/storage/config",
+    link: "https://dbase.to/docs/guides/self-hosting/storage/config",
   },
 ];
 

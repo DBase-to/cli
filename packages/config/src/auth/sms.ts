@@ -6,11 +6,11 @@ const tags = ["auth"];
 const links = {
   auth: {
     name: "Auth Server configuration",
-    link: "https://supabase.com/docs/reference/auth",
+    link: "https://dbase.to/docs/reference/auth",
   },
   phoneLogin: (provider: string) => ({
     name: `Enabling Phone Login (${provider})`,
-    link: `https://supabase.com/docs/guides/auth/phone-login?showSmsProvider=${provider}#enabling-phone-login`,
+    link: `https://dbase.to/docs/guides/auth/phone-login?showSmsProvider=${provider}#enabling-phone-login`,
   }),
 };
 

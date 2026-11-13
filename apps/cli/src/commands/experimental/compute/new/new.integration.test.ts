@@ -1198,7 +1198,7 @@ describe("compute new", () => {
     }).pipe(Effect.scoped, Effect.provide(BunServices.layer)),
   );
 
-  // CLI-2285 regression: before this fix, a typo'd/nonexistent --workdir
+  // regression: before this fix, a typo'd/nonexistent --workdir
   // reached `fs.makeDirectory(destination, { recursive: true })` below with no
   // prior existence check, silently scaffolding a fresh
   // supabase/compute/<name>/ tree (plus a new config.toml) at the wrong path.

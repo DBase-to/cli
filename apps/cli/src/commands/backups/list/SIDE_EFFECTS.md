@@ -70,13 +70,13 @@ Indented JSON (`json.MarshalIndent(resp, "", "  ")` equivalent) of the full back
 
 ### `--output yaml`
 
-YAML document (CLI-1975): keys are lowercased field names (`walgenabled`,
+YAML document: keys are lowercased field names (`walgenabled`,
 `physicalbackupdata`), nil values render as explicit `null`, and nested
 mappings use 4-column indentation.
 
 ### `--output toml`
 
-TOML document (CLI-1975): keys are PascalCase field names (`WalgEnabled`,
+TOML document: keys are PascalCase field names (`WalgEnabled`,
 `[PhysicalBackupData]`), absent fields are omitted, and sub-tables follow
 the primitive keys with 2-space indentation. An empty `backups` array is
 omitted entirely.

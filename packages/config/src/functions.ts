@@ -8,7 +8,7 @@ const tags = ["functions"];
 const links = [
   {
     name: "`supabase functions` CLI subcommands",
-    link: "https://supabase.com/docs/reference/cli/supabase-functions",
+    link: "https://dbase.to/docs/reference/cli/supabase-functions",
   },
 ];
 

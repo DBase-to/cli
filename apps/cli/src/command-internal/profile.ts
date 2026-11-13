@@ -39,7 +39,7 @@ const BUILT_IN: Readonly<Record<string, ProfileEndpoints>> = {
   supabase: {
     apiUrl: "https://api.supabase.com",
     projectHost: "supabase.co",
-    dashboardUrl: "https://supabase.com/dashboard",
+    dashboardUrl: "https://dbase.to/dashboard",
     poolerHost: "supabase.com",
   },
   "supabase-staging": {

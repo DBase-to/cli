@@ -6,14 +6,14 @@ uses the new [`dbase stack start` implementation](../experimental/stack/start/SI
 `DBASE_EXPERIMENTAL_STACK=0` forces the legacy backend. See [backend selection](../../../docs/stack-commands.md).
 Backend routing and the legacy handler both read `supabase/config.json` when present, otherwise
 `supabase/config.toml`. Config values resolve as flag > shell env > project `.env*` > config >
-default (ADR 0032); `start` applies no `[remotes.*]` block. Backend selection happens before command parsing. When the
+default; `start` applies no `[remotes.*]` block. Backend selection happens before command parsing. When the
 environment override is unset or empty, an unreadable, malformed, or invalid project configuration
 falls back to the legacy backend; an invalid environment override remains an error.
 
 This command talks directly to Docker via subprocess (`docker`/`podman`) to bring up
 the local dev stack sequentially, one container at a time — it does not use Docker
 Compose, and it does not go through `@supabase/stack/effect`'s orchestration model
-(see the CLI-1323 plan's "Critical architectural finding" for why: that runtime is a
+(see the plan's "Critical architectural finding" for why: that runtime is a
 deliberately different local-dev product — no Kong gateway, native-binary-first,
 auto-allocated ports, opaque API keys — that would break the compatibility contract
 of this command).
@@ -318,7 +318,7 @@ code is surfaced on failure.
 | `0`  | the stack was already running — shows status instead of restarting                                                                                                                                                                                                                                                                                                                 |
 | `0`  | `--ignore-health-check` set and one or more containers timed out — the failure is printed and swallowed, no rollback                                                                                                                                                                                                                                                               |
 | `1`  | `--ignore-health-check` set, the fresh-volume/Storage-healthy recheck-and-seed path ran (see "Storage bucket seeding"), and that seed itself failed — rolls back despite the flag                                                                                                                                                                                                  |
-| `1`  | malformed CSV in an `--exclude`/`-x` value — fails during flag parsing, before the handler and telemetry, with the exact diagnostic text on stderr; the shorthand frames it with both spellings (e.g. `invalid argument "a\"b" for "-x, --exclude" flag: parse error on line 1, column 2: bare " in non-quoted-field`; a blank-only value fails with `EOF`) — CLI-2005             |
+| `1`  | malformed CSV in an `--exclude`/`-x` value — fails during flag parsing, before the handler and telemetry, with the exact diagnostic text on stderr; the shorthand frames it with both spellings (e.g. `invalid argument "a\"b" for "-x, --exclude" flag: parse error on line 1, column 2: bare " in non-quoted-field`; a blank-only value fails with `EOF`)                        |
 | `1`  | a stack-only flag (`--runtime`, `--stack`, `--stack-id`, `--preparation`, `--frozen`, `--eager`) is given while the legacy backend is active — fails during flag parsing with `Unrecognized flag: <flag>` plus a `Hint:` naming the opt-in (`DBASE_EXPERIMENTAL_STACK=1`, or `stack = true` under `[experimental]` with that variable unset); other unrecognized flags get no hint |
 | `1`  | malformed `config.toml` / `Config.Validate` failure, including an `auth.email.*.content_path` that resolves outside the project root, or that resolves in-root but is missing/unreadable (checked eagerly, before any Docker work, regardless of `auth.enabled` — see Notes)                                                                                                       |
 | `1`  | `config.toml` uses a removed key (e.g. `inbucket`) — the message names the key and its replacement and the suggestion is `Update supabase/config.toml, then rerun the command.`, in text and JSON output; fails before any Docker work                                                                                                                                             |

@@ -1,11 +1,11 @@
 # @supabase/config
 
-Supabase project configuration package built on Effect V4 Schema — owns the canonical
+DBase project configuration package built on Effect V4 Schema — owns the canonical
 `CliConfig` schema, config file loading/saving, and JSON Schema generation.
 
 ## Entrypoints
 
-Six supported import paths total (see ADR 0009's 2026-08-24 decision for the full rationale): four
+Six supported import paths total: four
 module entrypoints (`.`, `./io`, `./effect`, `./internal`) plus two generated JSON Schema
 artifacts (`./schema.json`, `./project-schema.json`).
 
@@ -16,11 +16,11 @@ artifacts (`./schema.json`, `./project-schema.json`).
   transitive import graph. `fromConfigDocument` also accepts a `CliConfigWithRawPresence` pair (a
   `CliConfig` alongside which keys were actually present in the source document) — presence matters
   because the schema defaults every optional section, so the decoded `CliConfig` alone can't tell
-  "explicitly set to the default" from "never set" (ADR 0021). Call `unmappedApiFields` after
+  "explicitly set to the default" from "never set". Call `unmappedApiFields` after
   `fromApiProjectConfig` if you care whether this package version understood the response. Also
   exports the config-diff classification engine — `diffProjectConfig`, `ConfigChange`/
   `ConfigChangeClass`/`ConfigChangeCounts`/`ConfigChangeSet`, `DiffProjectConfigOptions` — a pure,
-  synchronous comparison between two `ProjectConfig` projections (ADR 0022), promoted here from
+  synchronous comparison between two `ProjectConfig` projections, promoted here from
   `./internal` now that Studio is a second consumer.
 - `@supabase/config/io` — a Promise-based file-IO facade for **external, non-Effect Node/Bun
   consumers only**. Resolved via package.json exports conditions (`bun`/`node`/`browser`/`default`).
@@ -29,7 +29,7 @@ artifacts (`./schema.json`, `./project-schema.json`).
   Effect-returning config-loading/saving programs, `CliConfigStore`/`cliConfigStoreLayer`,
   project-environment resolution, and `inferFunctionsManifest` (discovers and validates
   `supabase/functions/*` on disk).
-- `@supabase/config/internal` (CLI-2234) — NOT covered by semver, and only `apps/cli` may import it
+- `@supabase/config/internal` — NOT covered by semver, and only `apps/cli` may import it
   (enforced by `src/monorepo-import-contract.unit.test.ts`). Carries `apps/cli`'s own
   config-loading entrypoints and contract-guard tests: `loadCliConfig`/`resolveCliConfigValue`/
   `resolveCliConfigSubtree` — the SAME runtime functions `./effect` exports, re-typed here to
@@ -41,7 +41,7 @@ artifacts (`./schema.json`, `./project-schema.json`).
   `ENV_CAPTURE_REGEX`, and `withoutSafeIntegerBounds` for the CLI's published lock schema), the
   JSONC parser (`parseJsonc`, `JsoncSyntaxError`) and `cliConfigFormatForPath`, and `findUnknownCliConfigKeys` (schema-derived unknown-key paths of a raw document). It also carries
   `supabase config pull`/`diff`'s own support surface
-  (CLI-2064): the format-preserving surgical editor (`applyConfigEdits` and its
+  : the format-preserving surgical editor (`applyConfigEdits` and its
   `ConfigEdit`/`ConfigEditOutcome`/`ConfigEditRefusal`/`ConfigEditRefusalReason`/`ConfigEditValue`/
   `AppliedConfigEdit` types — the config diff engine itself, `diffProjectConfig` and its
   `ConfigChange`/`ConfigChangeClass`/`ConfigChangeCounts`/`ConfigChangeSet`/
@@ -58,7 +58,7 @@ artifacts (`./schema.json`, `./project-schema.json`).
   `DEFAULT_MIGRATION_CHECK_SEVERITY`, `MigrationCheckRule`, and `MigrationCheckSeverity`.
 - `@supabase/config/schema.json` — generated JSON Schema (draft-07) for `CliConfig` (a
   `dist/` build output); number, integer, boolean, enum and string-list fields also accept `env(VAR)` strings.
-- `@supabase/config/project-schema.json` (CLI-2234) — generated JSON Schema (draft-07) for
+- `@supabase/config/project-schema.json` — generated JSON Schema (draft-07) for
   `ProjectConfig`, derived from `ProjectConfigSchema` (`src/project-config/project-schema.ts`); a
   `dist/` build output alongside `schema.json`.
 
@@ -91,7 +91,7 @@ import graph against a hardcoded allowlist, pins both entrypoints' exact runtime
 asserts the package.json `exports` map shape. Any change that grows the pure graph or the export
 surface must update that test deliberately — it is not meant to be a silent pass.
 
-## Build (CLI-2232)
+## Build
 
 `pnpm --filter @supabase/config build` (or `pnpm run build` from this package) runs
 `scripts/build.ts`, in order:
@@ -124,7 +124,7 @@ package's declaration output between the PR base and head commits and is advisor
 hard gate is a release-time tarball diff — `tools/config-release-gate.ts`, run by the `plan` job in
 `.github/workflows/release-config.yml` — see "Releases" below.
 
-### Publishing the tarball (CLI-2234)
+### Publishing the tarball
 
 A `.npmignore` file exists at this package's root — even though its own rules exclude almost
 nothing `files` in package.json doesn't already exclude — because npm's packlist walk otherwise
@@ -155,7 +155,7 @@ own guarantees and must stay green after any entrypoint or type-surface change:
   documents, that every config number schema is finite (no non-finite `anyOf` split reaches the
   published artifacts).
 
-## Releases (CLI-2233)
+## Releases
 
 This package has its own release train, independent of the CLI's — a `fix:`/`feat:` commit
 elsewhere in the monorepo never releases `@supabase/config`, and vice versa.
@@ -201,7 +201,7 @@ elsewhere in the monorepo never releases `@supabase/config`, and vice versa.
   confirm it matches its prior state. Add the matching GitHub release with `--latest=false`, since
   a config release must never become the repo's `latest` release.
 
-### Standing release configuration (set up under CLI-2169)
+### Standing release configuration
 
 The one-time go-live setup is complete. These are the standing invariants — verify them if a
 release fails unexpectedly, and restore them if repo or npm settings are ever rebuilt:

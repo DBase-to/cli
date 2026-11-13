@@ -3044,7 +3044,7 @@ describe("db diff", () => {
     },
   );
 
-  describe("--use-pgadmin (native differ, CLI-1968)", () => {
+  describe("--use-pgadmin", () => {
     it.effect(
       "prints 'No schema changes found' and writes nothing when the differ output is empty",
       () => {
@@ -3330,7 +3330,7 @@ describe("db diff", () => {
     );
 
     it.effect(
-      ">=2 --schema runs each emitting a diff array succeed, aggregating every run's DDL under ONE header (CLI-1968 round 2: parsed per run, not concatenated then parsed once)",
+      ">=2 --schema runs each emitting a diff array succeed, aggregating every run's DDL under ONE header",
       () => {
         // Each run's stdout is parsed on its own (see `pgadmin-diff.ts`), including its
         // own DESKTOP-mode NOTE prefix trim, not just the first run's.
@@ -3390,7 +3390,7 @@ describe("db diff", () => {
     );
 
     it.effect(
-      "in stream-json mode, a failed run's captured progress statuses redirect to stderr (CLI-1546) but are still emitted before the container-error result",
+      "in stream-json mode, a failed run's captured progress statuses redirect to stderr but are still emitted before the container-error result",
       () => {
         const s = setup(tmp.current, {
           format: "stream-json",

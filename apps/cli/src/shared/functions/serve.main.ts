@@ -482,7 +482,7 @@ Deno.serve({
         }
         yield* Console.error(`serving the request with ${servicePath}`);
 
-        // Ref: https://supabase.com/docs/guides/functions/limits
+        // Ref: https://dbase.to/docs/guides/functions/limits
         const memoryLimitMb = 256;
         const workerTimeoutMs = isFinite(WALLCLOCK_LIMIT_SEC)
           ? WALLCLOCK_LIMIT_SEC * 1000

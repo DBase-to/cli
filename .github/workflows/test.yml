@@ -60,7 +60,7 @@ jobs:
         inputs.force ||
         github.event.pull_request.draft == false)
     name: Check code quality
-    runs-on: blacksmith-8vcpu-ubuntu-2404
+    runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - name: Checkout
@@ -72,13 +72,12 @@ jobs:
         uses: ./.github/actions/setup
         with:
           dependency-firewall-token: ${{ secrets.DF_FIREWALL_TOKEN }}
-          sticky-disks: "true"
       - name: Check code quality
         run: pnpm run check:all
 
       # Advisory only (base-vs-head diff, no acceptance artifact to gate a
       # required check on) — the hard release-time gate is
-      # tools/config-release-gate.ts in release-config.yml (CLI-2233).
+      # tools/config-release-gate.ts in release-config.yml.
       # `continue-on-error` flags the diff without failing the job;
       # the tool's own fetch/unshallow fallback resolves a merge-base from
       # this checkout's shallow clone, and skips the compare (exit 0) rather
@@ -94,7 +93,7 @@ jobs:
         inputs.force ||
         github.event.pull_request.draft == false)
     name: Run unit tests
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - name: Checkout
@@ -106,7 +105,6 @@ jobs:
         uses: ./.github/actions/setup
         with:
           dependency-firewall-token: ${{ secrets.DF_FIREWALL_TOKEN }}
-          sticky-disks: "true"
 
       - name: Run unit tests
         run: pnpm run test:unit
@@ -118,7 +116,7 @@ jobs:
         inputs.force ||
         github.event.pull_request.draft == false)
     name: Run integration tests (${{ matrix.name }})
-    runs-on: blacksmith-8vcpu-ubuntu-2404
+    runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
       fail-fast: false
@@ -140,8 +138,6 @@ jobs:
         uses: ./.github/actions/setup
         with:
           dependency-firewall-token: ${{ secrets.DF_FIREWALL_TOKEN }}
-          sticky-disks: "true"
-          docker-images: "true"
 
       - name: Run integration tests
         run: >-
@@ -226,7 +222,7 @@ jobs:
       matrix:
         # Linux coverage for these files comes from the integration job, which
         # runs the whole stack integration project.
-        os: [blacksmith-6vcpu-macos-latest, windows-latest]
+        os: [macos-latest, windows-latest]
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -291,7 +287,7 @@ jobs:
       matrix:
         # Native artifacts exist for macOS and Linux only, and macOS runners have
         # no Docker; Linux coverage for both backends comes from test-stack-e2e.
-        os: [blacksmith-6vcpu-macos-latest]
+        os: [macos-latest]
         suite: [lifecycle, confinement, idle, isolation]
         # Concurrent scenarios slow each other on macOS runners, so the
         # heaviest ones run alone.
@@ -363,7 +359,7 @@ jobs:
         inputs.force ||
         github.event.pull_request.draft == false)
     name: Run CLI end-to-end tests (${{ matrix.name }})
-    runs-on: blacksmith-8vcpu-ubuntu-2404
+    runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
       fail-fast: false
@@ -378,7 +374,7 @@ jobs:
           - { suite: cli-e2e, shard: 2, shards: 2, name: cli-e2e 2/2 }
     steps:
       - name: Checkout
-        uses: useblacksmith/checkout@6fd481652155169ed4d2f25ebaf97464f685175f # v1.0.0-beta
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
@@ -386,8 +382,6 @@ jobs:
         uses: ./.github/actions/setup
         with:
           dependency-firewall-token: ${{ secrets.DF_FIREWALL_TOKEN }}
-          sticky-disks: "true"
-          docker-images: "true"
 
       # The e2e harness invokes `node apps/cli/dist/dbase.js` with
       # `SUPABASE_CLI_BINARY_OVERRIDE` pointing at the compiled binary in
@@ -429,7 +423,7 @@ jobs:
         inputs.force ||
         github.event.pull_request.draft == false)
     name: Run stack end-to-end tests (${{ matrix.runtime }}, ${{ matrix.suite }})
-    runs-on: blacksmith-8vcpu-ubuntu-2404
+    runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
       fail-fast: false
@@ -442,15 +436,12 @@ jobs:
       SUPABASE_STACK_TEST_ENGINE: ${{ matrix.runtime == 'podman' && 'podman' || 'docker' }}
     steps:
       - name: Checkout
-        uses: useblacksmith/checkout@6fd481652155169ed4d2f25ebaf97464f685175f # v1.0.0-beta
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Setup
         uses: ./.github/actions/setup
         with:
           dependency-firewall-token: ${{ secrets.DF_FIREWALL_TOKEN }}
-          sticky-disks: "true"
-          docker-images: ${{ matrix.runtime == 'docker' }}
-          native-artifacts: ${{ matrix.runtime == 'native' }}
 
       - name: Setup Podman
         if: matrix.runtime == 'podman'
@@ -483,19 +474,18 @@ jobs:
         inputs.force ||
         github.event.pull_request.draft == false)
     name: Run stack Podman integration tests
-    runs-on: blacksmith-8vcpu-ubuntu-2404
+    runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
       SUPABASE_STACK_TEST_ENGINE: podman
     steps:
       - name: Checkout
-        uses: useblacksmith/checkout@6fd481652155169ed4d2f25ebaf97464f685175f # v1.0.0-beta
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Setup
         uses: ./.github/actions/setup
         with:
           dependency-firewall-token: ${{ secrets.DF_FIREWALL_TOKEN }}
-          sticky-disks: "true"
 
       - name: Setup Podman
         uses: ./.github/actions/setup-podman

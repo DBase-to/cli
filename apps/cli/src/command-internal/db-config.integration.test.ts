@@ -307,7 +307,7 @@ describe("dbConfigResolver (local + db-url)", () => {
             // The resolver attaches the connect-failure suggestion context to every resolved
             // connection.
             suggestionContext: {
-              dashboardUrl: "https://supabase.com/dashboard",
+              dashboardUrl: "https://dbase.to/dashboard",
               profileName: "supabase",
             },
           });
@@ -408,7 +408,7 @@ describe("dbConfigResolver (local + db-url)", () => {
             password: "p@ss",
             database: "appdb",
             suggestionContext: {
-              dashboardUrl: "https://supabase.com/dashboard",
+              dashboardUrl: "https://dbase.to/dashboard",
               profileName: "supabase",
             },
           });
@@ -995,7 +995,7 @@ describe("dbConfigResolver (linked config ordering)", () => {
             sslmode: "require",
             sslrootcertInline: rootCaBundle(),
             suggestionContext: {
-              dashboardUrl: "https://supabase.com/dashboard",
+              dashboardUrl: "https://dbase.to/dashboard",
               profileName: "supabase",
             },
           });
@@ -1164,7 +1164,7 @@ describe("dbConfigResolver (linked config ordering)", () => {
                 sslmode: "require",
                 sslrootcertInline: rootCaBundle(),
                 suggestionContext: {
-                  dashboardUrl: "https://supabase.com/dashboard",
+                  dashboardUrl: "https://dbase.to/dashboard",
                   profileName: "supabase",
                 },
               });
@@ -1312,7 +1312,7 @@ describe("dbConfigResolver (linked config ordering)", () => {
               sslmode: "require",
               sslrootcertInline: rootCaBundle(),
               suggestionContext: {
-                dashboardUrl: "https://supabase.com/dashboard",
+                dashboardUrl: "https://dbase.to/dashboard",
                 profileName: "supabase",
               },
             });
@@ -1424,7 +1424,7 @@ describe("dbConfigResolver (an explicit --project-ref fetches the pooler config)
               sslmode: "require",
               sslrootcertInline: rootCaBundle(),
               suggestionContext: {
-                dashboardUrl: "https://supabase.com/dashboard",
+                dashboardUrl: "https://dbase.to/dashboard",
                 profileName: "supabase",
               },
             });
@@ -1544,7 +1544,7 @@ describe("dbConfigResolver (an explicit --project-ref fetches the pooler config)
               sslmode: "require",
               sslrootcertInline: rootCaBundle(),
               suggestionContext: {
-                dashboardUrl: "https://supabase.com/dashboard",
+                dashboardUrl: "https://dbase.to/dashboard",
                 profileName: "supabase",
               },
             });
@@ -2116,7 +2116,7 @@ describe("resolveLinkedConn libpq TLS", () => {
           {
             removeNetworkBans: false,
             poolerUrl: Option.fromNullishOr(opts.poolerUrl),
-            dashboardUrl: "https://supabase.com/dashboard",
+            dashboardUrl: "https://dbase.to/dashboard",
           },
         );
       }),
@@ -2855,7 +2855,7 @@ describe("dbConfigResolver.resolveConnection", () => {
             expect.objectContaining({
               _tag: "DbConfigConnectTempRoleError",
               message: expect.stringContaining("Address not in tenant allow_list"),
-              suggestion: `${SUGGEST_NETWORK_RESTRICTIONS}\nhttps://supabase.com/dashboard/project/_/database/settings`,
+              suggestion: `${SUGGEST_NETWORK_RESTRICTIONS}\nhttps://dbase.to/dashboard/project/_/database/settings`,
             }),
           ),
         );

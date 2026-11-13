@@ -21,7 +21,7 @@ import { type DbSession, type PgConnInput, DbConnection } from "./db-connection.
 import { acquirePgPool, dbConnectionLayer, PgBatchQuery } from "./db-connection.sql-pg.layer.ts";
 
 const SUGGESTION_CONTEXT = {
-  dashboardUrl: "https://supabase.com/dashboard",
+  dashboardUrl: "https://dbase.to/dashboard",
   profileName: "supabase",
   debug: false,
 } as const;
@@ -516,7 +516,7 @@ describe("dbConnectionLayer connect failures", () => {
         );
         expect(error.suggestion).toBe(
           "Make sure your local IP is allowed in Network Restrictions and Network Bans.\n" +
-            "https://supabase.com/dashboard/project/_/database/settings",
+            "https://dbase.to/dashboard/project/_/database/settings",
         );
         expect(error.message).not.toContain(SENTINEL_PASSWORD);
       }),
@@ -560,23 +560,21 @@ describe("dbConnectionLayer connect failures", () => {
     }),
   );
 
-  it.live(
-    "keeps the CLI-1942 session-pooler EOF shape unclassified while surfacing the cause",
-    () =>
-      Effect.gen(function* () {
-        const server = yield* fakePostgresServer((socket) => socket.destroy());
-        const error = yield* connectFailure({
-          port: server.port,
-          user: "postgres.abcdefghijklmnopqrst",
-        }).pipe(Effect.ensuring(Effect.sync(server.close)));
-        expect(error.message).toBe(
-          "failed to connect to postgres: failed to connect to " +
-            "`host=127.0.0.1 user=postgres.abcdefghijklmnopqrst database=postgres`: " +
-            "Connection terminated unexpectedly",
-        );
-        expect(error.suggestion).toBeUndefined();
-        expect(error.retryable).toBeUndefined();
-      }),
+  it.live("keeps the session-pooler EOF shape unclassified while surfacing the cause", () =>
+    Effect.gen(function* () {
+      const server = yield* fakePostgresServer((socket) => socket.destroy());
+      const error = yield* connectFailure({
+        port: server.port,
+        user: "postgres.abcdefghijklmnopqrst",
+      }).pipe(Effect.ensuring(Effect.sync(server.close)));
+      expect(error.message).toBe(
+        "failed to connect to postgres: failed to connect to " +
+          "`host=127.0.0.1 user=postgres.abcdefghijklmnopqrst database=postgres`: " +
+          "Connection terminated unexpectedly",
+      );
+      expect(error.suggestion).toBeUndefined();
+      expect(error.retryable).toBeUndefined();
+    }),
   );
 });
 
@@ -946,7 +944,7 @@ describe("acquirePgPool", () => {
   );
 });
 
-describe("a local target's explicit TLS request (CLI-2366: honor --db-url's own sslmode/sslrootcert)", () => {
+describe("a local target's explicit TLS request", () => {
   it.live("attempts TLS instead of forcing plaintext when a local target's DSN sets sslmode", () =>
     Effect.gen(function* () {
       const server = yield* fakeStartupServer();
@@ -987,7 +985,7 @@ describe("a local target's explicit TLS request (CLI-2366: honor --db-url's own 
   );
 
   it.live(
-    "stays plaintext for a local target with sslmode=prefer (CLI-2366 regression guard: " +
+    "stays plaintext for a local target with sslmode=prefer ( regression guard: " +
       "the loopback stack never gets a wasted TLS attempt)",
     () =>
       Effect.gen(function* () {

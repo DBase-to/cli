@@ -260,7 +260,7 @@ The resident owner process manages the database beyond the CLI invocation. Stack
   `db.health_timeout`.
 - No `cli_stack_started` telemetry — that event belongs to `dbase start`, not
   `db start`. The only event is the standard `cli_command_executed`.
-- `db reset --local` (a different command) is ALSO fully native now (CLI-1955) — it
+- `db reset --local` (a different command) is ALSO fully native now — it
   reuses this same `command-internal/db-bootstrap/` primitive set, but through its own
   composition (`command-internal/db-bootstrap/recreate-local-database.ts`), not through
   `startDatabase`/this command's own handler — see that command's `SIDE_EFFECTS.md`.

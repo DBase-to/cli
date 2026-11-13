@@ -4,11 +4,11 @@ import { secret } from "./lib/env.ts";
 const links = {
   studio: {
     name: "DBase Studio",
-    link: "https://supabase.com/docs/guides/studio",
+    link: "https://dbase.to/docs/guides/studio",
   },
   config: {
     name: "DBase Studio Configuration",
-    link: "https://supabase.com/docs/guides/self-hosting/studio",
+    link: "https://dbase.to/docs/guides/self-hosting/studio",
   },
 };
 

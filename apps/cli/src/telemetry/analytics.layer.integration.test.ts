@@ -45,7 +45,7 @@ const captureWithProcessEnv = (env: Record<string, string>) =>
       Layer.provide(
         Layer.succeed(CliSettings, {
           apiUrl: "https://api.supabase.com",
-          dashboardUrl: "https://supabase.com/dashboard",
+          dashboardUrl: "https://dbase.to/dashboard",
           projectHost: "supabase.co",
           telemetryPosthogHost: "https://project-telemetry.invalid",
           telemetryPosthogKey: Option.none(),
@@ -87,7 +87,7 @@ describe("analytics destination", () => {
     );
     const settings = Layer.succeed(CliSettings, {
       apiUrl: "https://api.supabase.com",
-      dashboardUrl: "https://supabase.com/dashboard",
+      dashboardUrl: "https://dbase.to/dashboard",
       projectHost: "supabase.co",
       telemetryPosthogHost: "https://project-telemetry.invalid",
       telemetryPosthogKey: Option.some("project-key"),
@@ -130,7 +130,7 @@ describe("analytics destination", () => {
     const recordingClient = recordingPosthogClient(events);
     const settings = Layer.succeed(CliSettings, {
       apiUrl: "https://api.supabase.com",
-      dashboardUrl: "https://supabase.com/dashboard",
+      dashboardUrl: "https://dbase.to/dashboard",
       projectHost: "supabase.co",
       telemetryPosthogHost: "https://project-telemetry.invalid",
       telemetryPosthogKey: Option.none(),

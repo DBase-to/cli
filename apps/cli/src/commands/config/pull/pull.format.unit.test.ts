@@ -168,7 +168,7 @@ describe("configPullSummaryMessage", () => {
     ).toBe("[remotes.staging] not created (declined).");
   });
 
-  test("a block-only plan whose differences were ALL skipped is distinguished from 'no differences' (CLI-2064 review, T2)", () => {
+  test("a block-only plan whose differences were ALL skipped is distinguished from 'no differences'", () => {
     const change: ConfigChange = {
       path: ["auth", "site_url"],
       class: "update",

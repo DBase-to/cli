@@ -12,7 +12,7 @@ on:
   workflow_call:
     inputs:
       version:
-        description: Supabase CLI version that was just published (with or without leading v)
+        description: DBase CLI version that was just published (with or without leading v)
         required: true
         type: string
       brew_name:
@@ -26,7 +26,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: Supabase CLI version to verify (must already be published; with or without leading v)
+        description: DBase CLI version to verify (must already be published; with or without leading v)
         required: true
         type: string
       brew_name:

@@ -1,7 +1,7 @@
 /**
  * Publishes the current version of each JSON Schema under `apps/docs/public/schemas` to
  * supabase.com by opening a PR against supabase/supabase, which serves
- * `apps/www/public/schemas` at https://supabase.com/schemas:
+ * `apps/www/public/schemas` at https://dbase.to/schemas:
  *
  *   bun scripts/publish-schemas.ts --version <version>
  *
@@ -92,7 +92,7 @@ const validateCurrentSchema = ({ name, version, file }: CurrentSchema) =>
         reason: `${label} must declare "$schema": "${JsonSchema.META_SCHEMA_URI_DRAFT_07}".`,
       });
     }
-    const id = `https://supabase.com/schemas/${name}/v${version}.json`;
+    const id = `https://dbase.to/schemas/${name}/v${version}.json`;
     if (document["$id"] !== id) {
       return yield* new PublishRefused({ reason: `${label} must declare "$id": "${id}".` });
     }

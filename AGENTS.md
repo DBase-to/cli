@@ -1,4 +1,4 @@
-# Supabase
+# DBase CLI
 
 Bun monorepo with workspaces under `apps/` and `packages/`.
 
@@ -8,11 +8,11 @@ Bun monorepo with workspaces under `apps/` and `packages/`.
 
 ## Workspace Layout
 
-- `apps/cli` — main `supabase` package
+- `apps/cli` — main `@dbase/cli` package
 - `apps/docs` — internal Next.js docs site
-- `packages/api` — typed Supabase Management API client
+- `packages/api` — typed Management API client
 - `packages/config` — config schema and generated types
-- `packages/stack` — programmatic local Supabase stack runtime
+- `packages/stack` — programmatic local stack runtime
 - `packages/cli-*` — platform-specific published CLI binary wrappers
 
 ## Package Structure
@@ -53,18 +53,16 @@ Expected exceptions:
 - `CliConfig` — the full config-file document (`supabase/config.toml`/`.json`), the local superset
   including local-only sections.
 - `ProjectConfig` — the hosted-project subset: a sparse overlay of the hosted sections (api, auth,
-  db, realtime, storage, workers, experimental) describing what a Supabase project looks like on
+  db, realtime, storage, workers, experimental) describing what a DBase project looks like on
   the platform.
 - `CliSettings` — the CLI's own runtime settings (platform `apiUrl`, access token, telemetry flags,
   `supabaseHome`, …), owned by `apps/cli`.
 
 Use the `Cli*` prefix for the local checkout side and a bare `Project*` name for the hosted
-Supabase project. Config-value helpers follow the config family regardless of their inputs (e.g.
+DBase project. Config-value helpers follow the config family regardless of their inputs (e.g.
 `resolveCliConfigValue`, `CliConfigParseError`). A symbol that deliberately spans both
-families takes a family-neutral name instead of a misleading prefix (see the ADR 0020 addendum for
-the `EffectiveConfig` precedent).
+families takes a family-neutral name instead of a misleading prefix.
 
-See [`docs/adr/0020-config-naming-vocabulary.md`](docs/adr/0020-config-naming-vocabulary.md) and
 [`packages/config/docs/cli-config-loading.md`](packages/config/docs/cli-config-loading.md) for the
 full vocabulary.
 

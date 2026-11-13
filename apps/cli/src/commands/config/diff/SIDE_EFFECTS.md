@@ -158,14 +158,14 @@ and emit nothing.
 
 - Run from the project root (or pass `--workdir`); `config.toml` is read relative to it.
   An explicit `--workdir`/`DBASE_WORKDIR` is never climbed past — see the `DBASE_WORKDIR` row above.
-- **Local operand per target (ADR 0018/0022):** when the resolved target ref matches a
+- **Local operand per target:** when the resolved target ref matches a
   `[remotes.<name>]` block's `project_id`, the local side is that branch's merged
   effective config; otherwise the base config. The echoed scope line always says which.
 - **Masked credentials:** secret-valued managed properties (the platform returns an HMAC,
   never plaintext; the registry's `isSecret` rows) are treated as "present, unknown" — never
   reported as differences and never counted for `--exit-code`; they are surfaced via the
   masked note / `masked[]`.
-- **Values are convergence projections (ADR 0021):** both sides are normalized through
+- **Values are convergence projections:** both sides are normalized through
   `@supabase/config`'s `fromConfigDocument`/`fromApiProjectConfig`, so a reported "local"
   value is what pushing the file would produce hosted (canonicalized durations/byte sizes,
   push-gated omissions), not necessarily the file's literal spelling.

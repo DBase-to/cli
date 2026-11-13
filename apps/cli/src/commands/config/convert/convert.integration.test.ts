@@ -154,7 +154,7 @@ const failingConfigTomlFsLayer = (failure: FsFailure) =>
 
 const EDITED_TOML = 'project_id = "edited"\n';
 
-const SIMPLE_TOML = `#:schema https://supabase.com/schemas/config/v1.json
+const SIMPLE_TOML = `#:schema https://dbase.to/schemas/config/v1.json
 # project name
 project_id = "demo"
 
@@ -230,7 +230,7 @@ describe("config convert integration", () => {
 
       const jsonc = yield* readFile("supabase", "config.jsonc");
       expect(parseJsonc(jsonc)).toEqual({
-        $schema: "https://supabase.com/schemas/config/v1.json",
+        $schema: "https://dbase.to/schemas/config/v1.json",
         project_id: "demo",
         api: { port: 54321 },
       });
@@ -422,10 +422,10 @@ describe("config convert integration", () => {
       expect(settings).toContain("// mine");
       expect(parseJsonc(settings)).toEqual({
         "editor.fontSize": 14,
-        "json.schemaDownload.trustedDomains": { "https://supabase.com/schemas/": true },
+        "json.schemaDownload.trustedDomains": { "https://dbase.to/schemas/": true },
       });
       expect(out.stdoutText).toContain(
-        "    ~ Updated  .vscode/settings.json (trusts https://supabase.com/schemas/)\n",
+        "    ~ Updated  .vscode/settings.json (trusts https://dbase.to/schemas/)\n",
       );
     }).pipe(Effect.provide(BunServices.layer));
   });
@@ -455,7 +455,7 @@ describe("config convert integration", () => {
       expect(yield* readFile(".vscode", "settings.json")).toBe("{ nope");
       expect(out.stdoutText).toContain("  ⚠ Could not update .vscode/settings.json\n");
       expect(out.stdoutText).toContain(
-        'Add "https://supabase.com/schemas/": true under "json.schemaDownload.trustedDomains" to trust the config schema.',
+        'Add "https://dbase.to/schemas/": true under "json.schemaDownload.trustedDomains" to trust the config schema.',
       );
     }).pipe(Effect.provide(BunServices.layer));
   });
@@ -483,7 +483,7 @@ describe("config convert integration", () => {
           "  Planned changes",
           "    + Create  supabase/config.jsonc",
           "    > Move    supabase/config.toml to supabase/config.toml.bak",
-          "    ~ Update  .vscode/settings.json (trusts https://supabase.com/schemas/)",
+          "    ~ Update  .vscode/settings.json (trusts https://dbase.to/schemas/)",
         ].join("\n"),
       );
       expect(out.stderrText).toContain("  To undo after converting:\n");
@@ -521,7 +521,7 @@ describe("config convert integration", () => {
             path: "supabase/config.jsonc",
             converted: true,
             backup: "supabase/config.toml.bak",
-            schema: "https://supabase.com/schemas/config/v1.json",
+            schema: "https://dbase.to/schemas/config/v1.json",
             moved_comments: [],
             vscode_settings_updated: false,
             min_cli_version: CONFIG_JSONC_MIN_CLI_VERSION,
@@ -574,7 +574,7 @@ describe("config convert integration", () => {
   it.effect("keeps an explicit trusted-domain choice in VS Code settings", () => {
     const { layer, out } = setup();
     const settings =
-      '{\n  "json.schemaDownload.trustedDomains": {\n    "https://supabase.com/schemas/": false\n  }\n}\n';
+      '{\n  "json.schemaDownload.trustedDomains": {\n    "https://dbase.to/schemas/": false\n  }\n}\n';
     return Effect.gen(function* () {
       yield* writeFile(["supabase", "config.toml"], SIMPLE_TOML);
       yield* writeFile([".vscode", "settings.json"], settings);

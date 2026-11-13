@@ -24,8 +24,7 @@ import {
  * returned; any mismatch refuses rather than shipping wrong bytes. An edit either replaces an
  * existing value's span in place or inserts a new line/table — nothing else is touched, so
  * untouched comments, spacing, and quoting survive byte-for-byte. JSON/JSONC documents are
- * span-edited through `jsonc-parser`'s `modify`, keeping comments and trailing commas. See ADR
- * 0023 for the design rationale and rejected alternatives.
+ * span-edited through `jsonc-parser`'s `modify`, keeping comments and trailing commas.
  */
 
 export type ConfigEditValue =

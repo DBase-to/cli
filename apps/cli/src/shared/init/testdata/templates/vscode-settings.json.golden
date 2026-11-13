@@ -22,6 +22,6 @@
     "editor.defaultFormatter": "denoland.vscode-deno"
   },
   "json.schemaDownload.trustedDomains": {
-    "https://supabase.com/schemas/": true
+    "https://dbase.to/schemas/": true
   }
 }

@@ -211,23 +211,21 @@ layer(BunServices.layer)("startStackEdgeRuntimeContainer", (it) => {
       }),
   );
 
-  it.effect(
-    "sets --ulimit nofile, capped at 65536 and clamped to the host hard limit (CLI-2220)",
-    () =>
-      Effect.gen(function* () {
-        const mock = mockDockerSpawner();
-        const out = mockOutput();
+  it.effect("sets --ulimit nofile, capped at 65536 and clamped to the host hard limit", () =>
+    Effect.gen(function* () {
+      const mock = mockDockerSpawner();
+      const out = mockOutput();
 
-        yield* startStackEdgeRuntimeContainer(baseInput(tempWorkdir.current)).pipe(
-          Effect.provideService(ChildProcessSpawner.ChildProcessSpawner, mock.spawner),
-          Effect.provide(out.layer),
-        );
+      yield* startStackEdgeRuntimeContainer(baseInput(tempWorkdir.current)).pipe(
+        Effect.provideService(ChildProcessSpawner.ChildProcessSpawner, mock.spawner),
+        Effect.provide(out.layer),
+      );
 
-        const runCall = mock.runCall;
-        const ulimitIndex = runCall.args.indexOf("--ulimit");
-        expect(runCall.args[ulimitIndex + 1]).toBe(edgeRuntimeNofileUlimit("darwin").arg);
-        expect(out.messages.filter((message) => message.type === "warn")).toEqual([]);
-      }),
+      const runCall = mock.runCall;
+      const ulimitIndex = runCall.args.indexOf("--ulimit");
+      expect(runCall.args[ulimitIndex + 1]).toBe(edgeRuntimeNofileUlimit("darwin").arg);
+      expect(out.messages.filter((message) => message.type === "warn")).toEqual([]);
+    }),
   );
 
   it.effect("sets --workdir once an enabled function mounts the project root (#6035)", () =>

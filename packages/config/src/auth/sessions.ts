@@ -5,7 +5,7 @@ const tags = ["auth"];
 const links = [
   {
     name: "User sessions",
-    link: "https://supabase.com/docs/guides/auth/sessions",
+    link: "https://dbase.to/docs/guides/auth/sessions",
   },
 ];
 

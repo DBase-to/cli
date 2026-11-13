@@ -77,7 +77,7 @@ const VANITY_GATE_ENVELOPE = {
   error: {
     code: "entitlement_required",
     feature: "vanity_subdomain",
-    upgrade_url: "https://supabase.com/dashboard/org/env-org/billing",
+    upgrade_url: "https://dbase.to/dashboard/org/env-org/billing",
   },
 };
 
@@ -184,7 +184,7 @@ describe("vanity-subdomains get", () => {
           error: {
             code: "entitlement_required",
             feature: "vanity_subdomain",
-            upgrade_url: "https://supabase.com/dashboard/org/env-org/billing",
+            upgrade_url: "https://dbase.to/dashboard/org/env-org/billing",
           },
         },
       },
@@ -198,7 +198,7 @@ describe("vanity-subdomains get", () => {
       expect(error).toMatchObject({
         entitlement: {
           feature: "vanity_subdomain",
-          upgrade_url: "https://supabase.com/dashboard/org/env-org/billing",
+          upgrade_url: "https://dbase.to/dashboard/org/env-org/billing",
         },
       });
       expect(api.requests).toHaveLength(1);
@@ -509,7 +509,7 @@ describe("vanity-subdomains check-availability", () => {
       expect(error).toMatchObject({
         entitlement: {
           feature: "vanity_subdomain",
-          upgrade_url: "https://supabase.com/dashboard/org/env-org/billing",
+          upgrade_url: "https://dbase.to/dashboard/org/env-org/billing",
         },
       });
       expect(out.stderrText).not.toContain("Upgrade your plan:");
@@ -778,7 +778,7 @@ describe("vanity-subdomains activate", () => {
       expect(error).toMatchObject({
         entitlement: {
           feature: "vanity_subdomain",
-          upgrade_url: "https://supabase.com/dashboard/org/env-org/billing",
+          upgrade_url: "https://dbase.to/dashboard/org/env-org/billing",
         },
       });
       expect(out.stderrText).not.toContain("Upgrade your plan:");

@@ -1,6 +1,6 @@
 # `@supabase/stack`
 
-An Effect-based local Supabase runtime with individually identified services, explicit composition, and a detached owner process. See [the architecture](ARCHITECTURE.md) for lifecycle and ownership rules.
+An Effect-based local DBase runtime with individually identified services, explicit composition, and a detached owner process. See [the architecture](ARCHITECTURE.md) for lifecycle and ownership rules.
 
 The package accepts service configuration directly. Loading CLI configuration, migrations, seeds, and command presentation belong to the CLI.
 

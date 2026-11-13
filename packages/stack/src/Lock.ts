@@ -9,10 +9,10 @@ import { SLIM_IMAGE_GHCR_REGISTRY } from "./preparation/SlimEndpoints.ts";
 import { publish } from "./StackNamespace.ts";
 
 /** The `$schema` value every v1 lock is written with, because older CLIs require it. */
-export const LOCK_SCHEMA_URL = "https://supabase.com/docs/cli/supabase-lock/v1.schema.json";
+export const LOCK_SCHEMA_URL = "https://dbase.to/docs/cli/supabase-lock/v1.schema.json";
 
 /** Where the v1 lock schema is hosted; reads accept it as `$schema` so a later release can write it. */
-export const HOSTED_LOCK_SCHEMA_URL = "https://supabase.com/schemas/supabase-lock/v1.json";
+export const HOSTED_LOCK_SCHEMA_URL = "https://dbase.to/schemas/supabase-lock/v1.json";
 
 const LOCK_VERSION = 1;
 

@@ -147,7 +147,7 @@ const sessionReplicationRolePath = ["database", "postgres_settings", "session_re
 
 /**
  * `session_replication_role` is a closed enum on the config side, but the lenient API
- * mirror widens it to a plain string (see `docs/adr/0019-config-api-response-passthrough.md`)
+ * mirror widens it to a plain string
  * so a new enum value doesn't fail decode. This row guards it back to the enum, omitting an
  * unrecognized value rather than throwing — it stays reachable via `_apiResponse`.
  */

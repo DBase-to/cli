@@ -62,7 +62,7 @@ describe("completion bash", () => {
     },
   );
 
-  it.effect("fires the cli_command_executed telemetry event (CLI-1965 review finding)", () => {
+  it.effect("fires the cli_command_executed telemetry event", () => {
     const out = setupCompletionBash();
     const analytics = mockAnalytics();
     const layer = Layer.mergeAll(

@@ -1552,7 +1552,7 @@ describe("db pull", () => {
   });
 
   it.effect(
-    "a remote-history update failure after a successful write reports the written migration path (CLI-1272)",
+    "a remote-history update failure after a successful write reports the written migration path",
     () => {
       // The migration write succeeds; only the subsequent history-table write fails.
       // The resulting `DbPullWriteError` must still carry the already-written path via

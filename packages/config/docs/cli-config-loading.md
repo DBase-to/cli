@@ -10,7 +10,7 @@ This document explains how the CLI's on-disk config document loading works, acro
   `analytics`, …) plus `[remotes.*]` overrides. Owned by `@supabase/config`.
 - `ProjectConfig`: the hosted-project subset — the sections a hosted project manages (`api`,
   `auth`, `db`, `realtime`, `storage`, `compute`, `experimental`), produced by `toProjectConfig`
-  from either a `CliConfig` document or a Management API v2 project-config response (CLI-2230).
+  from either a `CliConfig` document or a Management API v2 project-config response.
   Sparse by design: it carries only what its source actually said, so it composes with the
   subtraction core (`subtractCliConfig`/`omitDefaultValues`, operand type `EffectiveConfig`)
   without fabricating drift from schema defaults. An API-sourced value may speak for fewer
@@ -34,17 +34,17 @@ This document explains how the CLI's on-disk config document loading works, acro
 
 The `Cli*` prefix is a rule, not a per-name coincidence: it names the local checkout side — what
 the CLI reads, writes, or resolves about itself on disk. A bare `Project*` name is reserved for the
-hosted Supabase project. Value-helpers follow the config family regardless of their inputs, not the
+hosted DBase project. Value-helpers follow the config family regardless of their inputs, not the
 shape of whatever they're passed — `resolveCliConfigValue` is `Cli*`-named for this reason. See
-[ADR 0020](../../../docs/adr/0020-config-naming-vocabulary.md) for the full decision record.
+for the full decision record.
 
 Within `CliConfig` itself, `project_id` is overloaded by position: the root-scope `project_id` is
 a local identifier that defaults to the working directory name when running `supabase init` (see
 `packages/config/src/base.ts`), while a `[remotes.<label>].project_id` is the hosted project's
-ref — the value that binds that remote block to a specific persistent Supabase branch.
+ref — the value that binds that remote block to a specific persistent DBase branch.
 
 The `Cli*` prefix names the local checkout side — what the CLI reads, writes, or resolves about
-itself on disk. A bare `Project*` name is reserved for the hosted Supabase project side. (Deliberate
+itself on disk. A bare `Project*` name is reserved for the hosted DBase project side. (Deliberate
 exceptions live in apps/cli: services that describe the hosted project itself or the CLI's link to
 it — `ProjectLinkRemote`, `ProjectLinkState` (both in `shared/config`), and
 `RemoteTarget` (in `apps/cli/src/config`) — keep the bare `Project*` root under this same
@@ -69,9 +69,9 @@ against `packages/config/src/node.ts`/`bun.ts`) are:
 Every name here matches its `./effect` counterpart one-to-one (only the return type changes,
 `Effect` to `Promise`) — the subpath itself (`/io` vs `/effect`) is what conveys Promise-vs-Effect.
 `findCliProjectRootFor`/`findCliProjectPathsFor`/`loadCliProjectEnvironmentFor`/
-`loadFunctionsManifest` were the pre-CLI-2234 names: the first three carried a `For` suffix their
+`loadFunctionsManifest` were the pre names: the first three carried a `For` suffix their
 `./effect` counterparts didn't, and the fourth wrapped `./effect`'s `inferFunctionsManifest` under
-an unrelated verb. CLI-2234 renamed all four to match.
+an unrelated verb. renamed all four to match.
 
 ## Overview
 
@@ -285,9 +285,9 @@ These helpers do two things at once:
 resolves and redacts leaves nested inside `[remotes.*]` blocks.
 
 An optional `cliCompat` flag switches the `env(NAME)` matcher from the default, strict
-`SCREAMING_SNAKE_CASE`-only pattern to the Supabase CLI's case-agnostic `^env\((.*)\)$` form; only
+`SCREAMING_SNAKE_CASE`-only pattern to the DBase CLI's case-agnostic `^env\((.*)\)$` form; only
 `apps/cli` sets it. The public `resolveCliConfigValue`/`resolveCliConfigSubtree` on
-`.`/`./effect` take no options parameter at all (CLI-2234) — `cliCompat` is internal-only,
+`.`/`./effect` take no options parameter at all — `cliCompat` is internal-only,
 typed on `InternalResolveCliConfigOptions`, a package-internal type that is not itself exported.
 `@supabase/config/internal` re-exports these same runtime functions re-typed to additionally
 accept it; `apps/cli` imports from there instead.
@@ -384,7 +384,7 @@ distinct from the `CliConfig` document.
 ## CLI value precedence
 
 The CLI resolves every config value, whether from `CliConfig` or from a `SUPABASE_*` variable, with
-one order (ADR 0032):
+one order:
 
 1. an explicit flag
 2. shell environment
@@ -504,8 +504,8 @@ leading `#:schema <url>` directive in `config.toml` (a top-level `"$schema"` key
 the directive wins). The directive must come before any other content; blank lines and comments
 may precede it, and surrounding spaces or tabs are ignored. A file with no declaration is v1.
 
-- `https://supabase.com/schemas/config/v<N>.json` declares version `N`.
-- The legacy `https://supabase.com/docs/cli/config.schema.json` and paths ending in
+- `https://dbase.to/schemas/config/v<N>.json` declares version `N`.
+- The legacy `https://dbase.to/docs/cli/config.schema.json` and paths ending in
   `node_modules/@supabase/config/schema.json` or `node_modules/@supabase/config/dist/schema.json`
   read as v1.
 - Any other reference is unrecognized: the file is read as v1 and the CLI warns on stderr, naming
@@ -581,12 +581,12 @@ The important rule is semantic overlap, not storage overlap. A value does not be
 
 For example:
 
-- `CliSettings.apiUrl` is the Supabase platform Management API base URL
+- `CliSettings.apiUrl` is the DBase platform Management API base URL
 - `CliConfig.studio.api_url` is the local API URL used by Studio
 
 Those are different meanings and should remain separate.
 
-`ProjectConfig` — the hosted-project subset (CLI-2230) — sits alongside these two: it converges
+`ProjectConfig` — the hosted-project subset — sits alongside these two: it converges
 the same committed-intent fields from either a `CliConfig` document or a Management API response,
 without the local-only sections (`studio`, ports, `edge_runtime`, `analytics`, `[remotes.*]`, …)
 that only make sense for a local checkout. See the Vocabulary entry above for its sparse

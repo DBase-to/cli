@@ -7058,7 +7058,7 @@
     "/v1/projects/{ref}/analytics/endpoints/logs.all": {
       "get": {
         "deprecated": true,
-        "description": "This endpoint has been removed and always responds with `410 Gone`. Use `GET /v1/projects/{ref}/analytics/endpoints/logs` instead. See the [migration guide](https://supabase.com/changelog/48235-migration-of-supabase-management-api-logs-all-analytics-endpoint-to-logs-endpoint).",
+        "description": "This endpoint has been removed and always responds with `410 Gone`. Use `GET /v1/projects/{ref}/analytics/endpoints/logs` instead. See the [migration guide](https://dbase.to/changelog/48235-migration-of-supabase-management-api-logs-all-analytics-endpoint-to-logs-endpoint).",
         "operationId": "v1-get-project-logs-all",
         "parameters": [
           {
@@ -7130,7 +7130,7 @@
             "name": "sql",
             "required": false,
             "in": "query",
-            "description": "Custom SQL query to execute on the logs. See [querying logs](https://supabase.com/docs/guides/monitoring-and-debugging/logs#querying-with-the-logs-explorer) for more details.",
+            "description": "Custom SQL query to execute on the logs. See [querying logs](https://dbase.to/docs/guides/monitoring-and-debugging/logs#querying-with-the-logs-explorer) for more details.",
             "schema": {
               "example": "select event_message from edge_logs limit 10",
               "type": "string"

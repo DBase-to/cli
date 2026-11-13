@@ -4,14 +4,14 @@ Target: hosted, consent default Yes — see [Command target](../../../../docs/co
 
 ## Files Read
 
-| Path                                           | Format                    | When                                                                                                                           |
-| ---------------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| keyring `"DBase CLI"` / `<profile>`            | OS keychain               | when `DBASE_ACCESS_TOKEN` unset and keyring available; account = `CommandSettings.profile`                                     |
-| keyring `"DBase CLI"` / `access-token`         | OS keychain               | legacy-key fallback when the profile-keyed lookup misses                                                                       |
-| `~/.supabase/access-token`                     | plain text (token string) | last-resort fallback after env + keyring miss                                                                                  |
-| `<workdir>/supabase/.temp/linked-project.json` | JSON (`ref` field)        | when `--remote=<ref>` is not given, as the 2nd PARENT-ref candidate (CLI-2167 follow-up — see `branches list/SIDE_EFFECTS.md`) |
-| `<workdir>/supabase/.temp/project-ref`         | plain text                | when neither `--remote=<ref>` nor `DBASE_PROJECT_ID` is set, as the 3rd (last) PARENT-ref candidate                            |
-| `<cwd>/.git/HEAD` (walking parents)            | plain text                | when the positional `[name]` arg is omitted — fallback branch name detection                                                   |
+| Path                                           | Format                    | When                                                                                                |
+| ---------------------------------------------- | ------------------------- | --------------------------------------------------------------------------------------------------- |
+| keyring `"DBase CLI"` / `<profile>`            | OS keychain               | when `DBASE_ACCESS_TOKEN` unset and keyring available; account = `CommandSettings.profile`          |
+| keyring `"DBase CLI"` / `access-token`         | OS keychain               | legacy-key fallback when the profile-keyed lookup misses                                            |
+| `~/.supabase/access-token`                     | plain text (token string) | last-resort fallback after env + keyring miss                                                       |
+| `<workdir>/supabase/.temp/linked-project.json` | JSON (`ref` field)        | when `--remote=<ref>` is not given, as the 2nd PARENT-ref candidate                                 |
+| `<workdir>/supabase/.temp/project-ref`         | plain text                | when neither `--remote=<ref>` nor `DBASE_PROJECT_ID` is set, as the 3rd (last) PARENT-ref candidate |
+| `<cwd>/.git/HEAD` (walking parents)            | plain text                | when the positional `[name]` arg is omitted — fallback branch name detection                        |
 
 ## Files Written
 
@@ -30,14 +30,14 @@ Target: hosted, consent default Yes — see [Command target](../../../../docs/co
 
 ## Environment Variables
 
-| Variable             | Purpose                                                                                                                                                                 | Required?                                               |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| `DBASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup)                                                                                                                    | no (falls back to keyring → `~/.supabase/access-token`) |
-| `DBASE_PROFILE`      | selects API base URL (`supabase` / `supabase-staging` / `supabase-local`) or a YAML profile path                                                                        | no                                                      |
-| `DBASE_PROJECT_ID`   | PARENT project ref fallback (1st candidate) when `--remote=<ref>` is not given (CLI-2167 follow-up) — see `branches list/SIDE_EFFECTS.md` for the full resolution chain | no                                                      |
-| `DBASE_WORKDIR`      | base directory for the `.temp/project-ref` lookup                                                                                                                       | no                                                      |
-| `GITHUB_HEAD_REF`    | preferred over walking `.git/HEAD` when detecting the default branch name in CI                                                                                         | no                                                      |
-| `DBASE_YES`          | approves the hosted-mutation confirmation like `--yes` (shell environment only; `supabase/.env` is ignored)                                                             | no                                                      |
+| Variable             | Purpose                                                                                                                                            | Required?                                               |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| `DBASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup)                                                                                               | no (falls back to keyring → `~/.supabase/access-token`) |
+| `DBASE_PROFILE`      | selects API base URL (`supabase` / `supabase-staging` / `supabase-local`) or a YAML profile path                                                   | no                                                      |
+| `DBASE_PROJECT_ID`   | PARENT project ref fallback (1st candidate) when `--remote=<ref>` is not given — see `branches list/SIDE_EFFECTS.md` for the full resolution chain | no                                                      |
+| `DBASE_WORKDIR`      | base directory for the `.temp/project-ref` lookup                                                                                                  | no                                                      |
+| `GITHUB_HEAD_REF`    | preferred over walking `.git/HEAD` when detecting the default branch name in CI                                                                    | no                                                      |
+| `DBASE_YES`          | approves the hosted-mutation confirmation like `--yes` (shell environment only; `supabase/.env` is ignored)                                        | no                                                      |
 
 ## Exit Codes
 

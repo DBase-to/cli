@@ -2,7 +2,7 @@
 
 Every command that acts on a database or hosted project announces the target it resolved, once, before it acts. The same identity goes to machine consumers as the JSON `target` object.
 
-This page is the shared reference for how a command's target is chosen, which errors the selection raises, the deprecated selector flags, how a hosted write is confirmed, and what the banner and the JSON `target` carry. [ADR 0033](../../../docs/adr/0033-target-selection-and-hosted-mutation-consent.md) records why. The `SIDE_EFFECTS.md` of every `hosted`, `selectable` and `account` command opens with a `Target:` line that links here and lists only what is specific to that command: its own calls, files, exit codes and prompt, and any selector rule that differs from this page. A `local-only` command has no `Target:` line.
+This page is the shared reference for how a command's target is chosen, which errors the selection raises, the deprecated selector flags, how a hosted write is confirmed, and what the banner and the JSON `target` carry. records why. The `SIDE_EFFECTS.md` of every `hosted`, `selectable` and `account` command opens with a `Target:` line that links here and lists only what is specific to that command: its own calls, files, exit codes and prompt, and any selector rule that differs from this page. A `local-only` command has no `Target:` line.
 
 ## Groups
 

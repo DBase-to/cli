@@ -3,14 +3,14 @@ import type { ConfigFormat } from "./config-format.ts";
 
 export interface CliConfigSchemaDeclaration {
   readonly ref: string;
-  /** `undefined` when the reference is not a recognized Supabase config schema URL. */
+  /** `undefined` when the reference is not a recognized DBase config schema URL. */
   readonly version: bigint | undefined;
 }
 
 export const SCHEMA_DIRECTIVE_LINE = /^[ \t]*#:schema[ \t]+(\S+)[ \t]*(?=\r?\n|$)/;
 
-const VERSIONED_SCHEMA_URL = /^https:\/\/supabase\.com\/schemas\/config\/v([1-9]\d*)\.json$/;
-const LEGACY_SCHEMA_URL = "https://supabase.com/docs/cli/config.schema.json";
+const VERSIONED_SCHEMA_URL = /^https:\/\/dbase\.to\/schemas\/config\/v([1-9]\d*)\.json$/;
+const LEGACY_SCHEMA_URL = "https://dbase.to/docs/cli/config.schema.json";
 const PACKAGE_SCHEMA_PATH = /node_modules[\\/]@supabase[\\/]config[\\/](?:dist[\\/])?schema\.json$/;
 
 /** Returns the config schema version a `$schema`/`#:schema` reference declares, if any. */

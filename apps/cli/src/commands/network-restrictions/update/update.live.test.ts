@@ -35,7 +35,7 @@ interface AllowedCidrs {
 const TEST_CIDRS: AllowedCidrs = { v4: ["203.0.113.0/24"], v6: ["2001:db8::/32"] };
 
 // The allow-all sentinels `config.toml` ships as the `db.network_restrictions`
-// defaults; ADR 0022 treats them as the platform's unconfigured state.
+// defaults; the platform treats them as the platform's unconfigured state.
 const ALLOW_ALL_CIDRS: AllowedCidrs = { v4: ["0.0.0.0/0"], v6: ["::/0"] };
 
 interface Posture {

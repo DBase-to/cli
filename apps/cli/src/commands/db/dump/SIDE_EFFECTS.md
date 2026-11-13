@@ -90,7 +90,7 @@ shell inherits the suppressing variables and is missed.
 
 ## Notes
 
-- **Config value precedence** (ADR 0032): explicit flag > shell env > project `.env*` > config
+- **Config value precedence**: explicit flag > shell env > project `.env*` > config
   (`config.json` over `config.toml`; a matched `[remotes.*]` block over the base document on
   a remote project or branch) > default. The linked-database password env is withheld when the target differs
   from `.temp/project-ref`: stderr gets `Not sending DBASE_DB_PASSWORD to <target>: this directory is linked to <linked>. Using a temporary login role instead (needs dbase login or DBASE_ACCESS_TOKEN). Pass --password to use a password for <target>.` and a temporary login role is minted.

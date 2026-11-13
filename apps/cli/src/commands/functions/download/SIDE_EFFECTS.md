@@ -48,7 +48,7 @@ Target: hosted, no consent — see [Command target](../../../../docs/command-tar
 | `docker run --rm ... --label com.supabase.cli.project=<id> --label com.docker.compose.project=<id> <edge-runtime image> unbundle --eszip ... --output ...` | Docker-unbundle path                            | extract the downloaded eszip into `supabase/functions/<slug>/...`; labeled so orphaned containers can be associated with the project                                                                              |
 
 The Docker-unbundle path's own container stdout is routed to the real stdout
-in text mode, to stderr in machine-output modes (CLI-1546).
+in text mode, to stderr in machine-output modes.
 
 ## Environment Variables
 
@@ -106,7 +106,7 @@ Same envelope as `json` above (including on the Docker-unbundle path).
 
 ## Notes
 
-- **Config value precedence** (ADR 0032): explicit flag > shell env > project `.env*` > config
+- **Config value precedence**: explicit flag > shell env > project `.env*` > config
   (`config.json` over `config.toml`) > default. The whole config is decoded up front, so an
   invalid value, including an unparsable `SUPABASE_*` override, fails the command.
 - If no function name is provided, downloads all functions.
@@ -116,7 +116,7 @@ Same envelope as `json` above (including on the Docker-unbundle path).
   the edge-runtime container, through the `supabase/functions` bind mount — this is a known
   gap. Slugs sourced from the Management API's function
   list (downloading-all) are validated against the same pattern as user-supplied slugs, on both
-  paths, before any per-slug download runs (CLI-1891).
+  paths, before any per-slug download runs.
 - `--use-docker` is a hidden flag but runs natively.
 - `--use-docker` and `--use-api` are mutually exclusive.
 - `--use-docker` defaults to `true`, so a bare `dbase functions download` runs the

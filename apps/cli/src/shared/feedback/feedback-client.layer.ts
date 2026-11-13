@@ -12,7 +12,7 @@ import { FeedbackBackendError, FeedbackClient } from "./feedback-client.service.
  * gated by an RLS policy that compares the row's `delete_token` against the
  * `x-feedback-token` request header — plus matching `x-feedback-project-ref`
  * / `x-feedback-user-id` headers when the row was submitted with them. The
- * CLI never reads a row; CLI-2406 removes the backend read path.
+ * CLI never reads a row removes the backend read path.
  */
 interface FeedbackEnvironment {
   readonly url: string;

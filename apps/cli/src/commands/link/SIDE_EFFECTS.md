@@ -15,8 +15,8 @@ currently-linked parent project. `link` takes no `--remote`: the argument is its
 | Path                                 | Format              | When                                                                                                                                                                                                                                                         |
 | ------------------------------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `supabase/config.toml`               | TOML (`project_id`) | NOT read for ref resolution itself — read by `CommandSettings` for workdir/project-id discovery generally (`--workdir` resolution, `DBASE_PROJECT_ID` passthrough)                                                                                           |
-| `supabase/.temp/linked-project.json` | JSON (`ref` field)  | only when the given `[ref-or-branch]`/`--project-ref` value is not ref-shaped, as the 2nd parent-project candidate for branch-name resolution (CLI-2167)                                                                                                     |
-| `supabase/.temp/project-ref`         | plain text          | outside stack mode, at services link, to tell whether it names the target; also when the given `[ref-or-branch]`/`--project-ref` value is not ref-shaped, as the 3rd (last) parent-project candidate for branch-name resolution (CLI-2167)                   |
+| `supabase/.temp/linked-project.json` | JSON (`ref` field)  | only when the given `[ref-or-branch]`/`--project-ref` value is not ref-shaped, as the 2nd parent-project candidate for branch-name resolution                                                                                                                |
+| `supabase/.temp/project-ref`         | plain text          | outside stack mode, at services link, to tell whether it names the target; also when the given `[ref-or-branch]`/`--project-ref` value is not ref-shaped, as the 3rd (last) parent-project candidate for branch-name resolution                              |
 | `~/.supabase/access-token`           | plain text          | when `DBASE_ACCESS_TOKEN` is unset and the keyring is unavailable                                                                                                                                                                                            |
 | `$DBASE_HOME/stacks/<id>/`           | JSON                | stack mode only, when the lock is written and the lease is released: saved stack state and database data records, to warn about data a new pin would be refused by; nothing is created, locked or probed (see "Hosted versions in `supabase/supabase.lock`") |
 
@@ -85,7 +85,7 @@ Management API (base `CommandSettings.apiUrl`, `Authorization: Bearer <access-to
 | `GET`  | `/v1/projects/{ref}/config/storage`         | best-effort                                                                                                                                                       |
 | `GET`  | `/v1/projects/{ref}/config/database/pooler` | best-effort (unless `--skip-pooler`)                                                                                                                              |
 | `GET`  | `/v1/projects`                              | only when prompting on a TTY                                                                                                                                      |
-| `GET`  | `/v1/projects/{parentRef}/branches`         | only when a non-ref-shaped `[ref-or-branch]`/`--project-ref` value is given (CLI-2167)                                                                            |
+| `GET`  | `/v1/projects/{parentRef}/branches`         | only when a non-ref-shaped `[ref-or-branch]`/`--project-ref` value is given                                                                                       |
 | `GET`  | `/v1/projects/{cachedRef}/branches`         | 404-path stale-cache correlation only: a RAW ref-shaped branch link whose existing `linked-project.json` names a different project (PR #6168 review, best-effort) |
 
 Tenant service gateway (`https://<ref>.<projectHost>`, `apikey: <service-key>` + `Authorization: Bearer <service-key>`;
@@ -103,31 +103,31 @@ a redirect is never followed and counts as a failed probe):
 
 ## Environment Variables
 
-| Variable                   | Purpose                                                                                                                                                                                                                |
-| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `DBASE_PROJECT_ID`         | link-target resolution: `[ref-or-branch]` positional → `--project-ref` → env → TTY prompt (CLI-2167 adds the positional ahead of the flag). Also the 1st parent-project candidate for a branch-name lookup (CLI-2167). |
-| `DBASE_ACCESS_TOKEN`       | Management API bearer auth (env → keyring → `~/.supabase/access-token`)                                                                                                                                                |
-| `DBASE_DB_PASSWORD`        | bound to the hidden `--password`; **accepted but ignored**: `link` never connects to the database, and an explicit `--password` prints a deprecation warning                                                           |
-| `DBASE_EXPERIMENTAL_STACK` | `1` or `0` selects stack project-state mode over `[experimental] stack`; unset or empty uses the config. Any other value fails the command (see Exit Codes)                                                            |
+| Variable                   | Purpose                                                                                                                                                      |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `DBASE_PROJECT_ID`         | link-target resolution: `[ref-or-branch]` positional → `--project-ref` → env → TTY prompt. Also the 1st parent-project candidate for a branch-name lookup.   |
+| `DBASE_ACCESS_TOKEN`       | Management API bearer auth (env → keyring → `~/.supabase/access-token`)                                                                                      |
+| `DBASE_DB_PASSWORD`        | bound to the hidden `--password`; **accepted but ignored**: `link` never connects to the database, and an explicit `--password` prints a deprecation warning |
+| `DBASE_EXPERIMENTAL_STACK` | `1` or `0` selects stack project-state mode over `[experimental] stack`; unset or empty uses the config. Any other value fails the command (see Exit Codes)  |
 
 ## Exit Codes
 
-| Code | Condition                                                                                                                                                                             |
-| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `0`  | success — project linked (incl. the 404 branch path); prints `Finished dbase link.`                                                                                                   |
-| `1`  | non-TTY with no `--project-ref` / `DBASE_PROJECT_ID` (`required flag(s) "project-ref" not set`)                                                                                       |
-| `1`  | malformed project ref — only reachable via `DBASE_PROJECT_ID`/TTY prompt now; a malformed `[ref-or-branch]`/`--project-ref` value takes the CLI-2167 branch-lookup path below instead |
-| `1`  | project paused (`INACTIVE`)                                                                                                                                                           |
-| `1`  | project status non-200/404                                                                                                                                                            |
-| `1`  | api-keys auth failure other than 403 / missing key                                                                                                                                    |
-| `1`  | `project-ref` file write failure                                                                                                                                                      |
-| `1`  | both `[ref-or-branch]` and `--project-ref` given (CLI-2167)                                                                                                                           |
-| `1`  | non-ref-shaped `[ref-or-branch]`/`--project-ref` value with no linked parent project at all (CLI-2167)                                                                                |
-| `1`  | a parent-project candidate exists but none is ref-shaped — corrupt/stale linked state (CLI-2167)                                                                                      |
-| `1`  | branch name/UUID not found on the linked parent project (CLI-2167)                                                                                                                    |
-| `1`  | branch resolved but has no `project_ref` yet (still provisioning) (CLI-2167)                                                                                                          |
-| `1`  | branch listing failure (network/status) during branch-name resolution (CLI-2167)                                                                                                      |
-| `1`  | `DBASE_EXPERIMENTAL_STACK` is set to a non-empty value other than `0` or `1`; nothing is written                                                                                      |
+| Code | Condition                                                                                                                                                                    |
+| ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `0`  | success — project linked (incl. the 404 branch path); prints `Finished dbase link.`                                                                                          |
+| `1`  | non-TTY with no `--project-ref` / `DBASE_PROJECT_ID` (`required flag(s) "project-ref" not set`)                                                                              |
+| `1`  | malformed project ref — only reachable via `DBASE_PROJECT_ID`/TTY prompt now; a malformed `[ref-or-branch]`/`--project-ref` value takes the branch-lookup path below instead |
+| `1`  | project paused (`INACTIVE`)                                                                                                                                                  |
+| `1`  | project status non-200/404                                                                                                                                                   |
+| `1`  | api-keys auth failure other than 403 / missing key                                                                                                                           |
+| `1`  | `project-ref` file write failure                                                                                                                                             |
+| `1`  | both `[ref-or-branch]` and `--project-ref` given                                                                                                                             |
+| `1`  | non-ref-shaped `[ref-or-branch]`/`--project-ref` value with no linked parent project at all                                                                                  |
+| `1`  | a parent-project candidate exists but none is ref-shaped — corrupt/stale linked state                                                                                        |
+| `1`  | branch name/UUID not found on the linked parent project                                                                                                                      |
+| `1`  | branch resolved but has no `project_ref` yet (still provisioning)                                                                                                            |
+| `1`  | branch listing failure (network/status) during branch-name resolution                                                                                                        |
+| `1`  | `DBASE_EXPERIMENTAL_STACK` is set to a non-empty value other than `0` or `1`; nothing is written                                                                             |
 
 > Best-effort service-link and telemetry errors never affect the exit code.
 
@@ -143,8 +143,8 @@ a redirect is never followed and counts as a failed probe):
 - stderr: `Resolved branch "<name>" of project <parentRef> to project ref <branchRef>.` — via
   `output.raw(..., "stderr")` (NOT `output.info`, which clack renders on stdout with `│`/`◇`
   framing in text mode) — only when a non-ref-shaped `[ref-or-branch]`/`--project-ref` value
-  resolved to a branch (CLI-2167).
-- spinner: `Resolving branch...` while listing branches for a branch-name lookup (CLI-2167;
+  resolved to a branch.
+- spinner: `Resolving branch...` while listing branches for a branch-name lookup (;
   suppressed in `json`/`stream-json` mode like every other `output.task`).
 - stdout: `Finished dbase link.`
 
@@ -152,7 +152,7 @@ a redirect is never followed and counts as a failed probe):
 
 Emits a structured success (`{ project_ref }`) and suppresses the human `Finished` line. When a
 branch name/UUID was resolved, the payload additionally carries `branch` (the resolved branch's
-name) and `parent_project_ref` (CLI-2167, purely additive — absent for a plain
+name) and `parent_project_ref` (, purely additive — absent for a plain
 project-ref link). The `Resolved branch "<name>"...` line above still goes out via `output.info`
 in these modes (stderr in `json`; a structured `log` event in `stream-json`) rather than
 `output.raw`. Warnings still go to stderr.

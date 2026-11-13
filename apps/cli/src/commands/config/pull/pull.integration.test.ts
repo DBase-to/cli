@@ -648,44 +648,41 @@ describe("config pull integration", () => {
     }).pipe(Effect.provide(layer));
   });
 
-  it.effect(
-    "a first-pull auth.oauth_server.enabled no longer trips the ADR 0021 unpushable warning (CLI-2314)",
-    () => {
-      // `enabled` is now an ordinary comparable path: writing it converges local and remote
-      // exactly, so no residual `unmanaged` entry exists to warn about. Its siblings
-      // (`allow_dynamic_registration`/`authorization_url_path`) are still pruned while the
-      // container is disabled, but symmetrically on both arms, so a pull never writes a value
-      // for them that itself goes unmanaged.
-      const { layer, out } = setup({
-        toml: 'project_id = "test"\n',
-        yes: true,
-        v2: {
-          status: 200,
-          body: v2Response({
-            attributes: (attributes) => ({
-              ...attributes,
-              auth: {
-                ...asJsonRecord(attributes["auth"]),
-                oauth_server_enabled: true,
-              },
-            }),
+  it.effect("a first-pull auth.oauth_server.enabled no longer trips the unpushable warning", () => {
+    // `enabled` is now an ordinary comparable path: writing it converges local and remote
+    // exactly, so no residual `unmanaged` entry exists to warn about. Its siblings
+    // (`allow_dynamic_registration`/`authorization_url_path`) are still pruned while the
+    // container is disabled, but symmetrically on both arms, so a pull never writes a value
+    // for them that itself goes unmanaged.
+    const { layer, out } = setup({
+      toml: 'project_id = "test"\n',
+      yes: true,
+      v2: {
+        status: 200,
+        body: v2Response({
+          attributes: (attributes) => ({
+            ...attributes,
+            auth: {
+              ...asJsonRecord(attributes["auth"]),
+              oauth_server_enabled: true,
+            },
           }),
-        },
-      });
-      return Effect.gen(function* () {
-        yield* configPull(noFlags);
-        const after = yield* readConfig;
-        expect(after).toContain("[auth.oauth_server]");
-        expect(after).toContain("enabled = true");
-        expect(out.stdoutText).not.toContain("cannot send it back");
-        expect(out.stdoutText).not.toContain("Warnings:");
-        expect(out.stdoutText).toContain("1 change written.");
-      }).pipe(Effect.provide(layer));
-    },
-  );
+        }),
+      },
+    });
+    return Effect.gen(function* () {
+      yield* configPull(noFlags);
+      const after = yield* readConfig;
+      expect(after).toContain("[auth.oauth_server]");
+      expect(after).toContain("enabled = true");
+      expect(out.stdoutText).not.toContain("cannot send it back");
+      expect(out.stdoutText).not.toContain("Warnings:");
+      expect(out.stdoutText).toContain("1 change written.");
+    }).pipe(Effect.provide(layer));
+  });
 
   it.effect(
-    "a first-pull auth.rate_limit.email_sent DOES trip the ADR 0021 unpushable warning, for a sparse remote (review round, CLI-2314)",
+    "a first-pull auth.rate_limit.email_sent DOES trip the unpushable warning, for a sparse remote",
     () => {
       // applyDisabledSentinels's cross-section rule deletes auth.rate_limit.email_sent whenever
       // auth.email.smtp.enabled decodes false, on both arms. The stock fixture's smtp_host: ""
@@ -986,7 +983,7 @@ describe("config pull integration", () => {
   );
 
   it.effect(
-    "the confirmation prompt names the destination block when writing into a [remotes.*] block (CLI-2064 item F.5)",
+    "the confirmation prompt names the destination block when writing into a [remotes.*] block",
     () => {
       const before = [
         'project_id = "test"',
@@ -1092,7 +1089,7 @@ describe("config pull integration", () => {
   );
 
   it.effect(
-    "--remote-label alongside an env-spelled match creates the requested block instead of refusing (CLI-2064 item B)",
+    "--remote-label alongside an env-spelled match creates the requested block instead of refusing",
     () => {
       const before = [
         'project_id = "test"',
@@ -1117,7 +1114,7 @@ describe("config pull integration", () => {
   );
 
   it.effect(
-    "a branch-named target that collides with an existing, differently-tracked block fails with a collision error, and the file stays untouched (CLI-2064 item A)",
+    "a branch-named target that collides with an existing, differently-tracked block fails with a collision error, and the file stays untouched",
     () => {
       const before = [
         'project_id = "test"',
@@ -1145,7 +1142,7 @@ describe("config pull integration", () => {
   );
 
   it.effect(
-    "a --remote-label collision is still caught when the raw value differs from the existing block's name only by control characters (CLI-2064 item A, sanitization bypass)",
+    "a --remote-label collision is still caught when the raw value differs from the existing block's name only by control characters",
     () => {
       const before = [
         'project_id = "test"',
@@ -1370,7 +1367,7 @@ describe("config pull integration", () => {
   );
 
   it.effect(
-    "a REMOTE value spelled as env() is never written — the loader would resolve it against the LOCAL environment on the next load (CLI-2064 security finding)",
+    "a REMOTE value spelled as env() is never written — the loader would resolve it against the LOCAL environment on the next load",
     () => {
       const before = [
         'project_id = "test"',
@@ -1528,7 +1525,7 @@ describe("config pull integration", () => {
   );
 
   it.effect(
-    "on a TTY in text mode, --yes does NOT bypass the uncommitted-changes guard — it aborts instead of silently overwriting (CLI-2064 item C)",
+    "on a TTY in text mode, --yes does NOT bypass the uncommitted-changes guard — it aborts instead of silently overwriting",
     () => {
       const before = 'project_id = "test"\n[api]\nmax_rows = 500\n';
       const { layer } = setup({ toml: before, gitDirty: true, yes: true, stdinIsTty: true });
@@ -2475,7 +2472,7 @@ describe("config pull integration", () => {
   }
 
   it.effect(
-    "twilio scenario A: the fixpoint absorbs a disabled SMS provider's credentials once its own `enabled` toggle is written, and the written file reloads (CLI-2064 live-bug repro)",
+    "twilio scenario A: the fixpoint absorbs a disabled SMS provider's credentials once its own `enabled` toggle is written, and the written file reloads",
     () => {
       const { layer, out } = setup({
         toml: TWILIO_BEFORE,

@@ -61,7 +61,7 @@ describe("makeDir", () => {
     );
   });
 
-  it.effect("treats an already-existing directory as success (CLI-1849)", () => {
+  it.effect("treats an already-existing directory as success", () => {
     const fs = failingFs("AlreadyExists");
     return run(DIR).pipe(
       Effect.exit,

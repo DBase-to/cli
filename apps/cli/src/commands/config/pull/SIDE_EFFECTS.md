@@ -99,7 +99,7 @@ exit `0`: neither is a failure.
 | `1`  | `applyConfigEdits` refused the edit — duplicate table header, an array-of-tables/inline table on the write path, an existing `env(...)` literal at the destination, or a re-parse verification mismatch (`ConfigPullUnsupportedLayoutError`)                                                                                                                                                                                                                                |
 | `1`  | the atomic write itself failed — a filesystem permission problem (`ConfigPullWriteError`)                                                                                                                                                                                                                                                                                                                                                                                   |
 | `1`  | the post-plan convergence check found a written path still differs from the remote — a defect in this command's own planner, never user-facing; nothing was written (`ConfigPullPlanDefectError`)                                                                                                                                                                                                                                                                           |
-| `1`  | the schema-validation gate (ADR 0023 §d) still finds the projected document unloadable after dropping every family it could identify — never user-facing; nothing was written (`ConfigPullValidationFailedError`)                                                                                                                                                                                                                                                           |
+| `1`  | the schema-validation gate still finds the projected document unloadable after dropping every family it could identify — never user-facing; nothing was written (`ConfigPullValidationFailedError`)                                                                                                                                                                                                                                                                         |
 
 ## Telemetry Events Fired
 
@@ -193,7 +193,7 @@ the -o/--output flag is not supported by config pull; use --output-format json|s
 - **No hosted-mutation consent.** Pull changes only local files, so the one prompt is the local overwrite question above; `--yes` and `DBASE_YES` answer it, and nothing about the linked project is ever modified.
 - Run from the project root (or pass `--workdir`); `config.toml`/`config.json`/`config.jsonc` is read and written
   relative to it.
-- **Scope resolution (ADR 0023) is pure and precedes any network call**: `--remote-label`, when
+- **Scope resolution is pure and precedes any network call**: `--remote-label`, when
   passed, is resolved FIRST — even for a ref-shaped target — so its own remedy is never dead;
   failing that, an existing `[remotes.*]` block whose RAW `project_id` literal matches the resolved
   ref is always reused, regardless of how the target was named; failing that, a branch-named target
@@ -212,7 +212,7 @@ the -o/--output flag is not supported by config pull; use --output-format json|s
 - **Convergence**: a second `config pull` against an ALREADY-TRACKED target (root, or a
   `[remotes.*]` block that already exists and matches the target ref) with an unchanged remote
   plans zero writes and touches neither file (no `applyConfigEdits` call, no `git status` spawn, no
-  prompt) — this is the design's own acceptance property (ADR 0023), not a special case. This
+  prompt) — this is an acceptance property of the design, not a special case. This
   no-work short-circuit is checked BEFORE the git dirty guard (not after, as it once was): a
   converged run never spawns `git` at all, so a config file with uncommitted changes never aborts
   (or warns about) a pull that would have written nothing either way.
@@ -224,15 +224,15 @@ the -o/--output flag is not supported by config pull; use --output-format json|s
   through the SAME git dirty guard and confirmation flow as any other write (`Create
 [remotes.<label>] in <path>?` instead of the usual `Apply N change(s)...`, see Output) — only a
   run with NEITHER a value change NOR a new block skips straight to "no config differences found."
-- **ADR-0021 "unpushable" families** (e.g. disabled `storage.analytics`/`storage.vector`) ARE
+- **"Unpushable" families** (e.g. disabled `storage.analytics`/`storage.vector`) ARE
   written by pull despite `config push` having no way to send them back — a `warnings[]` entry
   (`kind: "unpushable"`) says so instead of silently leaving a permanent gap. (`auth.oauth_server`
-  was an example of this family before CLI-2314; it is now genuinely pushable through the auth
+  was an example of this family before; it is now genuinely pushable through the auth
   endpoint like any other auth field.)
 - **Dual-scope root writes**: pulling a property the registry flags `dualScope` (e.g.
   `auth.site_url`, `db.settings.*`, `db.pooler.*`) into the config ROOT also changes what
   `dbase start` uses locally — flagged with a `dual_scope` warning, never refused.
-- **The written file always reloads (ADR 0023 §d).** Pull never leaves `config.toml`/`.json` in a
+- **The written file always reloads.** Pull never leaves `config.toml`/`.json` in a
   state a subsequent config load can't parse. Before writing, planned writes are expanded
   to a fixpoint (a value that GATES other declared fields — e.g. flipping a disabled SMS provider's
   `enabled` on — pulls its now-required siblings into the SAME write, not just the gate) and the

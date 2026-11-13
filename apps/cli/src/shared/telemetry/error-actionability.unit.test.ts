@@ -151,7 +151,7 @@ describe("classifyCliErrorActionability", () => {
     const gated = Object.assign(new DeclaredStatusError({ status: 402 }), {
       entitlement: {
         feature: "project_restore_size",
-        upgrade_url: "https://supabase.com/dashboard/org/acme/billing",
+        upgrade_url: "https://dbase.to/dashboard/org/acme/billing",
       },
     });
     expect(classifyCliErrorActionability(gated)).toMatchObject({

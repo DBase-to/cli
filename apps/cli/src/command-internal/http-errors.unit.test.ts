@@ -63,7 +63,7 @@ describe("mapHttpError", () => {
   );
 });
 
-const UPGRADE_URL = "https://supabase.com/dashboard/org/acme/billing";
+const UPGRADE_URL = "https://dbase.to/dashboard/org/acme/billing";
 
 function statusFailure(status: number, body: string): HttpClientError.HttpClientError {
   const request = HttpClientRequest.get("https://api.supabase.com/v1/projects/test/backups");
@@ -118,7 +118,7 @@ describe("mapHttpError plan-gate entitlement", () => {
     {
       case: "an upgrade_url carrying credentials",
       feature: "backups",
-      upgradeUrl: "https://supabase.com@evil.example/billing",
+      upgradeUrl: "https://dbase.to@evil.example/billing",
     },
     {
       case: "a feature carrying a bidi override",

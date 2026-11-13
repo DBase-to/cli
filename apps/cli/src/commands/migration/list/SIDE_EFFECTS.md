@@ -74,4 +74,4 @@ Same structured `migrations` result delivered as an NDJSON `result` event.
   project `.env*` > config; the env value is withheld when the target differs from `.temp/project-ref`
   (stderr
   `Not sending DBASE_DB_PASSWORD to <target>: this directory is linked to <linked>. Using a temporary login role instead (needs dbase login or DBASE_ACCESS_TOKEN). Pass --password to use a password for <target>.`),
-  and a temporary login role is minted instead (ADR 0032).
+  and a temporary login role is minted instead.

@@ -16,7 +16,7 @@ on:
         description: Runner to use for building artifacts
         required: false
         type: string
-        default: blacksmith-32vcpu-ubuntu-2404
+        default: ubuntu-latest
       cache_key_suffix:
         description: Suffix to distinguish build artifact cache producers
         required: false
@@ -56,7 +56,7 @@ jobs:
       POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
       POSTHOG_ENDPOINT: ${{ secrets.POSTHOG_ENDPOINT }}
       # Fail the build if the macOS signing tool is missing — release artifacts
-      # must be signed (CLI-1621). Local builds without rcodesign degrade to a
+      # must be signed. Local builds without rcodesign degrade to a
       # warning instead.
       SUPABASE_CLI_REQUIRE_SIGNING: "1"
     steps:

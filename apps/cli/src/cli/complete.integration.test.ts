@@ -63,7 +63,7 @@ function makeDeps(argv: ReadonlyArray<string>, captureTelemetry: CompleteDeps["c
   return { deps, stdoutWrites, exits };
 }
 
-describe("__complete telemetry (CLI-1965 review finding)", () => {
+describe("__complete telemetry", () => {
   it.effect(
     "fires cli_command_executed with command: __complete and exit_code: 0 for a normal completion request",
     () =>

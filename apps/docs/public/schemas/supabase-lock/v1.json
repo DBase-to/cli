@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://supabase.com/schemas/supabase-lock/v1.json",
+  "$id": "https://dbase.to/schemas/supabase-lock/v1.json",
   "title": "supabase.lock",
   "description": "The service versions that supabase start pins in supabase/supabase.lock.",
   "type": "object",
@@ -8,8 +8,8 @@
     "$schema": {
       "type": "string",
       "enum": [
-        "https://supabase.com/docs/cli/supabase-lock/v1.schema.json",
-        "https://supabase.com/schemas/supabase-lock/v1.json"
+        "https://dbase.to/docs/cli/supabase-lock/v1.schema.json",
+        "https://dbase.to/schemas/supabase-lock/v1.json"
       ]
     },
     "lockfileVersion": {

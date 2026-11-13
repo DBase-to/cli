@@ -4,7 +4,7 @@ Target: hosted, consent default No — see [Command target](../../../../docs/com
 
 ## Files Read
 
-Same auth fallback chain as every Management-API command. Project-ref discovery (for the PARENT) is PARENT-scoped (CLI-2167 follow-up): env `DBASE_PROJECT_ID` → `<workdir>/supabase/.temp/linked-project.json`'s `ref` → `<workdir>/supabase/.temp/project-ref`, first ref-shaped candidate wins — see `branches list/SIDE_EFFECTS.md` for the full chain and rationale.
+Same auth fallback chain as every Management-API command. Project-ref discovery (for the PARENT) is PARENT-scoped: env `DBASE_PROJECT_ID` → `<workdir>/supabase/.temp/linked-project.json`'s `ref` → `<workdir>/supabase/.temp/project-ref`, first ref-shaped candidate wins — see `branches list/SIDE_EFFECTS.md` for the full chain and rationale.
 
 ## Files Written
 
@@ -26,7 +26,7 @@ Same auth fallback chain as every Management-API command. Project-ref discovery 
 
 ## Environment Variables
 
-`DBASE_ACCESS_TOKEN`, `DBASE_PROFILE`, `DBASE_PROJECT_ID`, `DBASE_WORKDIR` — same semantics as `branches list` (including the CLI-2167 PARENT-scoped resolution chain).
+`DBASE_ACCESS_TOKEN`, `DBASE_PROFILE`, `DBASE_PROJECT_ID`, `DBASE_WORKDIR` — same semantics as `branches list`.
 
 `DBASE_YES` — approves the hosted-mutation confirmation like `--yes`; read from the shell environment only, never `supabase/.env`.
 

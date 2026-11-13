@@ -8,7 +8,7 @@ Target: hosted, no consent — see [Command target](../../../../docs/command-tar
 | ---------------------------------------------- | ------------------------- | --------------------------------------------------------------------------------------------------- |
 | keyring `"DBase CLI"` / `<profile>`            | OS keychain               | when `DBASE_ACCESS_TOKEN` unset and keyring available; account = `CommandSettings.profile`          |
 | keyring `"DBase CLI"` / `access-token`         | OS keychain               | legacy-key fallback when the profile-keyed lookup misses                                            |
-| `<workdir>/supabase/.temp/linked-project.json` | JSON (`ref` field)        | when `--remote=<ref>` is not given, as the 2nd PARENT-ref candidate (CLI-2167 follow-up, see below) |
+| `<workdir>/supabase/.temp/linked-project.json` | JSON (`ref` field)        | when `--remote=<ref>` is not given, as the 2nd PARENT-ref candidate                                 |
 | `<workdir>/supabase/.temp/project-ref`         | plain text                | when neither `--remote=<ref>` nor `DBASE_PROJECT_ID` is set, as the 3rd (last) PARENT-ref candidate |
 | `~/.supabase/access-token`                     | plain text (token string) | last-resort fallback after env + keyring miss                                                       |
 
@@ -24,13 +24,13 @@ Target: hosted, no consent — see [Command target](../../../../docs/command-tar
 > branch list contains the file's ref (one extra `GET /v1/projects/{ref}/branches`); otherwise
 > the file's project is used when its own branches can be listed, and a failed check keeps the
 > cached parent. No-op when linked to a real (non-branch) project, since the cache and the
-> `project-ref` file then hold the same ref (CLI-2167).
+> `project-ref` file then hold the same ref.
 
 > Pretty-table rendering ALSO makes its own independent, soft read of `<workdir>/supabase/.temp/project-ref`
 > (`ProjectRefResolver.resolveOptional`: env → file, never a prompt, never a failure) to find
 > the CURRENTLY linked ref (which may be a branch ref) for the `(active)` marker below — separate
 > from, and unconditional on, the PARENT-scoped `ref` resolution above. Missing/unreadable → no
-> marker, never an error (CLI-2167 follow-up).
+> marker, never an error.
 
 ## Files Written
 
@@ -53,7 +53,7 @@ Target: hosted, no consent — see [Command target](../../../../docs/command-tar
 | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | `DBASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup)                                                                                                                                                                                                                                     | no (falls back to keyring → `~/.supabase/access-token`)                                            |
 | `DBASE_PROFILE`      | selects API base URL: `supabase` → `api.supabase.com`, `supabase-staging` → `api.supabase.green`, `supabase-local` → `http://localhost:8080`. May alternatively be a filesystem path to a YAML profile with at least `api_url:` and optional `name:` (used by the cli-e2e test harness). | no (defaults to `supabase`)                                                                        |
-| `DBASE_PROJECT_ID`   | PARENT project ref fallback (1st candidate) when `--remote=<ref>` is not given (CLI-2167 follow-up)                                                                                                                                                                                      | no (also reads `linked-project.json` → `<workdir>/supabase/.temp/project-ref` then prompts on TTY) |
+| `DBASE_PROJECT_ID`   | PARENT project ref fallback (1st candidate) when `--remote=<ref>` is not given                                                                                                                                                                                                           | no (also reads `linked-project.json` → `<workdir>/supabase/.temp/project-ref` then prompts on TTY) |
 | `DBASE_WORKDIR`      | base directory for the `.temp/project-ref` lookup                                                                                                                                                                                                                                        | no (walks up from CWD looking for `supabase/config.toml` or `supabase/config.json`)                |
 
 ## Exit Codes

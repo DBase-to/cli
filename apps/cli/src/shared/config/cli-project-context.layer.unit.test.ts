@@ -23,7 +23,7 @@ function buildLayer(path: Path.Path, opts: { cwd: string; env?: Record<string, s
 }
 
 describe("cliProjectContextLayer", () => {
-  it.effect("loads when supabase/config.toml uses env() on numeric fields (CLI-1489)", () =>
+  it.effect("loads when supabase/config.toml uses env() on numeric fields", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;

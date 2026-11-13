@@ -303,7 +303,7 @@ const runPackAndInstallSmokeTest = Effect.fnUntraced(function* () {
     ].filter((name) => name !== null);
     return yield* Effect.die(
       new Error(
-        `the pack-and-install smoke test (CLI-2234) requires ${missing.join(", ")} on PATH — install ` +
+        `the pack-and-install smoke test requires ${missing.join(", ")} on PATH — install ` +
           "it (mise provides node/npm; tar ships with every supported OS) before running `pnpm build`.",
       ),
     );
@@ -465,16 +465,16 @@ const build = Effect.gen(function* () {
     path.join(root, "dist", "schema.json"),
     withSchemaMetadata(toCliConfigJsonSchema(), {
       id: CLI_CONFIG_SCHEMA_URL,
-      title: "Supabase CLI config (CliConfig)",
+      title: "DBase CLI config (CliConfig)",
       description:
-        "The Supabase CLI's local project config document (supabase/config.toml or supabase/config.json).",
+        "The DBase CLI's local project config document (supabase/config.toml or supabase/config.json).",
     }),
   );
   yield* renderJsonSchema(
     path.join(root, "dist", "project-schema.json"),
     withSchemaMetadata(toProjectConfigJsonSchema(), {
       id: PROJECT_CONFIG_SCHEMA_URL,
-      title: "Supabase hosted project config (ProjectConfig)",
+      title: "DBase hosted project config (ProjectConfig)",
       description:
         "The sparse, hosted-project subset of CliConfig that a Supabase project manages.",
     }),

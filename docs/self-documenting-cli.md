@@ -4,7 +4,7 @@ The CLI's command definitions are the single source of truth for its reference d
 The command tree is introspected at build time to produce the command reference pages served by
 the in-repo docs site, so flags, arguments, and examples never drift from the code.
 
-See [ADR 0003](adr/0003-self-documenting-cli.md) for the original design rationale.
+See for the original design rationale.
 
 This page covers the in-repo [Fumadocs](https://fumadocs.dev) site under `apps/docs`. The
 separate pipeline that publishes the command spec to supabase.com is described in
@@ -25,7 +25,7 @@ development. The generator:
 4. Writes `content/docs/commands/index.mdx`, a table linking to every command page, and
    `content/docs/commands/meta.json`, which controls sidebar order.
 5. Writes the config, project-config and `supabase.lock` JSON Schemas to
-   `public/schemas/<name>/v1.json`, mirroring their `https://supabase.com/schemas/` URLs. The two
+   `public/schemas/<name>/v1.json`, mirroring their `https://dbase.to/schemas/` URLs. The two
    config schemas are copied from the `@supabase/config` build, which requires
    `@supabase/config#build` to have run first; `turbo.json` wires that up.
    Stable releases publish these files to supabase.com; see the
@@ -42,8 +42,8 @@ The extraction helpers live in `apps/cli/src/shared/cli/command-docs.ts` and
 ```
 apps/docs/
 ├── app/                        ← Next.js app (Fumadocs layout + routing)
-│   ├── layout.tsx              ← Root layout (imports fumadocs styles + Supabase theme)
-│   ├── supabase.css            ← Supabase color theme overrides
+│   ├── layout.tsx              ← Root layout (imports fumadocs styles + DBase theme)
+│   ├── dbase.css            ← DBase color theme overrides
 │   └── docs/
 │       ├── layout.tsx          ← Docs sidebar layout
 │       └── [[...slug]]/page.tsx ← Catch-all page renderer

@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://supabase.com/schemas/project-config/v1.json",
-  "title": "Supabase hosted project config (ProjectConfig)",
+  "$id": "https://dbase.to/schemas/project-config/v1.json",
+  "title": "DBase hosted project config (ProjectConfig)",
   "description": "The sparse, hosted-project subset of CliConfig that a Supabase project manages.",
   "type": "object",
   "properties": {

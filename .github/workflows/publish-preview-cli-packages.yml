@@ -52,7 +52,7 @@ jobs:
     needs: build
     if: needs.build.result == 'success'
     name: Publish preview package
-    runs-on: blacksmith-8vcpu-ubuntu-2404
+    runs-on: ubuntu-latest
     outputs:
       preview_url: ${{ steps.preview-metadata.outputs.preview_url }}
     env:
@@ -152,7 +152,7 @@ jobs:
 
           cat > "${comment_file}" <<EOF
           ${marker}
-          ## Supabase CLI preview
+          ## DBase CLI preview
 
           \`\`\`sh
           npx --yes ${PREVIEW_URL}

@@ -85,7 +85,7 @@ always go to stderr, in every `--output-format`. On success:
 - `json`/`stream-json` mode instead emits a structured success envelope
   (`output.success("Finished dbase db schema declarative generate.")`) so
   the machine stdout payload isn't corrupted by a bare human line
-  (`generate.command.ts:74-90`, CLI-1546 invariant).
+  .
 
 ## Notes
 

@@ -81,7 +81,7 @@ Emits a structured success result event with `path`, `function_name`, and `auth`
 - The `[functions.<name>]` config section is **appended** (`O_APPEND` semantics, `flag: "a"`), never rewritten, so the existing file is left byte-for-byte untouched and a partial write cannot truncate it.
 - Existing-declaration detection scans the raw `config.toml` text (`^\s*\[functions\.<slug>\]\s*$`) rather than a parsed config map. For all well-formed configs the two approaches agree.
 - IDE settings scaffolding (`.vscode`, `.idea`) only runs in `--output-format text`; json / stream-json runs are payload-only.
-- The VS Code settings come from the shared `init` helper, so `.vscode/settings.json` also includes `json.schemaDownload.trustedDomains` trusting `https://supabase.com/schemas/`.
+- The VS Code settings come from the shared `init` helper, so `.vscode/settings.json` also includes `json.schemaDownload.trustedDomains` trusting `https://dbase.to/schemas/`.
 - No Management API requests are made; all behavior is local filesystem work plus telemetry flush.
-- A non-existent `--workdir`/`DBASE_WORKDIR` now fails before any directory or file is created (CLI-2285) — previously a typo'd `--workdir` could scaffold a fresh `supabase/functions/…` tree (plus a new `config.toml`) at the wrong path.
+- A non-existent `--workdir`/`DBASE_WORKDIR` now fails before any directory or file is created — previously a typo'd `--workdir` could scaffold a fresh `supabase/functions/…` tree (plus a new `config.toml`) at the wrong path.
 - With a `config.json`/`config.jsonc` project the `functions.<name>` entry (`enabled`, `verify_jwt`, `import_map`, `entrypoint`) is span-edited into that file via `applyConfigEdits`; the file is never rewritten wholesale and no `config.toml` is created. A refused edit fails the command instead of falling back.

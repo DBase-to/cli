@@ -26,7 +26,7 @@ const tags = ["database"];
 
 const linterDocs = (rule: MigrationCheckRule) => ({
   name: `Database linter: ${rule}`,
-  link: `https://supabase.com/docs/guides/database/database-linter?lint=${rule}`,
+  link: `https://dbase.to/docs/guides/database/database-linter?lint=${rule}`,
 });
 
 /** Builds an object with one entry per migration check rule. */

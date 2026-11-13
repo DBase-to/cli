@@ -232,7 +232,7 @@ describe("connectFailureMessage", () => {
     );
   });
 
-  it("renders an unrecognized cause verbatim (CLI-1942 session-pooler EOF shape)", () => {
+  it("renders an unrecognized cause verbatim", () => {
     const eof = new Error("Connection terminated unexpectedly");
     expect(connectFailureMessage(target, realSqlConnectError(eof))).toBe(
       `${prefix} Connection terminated unexpectedly`,
@@ -256,7 +256,7 @@ describe("connectFailureMessage", () => {
 
 describe("connectSuggestion", () => {
   const ctx = {
-    dashboardUrl: "https://supabase.com/dashboard",
+    dashboardUrl: "https://dbase.to/dashboard",
     profileName: "supabase",
     isLocal: false,
   } as const;
@@ -269,7 +269,7 @@ describe("connectSuggestion", () => {
   it("maps a refused connection (node ECONNREFUSED) to the network-restrictions hint", () => {
     const err = sqlError(systemError("connect ECONNREFUSED 127.0.0.1:54322", "ECONNREFUSED"));
     expect(connectSuggestion(err, ctx)).toBe(
-      "Make sure your local IP is allowed in Network Restrictions and Network Bans.\nhttps://supabase.com/dashboard/project/_/database/settings",
+      "Make sure your local IP is allowed in Network Restrictions and Network Bans.\nhttps://dbase.to/dashboard/project/_/database/settings",
     );
   });
 
@@ -422,7 +422,7 @@ describe("connectSuggestion", () => {
     expect(connectSuggestion(realSqlConnectError(authFailedError()), ctx)).toBe(SUGGEST_ENV_VAR);
   });
 
-  it("keeps the CLI-1942 session-pooler EOF unclassified so the generic --debug suggestion applies", () => {
+  it("keeps the session-pooler EOF unclassified so the generic --debug suggestion applies", () => {
     const err = realSqlConnectError(new Error("Connection terminated unexpectedly"));
     expect(connectSuggestion(err, ctx)).toBeUndefined();
   });

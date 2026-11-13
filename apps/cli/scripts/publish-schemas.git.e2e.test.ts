@@ -25,7 +25,7 @@ exit 0
 
 // Not prettier-formatted, so a formatting step would show up as a byte difference.
 const schemaText = (name: string, version: number, marker: string) =>
-  `{"$schema":"${JsonSchema.META_SCHEMA_URI_DRAFT_07}",\n\t"$id":"https://supabase.com/schemas/${name}/v${version}.json",  "marker":"${marker}"}`;
+  `{"$schema":"${JsonSchema.META_SCHEMA_URI_DRAFT_07}",\n\t"$id":"https://dbase.to/schemas/${name}/v${version}.json",  "marker":"${marker}"}`;
 
 const spawn = (argv: ReadonlyArray<string>, cwd: string, env: Record<string, string | undefined>) =>
   Effect.gen(function* () {

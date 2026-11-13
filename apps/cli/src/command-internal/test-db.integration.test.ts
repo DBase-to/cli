@@ -578,7 +578,7 @@ describe("test db integration", () => {
     }).pipe(Effect.provide(layer));
   });
 
-  it.live("fails when pg_prove ran no tests, even though it exited 0 (CLI-2194)", () => {
+  it.live("fails when pg_prove ran no tests, even though it exited 0", () => {
     const { layer } = setup({
       exitCode: 0,
       stdout: ["Files=0, Tests=0,  0 wallclock secs\nResult: NOTESTS\n"],

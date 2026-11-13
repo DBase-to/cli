@@ -1308,7 +1308,7 @@ content_path = "./supabase/templates/password_changed_notification.html"
     }).pipe(Effect.provide(layer));
   });
 
-  describe("linked-state display (CLI-2167 follow-up)", () => {
+  describe("linked-state display", () => {
     it.effect(
       "not linked: prints Not linked. as the first stdout line, then normal status output",
       () => {
@@ -2312,7 +2312,7 @@ content_path = "./supabase/templates/password_changed_notification.html"
       }).pipe(Effect.provide(layer));
     });
 
-    describe("json/stream-json FAILURE envelope carries linked_project (CLI-2167 follow-up)", () => {
+    describe("json/stream-json FAILURE envelope carries linked_project", () => {
       it.effect(
         "--output-format json, branch-linked, daemon connection failure: envelope carries the full linked_project at the top level, error untouched",
         () => {

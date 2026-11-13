@@ -33,7 +33,7 @@ describe("parseBearerJwtExp", () => {
     );
   });
 
-  it("rejects an invalid calendar date instead of silently rolling it over (CLI-1961)", () => {
+  it("rejects an invalid calendar date instead of silently rolling it over", () => {
     expect(() => parseBearerJwtExp("2030-02-30T03:04:05Z")).toThrow(
       'invalid argument "2030-02-30T03:04:05Z" for "--exp" flag: invalid time format `2030-02-30T03:04:05Z` must be one of: `2006-01-02T15:04:05Z07:00`',
     );
@@ -73,7 +73,7 @@ describe("parseBearerJwtExp", () => {
     );
   });
 
-  it("rejects an out-of-range zone offset instead of silently signing a null exp/iat (CLI-1961 Codex review finding)", () => {
+  it("rejects an out-of-range zone offset instead of silently signing a null exp/iat", () => {
     expect(() => parseBearerJwtExp("2030-01-01T00:00:00+99:99")).toThrow(
       'invalid argument "2030-01-01T00:00:00+99:99" for "--exp" flag: invalid time format `2030-01-01T00:00:00+99:99` must be one of: `2006-01-02T15:04:05Z07:00`',
     );
@@ -99,7 +99,7 @@ describe("parseBearerJwtExp", () => {
     );
   });
 
-  it("preserves fractional seconds instead of dropping them during parsing (CLI-1961 Codex review finding)", () => {
+  it("preserves fractional seconds instead of dropping them during parsing", () => {
     expect(parseBearerJwtExp("2030-01-01T00:00:00.9Z")).toEqual({
       wholeSeconds: 1_893_456_000,
       nanos: 900_000_000,
@@ -115,7 +115,7 @@ describe("parseBearerJwtExp", () => {
     });
   });
 
-  it("preserves a near-second nanosecond fraction as an exact integer instead of rounding it into the next second (CLI-1961 Codex review finding)", () => {
+  it("preserves a near-second nanosecond fraction as an exact integer instead of rounding it into the next second", () => {
     expect(parseBearerJwtExp("2030-01-01T00:00:00.999999999Z")).toEqual({
       wholeSeconds: 1_893_456_000,
       nanos: 999_999_999,
@@ -141,7 +141,7 @@ describe("parseBearerJwtExp", () => {
     );
   });
 
-  it("parses an early (0000-0099) RFC3339 year literally instead of applying JS's two-digit-year remapping (CLI-1961 Codex review finding)", () => {
+  it("parses an early (0000-0099) RFC3339 year literally instead of applying JS's two-digit-year remapping", () => {
     expect(parseBearerJwtExp("0001-01-01T00:00:00Z")).toEqual({
       wholeSeconds: -62_135_596_800,
       nanos: 0,
@@ -174,7 +174,7 @@ describe("parseBearerJwtValidFor", () => {
     expect(parseBearerJwtValidFor("-5m")).toBe(-300);
   });
 
-  it("preserves sub-second precision instead of flooring it away (CLI-1961)", () => {
+  it("preserves sub-second precision instead of flooring it away", () => {
     expect(parseBearerJwtValidFor("1.5s")).toBe(1.5);
   });
 
@@ -209,7 +209,7 @@ describe("addSecondsAndFloor", () => {
     expect(addSecondsAndFloor({ wholeSeconds: 100, nanos: 200_000_000 }, -0.5)).toBe(99);
   });
 
-  it("never rounds an epoch-scale whole-second count up via float addition (CLI-1961 Codex review finding)", () => {
+  it("never rounds an epoch-scale whole-second count up via float addition", () => {
     expect(addSecondsAndFloor({ wholeSeconds: 1_893_456_000, nanos: 999_999_999 }, 0)).toBe(
       1_893_456_000,
     );

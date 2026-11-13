@@ -114,7 +114,7 @@ function mergeJsonSettingsFile(pathname: string, template: string) {
 }
 
 const SCHEMA_TRUST_KEY = "json.schemaDownload.trustedDomains";
-const SCHEMA_TRUST_DOMAIN = "https://supabase.com/schemas/";
+const SCHEMA_TRUST_DOMAIN = "https://dbase.to/schemas/";
 
 /** Adds the hosted schema domain to an existing `.vscode/settings.json` unless it already lists it,
  * failing rather than dropping the file's comments; resolves to whether the file changes (or would,

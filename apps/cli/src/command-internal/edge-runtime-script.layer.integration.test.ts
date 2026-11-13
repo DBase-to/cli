@@ -52,7 +52,7 @@ function makeCliSettings(workdir = "/nonexistent-workdir") {
     apiUrl: "https://api.supabase.com",
     projectHost: "supabase.co",
     poolerHost: "supabase.co",
-    dashboardUrl: "https://supabase.com/dashboard",
+    dashboardUrl: "https://dbase.to/dashboard",
     accessToken: Option.none(),
     projectId: Option.none(),
     workdir,

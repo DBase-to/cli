@@ -7,7 +7,7 @@ import { runSupabaseEffect } from "../../../tests/helpers/cli.ts";
  * Only a genuine subprocess run proves the shipped binary's real OS exit code — the
  * classification logic itself is covered by `run.unit.test.ts` and `run.integration.test.ts`.
  */
-describe("CLI process exit codes (CLI-1906)", () => {
+describe("CLI process exit codes", () => {
   it.live("bare `branches` (no subcommand, no --help) exits 0", () =>
     Effect.gen(function* () {
       const { exitCode } = yield* runSupabaseEffect(["branches"]);
@@ -28,7 +28,7 @@ describe("CLI process exit codes (CLI-1906)", () => {
  * in-process, by `run.integration.test.ts` — this is the one case that observes the real
  * subprocess boundary: whether stdout/stderr stay separated and the error text isn't duplicated.
  */
-describe("CLI required-flag/choice parse errors (CLI-1901)", () => {
+describe("CLI required-flag/choice parse errors", () => {
   it.live(
     "an unrecognized flag: stdout stays clean, the help/usage content and the single error line land on stderr with no duplicate",
     () =>

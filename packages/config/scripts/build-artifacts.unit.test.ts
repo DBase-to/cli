@@ -45,7 +45,7 @@ function findAnyOfWithNonFiniteEnum(node: unknown, into: Array<unknown>): void {
 
 const cliDocument = withSchemaMetadata(toCliConfigJsonSchema(), {
   id: CLI_CONFIG_SCHEMA_URL,
-  title: "Supabase CLI config (CliConfig)",
+  title: "DBase CLI config (CliConfig)",
   description: "test",
 });
 
@@ -85,7 +85,7 @@ describe("published JSON Schema artifacts", () => {
   });
 
   test.each([
-    ["schema.json", cliDocument, CLI_CONFIG_SCHEMA_URL, "Supabase CLI config (CliConfig)"],
+    ["schema.json", cliDocument, CLI_CONFIG_SCHEMA_URL, "DBase CLI config (CliConfig)"],
     [
       "project-schema.json",
       projectDocument,

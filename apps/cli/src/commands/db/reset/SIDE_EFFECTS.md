@@ -8,7 +8,7 @@ drops all user schemas, upserts vault secrets, then either re-applies migrations
 (the default) or, on a versionless `--experimental`/`DBASE_EXPERIMENTAL` reset
 with pg-delta explicitly disabled (`[experimental.pgdelta] enabled = false`; it defaults
 to true), applies the declarative `[db.migrations].schema_paths`
-files instead (the `MigrateAndSeed` EXPERIMENTAL branch, CLI-1958), then
+files instead, then
 seeds. The **local** path (the default, or a `--remote=<url>` pointing at the local
 stack) is ALSO fully native: the running check, the PG14/PG15 container-recreate
 composition (`command-internal/db-bootstrap/recreate-local-database.ts`, reusing the
@@ -24,7 +24,7 @@ A hosted target (a remote project or branch, or a remote `--remote=<url>`) asks 
 confirmation before anything is dropped; the local path never prompts for the reset itself.
 
 The whole local-reset composition is hoisted into `command-internal/db-bootstrap/
-reset-local-database.ts`'s `resetLocalDatabase` (CLI-2062), which this
+reset-local-database.ts`'s `resetLocalDatabase`, which this
 handler's own `cfg.isLocal` branch calls as a thin wrapper (keeping only version/
 seed-flags resolution and the JSON envelope, which are specific to this top-level
 command). `db schema declarative`'s optional local reset and `db schema sync`'s
@@ -245,7 +245,7 @@ Alias deprecation warnings print first. Every target prints a `Target:` line to 
 before the first database change. There is no `Connecting to … database…` line.
 
 The remote path then asks for confirmation (see Notes), prints `Resetting remote database…` to
-**stderr**, then either the schema-files branch's apply (no per-file progress, CLI-1958) or the
+**stderr**, then either the schema-files branch's apply or the
 migrate/seed progress (`Applying migration …`, `Seeding data from …`). There is **no**
 `Finished …` line on the remote path.
 
@@ -306,7 +306,7 @@ to those defaults (the usual outcome for an interactive terminal).
   standalone outside the per-file transaction batch, with the same non-atomic flush
   behaviour as `db push` — see `db push`'s SIDE_EFFECTS Notes (supabase/cli#5139,
   adopted into TS in PR supabase/cli#5671).
-- **Config value precedence** (ADR 0032): explicit flag > shell env > project
+- **Config value precedence**: explicit flag > shell env > project
   `.env*` > config (`config.json` over `config.toml`; a matched `[remotes.*]`
   block over the base document) > default. The linked-database password env is
   withheld when the target differs from `.temp/project-ref`: stderr gets

@@ -93,7 +93,8 @@ jobs:
     # false, so their results are checked explicitly. A next push with no commits beyond develop
     # plans nothing.
     if: >-
-      ${{ !cancelled() &&
+      ${{ (github.event_name == 'workflow_dispatch' || vars.RELEASE_ENABLED == 'true') &&
+      !cancelled() &&
       contains(fromJSON('["success","skipped"]'), needs.next-ahead.result) &&
       contains(fromJSON('["success","skipped"]'), needs.test-next.result) &&
       !(github.event_name == 'push' && github.ref_name == 'next' && needs.next-ahead.outputs.ahead != 'true') }}
@@ -179,7 +180,7 @@ jobs:
       # `persist-credentials: false` is required: otherwise checkout caches the default
       # GITHUB_TOKEN in git config, and its Authorization header overrides the App token
       # semantic-release puts in the push URL, making the dry-push get rejected by branch protection.
-      - uses: useblacksmith/checkout@6fd481652155169ed4d2f25ebaf97464f685175f # v1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -339,15 +340,11 @@ jobs:
     name: Release
     needs: plan
     if: ${{ !cancelled() && needs.plan.result == 'success' && needs.plan.outputs.should_release == 'true' }}
-    # pull-requests: write is required by the nested propose-release-notes workflow
-    # (release-shared.yml -> propose-release-notes.yml): a called job's permissions can't exceed
-    # those granted to the calling job, so this must be declared here too.
     permissions:
       actions: read
       attestations: write
       contents: write
       id-token: write
-      pull-requests: write
     uses: ./.github/workflows/release-shared.yml
     with:
       version: ${{ needs.plan.outputs.version }}
@@ -363,45 +360,4 @@ jobs:
       POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
       POSTHOG_ENDPOINT: ${{ secrets.POSTHOG_ENDPOINT }}
       GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
-      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       DF_FIREWALL_TOKEN: ${{ secrets.DF_FIREWALL_TOKEN }}
-      LINEAR_CLI_STABLE_RELEASE_ACCESS_KEY: ${{ secrets.LINEAR_CLI_STABLE_RELEASE_ACCESS_KEY }}
-      LINEAR_CLI_BETA_RELEASE_ACCESS_KEY: ${{ secrets.LINEAR_CLI_BETA_RELEASE_ACCESS_KEY }}
-
-  # Notifies real (non-dry-run) stable and maintenance cuts. Nothing depends on this job, so a
-  # Slack failure can't affect the already-completed release.
-  notify-slack:
-    name: Notify Slack
-    needs: [plan, release]
-    if: >-
-      ${{ !cancelled() &&
-      needs.release.result == 'success' &&
-      needs.plan.outputs.dry_run != 'true' &&
-      (needs.plan.outputs.channel == 'stable' || needs.plan.outputs.channel == 'maintenance') }}
-    uses: ./.github/workflows/slack-notify.yml
-    with:
-      package: DBase CLI
-      status: success
-      version: ${{ needs.plan.outputs.version }}
-      channel: ${{ needs.plan.outputs.channel }}
-    secrets:
-      SLACK_RELEASE_WEBHOOK: ${{ secrets.SLACK_RELEASE_WEBHOOK }}
-
-  # Reports a broken release on every channel. `failure()` evaluates against the full `needs`
-  # chain, so this fires whenever `next-ahead`, `test-next`, `plan` or `release` (including the
-  # reusable release-shared workflow) fails. Skipped jobs don't count as failures. Dry runs are
-  # excluded via the dispatch input directly, so even a plan job that dies before recording its
-  # `dry_run` output stays quiet. A failed `next-ahead` or `test-next` skips `plan`, so the
-  # channel falls back to the ref.
-  notify-slack-failure:
-    name: Notify Slack (failure)
-    needs: [next-ahead, test-next, plan, release]
-    if: ${{ failure() && !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
-    uses: ./.github/workflows/slack-notify.yml
-    with:
-      package: DBase CLI
-      status: failure
-      version: ${{ needs.plan.outputs.version }}
-      channel: ${{ needs.plan.outputs.channel || (github.ref_name == 'next' && 'next') || '' }}
-    secrets:
-      SLACK_RELEASE_WEBHOOK: ${{ secrets.SLACK_RELEASE_WEBHOOK }}

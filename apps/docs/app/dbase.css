@@ -1,14 +1,14 @@
 /*
- * Supabase theme for Fumadocs
+ * DBase theme for Fumadocs
  *
- * Maps Supabase design tokens (Slate/Gray scales + brand green)
+ * Maps the design tokens (Slate/Gray scales + brand green)
  * to Fumadocs CSS custom properties.
  *
- * Source: https://github.com/supabase/design-tokens/blob/main/tokens.json
+ * Based on the Supabase design tokens: https://github.com/supabase/design-tokens/blob/main/tokens.json
  */
 
 @theme {
-  /* Light mode — Supabase Slate scale */
+  /* Light mode — Slate scale */
   --color-fd-background: #f8f9fa;
   --color-fd-foreground: #11181c;
   --color-fd-muted: #f1f3f5;
@@ -28,7 +28,7 @@
 }
 
 .dark {
-  /* Dark mode — Supabase Gray scale */
+  /* Dark mode — Gray scale */
   --color-fd-background: #1c1c1c;
   --color-fd-foreground: #ededed;
   --color-fd-muted: #232323;

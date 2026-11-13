@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document defines the alpha command structure for the new Supabase CLI.
+This document defines the alpha command structure for the new DBase CLI.
 
 For alpha, we will design the command surface from `supabase dev` outward. The goal is not to mirror the previous CLI surface or the Management API. The goal is to give both humans and LLMs one command set that feels obvious, consistent, and reusable.
 

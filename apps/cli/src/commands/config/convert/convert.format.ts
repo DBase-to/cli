@@ -37,7 +37,7 @@ export function minVersionWarning(dryRun: boolean, undo: string): string {
   return `${COMPATIBILITY_LINES.join(" ")} ${dryRun ? "To undo after converting" : "To undo"}, run: ${undo}`;
 }
 
-const TRUSTED_DOMAIN = "https://supabase.com/schemas/";
+const TRUSTED_DOMAIN = "https://dbase.to/schemas/";
 
 const VSCODE_MANUAL_STEP = `Add "${TRUSTED_DOMAIN}": true under "json.schemaDownload.trustedDomains" to trust the config schema.`;
 

@@ -1854,7 +1854,7 @@ describe("seed buckets", () => {
     }).pipe(seedScenario),
   );
 
-  it.effect("skips OS metadata files during the object walk (CLI-1950)", () =>
+  it.effect("skips OS metadata files during the object walk", () =>
     Effect.gen(function* () {
       // These files must never even be attempted for upload — covering the
       // "silently becomes a public object" failure mode, not just an
@@ -1888,50 +1888,45 @@ describe("seed buckets", () => {
     }).pipe(seedScenario),
   );
 
-  it.effect(
-    "skips a .DS_Store file in a MIME-restricted bucket instead of uploading it (CLI-1950)",
-    () =>
-      Effect.gen(function* () {
-        // The mock HTTP route doesn't enforce allowed_mime_types server-side
-        // (real Storage-service behavior), so this doesn't simulate a 415 — it
-        // only asserts the junk file is skipped client-side while the real image
-        // still uploads.
-        const fs = yield* FileSystem.FileSystem;
-        const path = yield* Path.Path;
-        yield* fs.makeDirectory(path.join(tmp.current, "supabase", "assets"), {
-          recursive: true,
-        });
-        yield* fs.writeFileString(
-          path.join(tmp.current, "supabase", "assets", "logo.png"),
-          "fake-png-bytes",
-        );
-        yield* fs.writeFileString(
-          path.join(tmp.current, "supabase", "assets", ".DS_Store"),
-          "junk",
-        );
-        const { layer, out, requests } = yield* setupSeedBuckets(tmp.current, {
-          toml: [
-            "[storage.buckets.images]",
-            "public = true",
-            'allowed_mime_types = ["image/png"]',
-            'objects_path = "./assets"',
-          ].join("\n"),
-          routes: [
-            { method: "GET", match: "/storage/v1/bucket", body: [] },
-            { method: "POST", match: "/storage/v1/object/", body: {} },
-            { method: "POST", match: "/storage/v1/bucket", body: { name: "images" } },
-          ],
-        });
-        const exit = yield* seedBuckets(DEFAULT_FLAGS).pipe(Effect.provide(layer), Effect.exit);
-        expect(Exit.isSuccess(exit)).toBe(true);
-        expect(out.stderrText).toContain("Skipping OS metadata file: supabase/assets/.DS_Store");
-        expect(out.stderrText).toContain("Uploading: supabase/assets/logo.png => images/logo.png");
-        const uploads = requests.filter((r) => r.url.includes("/storage/v1/object/"));
-        expect(uploads).toHaveLength(1);
-      }).pipe(seedScenario),
+  it.effect("skips a .DS_Store file in a MIME-restricted bucket instead of uploading it", () =>
+    Effect.gen(function* () {
+      // The mock HTTP route doesn't enforce allowed_mime_types server-side
+      // (real Storage-service behavior), so this doesn't simulate a 415 — it
+      // only asserts the junk file is skipped client-side while the real image
+      // still uploads.
+      const fs = yield* FileSystem.FileSystem;
+      const path = yield* Path.Path;
+      yield* fs.makeDirectory(path.join(tmp.current, "supabase", "assets"), {
+        recursive: true,
+      });
+      yield* fs.writeFileString(
+        path.join(tmp.current, "supabase", "assets", "logo.png"),
+        "fake-png-bytes",
+      );
+      yield* fs.writeFileString(path.join(tmp.current, "supabase", "assets", ".DS_Store"), "junk");
+      const { layer, out, requests } = yield* setupSeedBuckets(tmp.current, {
+        toml: [
+          "[storage.buckets.images]",
+          "public = true",
+          'allowed_mime_types = ["image/png"]',
+          'objects_path = "./assets"',
+        ].join("\n"),
+        routes: [
+          { method: "GET", match: "/storage/v1/bucket", body: [] },
+          { method: "POST", match: "/storage/v1/object/", body: {} },
+          { method: "POST", match: "/storage/v1/bucket", body: { name: "images" } },
+        ],
+      });
+      const exit = yield* seedBuckets(DEFAULT_FLAGS).pipe(Effect.provide(layer), Effect.exit);
+      expect(Exit.isSuccess(exit)).toBe(true);
+      expect(out.stderrText).toContain("Skipping OS metadata file: supabase/assets/.DS_Store");
+      expect(out.stderrText).toContain("Uploading: supabase/assets/logo.png => images/logo.png");
+      const uploads = requests.filter((r) => r.url.includes("/storage/v1/object/"));
+      expect(uploads).toHaveLength(1);
+    }).pipe(seedScenario),
   );
 
-  it.effect("skips a .DS_Store file when objects_path points directly at it (CLI-1950)", () =>
+  it.effect("skips a .DS_Store file when objects_path points directly at it", () =>
     Effect.gen(function* () {
       // Covers collectFiles' single-file branch: objects_path resolves directly to
       // a junk-named file rather than a directory.

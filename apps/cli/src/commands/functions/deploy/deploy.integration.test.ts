@@ -1909,7 +1909,7 @@ describe("functions deploy", () => {
             data: {
               project_ref: VALID_REF,
               functions: ["hello-world"],
-              dashboard_url: `https://supabase.com/dashboard/project/${VALID_REF}/functions`,
+              dashboard_url: `https://dbase.to/dashboard/project/${VALID_REF}/functions`,
             },
           },
         ]);
@@ -2577,7 +2577,7 @@ describe("functions deploy", () => {
             flagCwd: tempRoot.current,
             projectRoot: tempRoot.current,
             supabaseDir: path.join(tempRoot.current, "supabase"),
-            dashboardUrl: "https://supabase.com/dashboard",
+            dashboardUrl: "https://dbase.to/dashboard",
             localConfigLoader: functionsLocalConfigLoader,
             rawArgs: ["functions", "deploy"],
             edgeRuntimeVersion: "1.69.12",
@@ -2621,7 +2621,7 @@ describe("functions deploy", () => {
     });
   });
 
-  describe("Config.Validate parity (CLI-1963)", () => {
+  describe("Config.Validate parity", () => {
     it.effect(
       "fails before any Docker/API work when config.toml has an explicit empty project_id",
       () => {
@@ -2685,7 +2685,7 @@ describe("functions deploy", () => {
           expect(error).toBeInstanceOf(Error);
           expect(error).toMatchObject({
             message:
-              "Postgres version 12.x is unsupported. To use the CLI, either start a new project or follow project migration steps here: https://supabase.com/docs/guides/database#migrating-between-projects.",
+              "Postgres version 12.x is unsupported. To use the CLI, either start a new project or follow project migration steps here: https://dbase.to/docs/guides/database#migrating-between-projects.",
           });
           expect(api.requests).toEqual([]);
         }).pipe(Effect.provide(layer), Effect.ensuring(removeTempRoot));
@@ -2754,7 +2754,7 @@ describe("functions deploy", () => {
     });
   });
 
-  describe("Docker bundling path config/env wiring (CLI-1963)", () => {
+  describe("Docker bundling path config/env wiring", () => {
     function mockFunctionCreateApi() {
       return mockCommandPlatformApi({
         handler: (request) => {
@@ -3426,7 +3426,7 @@ describe("functions deploy", () => {
             flagCwd: tempRoot.current,
             projectRoot: tempRoot.current,
             supabaseDir: path.join(tempRoot.current, "supabase"),
-            dashboardUrl: "https://supabase.com/dashboard",
+            dashboardUrl: "https://dbase.to/dashboard",
             localConfigLoader: functionsLocalConfigLoader,
             rawArgs: ["functions", "deploy", "hello-world", "--use-api=false"],
             edgeRuntimeVersion: "1.69.12",

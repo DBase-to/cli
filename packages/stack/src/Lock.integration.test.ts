@@ -13,7 +13,7 @@ import {
   writeLock,
 } from "./Lock.ts";
 
-const V1_LOCK_SCHEMA_URL = "https://supabase.com/docs/cli/supabase-lock/v1.schema.json";
+const V1_LOCK_SCHEMA_URL = "https://dbase.to/docs/cli/supabase-lock/v1.schema.json";
 
 const bundled = (pin: Lock["services"]["rest"]["resolved"]) =>
   ({ specifier: "bundled", resolution: "resolved", resolved: pin }) as const;

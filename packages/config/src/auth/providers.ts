@@ -30,7 +30,7 @@ const provider = (providerConfig: {
   const links = [
     {
       name: `Login with ${providerConfig.name}`,
-      link: `https://supabase.com/docs/guides/auth/social-login/auth-${providerConfig.id}`,
+      link: `https://dbase.to/docs/guides/auth/social-login/auth-${providerConfig.id}`,
     },
   ];
 

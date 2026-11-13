@@ -198,7 +198,7 @@ describe("respondToComplete", () => {
     });
   });
 
-  describe("unmatched root-level command (CLI-1965 review)", () => {
+  describe("unmatched root-level command", () => {
     it("returns Default with zero candidates for a flag typed after an unmatched ROOT-level positional", () => {
       const unknownRoot = respondToComplete(rootCommand, ["__complete", "nosuch", "--d"]);
       expect(unknownRoot).toEqual({ candidates: [], directive: CompletionDirective.Default });
@@ -352,7 +352,7 @@ describe("respondToComplete", () => {
     });
   });
 
-  describe("flag terminator (`--`) disables flag completion (CLI-1965 review)", () => {
+  describe("flag terminator (`--`) disables flag completion", () => {
     it("does not offer a flag-name candidate for a positional operand after `--`", () => {
       const result = respondToComplete(rootCommand, ["__complete", "db", "dump", "--", "--s"]);
       expect(result).toEqual({ candidates: [], directive: CompletionDirective.Default });
@@ -374,7 +374,7 @@ describe("respondToComplete", () => {
     });
   });
 
-  describe("attached shorthand values resolve via the strict flag parser (CLI-1965 review)", () => {
+  describe("attached shorthand values resolve via the strict flag parser", () => {
     it("parses a non-boolean shorthand's attached value instead of treating the token as unknown", () => {
       const result = respondToComplete(rootCommand, [
         "__complete",
@@ -390,7 +390,7 @@ describe("respondToComplete", () => {
     });
   });
 
-  describe("a trailing incomplete flag is a hard parse error only when toComplete is itself flag-shaped (CLI-1965 review)", () => {
+  describe("a trailing incomplete flag is a hard parse error only when toComplete is itself flag-shaped", () => {
     it("rejects a dangling value-taking flag when toComplete is a bare flag-shaped token", () => {
       const result = respondToComplete(rootCommand, ["__complete", "-o", "--d"]);
       expect(result).toEqual({ candidates: [], directive: CompletionDirective.Default });
@@ -421,7 +421,7 @@ describe("respondToComplete", () => {
     });
   });
 
-  describe("changed-flag tracking honors a long flag's real value consumption (CLI-1965 review)", () => {
+  describe("changed-flag tracking honors a long flag's real value consumption", () => {
     it("does not mark a value token as its own changed flag, so a still-required flag stays offered", () => {
       const result = respondToComplete(rootCommand, [
         "__complete",
@@ -439,14 +439,14 @@ describe("respondToComplete", () => {
     });
   });
 
-  describe("a boolean flag with an explicit `=` is still flag-VALUE completion (CLI-1965 review)", () => {
+  describe("a boolean flag with an explicit `=` is still flag-VALUE completion", () => {
     it("does not fall through to noun completion for `--boolFlag=value`", () => {
       const result = respondToComplete(rootCommand, ["__complete", "--debug=maybe"]);
       expect(result).toEqual({ candidates: [], directive: CompletionDirective.Default });
     });
   });
 
-  describe("completion script leaves force NoFileComp (CLI-1965 review)", () => {
+  describe("completion script leaves force NoFileComp", () => {
     it.each(["bash", "zsh", "fish", "powershell"])(
       "returns zero candidates with the NoFileComp directive for `completion %s`",
       (shell) => {
@@ -456,7 +456,7 @@ describe("respondToComplete", () => {
     );
   });
 
-  describe("help's own ValidArgsFunction resolves a second command path from root (CLI-1965 review)", () => {
+  describe("help's own ValidArgsFunction resolves a second command path from root", () => {
     it("completes root subcommand names after `help`", () => {
       const result = respondToComplete(rootCommand, ["__complete", "help", "d"]);
       expect(result?.directive).toBe(CompletionDirective.NoFileComp);
@@ -500,7 +500,7 @@ describe("respondToComplete", () => {
     });
   });
 
-  describe("uint-backed flags reject a leading sign (CLI-1965 review)", () => {
+  describe("uint-backed flags reject a leading sign", () => {
     it.each([
       { path: ["functions", "deploy"], flag: "jobs" },
       { path: ["migration", "down"], flag: "last" },
@@ -528,7 +528,7 @@ describe("respondToComplete", () => {
     });
   });
 
-  describe("--output's choice values are validated per-command, not the widened global union (CLI-1965 review)", () => {
+  describe("--output's choice values are validated per-command, not the widened global union", () => {
     it.each([
       { path: ["logs"], format: "table" },
       { path: ["logs"], format: "csv" },
@@ -590,7 +590,7 @@ describe("respondToComplete", () => {
     });
   });
 
-  describe("flag values are validated with the strict flag parser (CLI-1965 review)", () => {
+  describe("flag values are validated with the strict flag parser", () => {
     it("accepts a base-0 hex value for a plain (non-uint) integer flag", () => {
       const result = respondToComplete(rootCommand, [
         "__complete",
@@ -897,7 +897,7 @@ describe("respondToComplete", () => {
     });
   });
 
-  describe("an attached-value shorthand cluster is validated even when the owning flag is boolean (CLI-1965 review)", () => {
+  describe("an attached-value shorthand cluster is validated even when the owning flag is boolean", () => {
     it("rejects an invalid boolean value attached via `=` to a boolean shorthand", () => {
       const result = respondToComplete(rootCommand, [
         "__complete",
@@ -922,7 +922,7 @@ describe("respondToComplete", () => {
     });
   });
 
-  describe("the built-in help/version flags short-circuit on Changed, not on exact token spelling (CLI-1965 review)", () => {
+  describe("the built-in help/version flags short-circuit on Changed, not on exact token spelling", () => {
     it.each(["--help=false", "--help=true", "-h=false"])(
       "treats %s the same as a bare --help",
       (token) => {
@@ -942,7 +942,7 @@ describe("respondToComplete", () => {
     });
   });
 
-  describe("a `--` consumed as a preceding flag's value is not a genuine terminator (CLI-1965 review)", () => {
+  describe("a `--` consumed as a preceding flag's value is not a genuine terminator", () => {
     it("still offers a flag name after `--` was consumed as a value-taking flag's own value", () => {
       const result = respondToComplete(rootCommand, [
         "__complete",
@@ -962,7 +962,7 @@ describe("respondToComplete", () => {
     });
   });
 
-  describe("a bare `-` is a positional argument, not a flag (CLI-1965 review)", () => {
+  describe("a bare `-` is a positional argument, not a flag", () => {
     it("keeps the subcommand-listing gate closed when a bare `-` survives as leftover", () => {
       const result = respondToComplete(rootCommand, ["__complete", "sso", "-", "--debug", "a"]);
       expect(result).toEqual({ candidates: [], directive: CompletionDirective.Default });
@@ -1092,7 +1092,7 @@ describe("collectInScopeFlags", () => {
     );
   });
 
-  it("orders inherited flags before the command's own flags — alphabetical within each block, not declaration order (CLI-1965 review)", () => {
+  it("orders inherited flags before the command's own flags — alphabetical within each block, not declaration order", () => {
     const { commandChain } = resolveCommandPath(rootCommand, ["db", "dump"]);
     const names = collectInScopeFlags(rootCommand, commandChain).map((flag) => flag.name);
 

@@ -24,7 +24,7 @@ The CLI uses a single unified `Output` service (`src/services/Output.ts`) that a
 const output = yield* Output;
 
 // Lifecycle
-output.intro("Log in to Supabase")
+output.intro("Log in to DBase")
 output.outro("You are now logged in.")
 
 // Progress logging

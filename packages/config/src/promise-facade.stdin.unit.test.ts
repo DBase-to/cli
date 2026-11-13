@@ -8,7 +8,7 @@ import { findCliProjectRoot } from "./bun.ts";
 // adds on first use. This is only observable on the very first facade call anywhere in the
 // process, since the facade's `ManagedRuntime` is a lazy, module-level singleton — so this
 // file must make exactly one facade call, and no other test here may call into `bun.ts` before or after it.
-describe("promise-facade stdin-leak regression (CLI-2231)", () => {
+describe("promise-facade stdin-leak regression", () => {
   test("the first facade call in this file does not attach a process.stdin 'end' listener", () =>
     Effect.runPromise(
       Effect.gen(function* () {

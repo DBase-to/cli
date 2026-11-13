@@ -12,7 +12,7 @@ import {
 const body = { body: "not found", message: "boom" };
 const gatedEntitlement = {
   feature: "branching_limit",
-  upgrade_url: "https://supabase.com/dashboard/org/env-org/billing",
+  upgrade_url: "https://dbase.to/dashboard/org/env-org/billing",
 };
 
 describe("branch operation 404s classify as invalid input", () => {

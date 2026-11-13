@@ -175,7 +175,7 @@ const main = Effect.gen(function* () {
     }
     yield* Console.warn(
       "WARNING: rcodesign not found — macOS binaries will keep Bun's linker-signed ad-hoc " +
-        "signature, which macOS 26+ SIGKILLs at launch (CLI-1621). Install rcodesign to " +
+        "signature, which macOS 26+ SIGKILLs at launch. Install rcodesign to " +
         "produce runnable macOS binaries locally.",
     );
     return "off";

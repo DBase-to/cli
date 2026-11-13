@@ -3209,7 +3209,7 @@ describe("gen types", () => {
     );
   });
 
-  describe("TLS: pin the DBase CA only where the design calls for it", () => {
+  describe("TLS: pin the DBase CA only where required", () => {
     it.effect("pins the DBase CA for a db-url pointing at a direct database host", () =>
       Effect.gen(function* () {
         const { layer, generator } = yield* setup({
@@ -3401,7 +3401,7 @@ describe("gen types", () => {
             password: "postgres",
             database: "postgres",
             suggestionContext: {
-              dashboardUrl: "https://supabase.com/dashboard",
+              dashboardUrl: "https://dbase.to/dashboard",
               profileName: "supabase",
               linkedCheckout: false,
             },
@@ -3848,7 +3848,7 @@ describe("gen types", () => {
           password: "postgres",
           database: "postgres",
           suggestionContext: {
-            dashboardUrl: "https://supabase.com/dashboard",
+            dashboardUrl: "https://dbase.to/dashboard",
             profileName: "supabase",
             linkedCheckout: false,
           },

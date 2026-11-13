@@ -223,7 +223,7 @@ const findRevision = Effect.fn("ReleaseResolver.findRevision")(function* (
       );
     return found;
   }
-  // The first 404 ends the sequence: revisions are contiguous (ADR 0026, "Immutable revisions").
+  // The first 404 ends the sequence: revisions are contiguous.
   let latest: Published | undefined;
   let probes = 0;
   let ended = false;

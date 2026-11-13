@@ -1,8 +1,5 @@
 name: Lint Pull Request
 
-# Release-notes PRs (head ref `release-notes/*`) skip CI; only
-# apply-release-notes.yml runs for those.
-#
 # Draft PRs skip this check unless they carry `run-ci` (same opt-in as Test).
 # Label events retrigger this cheap check so adding `run-ci` on a draft starts
 # lint without waiting for a push.

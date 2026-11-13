@@ -28,19 +28,15 @@ upstream are coordinated through `supabase/cli`.
 
 For changes that belong in this repository:
 
-1. **Open an issue first**, using one of the [issue templates](https://github.com/DBase-to/cli/issues/new/choose).
-2. **Wait for maintainer triage.** A maintainer categorizes the issue (`✨ Feature`, `🐛 Bug`, or `📘 Docs`) and adds the **`open-for-contribution`** label once it is ready to be worked on.
-3. **Open a pull request only after the `open-for-contribution` label is set**, and link the issue with a closing keyword (for example `Closes #123`).
-
-Until the `open-for-contribution` label is present, the issue is still in triage, so work should not start and a pull request should not be opened. Changes that belong upstream follow the upstream repository's process instead; the labels and automation below are specific to this fork.
-
-Pull requests from external contributors that do not follow this workflow are commented on and closed automatically by the [Contribution Gate](.github/workflows/contribution-gate.yml). DBase maintainers are exempt, so they can work from Linear tickets that are not public on GitHub. Maintainers: see [`.github/MAINTAINERS.md`](.github/MAINTAINERS.md).
+1. **Open an issue first**, using one of the [issue templates](https://github.com/DBase-to/cli/issues/new/choose). Small fixes can go straight to a pull request.
+2. **Open a pull request** and link the issue when there is one (for example `Closes #123`).
+3. A maintainer reviews the change. There is no separate triage label or auto-close gate.
 
 ## Setup
 
 ### Tool versions
 
-This repo pins the versions of Node, Bun, Go, pnpm, and golangci-lint that contributors are expected to build against, and uses [`mise`](https://mise.jdx.dev/) — a polyglot version manager — to install and activate them automatically. If you don't already have these tools installed, `mise` is a great way to get up and running quickly.
+This repo pins the versions of Node, Bun, and pnpm that contributors are expected to build against, and uses [`mise`](https://mise.jdx.dev/) — a polyglot version manager — to install and activate them automatically. If you don't already have these tools installed, `mise` is a great way to get up and running quickly.
 
 #### Installing mise
 
@@ -72,13 +68,11 @@ mise install
 
 `mise install` resolves the versions this repo expects from a handful of files, rather than hardcoding them all in one place:
 
-| Tool          | Version source                                      |
-| ------------- | --------------------------------------------------- |
-| Bun           | `.bun-version`                                      |
-| Node.js       | `.node-version`                                     |
-| pnpm          | `devEngines.packageManager` field in `package.json` |
-| Go            | `mise.toml`                                         |
-| golangci-lint | `mise.toml`                                         |
+| Tool    | Version source                                      |
+| ------- | --------------------------------------------------- |
+| Bun     | `.bun-version`                                      |
+| Node.js | `.node-version`                                     |
+| pnpm    | `devEngines.packageManager` field in `package.json` |
 
 Once installed, `mise` activates these versions automatically whenever your shell is inside this repo — no manual `nvm use`, `gvm use`, or similar switching required.
 
@@ -117,7 +111,7 @@ That pulls `.repos/effect/`, which is the local source of truth for Effect v4 AP
 |   |-- stack/                # Programmatic local stack runtime
 |   `-- cli-*/                # Platform-specific CLI binary packages
 |-- tools/                    # Repository tooling (release scripts, etc.)
-|-- docs/                     # ADRs, design notes, and implementation docs
+|-- docs/                     # Design notes and implementation docs
 `-- .repos/effect/            # Effect v4 reference source
 ```
 
@@ -125,7 +119,7 @@ That pulls `.repos/effect/`, which is the local source of truth for Effect v4 AP
 
 | Workspace      | Purpose                                                                                                                           |
 | -------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `apps/cli`     | Main `dbase` package. Contains command handlers, runtime services, auth, output, telemetry, and docs generation scripts.          |
+| `apps/cli`     | Main `@dbase/cli` package. Contains command handlers, runtime services, auth, output, telemetry, and docs generation scripts.     |
 | `apps/cli-e2e` | Compatibility e2e test suite. Record-and-replay harness for testing the TypeScript CLI against recorded Management API responses. |
 | `apps/docs`    | Internal docs site built with Next.js and generated from the CLI docs sources.                                                    |
 
@@ -225,7 +219,7 @@ The configured URL is the Management API endpoint. Tenant data-plane URLs keep
 the CLI profile contract (`https://<ref>.<project_host>`) using the host derived
 from the provisioned project's database metadata.
 
-Live coverage is smoke coverage, not an exhaustive command matrix. Add one representative golden-path test for each user-facing command, colocated beside that command. A live test should assert one target command; setup and teardown may invoke other commands when they prepare or clean up state, but those commands are not asserted in that test. Keep validation, formatting, fallback, error, and matrix details in integration tests unless the remote/runtime boundary itself is the behavior under test. See [ADR 0013](docs/adr/0013-live-e2e-bypasses-replay-server.md) and [`apps/cli/live.env.example`](apps/cli/live.env.example).
+Live coverage is smoke coverage, not an exhaustive command matrix. Add one representative golden-path test for each user-facing command, colocated beside that command. A live test should assert one target command; setup and teardown may invoke other commands when they prepare or clean up state, but those commands are not asserted in that test. Keep validation, formatting, fallback, error, and matrix details in integration tests unless the remote/runtime boundary itself is the behavior under test. See and [`apps/cli/live.env.example`](apps/cli/live.env.example).
 
 To run the live suite locally, copy [`apps/cli/live.env.example`](apps/cli/live.env.example), set the API URL and access token for the target platform, and run the root Turbo entrypoint. Its build dependency prepares the CLI artifacts before Vitest starts:
 
@@ -347,7 +341,6 @@ dbase --version
 | Problem                                                                         | Fix                                                                                                                                                                                                                                                                                                                                                                                                             |
 | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `Error: Something is already running on port 4873`                              | Kill the leftover Verdaccio process (`lsof -ti:4873 \| xargs kill`) and retry                                                                                                                                                                                                                                                                                                                                   |
-| `go not found in PATH`                                                          | Install Go from https://go.dev/dl/                                                                                                                                                                                                                                                                                                                                                                              |
 | `npm` / `pnpm` tries to fetch from `localhost:4873` when no registry is running | Stale global registry override left behind by an older version of `local-registry.ts` (the current script never modifies global config). Run `npm config delete registry` and `pnpm config delete registry`. Note that pnpm stores the override in its own global config (`~/Library/Preferences/pnpm/auth.ini` on macOS, `~/.config/pnpm/` on Linux), not `~/.npmrc` — check there if the delete command fails |
 | `npx` resolves from npm instead of local                                        | Pass `--registry http://localhost:4873` explicitly to `npx` / `npm install`                                                                                                                                                                                                                                                                                                                                     |
 
@@ -401,7 +394,6 @@ package's test scripts.
 
 ## Documentation
 
-- [`docs/adr/`](docs/adr/) contains architecture decision records.
 - [`docs/`](docs/) contains design notes for CLI output, telemetry, environment management, distribution, migration, and monorepo tooling.
 - [`apps/cli/docs/`](apps/cli/docs/) contains source material used to generate command documentation.
 

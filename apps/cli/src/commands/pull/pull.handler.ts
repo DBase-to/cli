@@ -162,7 +162,7 @@ function pullWithRetryHint(
 /**
  * `dbase pull` orchestrates `config pull`, an optional `migration fetch`, `db pull`, and
  * `functions download` behind one target resolution, one confirmation, and one aggregated
- * result (see ADR 0024). The `db` step also writes to the remote database's migration history
+ * result. The `db` step also writes to the remote database's migration history
  * table and requires Docker.
  */
 export const pull = Effect.fn("pull")(function* (flags: PullFlags) {
@@ -197,7 +197,7 @@ export const pull = Effect.fn("pull")(function* (flags: PullFlags) {
     );
 
     // Resolves the pull target exactly once; every sub-step below targets `ref` directly
-    // instead of re-resolving (ADR 0024).
+    // instead of re-resolving.
     const { ref, branch, linked, runPlan, source } = yield* Effect.gen(function* () {
       const pullSource = yield* openConfigPullSource();
       const target = yield* resolveProjectTarget(flags, { detail: true });
@@ -233,7 +233,7 @@ export const pull = Effect.fn("pull")(function* (flags: PullFlags) {
         ? false
         : Option.getOrElse(yield* pathHasUncommittedChanges(runPlan.configFilePath), () => false);
 
-    // The db step always runs and has no preview machinery (ADR 0024), so migrations are
+    // The db step always runs and has no preview machinery, so migrations are
     // checked unconditionally for uncommitted changes — not just when migration-history also
     // runs — skipped only by `--force`.
     const migrationsDir = path.join(cliSettings.workdir, "supabase", "migrations");
@@ -258,7 +258,7 @@ export const pull = Effect.fn("pull")(function* (flags: PullFlags) {
     const dirty = dirtyPaths.length > 0;
 
     // Auto-runs whenever `supabase/migrations` is missing or empty, even without
-    // `--with-migration-history` (ADR 0024's bootstrap decision): a fresh checkout has nothing
+    // `--with-migration-history`: a fresh checkout has nothing
     // to overwrite. Uses the same raw, unfiltered directory listing `migration fetch`'s own
     // overwrite-confirmation guard uses, so a directory holding only a README/.gitkeep reads as
     // non-empty in both places.

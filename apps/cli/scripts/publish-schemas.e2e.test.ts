@@ -29,7 +29,7 @@ const runScript = (args: ReadonlyArray<string>) =>
 const schemaText = (name: string, version: number, overrides: Record<string, unknown> = {}) =>
   JSON.stringify({
     $schema: JsonSchema.META_SCHEMA_URI_DRAFT_07,
-    $id: `https://supabase.com/schemas/${name}/v${version}.json`,
+    $id: `https://dbase.to/schemas/${name}/v${version}.json`,
     type: "object",
     ...overrides,
   });
@@ -54,7 +54,7 @@ const refusals: ReadonlyArray<{
   {
     description: "an $id that does not match the schema's path",
     files: { "config/v1.json": schemaText("config", 1, { $id: "https://example.com/c.json" }) },
-    message: `Refusing to publish: config/v1.json must declare "$id": "https://supabase.com/schemas/config/v1.json".`,
+    message: `Refusing to publish: config/v1.json must declare "$id": "https://dbase.to/schemas/config/v1.json".`,
   },
   {
     description: "a $schema that is not draft-07",

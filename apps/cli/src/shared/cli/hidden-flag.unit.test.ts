@@ -322,7 +322,7 @@ describe("hidden subcommands", () => {
     expect(names).not.toContain("table-index-sizes");
   });
 
-  it.effect("still executes the native `db test` hidden alias by exact name (CLI-1962)", () =>
+  it.effect("still executes the native `db test` hidden alias by exact name", () =>
     Effect.gen(function* () {
       // `--local --linked` fail in the target selector before any DB/docker IO, so that typed
       // failure (not success) is what proves dispatch reached the handler.

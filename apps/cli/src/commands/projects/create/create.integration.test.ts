@@ -143,7 +143,7 @@ describe("projects create integration", () => {
       });
       expect(out.stderrText).toContain("Creating project:");
       expect(out.stderrText).toContain(
-        "Created a new project at https://supabase.com/dashboard/project/abcdefghijklmnopqrst",
+        "Created a new project at https://dbase.to/dashboard/project/abcdefghijklmnopqrst",
       );
       expect(out.stdoutText).toContain("REFERENCE ID");
       expect(out.stdoutText).toContain("East US (North Virginia)");

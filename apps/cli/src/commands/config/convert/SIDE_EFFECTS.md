@@ -61,7 +61,7 @@ stdout is one report, printed after the files are written (colour only on a TTY,
   Changes
     + Created  supabase/config.jsonc
     > Moved    supabase/config.toml to supabase/config.toml.bak
-    ~ Updated  .vscode/settings.json (trusts https://supabase.com/schemas/)
+    ~ Updated  .vscode/settings.json (trusts https://dbase.to/schemas/)
 
   ℹ 1 comment relocated
     Comments inside nested arrays or inline tables move to the line above their key.
@@ -69,7 +69,7 @@ stdout is one report, printed after the files are written (colour only on a TTY,
 
   ⚠ Could not update .vscode/settings.json
     <detail>.
-    Add "https://supabase.com/schemas/": true under "json.schemaDownload.trustedDomains" to trust the config schema.
+    Add "https://dbase.to/schemas/": true under "json.schemaDownload.trustedDomains" to trust the config schema.
 
   ⚠ Compatibility
     CLI versions before 3.1.0 ignore config.jsonc and run with defaults.

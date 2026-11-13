@@ -26,99 +26,9 @@ inputs:
       archive restores slower than the registry downloads it, disable this.
     required: false
     default: "true"
-  sticky-disks:
-    description: >-
-      Whether to mount dependency caches from Blacksmith sticky disks on
-      Blacksmith Linux runners. Disks are read-only unless commit-sticky-disks
-      is set.
-    required: false
-    default: "false"
-  commit-sticky-disks:
-    description: >-
-      Whether this job writes its sticky disks back. Only the fill workflow
-      sets it, so test jobs never race it with partial snapshots.
-    required: false
-    default: "false"
-  docker-images:
-    description: >-
-      Whether to keep Docker's image store on a Blacksmith sticky disk so
-      stack images are not pulled again on every job. Requires sticky-disks.
-      Callers must stop Docker in a final if: always() step so the disk
-      unmounts cleanly.
-    required: false
-    default: "false"
-  native-artifacts:
-    description: >-
-      Whether to keep the stack tests' native service artifacts on a
-      Blacksmith sticky disk. Requires sticky-disks.
-    required: false
-    default: "false"
-
 runs:
   using: "composite"
   steps:
-    # Sticky disks are shared by every run in the repository, so only the fill
-    # job on trusted events (pushes, schedules, manual runs) commits; pull request
-    # and merge queue code could otherwise plant dependencies or images that
-    # trusted runs later execute.
-    # Committing runs prune what the current lockfile no longer uses; bump the
-    # -vN key segment to reset a disk outright.
-    - name: Detect sticky disks
-      id: sticky
-      if: inputs.sticky-disks == 'true'
-      shell: bash
-      env:
-        EVENT_NAME: ${{ github.event_name }}
-        COMMIT: ${{ inputs.commit-sticky-disks }}
-      run: |
-        if [ "$RUNNER_OS" != Linux ]; then
-          exit 0
-        fi
-        if [ -z "${BLACKSMITH_RUNNER_MESSAGE_WAIT_MS:-}" ]; then
-          echo "::notice::Sticky disks requested but this is not a Blacksmith runner; using actions/cache."
-          exit 0
-        fi
-        echo "enabled=true" >> "$GITHUB_OUTPUT"
-        case "$COMMIT:$EVENT_NAME" in
-          true:push | true:schedule | true:workflow_dispatch) echo "commit=on-change" >> "$GITHUB_OUTPUT" ;;
-          *) echo "commit=false" >> "$GITHUB_OUTPUT" ;;
-        esac
-
-    - name: Stop Docker before mounting its image disk
-      if: inputs.docker-images == 'true' && steps.sticky.outputs.enabled == 'true'
-      shell: bash
-      run: sudo systemctl stop docker.socket docker.service
-
-    - name: Mount Docker image disk
-      if: inputs.docker-images == 'true' && steps.sticky.outputs.enabled == 'true'
-      uses: useblacksmith/stickydisk@b6cb58d1d31d6d32a25248fab12493d831f7bd48 # v1.7.2
-      with:
-        key: ${{ github.repository }}-docker-images-v3-${{ runner.arch }}
-        path: /var/lib/docker
-        commit: ${{ steps.sticky.outputs.commit }}
-
-    - name: Restart Docker on the image disk
-      if: inputs.docker-images == 'true' && steps.sticky.outputs.enabled == 'true'
-      shell: bash
-      run: |
-        sudo systemctl start docker.socket docker.service
-        docker info --format '{{.DockerRootDir}} {{.Driver}}'
-        docker image ls --format '{{.Repository}}:{{.Tag}}' | wc -l
-
-    - name: Locate native artifact cache
-      id: native-artifacts
-      if: inputs.native-artifacts == 'true' && steps.sticky.outputs.enabled == 'true'
-      shell: bash
-      run: echo "path=${XDG_CACHE_HOME:-$HOME/.cache}/supabase-stack-artifacts" >> "$GITHUB_OUTPUT"
-
-    - name: Mount native artifact disk
-      if: inputs.native-artifacts == 'true' && steps.sticky.outputs.enabled == 'true'
-      uses: useblacksmith/stickydisk@b6cb58d1d31d6d32a25248fab12493d831f7bd48 # v1.7.2
-      with:
-        key: ${{ github.repository }}-stack-artifacts-v2-${{ runner.arch }}
-        path: ${{ steps.native-artifacts.outputs.path }}
-        commit: ${{ steps.sticky.outputs.commit }}
-
     - name: Install toolchains
       uses: jdx/mise-action@8418fedb1110381a0d3ba51a7a415d7c1b884550 # v5.2.2
       with:
@@ -131,16 +41,6 @@ runs:
       shell: bash
       run: |
         echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
-
-    # A sticky disk mounts a block-level snapshot in seconds, while
-    # actions/cache downloads and untars the whole store on every job.
-    - name: Mount pnpm store disk
-      if: inputs.dependency-cache == 'true' && steps.sticky.outputs.enabled == 'true'
-      uses: useblacksmith/stickydisk@b6cb58d1d31d6d32a25248fab12493d831f7bd48 # v1.7.2
-      with:
-        key: ${{ github.repository }}-pnpm-store-v3-${{ runner.arch }}
-        path: ${{ steps.pnpm-store.outputs.path }}
-        commit: ${{ steps.sticky.outputs.commit }}
 
     # Cache only the content-addressable half of the store (package files plus
     # the SQLite index), never the global virtual store under links/. That
@@ -155,7 +55,7 @@ runs:
     # so restores never match the earlier whole-store archives, which still
     # carry a links/ tree.
     - name: Configure pnpm dependency cache
-      if: inputs.dependency-cache == 'true' && inputs.pnpm-store-cache == 'true' && steps.sticky.outputs.enabled != 'true'
+      if: inputs.dependency-cache == 'true' && inputs.pnpm-store-cache == 'true'
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: |
@@ -186,10 +86,8 @@ runs:
       shell: bash
       env:
         DEPENDENCY_FIREWALL_TOKEN: ${{ inputs.dependency-firewall-token }}
-        # Skip husky's hook install: the commit-msg hook is a local dev
-        # convenience, not a gate for bot-authored commits (e.g.
-        # propose-release-notes.ts), and CI already enforces scopes on the
-        # PR title separately.
+        # Skip husky's hook install in CI; the commit-msg hook is a local dev
+        # convenience, and CI enforces the PR title separately.
         HUSKY: "0"
       run: |
         if [ -z "$DEPENDENCY_FIREWALL_TOKEN" ]; then
@@ -204,10 +102,3 @@ runs:
           echo "//firewall.depthfirst.com/npm/:_authToken=${DEPENDENCY_FIREWALL_TOKEN}"
         } > "$npmrc"
         NPM_CONFIG_USERCONFIG="$npmrc" pnpm install --frozen-lockfile
-
-    # Pruning keeps only this checkout's packages, so only the default branch
-    # prunes; other branches would evict each other's dependencies.
-    - name: Prune pnpm store disk
-      if: inputs.dependency-cache == 'true' && steps.sticky.outputs.commit == 'on-change' && github.ref_name == (github.event.repository.default_branch || 'develop')
-      shell: bash
-      run: pnpm store prune

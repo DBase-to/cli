@@ -6,7 +6,7 @@ import { REMOTE_FLAG_NAME } from "../../command-internal/target/remote-vocabular
 // "Expected: Expected ...". Anchors on `error.expected` rather than the composed `message`, since
 // `error.value` is user-controlled and can itself contain that literal text.
 //
-// TODO(CLI-1898): remove once https://github.com/Effect-TS/effect/issues/6312 is fixed upstream.
+// TODO: remove once https://github.com/Effect-TS/effect/issues/6312 is fixed upstream.
 const EXPECTED_PREFIX = "Expected ";
 
 // A flag's own byte-exact diagnostic (malformed string-slice CSV, any `--remote` value) is printed

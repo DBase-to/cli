@@ -91,7 +91,7 @@ describe("scanAdvisorLintRow", () => {
       categories: ["SECURITY"],
       description: "Detects tables without RLS.",
       detail: "Table public.users has RLS disabled",
-      remediation: "https://supabase.com/docs",
+      remediation: "https://dbase.to/docs",
       metadata: { schema: "public", name: "users", type: "table" },
       cache_key: "rls_disabled_in_public_public_users",
     });
@@ -116,7 +116,7 @@ describe("apiLintsToAdvisorLints", () => {
     categories: ["SECURITY"],
     description: "Tables without RLS",
     detail: "Table public.users",
-    remediation: "https://supabase.com/docs",
+    remediation: "https://dbase.to/docs",
     cache_key: "test_key",
   };
 

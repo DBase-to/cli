@@ -160,7 +160,7 @@ describe("domains create integration", () => {
         error: {
           code: "entitlement_required",
           feature: "custom_domain",
-          upgrade_url: "https://supabase.com/dashboard/org/env-org/billing",
+          upgrade_url: "https://dbase.to/dashboard/org/env-org/billing",
         },
       },
     });
@@ -169,7 +169,7 @@ describe("domains create integration", () => {
       expect(error).toMatchObject({
         entitlement: {
           feature: "custom_domain",
-          upgrade_url: "https://supabase.com/dashboard/org/env-org/billing",
+          upgrade_url: "https://dbase.to/dashboard/org/env-org/billing",
         },
       });
       expect(api.requests).toHaveLength(2);

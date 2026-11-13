@@ -778,30 +778,27 @@ describe("gen signing-key integration", () => {
     );
   });
 
-  it.effect(
-    "auto-confirms from SUPABASE_YES in the project .env, even with a piped 'n' (CLI-1878)",
-    () => {
-      const { layer } = setup({ stdinIsTty: false, pipedAnswer: "n" });
-      // Clears any shell SUPABASE_YES so this proves the project-.env source specifically.
-      return withEmptyConfigEnv(
-        Effect.gen(function* () {
-          const fs = yield* FileSystem.FileSystem;
-          const path = yield* Path.Path;
-          yield* writeConfig('[auth]\nsigning_keys_path = "./signing_keys.json"\n');
-          yield* writeSigningKeys("[]\n");
-          yield* fs.writeFileString(
-            path.join(tempRoot.current, "supabase", ".env"),
-            "SUPABASE_YES=true\n",
-          );
+  it.effect("auto-confirms from SUPABASE_YES in the project .env, even with a piped 'n'", () => {
+    const { layer } = setup({ stdinIsTty: false, pipedAnswer: "n" });
+    // Clears any shell SUPABASE_YES so this proves the project-.env source specifically.
+    return withEmptyConfigEnv(
+      Effect.gen(function* () {
+        const fs = yield* FileSystem.FileSystem;
+        const path = yield* Path.Path;
+        yield* writeConfig('[auth]\nsigning_keys_path = "./signing_keys.json"\n');
+        yield* writeSigningKeys("[]\n");
+        yield* fs.writeFileString(
+          path.join(tempRoot.current, "supabase", ".env"),
+          "SUPABASE_YES=true\n",
+        );
 
-          yield* genSigningKey({ algorithm: "ES256", append: false });
+        yield* genSigningKey({ algorithm: "ES256", append: false });
 
-          const parsed = yield* readSigningKeys();
-          expect(parsed).toHaveLength(1);
-        }).pipe(Effect.provide(layer)),
-      );
-    },
-  );
+        const parsed = yield* readSigningKeys();
+        expect(parsed).toHaveLength(1);
+      }).pipe(Effect.provide(layer)),
+    );
+  });
 
   it.effect("an explicit --yes=false overrides SUPABASE_YES and honors a piped 'n'", () => {
     const { layer } = setup({

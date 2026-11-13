@@ -8,7 +8,7 @@ flag config and assembled handler verbatim
 (`../../../shared/test-db.command-handler.ts`'s
 `testDbConfig` / `runTestDbCommand`) rather than re-implementing
 pgTAP enable/disable and the `pg_prove` docker invocation a second time
-(CLI-1962).
+.
 
 **Every side effect below is identical to `dbase test db`** — see
 [`../../test/db/SIDE_EFFECTS.md`](../../test/db/SIDE_EFFECTS.md) for the full

@@ -506,7 +506,7 @@ describe("link integration", () => {
         expect(error).toMatchObject({
           message: expect.stringContaining("project is paused"),
           suggestion: expect.stringContaining(
-            `An admin must unpause it from the DBase dashboard at https://supabase.com/dashboard/project/${VALID_REF}`,
+            `An admin must unpause it from the DBase dashboard at https://dbase.to/dashboard/project/${VALID_REF}`,
           ),
         });
       }).pipe(Effect.provide(layer));

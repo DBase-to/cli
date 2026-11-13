@@ -200,12 +200,12 @@ describe("configDiffPayload", () => {
           projectRef: "abcdefghijklmnopqrst",
           branch: undefined,
           appliedRemote: undefined,
-          configSchema: "https://supabase.com/schemas/config/v1.json",
+          configSchema: "https://dbase.to/schemas/config/v1.json",
         },
       ),
     ).toEqual({
       schema_version: CONFIG_DIFF_PAYLOAD_VERSION,
-      config_schema: "https://supabase.com/schemas/config/v1.json",
+      config_schema: "https://dbase.to/schemas/config/v1.json",
       target: { project_ref: "abcdefghijklmnopqrst", local_scope: "base" },
       scope: { present: ["auth"], missing: [] },
       changes: [

@@ -263,7 +263,7 @@ describe("suggestUpgrade", () => {
     error: {
       code: "entitlement_required",
       feature: "branching_persistent",
-      upgrade_url: "https://supabase.com/dashboard/org/env-org/billing",
+      upgrade_url: "https://dbase.to/dashboard/org/env-org/billing",
     },
   };
 
@@ -302,7 +302,7 @@ describe("suggestUpgrade", () => {
           error: {
             code: "entitlement_required",
             feature: "custom_domain",
-            upgrade_url: "https://supabase.com/dashboard/org/env-org/billing",
+            upgrade_url: "https://dbase.to/dashboard/org/env-org/billing",
           },
         }),
       });

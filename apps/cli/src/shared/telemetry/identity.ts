@@ -47,7 +47,6 @@ export const resolveIdentity = Effect.fnUntraced(function* (configDir: string) {
  * Docker, `npx supabase`), detected heuristically. Identity stitching
  * ($create_alias + persisted distinct_id) is wasted in these environments;
  * only in-memory stamping applies.
- * See docs/adr/0013-hybrid-stitch-stamp-identity-attribution.md.
  */
 export function isEphemeralIdentityRuntime(runtime: {
   readonly isCi: boolean;
@@ -61,7 +60,7 @@ export function isEphemeralIdentityRuntime(runtime: {
  * In-process identity for telemetry capture events: the persisted distinct_id
  * snapshot at startup, overridden when the process learns the authenticated
  * user ("stamping"), emptied on logout. The single source of truth consulted
- * at capture time — see docs/adr/0013-hybrid-stitch-stamp-identity-attribution.md.
+ * at capture time.
  */
 export interface TelemetryIdentity {
   readonly current: () => string | undefined;

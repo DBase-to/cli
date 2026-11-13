@@ -291,7 +291,7 @@ describe("Output", () => {
     it.effect(
       "fail prints the upgrade hint once, before the message, for a plan-gated denial",
       () => {
-        const upgradeUrl = "https://supabase.com/dashboard/org/acme/billing";
+        const upgradeUrl = "https://dbase.to/dashboard/org/acme/billing";
         const writes: string[] = [];
         const originalWrite = process.stderr.write.bind(process.stderr);
         const originalArgv = process.argv;

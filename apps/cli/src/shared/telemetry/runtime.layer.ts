@@ -40,7 +40,7 @@ export const telemetryRuntimeLayer = Layer.effect(
       if (Option.isNone(config) && isTty) {
         yield* Effect.sync(() =>
           note(
-            "DBase collects anonymous usage data to improve the CLI.\nYou can opt out at any time:\n\n  supabase telemetry disable\n\nLearn more: https://supabase.com/docs/guides/local-development/cli/getting-started#telemetry",
+            "DBase collects anonymous usage data to improve the CLI.\nYou can opt out at any time:\n\n  supabase telemetry disable\n\nLearn more: https://dbase.to/docs/guides/local-development/cli/getting-started#telemetry",
             "Telemetry",
           ),
         );

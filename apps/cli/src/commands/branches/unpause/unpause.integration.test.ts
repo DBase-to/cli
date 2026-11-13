@@ -171,7 +171,7 @@ describe("branches unpause integration", () => {
   });
 
   it.effect("carries the plan-gate entitlement on a JSON-mode gated restore", () => {
-    const upgradeUrl = "https://supabase.com/dashboard/org/acme/billing";
+    const upgradeUrl = "https://dbase.to/dashboard/org/acme/billing";
     const out = mockOutput({ format: "json" });
     const api = mockCommandPlatformApi({
       handler: (request) =>

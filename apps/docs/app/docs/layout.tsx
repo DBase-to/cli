@@ -4,7 +4,7 @@ import { source } from "@/lib/source";
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <DocsLayout tree={source.getPageTree()} nav={{ title: "Supabase CLI" }}>
+    <DocsLayout tree={source.getPageTree()} nav={{ title: "DBase CLI" }}>
       {children}
     </DocsLayout>
   );

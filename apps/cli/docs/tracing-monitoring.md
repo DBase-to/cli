@@ -1,8 +1,7 @@
 # CLI Tracing and Monitoring
 
 Every CLI run can produce one span tree rooted at `cli.run`. Use it to find where time goes in a
-command. Tracing is off unless you turn it on for a run; the conventions for adding spans live in
-[ADR 0027](../../../docs/adr/0027-cli-tracing-conventions.md).
+command. Tracing is off unless you turn it on for a run.
 
 For product analytics and command usage events, see [analytics.md](./analytics.md).
 

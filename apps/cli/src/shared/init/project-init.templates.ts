@@ -4,7 +4,7 @@ import { postgresVersionCompare } from "../../command-internal/db-bootstrap/post
 
 const CONFIG_TEMPLATE_RAW = `#:schema ${CLI_CONFIG_SCHEMA_URL}
 # For detailed configuration reference documentation, visit:
-# https://supabase.com/docs/guides/local-development/cli/config
+# https://dbase.to/docs/guides/local-development/cli/config
 # A string used to distinguish different DBase projects on the same host. Defaults to the
 # working directory name when running \`dbase init\`.
 project_id = "__PROJECT_ID__"
@@ -472,14 +472,14 @@ export const VSCODE_SETTINGS_TEMPLATE = `{
     "editor.defaultFormatter": "denoland.vscode-deno"
   },
   "json.schemaDownload.trustedDomains": {
-    "https://supabase.com/schemas/": true
+    "https://dbase.to/schemas/": true
   }
 }
 `;
 
 export const VSCODE_SCHEMA_TRUST_TEMPLATE = `{
   "json.schemaDownload.trustedDomains": {
-    "https://supabase.com/schemas/": true
+    "https://dbase.to/schemas/": true
   }
 }
 `;

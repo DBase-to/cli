@@ -34,7 +34,7 @@ the CLI always sends whatever resolves. The user-id header is NOT gated on
 telemetry consent (unlike `feedback add`'s submit-side attribution) — it is
 functional auth context, and gating it would strand rows submitted before a
 consent opt-out. The CLI never reads a feedback row: no select request is
-made and the row's text is never fetched or shown (CLI-2406 removes the
+made and the row's text is never fetched or shown ( removes the
 backend read path as well). The request times out after 10 s. `--debug` logs
 the request line on stderr with the `delete_token` filter redacted
 (`delete_token=eq.redacted`) — the token is a bearer capability and must never

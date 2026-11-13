@@ -64,7 +64,7 @@ Styled ASCII table with columns `TYPE`, `IDENTITY PROVIDER ID`, `DOMAINS`, `` SA
 
 ### `--output json` / `--output yaml` / `--output toml`
 
-Encoded `{providers: items}` (CLI-1975): JSON keeps snake_case keys with alphabetised order; YAML lowercases item keys, TOML keeps PascalCase.
+Encoded `{providers: items}`: JSON keeps snake_case keys with alphabetised order; YAML lowercases item keys, TOML keeps PascalCase.
 
 ### `--output env`
 

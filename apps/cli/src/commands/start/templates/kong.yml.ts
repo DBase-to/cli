@@ -177,7 +177,7 @@ services:
     _comment: "Functions: /functions/v1/* -> http://edge-runtime:8081/*"
     url: http://{{ .EdgeRuntimeId }}:8081/
     # Set request idle timeout to 150s to match hosted project
-    # Ref: https://supabase.com/docs/guides/functions/limits
+    # Ref: https://dbase.to/docs/guides/functions/limits
     read_timeout: 150000
     routes:
       - name: functions-v1-all

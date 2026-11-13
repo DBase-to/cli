@@ -417,7 +417,7 @@ describe("branches create integration", () => {
         error: {
           code: "entitlement_required",
           feature: "branching_limit",
-          upgrade_url: "https://supabase.com/dashboard/org/env-org/billing",
+          upgrade_url: "https://dbase.to/dashboard/org/env-org/billing",
         },
       },
     });
@@ -428,7 +428,7 @@ describe("branches create integration", () => {
       expect(error).toMatchObject({
         entitlement: {
           feature: "branching_limit",
-          upgrade_url: "https://supabase.com/dashboard/org/env-org/billing",
+          upgrade_url: "https://dbase.to/dashboard/org/env-org/billing",
         },
       });
       expect(api.requests).toHaveLength(1);
@@ -440,7 +440,7 @@ describe("branches create integration", () => {
   });
 
   it.effect("carries the envelope's entitlement on the JSON-mode failure", () => {
-    const upgradeUrl = "https://supabase.com/dashboard/org/env-org/billing";
+    const upgradeUrl = "https://dbase.to/dashboard/org/env-org/billing";
     const { layer, out } = setup({
       format: "json",
       status: 402,
@@ -490,7 +490,7 @@ describe("branches create integration", () => {
         error: {
           code: "entitlement_required",
           feature: "branching_limit",
-          upgrade_url: "https://supabase.com/dashboard/org/env-org/billing",
+          upgrade_url: "https://dbase.to/dashboard/org/env-org/billing",
         },
       },
     });

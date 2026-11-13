@@ -86,7 +86,7 @@ function lintRow(over: Partial<Record<string, unknown>> = {}) {
     categories: ["SECURITY"],
     description: "Detects tables without RLS.",
     detail: "Table public.users has RLS disabled",
-    remediation: "https://supabase.com/docs",
+    remediation: "https://dbase.to/docs",
     metadata: { schema: "public", name: "users", type: "table" },
     cache_key: "rls_disabled_in_public_public_users",
     ...over,
@@ -554,7 +554,7 @@ describe("db advisors — linked", () => {
     categories: ["SECURITY"],
     description: "Detects tables without RLS.",
     detail: "Table public.users has RLS disabled",
-    remediation: "https://supabase.com/docs",
+    remediation: "https://dbase.to/docs",
     cache_key: "sec",
   };
   const performanceLint = {
@@ -565,7 +565,7 @@ describe("db advisors — linked", () => {
     categories: ["PERFORMANCE"],
     description: "Detects unindexed foreign keys.",
     detail: "Table public.posts has an unindexed foreign key",
-    remediation: "https://supabase.com/docs",
+    remediation: "https://dbase.to/docs",
     cache_key: "perf",
   };
 

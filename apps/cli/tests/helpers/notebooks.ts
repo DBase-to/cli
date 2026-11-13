@@ -162,7 +162,7 @@ function notebookMetadata(options: { readonly id: string; readonly name: string 
       updated_at: "2026-01-01T00:00:00Z",
       owner: null,
       updated_by: null,
-      url: `https://supabase.com/dashboard/project/${NOTEBOOKS_PROJECT_REF}/notebooks/${options.id}`,
+      url: `https://dbase.to/dashboard/project/${NOTEBOOKS_PROJECT_REF}/notebooks/${options.id}`,
     },
   };
 }

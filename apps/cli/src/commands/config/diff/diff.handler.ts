@@ -111,7 +111,7 @@ export const configDiff = Effect.fn("config.diff")(function* (flags: ConfigDiffF
     };
     yield* output.raw(configDiffComparisonLine(context), "stderr");
 
-    // Uses executeRaw (ADR 0019) rather than the generated client: its strict schema decode would
+    // Uses executeRaw rather than the generated client: its strict schema decode would
     // drop excess properties and reject unknown enum values before the lenient decode below
     // could see them.
     const fetching =
@@ -146,7 +146,7 @@ export const configDiff = Effect.fn("config.diff")(function* (flags: ConfigDiffF
     );
     yield* fetching?.clear ?? Effect.void;
 
-    // configProjectConfigTry (ADR 0021) keeps a response the schema can't narrow as a typed
+    // configProjectConfigTry keeps a response the schema can't narrow as a typed
     // ProjectConfigParseError; anything else escaping it is a defect.
     const remote = yield* configProjectConfigTry(() => fromApiProjectConfig(responseJson));
 

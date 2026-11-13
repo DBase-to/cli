@@ -136,7 +136,7 @@ const issueDocsCommand = Command.make("docs", issueDocsConfig).pipe(
   Command.withExamples([
     {
       command:
-        'dbase issue docs --link "https://supabase.com/docs/guides/cli" --problem "The flag description is outdated"',
+        'dbase issue docs --link "https://dbase.to/docs/guides/cli" --problem "The flag description is outdated"',
       description: "Open a prefilled documentation issue",
     },
   ]),

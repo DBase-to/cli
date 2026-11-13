@@ -13,8 +13,7 @@ import type { ProjectConfigApiAttributes } from "@supabase/config/internal";
  * A, keyof B>>`) catch exactly that gap instead, one pair per mirrored nesting level (`auth` is
  * exempt, since both sides model it as an open record).
  *
- * `_typeDriftGuard` is intentionally vacuous for fields mirrored as `Schema.Unknown` (by design,
- * ADR 0019 rule 2) — only the key-set assertions still catch those being added or removed. No
+ * `_typeDriftGuard` is intentionally vacuous for fields mirrored as `Schema.Unknown` — only the key-set assertions still catch those being added or removed. No
  * `as` cast anywhere in this file: it would silence the failure each guard exists to surface.
  */
 const _typeDriftGuard: (

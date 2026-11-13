@@ -4463,7 +4463,7 @@ describe("functions serve integration", () => {
     }).pipe(Effect.provide(BunServices.layer));
   });
 
-  describe("Config.Validate / dotenv / env-override parity (CLI-1963)", () => {
+  describe("Config.Validate / dotenv / env-override parity", () => {
     it.live(
       "fails before any Docker work when config.toml has an explicit empty project_id",
       () => {
@@ -4508,7 +4508,7 @@ describe("functions serve integration", () => {
           expect(error).toBeInstanceOf(Error);
           if (error instanceof Error) {
             expect(error.message).toBe(
-              "Postgres version 12.x is unsupported. To use the CLI, either start a new project or follow project migration steps here: https://supabase.com/docs/guides/database#migrating-between-projects.",
+              "Postgres version 12.x is unsupported. To use the CLI, either start a new project or follow project migration steps here: https://dbase.to/docs/guides/database#migrating-between-projects.",
             );
           }
           expect(deployMockState.runCalls).toHaveLength(0);

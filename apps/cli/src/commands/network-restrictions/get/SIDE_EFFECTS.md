@@ -75,7 +75,7 @@ Restrictions applied successfully: true
 This command's own text-mode output ignores `-o` entirely and always prints the
 three lines above; there is no real struct output for these formats to mirror, so
 they use the generic map-shaped `encodeYaml`/`encodeToml` helpers (not the
-CLI-1975 struct-spec ones):
+struct-spec ones):
 
 - `json` — alphabetical struct-field order with trailing newline.
 - `yaml` — `stringifyYaml(response)`.
