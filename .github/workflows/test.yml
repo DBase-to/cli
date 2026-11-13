@@ -382,6 +382,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Setup
         uses: ./.github/actions/setup
@@ -428,7 +429,11 @@ jobs:
         inputs.force ||
         github.event.pull_request.draft == false)
     name: Run stack end-to-end tests (${{ matrix.runtime }}, ${{ matrix.suite }})
-    runs-on: ubuntu-latest
+    # ubuntu-26.04 ships Podman 5.7.0, which fails on images whose WORKDIR is a
+    # symlink (Storage /app, pg-meta /usr/src/app) with
+    # "mkdir .../merged/app: file exists". The fix landed in Podman 5.7.1;
+    # ubuntu-24.04 ships 4.9.3, which does not have the regression.
+    runs-on: ${{ matrix.runtime == 'podman' && 'ubuntu-24.04' || 'ubuntu-latest' }}
     timeout-minutes: 15
     strategy:
       fail-fast: false
@@ -442,6 +447,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Setup
         uses: ./.github/actions/setup
@@ -479,13 +486,16 @@ jobs:
         inputs.force ||
         github.event.pull_request.draft == false)
     name: Run stack Podman integration tests
-    runs-on: ubuntu-latest
+    # Same Podman 5.7.0 WORKDIR-symlink regression as the e2e matrix leg above.
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     env:
       SUPABASE_STACK_TEST_ENGINE: podman
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Setup
         uses: ./.github/actions/setup

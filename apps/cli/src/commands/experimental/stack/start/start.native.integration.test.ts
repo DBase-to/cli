@@ -426,7 +426,7 @@ describe("experimental stack start native lifecycle", () => {
             expect(Cause.findErrorOption(failedStart.cause)).toMatchObject(
               Option.some({
                 suggestion:
-                  "Set `studio.port` in supabase/config.toml (or SUPABASE_STUDIO_PORT) to a free port.",
+                  "Set `studio.port` in supabase/config.toml (or DBASE_STUDIO_PORT) to a free port.",
               }),
             );
           }),
@@ -497,7 +497,7 @@ describe("experimental stack start native lifecycle", () => {
               expect(Cause.findErrorOption(failedStart.cause)).toMatchObject(
                 Option.some({
                   suggestion:
-                    "Set `db.port` in supabase/config.toml (or SUPABASE_DB_PORT) to a free port.",
+                    "Set `db.port` in supabase/config.toml (or DBASE_DB_PORT) to a free port.",
                 }),
               );
               const ownerPid = ownerPids[attempt];

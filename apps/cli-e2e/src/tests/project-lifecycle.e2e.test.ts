@@ -12,7 +12,7 @@ describe("init", () => {
         const path = yield* Path.Path;
         const result = yield* run(["init"]);
         expect(result.exitCode).toBe(0);
-        expect(result.stdout).toContain("Finished supabase init");
+        expect(result.stdout).toContain("Finished dbase init");
         expect(yield* fs.exists(path.join(workspace.path, "supabase", "config.toml"))).toBe(true);
       }),
       signal,
@@ -51,7 +51,7 @@ describe("init", () => {
         );
         const result = yield* run(["init", "--force"]);
         expect(result.exitCode).toBe(0);
-        expect(result.stdout).toContain("Finished supabase init");
+        expect(result.stdout).toContain("Finished dbase init");
         expect(yield* fs.exists(path.join(workspace.path, "supabase", "config.toml"))).toBe(true);
       }),
       signal,
@@ -97,7 +97,7 @@ describe("init", () => {
       Effect.gen(function* () {
         const result = yield* run(["init", "--debug"]);
         expect(result.exitCode).toBe(0);
-        expect(result.stdout).toContain("Finished supabase init");
+        expect(result.stdout).toContain("Finished dbase init");
       }),
       signal,
     ),
@@ -199,7 +199,7 @@ describe("link", () => {
           const path = yield* Path.Path;
           const result = yield* run(["link", "--project-ref", projectRef]);
           expect(result.exitCode).toBe(0);
-          expect(result.stdout).toContain("Finished supabase link");
+          expect(result.stdout).toContain("Finished dbase link");
           expect(
             yield* fs.exists(path.join(workspace.path, "supabase", ".temp", "project-ref")),
           ).toBe(true);
@@ -224,7 +224,7 @@ describe("link", () => {
           const path = yield* Path.Path;
           const result = yield* run(["link", "--project-ref", projectRef, "--skip-pooler"]);
           expect(result.exitCode).toBe(0);
-          expect(result.stdout).toContain("Finished supabase link");
+          expect(result.stdout).toContain("Finished dbase link");
           expect(
             yield* fs.exists(path.join(workspace.path, "supabase", ".temp", "project-ref")),
           ).toBe(true);
@@ -240,7 +240,7 @@ describe("unlink", () => {
       Effect.gen(function* () {
         const result = yield* run(["unlink"]);
         expect(result.exitCode).not.toBe(0);
-        expect(result.stderr).toContain("supabase link");
+        expect(result.stderr).toContain("dbase link");
       }),
       signal,
     ),

@@ -2317,7 +2317,7 @@ describe("experimental stack start", () => {
   );
 
   it.effect(
-    "names the env var override when SUPABASE_*_PORT set the saved port alongside a database version change",
+    "names the env var override when DBASE_*_PORT set the saved port alongside a database version change",
     () =>
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
@@ -2326,7 +2326,7 @@ describe("experimental stack start", () => {
         yield* fs.writeFileString(`${root}/supabase/config.toml`, 'project_id = "port-env"\n');
         const fixture = fakeStack();
         yield* withEnvVar(
-          "SUPABASE_API_PORT",
+          "DBASE_API_PORT",
           "54321",
           stackStart(flags()).pipe(Effect.provide(layers(root, fixture))),
         );
@@ -2339,14 +2339,14 @@ describe("experimental stack start", () => {
         );
         yield* fixture.stack.composition.stop;
         const error = yield* withEnvVar(
-          "SUPABASE_API_PORT",
+          "DBASE_API_PORT",
           "54999",
           stackStart(flags()).pipe(Effect.provide(layers(root, fixture)), Effect.flip),
         );
 
         expect(error).toMatchObject({
           reason: "invalid-config",
-          message: expect.stringContaining("SUPABASE_API_PORT: saved 54321, requested 54999"),
+          message: expect.stringContaining("DBASE_API_PORT: saved 54321, requested 54999"),
         });
       }).pipe(Effect.provide([BunServices.layer, BunCrypto.layer])),
   );
@@ -2439,12 +2439,12 @@ describe("experimental stack start", () => {
       revert: "Revert the settings listed to their saved values",
     },
     {
-      name: "SUPABASE_DB_ORIOLEDB_VERSION when it switches a saved stock stack to OrioleDB",
+      name: "DBASE_DB_ORIOLEDB_VERSION when it switches a saved stock stack to OrioleDB",
       before: "",
       after: "",
       env: orioledb,
-      changes: `SUPABASE_DB_ORIOLEDB_VERSION: saved unset, requested ${orioledb}`,
-      revert: "Revert SUPABASE_DB_ORIOLEDB_VERSION to its saved value",
+      changes: `DBASE_DB_ORIOLEDB_VERSION: saved unset, requested ${orioledb}`,
+      revert: "Revert DBASE_DB_ORIOLEDB_VERSION to its saved value",
     },
   ])
     it.live(`names ${target.name}`, () =>
@@ -2464,7 +2464,7 @@ describe("experimental stack start", () => {
         const restart = startOnHost(root, fixture, host).pipe(Effect.flip);
         const error = yield* target.env === undefined
           ? restart
-          : withEnvVar("SUPABASE_DB_ORIOLEDB_VERSION", target.env, restart);
+          : withEnvVar("DBASE_DB_ORIOLEDB_VERSION", target.env, restart);
 
         expect(error).toMatchObject({
           reason: "invalid-config",

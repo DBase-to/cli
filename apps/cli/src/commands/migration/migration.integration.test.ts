@@ -52,7 +52,7 @@ describe("migration command integration", () => {
         const showHelp = failures.filter((error) => Predicate.isTagged(error, "ShowHelp"));
         // The alias resolved: the parse error is scoped to the squash subcommand, not the root.
         expect(showHelp.map((error) => [...error.commandPath])).toEqual([
-          ["supabase", "migration", "squash"],
+          ["dbase", "migration", "squash"],
         ]);
         const reported = [...failures, ...showHelp.flatMap((error) => [...error.errors])];
         expect(reported.filter((error) => Predicate.isTagged(error, "UnknownSubcommand"))).toEqual(

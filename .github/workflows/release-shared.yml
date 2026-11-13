@@ -49,6 +49,8 @@ on:
         required: false
       DF_FIREWALL_TOKEN:
         required: false
+      NPM_TOKEN:
+        required: false
 jobs:
   build:
     name: Build CLI artifacts

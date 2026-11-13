@@ -28,7 +28,7 @@ const USE_PG_DELTA_SUGGESTION =
   "Use --declarative to pull the declarative schema. The diff engine is chosen with --diff-engine or experimental.pgdelta.enabled in the config file.";
 const EXPERIMENTAL_MESSAGE = "The --experimental structured-dump mode of db pull was removed.";
 const EXPERIMENTAL_SUGGESTION =
-  "Use --declarative to pull per-object schema files, or pass --experimental=false (or unset SUPABASE_EXPERIMENTAL) for a migration pull.";
+  "Use --declarative to pull per-object schema files, or pass --experimental=false (or unset DBASE_EXPERIMENTAL) for a migration pull.";
 
 const runDbPull = (
   args: ReadonlyArray<string>,
@@ -216,9 +216,13 @@ describe("db pull removed surfaces through command dispatch", () => {
   }> = [
     { title: "--experimental", args: ["--experimental"] },
     { title: "--experimental=true", args: ["--experimental=true"] },
-    { title: "SUPABASE_EXPERIMENTAL=true", args: [], env: { SUPABASE_EXPERIMENTAL: "true" } },
     {
-      title: "SUPABASE_EXPERIMENTAL=true with --declarative=false",
+      title: "legacy SUPABASE_EXPERIMENTAL=true",
+      args: [],
+      env: { SUPABASE_EXPERIMENTAL: "true" },
+    },
+    {
+      title: "legacy SUPABASE_EXPERIMENTAL=true with --declarative=false",
       args: ["--declarative=false"],
       env: { SUPABASE_EXPERIMENTAL: "true" },
     },

@@ -14,7 +14,7 @@ const stackRoot = rootCommandForFeatures({ stackBackend: "stack" });
 type Root = typeof legacyRoot;
 
 const optInAdvice =
-  "Set SUPABASE_EXPERIMENTAL_STACK=1, or set stack = true under [experimental] in your project config and leave SUPABASE_EXPERIMENTAL_STACK unset.";
+  "Set DBASE_EXPERIMENTAL_STACK=1, or set stack = true under [experimental] in your project config and leave DBASE_EXPERIMENTAL_STACK unset.";
 
 /** Parses `args` against `root` and returns the normalized failure message `runCli` reports. */
 const parse = (

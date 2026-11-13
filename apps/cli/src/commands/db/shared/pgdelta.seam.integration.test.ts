@@ -38,7 +38,7 @@ import { DeclarativeSeam } from "./pgdelta.seam.service.ts";
 
 // This fixture catalog's pin must be keyed to the Dockerfile's own `pg` tag, or `toSlimImage`
 // would find no match and fall back to the upstream (non-slim) image regardless of
-// `SUPABASE_USE_SLIM_IMAGES` — masking the family-mismatch check below. `vi.hoisted` runs before
+// `DBASE_USE_SLIM_IMAGES` — masking the family-mismatch check below. `vi.hoisted` runs before
 // every top-level `import` (including this file's own), so `dockerfileServiceImageRaw` isn't
 // bound yet when this runs; `require` (CJS, unaffected by that ESM hoisting order) reads the
 // Dockerfile directly instead, keeping this correct across every future Dockerfile bump.
@@ -287,7 +287,7 @@ describe("declarativeSeamLayer.ensureLocalDatabaseStarted with an existing db co
 
 describe("declarativeSeamLayer.ensureLocalPostgresImageCurrent", () => {
   beforeEach(() => {
-    vi.stubEnv("SUPABASE_USE_SLIM_IMAGES", undefined);
+    vi.stubEnv("DBASE_USE_SLIM_IMAGES", undefined);
   });
   afterEach(() => {
     vi.unstubAllEnvs();
@@ -296,7 +296,7 @@ describe("declarativeSeamLayer.ensureLocalPostgresImageCurrent", () => {
   it.effect(
     "flags a running docker.io container as stale against a slim-flagged expectation, even on a matching tag",
     () => {
-      vi.stubEnv("SUPABASE_USE_SLIM_IMAGES", "true");
+      vi.stubEnv("DBASE_USE_SLIM_IMAGES", "true");
       const dir = tmp.current;
       const { layer } = setup(dir, { dbInspectImage: dockerfileServiceImageRaw("pg") });
       return Effect.gen(function* () {
@@ -304,7 +304,7 @@ describe("declarativeSeamLayer.ensureLocalPostgresImageCurrent", () => {
         const error = yield* seam.ensureLocalPostgresImageCurrent.pipe(Effect.flip);
         expect(error).toBeInstanceOf(DeclarativeShadowDbError);
         expect(error.message).toContain("local Postgres container image is stale");
-        expect(error.message).toContain("same SUPABASE_USE_SLIM_IMAGES setting");
+        expect(error.message).toContain("same DBASE_USE_SLIM_IMAGES setting");
         expect(error.message).not.toContain("--no-backup");
       }).pipe(Effect.provide(layer));
     },
@@ -334,7 +334,7 @@ describe("declarativeSeamLayer.ensureLocalPostgresImageCurrent", () => {
   );
 
   it.effect("flags a stale slim container when only its revision has drifted from a hotfix", () => {
-    vi.stubEnv("SUPABASE_USE_SLIM_IMAGES", "true");
+    vi.stubEnv("DBASE_USE_SLIM_IMAGES", "true");
     const dir = tmp.current;
     // Same upstream version and family as the fixture catalog's pin, but at a different
     // revision (r1, a different digest) — the hotfix-drift case this model exists to catch,
@@ -348,13 +348,13 @@ describe("declarativeSeamLayer.ensureLocalPostgresImageCurrent", () => {
       expect(error).toBeInstanceOf(DeclarativeShadowDbError);
       expect(error.message).toContain("local Postgres container image is stale");
       // Same family (slim vs slim): the generic remediation, not the family-mismatch wording.
-      expect(error.message).not.toContain("same SUPABASE_USE_SLIM_IMAGES setting");
+      expect(error.message).not.toContain("same DBASE_USE_SLIM_IMAGES setting");
       expect(error.message).toContain("--no-backup");
     }).pipe(Effect.provide(layer));
   });
 
   it.effect("passes when a slim container matches the expected image's release and digest", () => {
-    vi.stubEnv("SUPABASE_USE_SLIM_IMAGES", "true");
+    vi.stubEnv("DBASE_USE_SLIM_IMAGES", "true");
     const dir = tmp.current;
     // The exact image (release version and digest) the fixture catalog pins at r0.
     const { layer } = setup(dir, {
@@ -368,7 +368,7 @@ describe("declarativeSeamLayer.ensureLocalPostgresImageCurrent", () => {
   });
 
   it.effect("passes when a slim container was pulled from the ECR Public mirror", () => {
-    vi.stubEnv("SUPABASE_USE_SLIM_IMAGES", "true");
+    vi.stubEnv("DBASE_USE_SLIM_IMAGES", "true");
     const dir = tmp.current;
     const { layer } = setup(dir, {
       dbInspectImage: `public.ecr.aws/supabase/cli/postgres:${pgTag}-r0@sha256:d348483ad1141c54bfb4eaae801f5385fe1c2970fc106f95f531b5247092d52c`,
@@ -381,7 +381,7 @@ describe("declarativeSeamLayer.ensureLocalPostgresImageCurrent", () => {
   });
 
   it.effect("bails out when inspect succeeds but the image name is unparseable", () => {
-    vi.stubEnv("SUPABASE_USE_SLIM_IMAGES", "true");
+    vi.stubEnv("DBASE_USE_SLIM_IMAGES", "true");
     const dir = tmp.current;
     const { layer } = setup(dir, { dbInspectImage: "" });
     return Effect.gen(function* () {

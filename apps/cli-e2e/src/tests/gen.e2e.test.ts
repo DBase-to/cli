@@ -96,7 +96,7 @@ describe("gen", () => {
             const result = yield* runNoProjectId(["gen", "types"]);
             expect(result.exitCode).not.toBe(0);
             expect(result.stderr).toContain("Target: local stack");
-            expect(result.stderr).toContain("supabase start is not running");
+            expect(result.stderr).toContain("dbase start is not running");
           }),
           signal,
         ),
