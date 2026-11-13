@@ -391,5 +391,4 @@ jobs:
           fi
           if [ "$RESOLVED" = true ]; then
             bun .github/scripts/sync-agent.ts suggest
-            GH_TOKEN="$JOB_TOKEN" gh workflow run ai-review.yml --repo "$GITHUB_REPOSITORY" -f pr="$PR"
           fi

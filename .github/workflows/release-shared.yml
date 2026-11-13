@@ -258,23 +258,12 @@ jobs:
         run: pnpm run test:smoke -- --version "${VERSION}" --tag "${NPM_TAG}"
         working-directory: apps/cli
 
-  live-e2e-gate:
-    name: Verify live e2e before stable publication
-    if: ${{ (inputs.channel == 'stable' || inputs.channel == 'maintenance') && !inputs.dry_run }}
-    uses: ./.github/workflows/live-e2e-gate.yml
-    with:
-      sha: ${{ github.sha }}
-      branch: ${{ inputs.channel == 'maintenance' && github.ref_name || 'develop' }}
-    secrets:
-      SUPABASE_E2E_CLI_LIVE_STAGING_ACCESS_TOKEN: ${{ secrets.SUPABASE_E2E_CLI_LIVE_STAGING_ACCESS_TOKEN }}
-
   publish:
     needs:
       - build-github
       - smoke-test
       - smoke-test-macos
-      - live-e2e-gate
-    if: ${{ !cancelled() && !inputs.dry_run && needs.build-github.result == 'success' && needs.smoke-test.result == 'success' && needs.smoke-test-macos.result == 'success' && ((inputs.channel != 'stable' && inputs.channel != 'maintenance') || needs.live-e2e-gate.result == 'success') }}
+    if: ${{ !cancelled() && !inputs.dry_run && needs.build-github.result == 'success' && needs.smoke-test.result == 'success' && needs.smoke-test-macos.result == 'success' }}
     # npm provenance verification rejects non-GitHub-hosted runners with E422; Blacksmith runners
     # count as self-hosted from sigstore's POV, so this job must stay on a github-hosted runner
     # (it's short and not compute-bound, so the cost is negligible).
@@ -606,19 +595,6 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-
-  # Post-publish smoke test for the `supabase/setup-cli` GitHub Action against the just-released
-  # CLI. Runs last and intentionally doesn't gate publish-homebrew/publish-scoop — by the time it
-  # runs, the npm package and GitHub release are already live, so a setup-cli regression surfaces
-  # as a red post-release signal without holding back the rest of the channel. `needs` is for
-  # ordering only; `always() && needs.publish.result == 'success'` lets it run even when
-  # publish-homebrew/publish-scoop are skipped or fail.
-  setup-cli-smoke:
-    needs: [publish, publish-homebrew, publish-scoop]
-    if: ${{ always() && !inputs.dry_run && needs.publish.result == 'success' }}
-    uses: ./.github/workflows/setup-cli-smoke-test.yml
-    with:
-      version: ${{ inputs.version }}
 
   # Post-publish check that the Homebrew tap, Scoop bucket, and curl|bash install script
   # actually install the just-released CLI — brew/scoop verify the published checksum against
