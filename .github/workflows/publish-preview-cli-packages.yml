@@ -112,7 +112,7 @@ jobs:
             node -e "
               const fs = require('node:fs');
               const metadata = JSON.parse(fs.readFileSync('pkg-pr-new.json', 'utf8'));
-              const pkg = metadata.packages.find((entry) => entry.name === 'dbase');
+              const pkg = metadata.packages.find((entry) => entry.name === '@dbase/cli');
               if (!pkg?.url) {
                 throw new Error('pkg-pr-new.json did not include a dbase package URL');
               }

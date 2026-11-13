@@ -340,10 +340,10 @@ No git-tracked files are modified. Build output goes to a system temp directory 
 
 ```sh
 # Run directly with npx
-npx --registry http://localhost:4873 dbase@0.0.0-local.1 --version
+npx --registry http://localhost:4873 @dbase/cli@0.0.0-local.1 --version
 
 # Or install globally and run as `dbase`
-npm install -g --registry http://localhost:4873 dbase@0.0.0-local.1
+npm install -g --registry http://localhost:4873 @dbase/cli@0.0.0-local.1
 dbase --version
 ```
 
@@ -385,7 +385,7 @@ pnpm run generate
 **Build only the CLI and its Go sidecar:**
 
 ```sh
-pnpm exec turbo run dbase#build
+pnpm exec turbo run @dbase/cli#build
 ```
 
 The CLI build names its config and Go build prerequisites explicitly. The

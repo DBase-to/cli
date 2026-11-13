@@ -394,11 +394,11 @@ jobs:
       # `apps/cli/dist/`. Build the CLI explicitly before invoking every
       # package-local e2e suite.
       - name: Build CLI
-        run: pnpm exec turbo run dbase#build
+        run: pnpm exec turbo run @dbase/cli#build
 
       - name: Run end-to-end tests
         if: matrix.suite == 'cli'
-        run: pnpm exec turbo run test:e2e:run --only --filter=dbase -- --shard=${{ matrix.shard }}/${{ matrix.shards }}
+        run: pnpm exec turbo run test:e2e:run --only --filter=@dbase/cli -- --shard=${{ matrix.shard }}/${{ matrix.shards }}
         env:
           SUPABASE_E2E_WORKERS: "4"
 

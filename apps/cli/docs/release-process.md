@@ -11,7 +11,7 @@ covers three environments ("rings"):
    a reviewer's own GitHub account and a non-`dbase` artifact name. This is how
    ADR 0011 gates 2 and 3 are validated without risking the production
    channels.
-3. **Ring 3 — Production.** The `dbase` npm package +
+3. **Ring 3 — Production.** The `@dbase/cli` npm package +
    `DBase-to/homebrew-tap` + `DBase-to/scoop-bucket` + GitHub Releases on
    `DBase-to/cli`. Driven by GitHub Actions (`release.yml`, which dispatches
    `beta` and `stable` into `release-shared.yml`).
@@ -81,7 +81,7 @@ pnpm cli-release
 Test it:
 
 ```sh
-npx --registry http://localhost:4873 dbase@<printed-version> --version
+npx --registry http://localhost:4873 @dbase/cli@<printed-version> --version
 ```
 
 [`tools/release/local-release.ts`](../../../tools/release/local-release.ts)

@@ -75,7 +75,7 @@ describe("dependent types:check cache key", () => {
               (taskId) => taskId.endsWith("#types:check") && !taskId.startsWith(`${packageName}#`),
             );
 
-          expect(dependentTypesChecks).toContain("dbase#types:check");
+          expect(dependentTypesChecks).toContain("@dbase/cli#types:check");
           for (const taskId of dependentTypesChecks) {
             expect(reachableTaskIds(tasks, taskId), taskId).toContain(`${packageName}#transit`);
           }

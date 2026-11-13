@@ -258,7 +258,7 @@ pnpm run build
 pnpm run generate
 
 # Build only the CLI and its Go sidecar
-pnpm exec turbo run dbase#build
+pnpm exec turbo run @dbase/cli#build
 
 # Run the live CLI suite
 pnpm run test:live
