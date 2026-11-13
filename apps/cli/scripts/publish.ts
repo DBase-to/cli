@@ -137,7 +137,7 @@ const main = Effect.gen(function* () {
     );
     if (pkgJson.version !== umbrellaVersion) {
       yield* Console.error(
-        `Version mismatch: @supabase/${pkg} is ${pkgJson.version}, expected ${umbrellaVersion}. Run sync-versions.ts first.`,
+        `Version mismatch: @dbase/${pkg} is ${pkgJson.version}, expected ${umbrellaVersion}. Run sync-versions.ts first.`,
       );
       return yield* Effect.sync(() => process.exit(1));
     }

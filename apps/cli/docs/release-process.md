@@ -45,9 +45,9 @@ Before the first production cut:
 - [ ] Each npm package has a trusted publisher configured for the **calling**
       workflow, `release.yml`. npm validates the calling workflow for
       `workflow_call`, not `release-shared.yml`. The very first publish of a
-      new package needs a granular `NPM_TOKEN`, because the trusted-publisher
-      settings page only exists after the package exists; remove the token
-      afterwards.
+      new package needs a granular `NPM_TOKEN` repository secret, because the
+      trusted-publisher settings page only exists after the package exists;
+      remove the secret afterwards.
 - [ ] `DBase-to/homebrew-tap` and `DBase-to/scoop-bucket` exist. They do; keep
       `publish_brew_scoop=false` until the GitHub App has `contents: write` on
       both, because with `true` and a missing app grant every release fails at

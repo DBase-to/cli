@@ -310,6 +310,17 @@ jobs:
       - name: Sync versions
         run: bun apps/cli/scripts/sync-versions.ts --version "${VERSION}"
 
+      # Trusted publishing covers later releases; a new npm package needs a
+      # granular token for its first publish. Set the NPM_TOKEN secret for that
+      # first run, then delete it and rely on the trusted publisher.
+      - name: Configure npm auth for the first publish
+        run: |
+          if [ -n "${NPM_TOKEN:-}" ]; then
+            npm config set //registry.npmjs.org/:_authToken "$NPM_TOKEN"
+          fi
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Publish to npm
         run: bun apps/cli/scripts/publish.ts --tag "${NPM_TAG}"
 
