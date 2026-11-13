@@ -107,7 +107,7 @@ export type AllowedRunCliServices =
   | TelemetryRuntime
   | Tty;
 
-export type CliRootCommand = Command.Command<"supabase", {}, {}, unknown, AllowedRunCliServices>;
+export type CliRootCommand = Command.Command<"dbase", {}, {}, unknown, AllowedRunCliServices>;
 
 // Global flags that consume their following argv token as a value; missing one here would make
 // `extractCommandPath` mistake its value for a command-path segment, and leave scanners below

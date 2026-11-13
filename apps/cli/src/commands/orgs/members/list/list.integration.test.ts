@@ -41,7 +41,7 @@ function setup(
     out,
     api,
     cliSettings,
-    goOutput: opts.goOutput === undefined ? Option.none() : Option.some(opts.goOutput),
+    outputFlag: opts.goOutput === undefined ? Option.none() : Option.some(opts.goOutput),
   });
   return { layer, out, api };
 }

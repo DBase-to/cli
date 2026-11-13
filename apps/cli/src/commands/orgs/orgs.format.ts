@@ -25,7 +25,7 @@ export type OrganizationMemberRow = {
   user_id: string;
   user_name: string;
   email?: string;
-  role_name: string;
+  role_name?: string;
   mfa_enabled: boolean;
 };
 
@@ -34,7 +34,7 @@ export function renderOrgsMembersTable(members: ReadonlyArray<OrganizationMember
     member.user_id,
     member.user_name,
     member.email ?? "",
-    member.role_name,
+    member.role_name ?? "",
     member.mfa_enabled ? "true" : "false",
   ]);
   return renderGlamourTable(MEMBER_HEADERS, rows);

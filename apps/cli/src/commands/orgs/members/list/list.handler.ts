@@ -5,13 +5,16 @@ import { CommandPlatformApi } from "../../../../auth/command-platform-api.servic
 import { TelemetryState } from "../../../../telemetry/telemetry-state.service.ts";
 import { OutputFlag } from "../../../../command-internal/global-flags.ts";
 import { Output } from "../../../../shared/output/output.service.ts";
-import { encodeGoJson } from "../../../../command-internal/go-output.encoders.ts";
+import { encodeSortedJson } from "../../../../command-internal/output.encoders.ts";
 import {
-  encodeGoToml,
-  encodeGoYaml,
-} from "../../../../command-internal/go-struct-output.encoders.ts";
+  encodeStructToml,
+  encodeStructYaml,
+} from "../../../../command-internal/struct-output.encoders.ts";
 import { mapHttpError } from "../../../../command-internal/http-errors.ts";
-import { GO_ORGS_MEMBERS_LIST, GO_ORGS_MEMBERS_TOML_WRAPPER } from "../../orgs.go-payload.ts";
+import {
+  ORGS_MEMBERS_LIST_SHAPE,
+  ORGS_MEMBERS_TOML_WRAPPER_SHAPE,
+} from "../../orgs.response-shape.ts";
 import {
   OrgsEnvNotSupportedError,
   OrgsMembersListNetworkError,
@@ -44,7 +47,7 @@ export const orgsMembersList = Effect.fn("orgs.members.list")(function* (
       Effect.tapError(() => fetching?.fail() ?? Effect.void),
       Effect.catch(mapListMembersError),
     );
-    yield* fetching?.clear() ?? Effect.void;
+    yield* fetching?.clear ?? Effect.void;
 
     const goFmt = Option.getOrUndefined(goOutputFlag);
 
@@ -54,15 +57,15 @@ export const orgsMembersList = Effect.fn("orgs.members.list")(function* (
       });
     }
     if (goFmt === "json") {
-      yield* output.raw(encodeGoJson(members));
+      yield* output.raw(encodeSortedJson(members));
       return;
     }
     if (goFmt === "yaml") {
-      yield* output.raw(encodeGoYaml(members, GO_ORGS_MEMBERS_LIST));
+      yield* output.raw(encodeStructYaml(members, ORGS_MEMBERS_LIST_SHAPE));
       return;
     }
     if (goFmt === "toml") {
-      yield* output.raw(encodeGoToml({ members }, GO_ORGS_MEMBERS_TOML_WRAPPER));
+      yield* output.raw(encodeStructToml({ members }, ORGS_MEMBERS_TOML_WRAPPER_SHAPE));
       return;
     }
 

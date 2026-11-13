@@ -1,5 +1,7 @@
 import {
   type OutputShape,
+  shapeBool,
+  shapeNullable,
   shapeSlice,
   shapeString,
   shapeStruct,
@@ -20,4 +22,23 @@ export const ORGS_LIST_SHAPE: OutputShape = shapeSlice(ORGANIZATION_RESPONSE_SHA
 export const ORGS_TOML_WRAPPER_SHAPE: OutputShape = shapeTomlListWrapper(
   "organizations",
   ORGANIZATION_RESPONSE_SHAPE,
+);
+
+/** `api.OrganizationMemberResponse` from `GET /v1/organizations/{slug}/members`. */
+export const ORGANIZATION_MEMBER_SHAPE: OutputShape = shapeStruct([
+  ["user_id", shapeString],
+  ["user_name", shapeString],
+  ["email", shapeNullable(shapeString)],
+  ["role_name", shapeString],
+  ["mfa_enabled", shapeBool],
+  ["avatar_url", shapeNullable(shapeString)],
+]);
+
+/** `orgs members list -o yaml` encodes the bare member list. */
+export const ORGS_MEMBERS_LIST_SHAPE: OutputShape = shapeSlice(ORGANIZATION_MEMBER_SHAPE);
+
+/** `orgs members list -o toml` wraps the list under a `members` key. */
+export const ORGS_MEMBERS_TOML_WRAPPER_SHAPE: OutputShape = shapeTomlListWrapper(
+  "members",
+  ORGANIZATION_MEMBER_SHAPE,
 );
