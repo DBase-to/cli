@@ -1,20 +1,20 @@
-# `supabase orgs create`
+# `dbase orgs create`
 
 Target: account, consent default Yes — see [Command target](../../../../docs/command-target.md)
 
 ## Files Read
 
-| Path                                      | Format                    | When                                                                                          |
-| ----------------------------------------- | ------------------------- | --------------------------------------------------------------------------------------------- |
-| keyring `"Supabase CLI"` / `<profile>`    | OS keychain               | when `SUPABASE_ACCESS_TOKEN` unset and keyring available; account = `CommandSettings.profile` |
-| keyring `"Supabase CLI"` / `access-token` | OS keychain               | legacy-key fallback when the profile-keyed lookup misses                                      |
-| `~/.supabase/access-token`                | plain text (token string) | last-resort fallback after env + keyring miss                                                 |
+| Path                                   | Format                    | When                                                                                          |
+| -------------------------------------- | ------------------------- | --------------------------------------------------------------------------------------------- |
+| keyring `"DBase CLI"` / `<profile>`    | OS keychain               | when `SUPABASE_ACCESS_TOKEN` unset and keyring available; account = `CommandSettings.profile` |
+| keyring `"DBase CLI"` / `access-token` | OS keychain               | legacy-key fallback when the profile-keyed lookup misses                                      |
+| `~/.dbase/access-token`                | plain text (token string) | last-resort fallback after env + keyring miss                                                 |
 
 ## Files Written
 
-| Path                         | Format | When                                            |
-| ---------------------------- | ------ | ----------------------------------------------- |
-| `~/.supabase/telemetry.json` | JSON   | always (in `Effect.ensuring`) at end of command |
+| Path                      | Format | When                                            |
+| ------------------------- | ------ | ----------------------------------------------- |
+| `~/.dbase/telemetry.json` | JSON   | always (in `Effect.ensuring`) at end of command |
 
 `orgs create` is a user-level command — it does not resolve a `--project-ref`, so the
 linked-project cache is never written.
@@ -33,11 +33,11 @@ linked-project cache is never written.
 
 ## Environment Variables
 
-| Variable                | Purpose                                                                                                                                       | Required?                                                     |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| `SUPABASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup)                                                                                          | no (falls back to keyring → `~/.supabase/access-token`)       |
+| Variable                | Purpose                                                                                                                                       | Required?                                            |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `SUPABASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup)                                                                                          | no (falls back to keyring → `~/.dbase/access-token`) |
 | `SUPABASE_YES`          | answers the creation confirmation, as `--yes` does                                                                                            | no (defaults to prompting; a project `.env` value is ignored) |
-| `SUPABASE_PROFILE`      | selects API base URL (`supabase`, `supabase-staging`, `supabase-local`), or a filesystem path to a YAML profile (used by the cli-e2e harness) | no (defaults to `supabase`)                                   |
+| `SUPABASE_PROFILE`      | selects API base URL (`supabase`, `supabase-staging`, `supabase-local`), or a filesystem path to a YAML profile (used by the cli-e2e harness) | no (defaults to `dbase`)                             |
 
 ## Confirmation
 
@@ -112,7 +112,7 @@ message. No preamble line.
 - No `--project-ref` flag. `orgs create` is a user-level command.
 - The organization `id` and `slug` in the response are human-readable slugs (e.g.
   `combined-fuchsia-lion`), not UUIDs.
-- Sends `User-Agent: SupabaseCLI/<version>` and Bearer auth.
+- Sends `User-Agent: DBaseCLI/<version>` and Bearer auth.
 
 ## Security Notes
 

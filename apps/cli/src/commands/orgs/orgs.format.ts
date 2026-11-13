@@ -18,3 +18,24 @@ export function renderOrgsListTable(orgs: ReadonlyArray<Organization>): string {
   const rows = orgs.map((o) => [o.id, o.name]);
   return renderGlamourTable(HEADERS, rows);
 }
+
+const MEMBER_HEADERS = ["USER ID", "NAME", "EMAIL", "ROLE", "MFA"] as const;
+
+export type OrganizationMemberRow = {
+  user_id: string;
+  user_name: string;
+  email?: string;
+  role_name: string;
+  mfa_enabled: boolean;
+};
+
+export function renderOrgsMembersTable(members: ReadonlyArray<OrganizationMemberRow>): string {
+  const rows = members.map((member) => [
+    member.user_id,
+    member.user_name,
+    member.email ?? "",
+    member.role_name,
+    member.mfa_enabled ? "true" : "false",
+  ]);
+  return renderGlamourTable(MEMBER_HEADERS, rows);
+}

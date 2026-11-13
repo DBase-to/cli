@@ -1,23 +1,21 @@
-# `supabase orgs list`
-
-Target: account, no consent — see [Command target](../../../../docs/command-target.md)
+# `dbase orgs list`
 
 ## Files Read
 
-| Path                                      | Format                    | When                                                                                          |
-| ----------------------------------------- | ------------------------- | --------------------------------------------------------------------------------------------- |
-| keyring `"Supabase CLI"` / `<profile>`    | OS keychain               | when `SUPABASE_ACCESS_TOKEN` unset and keyring available; account = `CommandSettings.profile` |
-| keyring `"Supabase CLI"` / `access-token` | OS keychain               | legacy-key fallback when the profile-keyed lookup misses                                      |
-| `~/.supabase/access-token`                | plain text (token string) | last-resort fallback after env + keyring miss                                                 |
+| Path                                   | Format                    | When                                                                                          |
+| -------------------------------------- | ------------------------- | --------------------------------------------------------------------------------------------- |
+| keyring `"DBase CLI"` / `<profile>`    | OS keychain               | when `SUPABASE_ACCESS_TOKEN` unset and keyring available; account = `CommandSettings.profile` |
+| keyring `"DBase CLI"` / `access-token` | OS keychain               | legacy-key fallback when the profile-keyed lookup misses                                      |
+| `~/.dbase/access-token`                | plain text (token string) | last-resort fallback after env + keyring miss                                                 |
 
 ## Files Written
 
-| Path                         | Format | When                                            |
-| ---------------------------- | ------ | ----------------------------------------------- |
-| `~/.supabase/telemetry.json` | JSON   | always (in `Effect.ensuring`) at end of command |
+| Path                      | Format | When                                            |
+| ------------------------- | ------ | ----------------------------------------------- |
+| `~/.dbase/telemetry.json` | JSON   | always (in `Effect.ensuring`) at end of command |
 
 `orgs list` is a user-level command — it does not resolve a `--project-ref`, so the
-linked-project cache (`<workdir>/supabase/.temp/linked-project.json`) is never written.
+linked-project cache (`~/.dbase/<workdir-hash>/linked-project.json`) is never written.
 
 ## API Routes
 
@@ -27,10 +25,10 @@ linked-project cache (`<workdir>/supabase/.temp/linked-project.json`) is never w
 
 ## Environment Variables
 
-| Variable                | Purpose                                                                                                                                       | Required?                                               |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| `SUPABASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup)                                                                                          | no (falls back to keyring → `~/.supabase/access-token`) |
-| `SUPABASE_PROFILE`      | selects API base URL (`supabase`, `supabase-staging`, `supabase-local`), or a filesystem path to a YAML profile (used by the cli-e2e harness) | no (defaults to `supabase`)                             |
+| Variable                | Purpose                                                                                                                                       | Required?                                            |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `SUPABASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup)                                                                                          | no (falls back to keyring → `~/.dbase/access-token`) |
+| `SUPABASE_PROFILE`      | selects API base URL (`supabase`, `supabase-staging`, `supabase-local`), or a filesystem path to a YAML profile (used by the cli-e2e harness) | no (defaults to `dbase`)                             |
 
 ## Exit Codes
 
@@ -52,12 +50,12 @@ linked-project cache (`<workdir>/supabase/.temp/linked-project.json`) is never w
 
 The `--output {pretty,json,yaml,toml,env}` flag and the `--output-format {text,json,stream-json}`
 flag are both honored. `--output` wins when both are supplied. `pretty` and `text` map to the
-same render.
+same Glamour render.
 
 ### `--output pretty` (default) / `--output-format text`
 
-Prints a styled markdown table with columns `ID`, `NAME`. The rendered table always
-ends with a trailing newline.
+Prints a Glamour-styled markdown table with columns `ID`, `NAME`. The rendered table always
+ends with a trailing newline (Glamour appends one).
 
 ### `--output json`
 
@@ -86,12 +84,12 @@ One `result` NDJSON event with `{organizations: [...]}`.
 ## Notes
 
 - No `--project-ref` flag. The result set is determined entirely by the access token's scope.
-- Sends `User-Agent: SupabaseCLI/<version>` and Bearer auth.
+- Sends `User-Agent: DBaseCLI/<version>` and Bearer auth.
 
 ## Security Notes
 
 - API-supplied `id` and `name` strings are rendered to stdout without ANSI / control-character
-  sanitization. A malicious or
+  sanitization (inherited from the old Go CLI's rendering behavior). A malicious or
   compromised Management API could in principle return org names containing terminal
   escape sequences. If sanitization is added later it should land at the renderer
   (`glamour-table.ts`) so every caller inherits the fix.
