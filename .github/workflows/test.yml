@@ -286,21 +286,32 @@ jobs:
     needs: platform-changes
     name: Run stack native scenarios (${{ matrix.os }}, ${{ matrix.suite }})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
+    timeout-minutes: 45
     strategy:
       fail-fast: false
+      # Four simultaneous macOS arm64 jobs competed for a constrained pool in the
+      # first run; two were never acquired and were cancelled. macos-15 is the
+      # previous arm64 image (macos-latest is macos-26). Run the two suites for
+      # each file sequentially in one job so only two macOS runners are needed;
+      # the patterns keep the confinement/isolation scenarios separate.
       matrix:
         # Native artifacts exist for macOS and Linux only, and macOS runners have
         # no Docker; Linux coverage for both backends comes from test-stack-e2e.
-        os: [macos-latest]
-        suite: [lifecycle, confinement, idle, isolation]
-        # Concurrent scenarios slow each other on macOS runners, so the
-        # heaviest ones run alone.
+        os: [macos-15]
+        suite: [lifecycle-confinement, idle-isolation]
         include:
-          - { suite: lifecycle, file: lifecycle, pattern: "^(?!.*writes stay confined)" }
-          - { suite: confinement, file: lifecycle, pattern: "writes stay confined" }
-          - { suite: idle, file: idle-parallel, pattern: "^(?!.*parallel stack isolation)" }
-          - { suite: isolation, file: idle-parallel, pattern: "parallel stack isolation" }
+          - {
+              suite: lifecycle-confinement,
+              file: lifecycle,
+              first: "^(?!.*writes stay confined)",
+              second: "writes stay confined",
+            }
+          - {
+              suite: idle-isolation,
+              file: idle-parallel,
+              first: "^(?!.*parallel stack isolation)",
+              second: "parallel stack isolation",
+            }
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -319,12 +330,22 @@ jobs:
           path: ~/.cache/supabase-stack-artifacts
           key: stack-artifacts-${{ runner.os }}-${{ runner.arch }}-${{ matrix.suite }}-${{ hashFiles('packages/stack/src/Artifacts.ts') }}
 
-      - name: Run stack native whole-stack scenarios
+      - name: Run stack native whole-stack scenarios (first group)
         working-directory: packages/stack
         run: >-
           pnpm test:e2e:run
           src/whole-stack.native.${{ matrix.file }}.e2e.test.ts
-          --testNamePattern='${{ matrix.pattern }}'
+          --testNamePattern='${{ matrix.first }}'
+          --sequence.concurrent
+          --passWithNoTests=false
+
+      - name: Run stack native whole-stack scenarios (second group)
+        if: always()
+        working-directory: packages/stack
+        run: >-
+          pnpm test:e2e:run
+          src/whole-stack.native.${{ matrix.file }}.e2e.test.ts
+          --testNamePattern='${{ matrix.second }}'
           --sequence.concurrent
           --passWithNoTests=false
 

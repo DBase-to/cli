@@ -47,15 +47,51 @@ const podmanWait = Effect.fn("EngineEvents.podmanWait")((args: ReadonlyArray<str
   ),
 );
 
+/** Whether Podman still knows about the container; 1 means absent, other failures propagate. */
+const podmanContainerExists = Effect.fn("EngineEvents.podmanContainerExists")((id: string) =>
+  Effect.scoped(
+    Effect.gen(function* () {
+      const spawner = yield* ChildProcessSpawner.ChildProcessSpawner;
+      const exists = yield* spawner.spawn(
+        ChildProcess.make(testEngine, [...engineTarget.argv, "container", "exists", id], {
+          stdin: "ignore",
+          stdout: "ignore",
+          stderr: "pipe",
+        }),
+      );
+      const [stderr, code] = yield* Effect.all(
+        [Stream.mkString(Stream.decodeText(exists.stderr)), exists.exitCode],
+        { concurrency: "unbounded" },
+      );
+      const status = Number(code);
+      if (status === 0) return true;
+      if (status === 1) return false;
+      return yield* new EngineEventsError({
+        message: `podman container exists failed: ${stderr}`,
+      });
+    }),
+  ),
+);
+
 /**
  * Completes once the engine has removed the container, including a removal that finished before
  * the call. Docker's event stream replays from `sinceSeconds` and names the event `destroy`.
  * Podman's file event logger drops unread events when it rotates the shared log, so Podman waits
- * on the container itself, which also returns for a container that no longer exists.
+ * on the container itself. Podman 4.9 exits that wait with "no such container" when removal wins
+ * the race; only treat that as success after the engine confirms the container is absent, so an
+ * engine failure or a wait error for a still-present container is still reported.
  */
 export const awaitContainerRemoved = (id: string, sinceSeconds: number) =>
   testEngine === "podman"
-    ? podmanWait(["--condition", "removing", "--ignore", id]).pipe(Effect.asVoid)
+    ? podmanWait(["--condition", "removing", "--ignore", id]).pipe(
+        Effect.asVoid,
+        Effect.catchTag("EngineEventsError", (waitError) =>
+          podmanContainerExists(id).pipe(
+            Effect.flatMap((exists) => (exists ? Effect.fail(waitError) : Effect.void)),
+            Effect.mapError(() => waitError),
+          ),
+        ),
+      )
     : Effect.scoped(
         Effect.gen(function* () {
           const lines = yield* eventLines([
