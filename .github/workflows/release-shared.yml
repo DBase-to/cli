@@ -55,8 +55,6 @@ on:
         required: false
       LINEAR_CLI_BETA_RELEASE_ACCESS_KEY:
         required: false
-      SUPABASE_E2E_CLI_LIVE_STAGING_ACCESS_TOKEN:
-        required: false
 jobs:
   build-blacksmith:
     name: Build CLI artifacts (Blacksmith)
@@ -358,7 +356,7 @@ jobs:
             git push origin "${note_ref}"
           fi
 
-      # setup-cli, install scripts, docs, and other tools reference
+      # Install scripts and other tools reference
       # releases/latest/download/<unversioned>.tar.gz, so republish that alias alongside the
       # versioned tarball.
       - name: Create unversioned tarball aliases
@@ -595,8 +593,9 @@ jobs:
   # Post-publish check that the Homebrew tap, Scoop bucket, and curl|bash install script
   # actually install the just-released CLI — brew/scoop verify the published checksum against
   # the downloaded tarball, catching a mismatch like CLI v2.107.0. Only runs when brew/scoop were
-  # published and both pushes succeeded; a skipped channel is covered by the GitHub Release
-  # download path in setup-cli-smoke. Runs last and doesn't gate the rest of the channel.
+  # published and both pushes succeeded. A skipped channel has no post-publish install check;
+  # the install-script leg here covers the GitHub Release assets. Runs last and doesn't gate the
+  # rest of the channel.
   verify-install-channels:
     needs: [publish, publish-homebrew, publish-scoop]
     if: ${{ always() && !inputs.dry_run && inputs.publish_brew_scoop && needs.publish-homebrew.result == 'success' && needs.publish-scoop.result == 'success' }}
