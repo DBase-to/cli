@@ -554,103 +554,132 @@ describe.runIf(testEngine === "docker")(
       ),
     );
 
-    it.effect("bounds helper creation and still removes the helper by name afterwards", () =>
-      Effect.scoped(
-        Effect.gen(function* () {
-          const fs = yield* FileSystem.FileSystem;
-          const path = yield* Path.Path;
-          const crypto = yield* SecureRandom.SecureRandom;
-          const digest = yield* Digest.Digest;
-          const root = yield* fs.makeTempDirectoryScoped({
-            prefix: "docker-helper-create-timeout-",
-          });
-          const creating = yield* Deferred.make<void>();
-          const commands: string[][] = [];
-          const killed = yield* Deferred.make<void>();
-          const present = yield* Ref.make(false);
-          const warning =
-            "WARNING: The requested image's platform does not match the host platform";
-          const spawner = ChildProcessSpawner.make((command) =>
-            Effect.gen(function* () {
-              if (!ChildProcess.isStandardCommand(command))
-                return yield* Effect.die("Unexpected command");
-              commands.push(command.args.map(String));
-              const create = command.args[0] === "create";
-              if (create) yield* Deferred.succeed(creating, undefined);
-              const missing = command.args[0] === "rm" && !(yield* Ref.getAndSet(present, false));
-              return ChildProcessSpawner.makeHandle({
-                pid: ChildProcessSpawner.ProcessId(0),
-                // The daemon never answers the create.
-                exitCode: create
-                  ? Effect.never
-                  : Effect.succeed(ChildProcessSpawner.ExitCode(missing ? 1 : 0)),
-                isRunning: Effect.succeed(create),
-                kill: () => (create ? Deferred.succeed(killed, undefined) : Effect.void),
-                stdin: Sink.drain,
-                stdout: Stream.empty,
-                stderr: create
-                  ? Stream.succeed(new TextEncoder().encode(`${warning}\n`)).pipe(
-                      Stream.concat(Stream.fromEffect(Deferred.await(killed)).pipe(Stream.drain)),
-                    )
-                  : missing
-                    ? Stream.succeed(new TextEncoder().encode("No such container\n"))
-                    : Stream.empty,
-                all: Stream.empty,
-                getInputFd: () => Sink.drain,
-                getOutputFd: () => Stream.empty,
-                unref: Effect.succeed(Effect.void),
-              });
-            }),
-          );
-          const owner = yield* Scope.fork(yield* Scope.Scope);
-          const storage = yield* makeDockerDatabaseStorage({
-            runtime: "docker",
-            target: dockerTarget,
-            stackId: "helper-create-timeout",
-            instanceId: "database",
-            instanceRoot: root,
-            root,
-            cacheRoot: path.join(root, "cache"),
-            fs,
-            path,
-            crypto,
-            digest,
-            spawner,
-            container: {
-              prepare: () => Effect.void,
-              prepareImage: (image) => Effect.succeed(image),
-              ensureImage: (image) => Effect.succeed({ image, pulled: false }),
-              launch: () => Effect.die("unused"),
-              launchCommand: () => Effect.die("unused"),
-            },
-          }).pipe(Scope.provide(owner));
-          yield* storage.prepare(selection.database);
-          const operation = yield* storage
-            .removeData(selection.database)
-            .pipe(Effect.flip, Effect.forkScoped);
-          yield* Deferred.await(creating);
-          yield* TestClock.adjust("30 seconds");
-          const failure = yield* Fiber.join(operation);
-          expect(failure.message).toBe(
-            `Database helper was not created within 30 seconds: ${warning}`,
-          );
-          expect(yield* Deferred.isDone(killed)).toBe(true);
-          const create = commands.find((args) => args[0] === "create");
-          const name = create?.[create.indexOf("--name") + 1];
-          expect(name).toMatch(/^supabase-db-helper-/u);
-          expect(commands.some((args) => args[0] === "start")).toBe(false);
-          /* The daemon finishes the create after the failure cleanup found nothing to remove. */
-          yield* Ref.set(present, true);
-          yield* Scope.close(owner, Exit.void);
-          expect(commands.filter((args) => args[0] === "rm")).toEqual([
-            ["rm", "-f", name],
-            ["rm", "-f", name],
-          ]);
-          expect(yield* Ref.get(present)).toBe(false);
-        }),
-      ).pipe(
-        Effect.provide([Layer.merge(NodeServices.layer, NodeCrypto.layer), TestClock.layer()]),
-      ),
+    it.effect.each(["created", "missing", "unresponsive"] as const)(
+      "diagnoses stalled helper creation (%s) and still removes it by name afterwards",
+      (diagnostic) =>
+        Effect.scoped(
+          Effect.gen(function* () {
+            const fs = yield* FileSystem.FileSystem;
+            const path = yield* Path.Path;
+            const crypto = yield* SecureRandom.SecureRandom;
+            const digest = yield* Digest.Digest;
+            const root = yield* fs.makeTempDirectoryScoped({
+              prefix: "docker-helper-create-timeout-",
+            });
+            const creating = yield* Deferred.make<void>();
+            const diagnosing = yield* Deferred.make<void>();
+            const commands: string[][] = [];
+            const killed = yield* Deferred.make<void>();
+            const present = yield* Ref.make(false);
+            const warning =
+              "WARNING: The requested image's platform does not match the host platform";
+            const spawner = ChildProcessSpawner.make((command) =>
+              Effect.gen(function* () {
+                if (!ChildProcess.isStandardCommand(command))
+                  return yield* Effect.die("Unexpected command");
+                commands.push(command.args.map(String));
+                const create = command.args[0] === "create";
+                if (create) yield* Deferred.succeed(creating, undefined);
+                const inspect = command.args[0] === "inspect";
+                const probe = inspect || command.args[0] === "logs";
+                if (inspect) yield* Deferred.succeed(diagnosing, undefined);
+                const missing = command.args[0] === "rm" && !(yield* Ref.getAndSet(present, false));
+                const probeMissing = probe && diagnostic === "missing";
+                return ChildProcessSpawner.makeHandle({
+                  pid: ChildProcessSpawner.ProcessId(0),
+                  // The daemon never answers the create.
+                  exitCode:
+                    create || (probe && diagnostic === "unresponsive")
+                      ? Effect.never
+                      : Effect.succeed(
+                          ChildProcessSpawner.ExitCode(missing || probeMissing ? 1 : 0),
+                        ),
+                  isRunning: Effect.succeed(create),
+                  kill: () => (create ? Deferred.succeed(killed, undefined) : Effect.void),
+                  stdin: Sink.drain,
+                  stdout:
+                    inspect && diagnostic === "created"
+                      ? Stream.succeed(new TextEncoder().encode("created\t0\t\n"))
+                      : Stream.empty,
+                  stderr: create
+                    ? Stream.succeed(new TextEncoder().encode(`${warning}\n`)).pipe(
+                        Stream.concat(Stream.fromEffect(Deferred.await(killed)).pipe(Stream.drain)),
+                      )
+                    : missing || probeMissing
+                      ? Stream.succeed(new TextEncoder().encode("No such container\n"))
+                      : Stream.empty,
+                  all: Stream.empty,
+                  getInputFd: () => Sink.drain,
+                  getOutputFd: () => Stream.empty,
+                  unref: Effect.succeed(Effect.void),
+                });
+              }),
+            );
+            const owner = yield* Scope.fork(yield* Scope.Scope);
+            const storage = yield* makeDockerDatabaseStorage({
+              runtime: "docker",
+              target: dockerTarget,
+              stackId: "helper-create-timeout",
+              instanceId: "database",
+              instanceRoot: root,
+              root,
+              cacheRoot: path.join(root, "cache"),
+              fs,
+              path,
+              crypto,
+              digest,
+              spawner,
+              container: {
+                prepare: () => Effect.void,
+                prepareImage: (image) => Effect.succeed(image),
+                ensureImage: (image) => Effect.succeed({ image, pulled: false }),
+                launch: () => Effect.die("unused"),
+                launchCommand: () => Effect.die("unused"),
+              },
+            }).pipe(Scope.provide(owner));
+            yield* storage.prepare(selection.database);
+            const operation = yield* storage
+              .removeData(selection.database)
+              .pipe(Effect.flip, Effect.forkScoped);
+            yield* Deferred.await(creating);
+            yield* TestClock.adjust("30 seconds");
+            if (diagnostic === "unresponsive") {
+              yield* Deferred.await(diagnosing);
+              yield* TestClock.adjust("5 seconds");
+            }
+            const failure = yield* Fiber.join(operation);
+            expect(failure.message).toContain(
+              `Database helper was not created within 30 seconds: ${warning}`,
+            );
+            const state =
+              diagnostic === "created"
+                ? "created (exit 0)"
+                : diagnostic === "missing"
+                  ? "unavailable: No such container"
+                  : "unavailable: timed out after 5 seconds";
+            expect(failure.message).toContain(`helper state: ${state}`);
+            expect(failure.message).toContain(
+              `helper logs: ${diagnostic === "created" ? "(empty)" : state}`,
+            );
+            expect(yield* Deferred.isDone(killed)).toBe(true);
+            const create = commands.find((args) => args[0] === "create");
+            const name = create?.[create.indexOf("--name") + 1];
+            expect(name).toMatch(/^supabase-db-helper-/u);
+            expect(failure.message).toContain(`helper: ${name}`);
+            expect(failure.message).toContain(`image: ${yield* postgresImage(selection.database)}`);
+            expect(commands.some((args) => args[0] === "start")).toBe(false);
+            /* The daemon finishes the create after the failure cleanup found nothing to remove. */
+            yield* Ref.set(present, true);
+            yield* Scope.close(owner, Exit.void);
+            expect(commands.filter((args) => args[0] === "rm")).toEqual([
+              ["rm", "-f", name],
+              ["rm", "-f", name],
+            ]);
+            expect(yield* Ref.get(present)).toBe(false);
+          }),
+        ).pipe(
+          Effect.provide([Layer.merge(NodeServices.layer, NodeCrypto.layer), TestClock.layer()]),
+        ),
     );
 
     it.live("starts a storage helper with the mirror image selected during preparation", () => {

@@ -147,9 +147,54 @@ jobs:
           dependency-firewall-token: ${{ secrets.DF_FIREWALL_TOKEN }}
 
       - name: Run integration tests
-        run: >-
-          pnpm --filter "${{ matrix.package }}" test:integration:run
-          ${{ matrix.shard && format('--shard={0}', matrix.shard) || '' }}
+        env:
+          TEST_PACKAGE: ${{ matrix.package }}
+          TEST_SHARD: ${{ matrix.shard }}
+        run: |
+          diagnostics="$RUNNER_TEMP/integration-diagnostics"
+          mkdir -p "$diagnostics"
+          started=$(date --iso-8601=seconds)
+          # Retain CPU, memory, swap and I/O-wait history, including the period before a timeout.
+          stdbuf -oL vmstat -t 1 > "$diagnostics/vmstat.log" &
+          monitor=$!
+          trap 'kill "$monitor" 2>/dev/null || :; wait "$monitor" 2>/dev/null || :' EXIT
+          args=()
+          if [ -n "$TEST_SHARD" ]; then args+=("--shard=$TEST_SHARD"); fi
+          status=0
+          pnpm --filter "$TEST_PACKAGE" test:integration:run "${args[@]}" || status=$?
+          if [ "$status" -ne 0 ]; then
+            # Diagnostic failures must not replace the original test exit status. Bound each
+            # probe because a stalled Docker daemon may also fail to answer diagnostic commands.
+            capture() {
+              local file=$1
+              shift
+              local result=0
+              timeout 15s "$@" > "$diagnostics/$file" 2>&1 || result=$?
+              if [ "$result" -ne 0 ]; then
+                printf '\nDiagnostic command exited with %s\n' "$result" >> "$diagnostics/$file"
+              fi
+            }
+            capture docker-version.log docker version
+            capture docker-info.log docker info --format 'Driver={{.Driver}} DriverStatus={{json .DriverStatus}} CPUs={{.NCPU}} Memory={{.MemTotal}} DockerRoot={{.DockerRootDir}}'
+            # Container and image events answer whether a stalled create ever finished, and when.
+            capture docker-events.log docker events --since "$started" --until "$(date --iso-8601=seconds)" --format '{{.Time}} {{.Type}} {{.Action}} {{.Actor.ID}}'
+            capture containers.log docker ps --all --filter label=com.supabase.stack-managed=true --format '{{.ID}} {{.Names}} {{.Image}} {{.Status}}'
+            capture docker-journal.log sudo journalctl -u docker.service -u containerd.service --since "$started" --no-pager
+            capture kernel-journal.log sudo journalctl -k --since "$started" --no-pager
+            capture disk.log df -h
+            capture inodes.log df -i
+            capture memory.log free -m
+          fi
+          exit "$status"
+
+      - name: Upload integration failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: integration-diagnostics-${{ strategy.job-index }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/integration-diagnostics/
+          if-no-files-found: ignore
+          retention-days: 7
 
       # Not covered by test:integration above (a different vitest project); runs here so the
       # registry cross-process and publication-crash scenarios run on Linux too.
