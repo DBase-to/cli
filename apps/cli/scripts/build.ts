@@ -75,39 +75,39 @@ const main = Effect.gen(function* () {
     {
       bunTarget: "bun-darwin-arm64",
       pkg: "cli-darwin-arm64",
-      archive: `supabase_${version}_darwin_arm64.tar.gz`,
+      archive: `dbase_${version}_darwin_arm64.tar.gz`,
       ext: "",
     },
     {
       bunTarget: "bun-darwin-x64",
       pkg: "cli-darwin-x64",
-      archive: `supabase_${version}_darwin_amd64.tar.gz`,
+      archive: `dbase_${version}_darwin_amd64.tar.gz`,
       ext: "",
     },
     {
       bunTarget: "bun-linux-arm64",
       pkg: "cli-linux-arm64",
-      archive: `supabase_${version}_linux_arm64.tar.gz`,
+      archive: `dbase_${version}_linux_arm64.tar.gz`,
       nfpmArch: "arm64",
       ext: "",
     },
     {
       bunTarget: "bun-linux-x64-baseline",
       pkg: "cli-linux-x64",
-      archive: `supabase_${version}_linux_amd64.tar.gz`,
+      archive: `dbase_${version}_linux_amd64.tar.gz`,
       nfpmArch: "amd64",
       ext: "",
     },
     {
       bunTarget: "bun-windows-x64-baseline",
       pkg: "cli-windows-x64",
-      archive: `supabase_${version}_windows_amd64.zip`,
+      archive: `dbase_${version}_windows_amd64.zip`,
       ext: ".exe",
     },
     {
       bunTarget: "bun-windows-arm64",
       pkg: "cli-windows-arm64",
-      archive: `supabase_${version}_windows_arm64.zip`,
+      archive: `dbase_${version}_windows_arm64.zip`,
       ext: ".exe",
     },
   ] as const;
@@ -143,7 +143,7 @@ const main = Effect.gen(function* () {
     const binDir = path.join(root, "packages", target.pkg, "bin");
     yield* fs.makeDirectory(binDir, { recursive: true });
 
-    const outfile = path.join(binDir, `supabase${target.ext}`);
+    const outfile = path.join(binDir, `dbase${target.ext}`);
 
     yield* Console.log(`[${target.pkg}] Compiling Bun CLI...`);
     yield* runBunBuild({
@@ -222,18 +222,18 @@ const main = Effect.gen(function* () {
     yield* Console.log(`[${target.pkg}] Creating archive ${target.archive}...`);
 
     if (target.archive.endsWith(".zip")) {
-      const files = [path.join(binDir, `supabase${target.ext}`)];
+      const files = [path.join(binDir, `dbase${target.ext}`)];
       yield* step(() => $`zip -j ${archivePath} ${files}`);
 
       // setup-cli and other download clients always fetch a .tar.gz, even on Windows, so
       // publish one alongside the .zip. See #5257.
       const tarArchive = target.archive.replace(/\.zip$/, ".tar.gz");
       const tarArchivePath = path.join(distDir, tarArchive);
-      const tarFiles = [`supabase${target.ext}`];
+      const tarFiles = [`dbase${target.ext}`];
       yield* Console.log(`[${target.pkg}] Creating archive ${tarArchive}...`);
       yield* step(() => $`tar -czf ${tarArchivePath} -C ${binDir} ${tarFiles}`);
     } else {
-      const files = [`supabase${target.ext}`];
+      const files = [`dbase${target.ext}`];
       yield* step(() => $`tar -czf ${archivePath} -C ${binDir} ${files}`);
     }
   });
@@ -247,7 +247,7 @@ const main = Effect.gen(function* () {
               const binDir = path.join(root, "packages", target.pkg, "bin");
               yield* fs.makeDirectory(binDir, { recursive: true });
 
-              const outfile = path.join(binDir, "supabase");
+              const outfile = path.join(binDir, "dbase");
               yield* Console.log(`[${target.pkg}] Compiling Bun CLI (musl)...`);
               yield* runBunBuild({
                 entrypoints: [entrypoint],
@@ -276,22 +276,22 @@ const main = Effect.gen(function* () {
       const muslBinDir = path.join(root, "packages", muslTarget.pkg, "bin");
 
       for (const fmt of LINUX_PKG_FORMATS) {
-        const outFile = `supabase_${version}_linux_${target.nfpmArch}.${fmt}`;
+        const outFile = `dbase_${version}_linux_${target.nfpmArch}.${fmt}`;
         const outPath = path.join(distDir, outFile);
         const binDir = fmt === "apk" ? muslBinDir : glibcBinDir;
 
         const contents: Array<{ src: string; dst: string }> = [
-          { src: path.join(binDir, "supabase"), dst: "/usr/bin/supabase" },
+          { src: path.join(binDir, "dbase"), dst: "/usr/bin/dbase" },
         ];
 
         const nfpmConfig: Record<string, unknown> = {
-          name: "supabase",
+          name: "dbase",
           arch: target.nfpmArch,
           platform: "linux",
           version,
-          maintainer: "Supabase <support@supabase.io>",
-          description: "Supabase CLI",
-          homepage: "https://supabase.com",
+          maintainer: "DBase <support@dbase.to>",
+          description: "DBase CLI",
+          homepage: "https://dbase.to",
           license: "MIT",
           contents,
         };
@@ -340,7 +340,7 @@ const main = Effect.gen(function* () {
     const linuxTargets = TARGETS.filter((target) => "nfpmArch" in target);
     for (const target of linuxTargets) {
       for (const fmt of LINUX_PKG_FORMATS) {
-        const filename = `supabase_${version}_linux_${target.nfpmArch}.${fmt}`;
+        const filename = `dbase_${version}_linux_${target.nfpmArch}.${fmt}`;
         const data = yield* fs.readFile(path.join(distDir, filename));
         const hash = createHash("sha256").update(data).digest("hex");
         lines.push(`${hash}  ${filename}`);

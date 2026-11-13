@@ -11,8 +11,8 @@ import {
 
 const REGISTRY_URL = "https://registry.test";
 const VERSION = "3.0.0";
-const DARWIN: PackageVersion = { name: "@supabase/cli-darwin-arm64", version: VERSION };
-const WINDOWS: PackageVersion = { name: "@supabase/cli-windows-x64", version: VERSION };
+const DARWIN: PackageVersion = { name: "@dbase/cli-darwin-arm64", version: VERSION };
+const WINDOWS: PackageVersion = { name: "@dbase/cli-windows-x64", version: VERSION };
 
 const notFound = () => new Response("{}", { status: 404 });
 const forbidden = () => new Response("{}", { status: 403 });

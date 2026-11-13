@@ -8,9 +8,9 @@ import { homebrewClassName, homebrewConflictsLine } from "./release-channels.ts"
 const { values } = parseArgs({
   options: {
     version: { type: "string" },
-    repo: { type: "string", default: "supabase/cli" },
-    tap: { type: "string", default: "supabase/homebrew-tap" },
-    name: { type: "string", default: "supabase" },
+    repo: { type: "string", default: "DBase-to/cli" },
+    tap: { type: "string", default: "DBase-to/homebrew-tap" },
+    name: { type: "string", default: "dbase" },
     local: { type: "boolean", default: false },
     "dry-run": { type: "boolean", default: false },
   },
@@ -42,16 +42,16 @@ const main = Effect.gen(function* () {
   const root = path.resolve(import.meta.dir, "../../..");
   const distDir = path.join(root, "dist");
 
-  // The class and filename vary by channel (e.g. "supabase-beta" -> "SupabaseBeta", "supabase@2" ->
-  // "SupabaseAT2"), but the installed binary is always `supabase`.
+  // The class and filename vary by channel (e.g. "dbase-beta" -> "DbaseBeta", "dbase@2" ->
+  // "DbaseAT2"), but the installed binary is always `dbase`.
   const className = homebrewClassName(name);
 
-  const installBlock = [`    bin.install "supabase"`].join("\n");
+  const installBlock = [`    bin.install "dbase"`].join("\n");
 
   const conflictsBlock = homebrewConflictsLine(name);
   const conflictsSection = conflictsBlock ? `${conflictsBlock}\n\n` : "";
 
-  const testInvocation = `#{bin}/supabase`;
+  const testInvocation = `#{bin}/dbase`;
 
   const checksums = new Map<string, string>();
   const checksumsText = new TextDecoder("utf-8", { ignoreBOM: true }).decode(
@@ -73,28 +73,28 @@ const main = Effect.gen(function* () {
     : `https://github.com/${repo}/releases/download/v${version}`;
 
   const formula = `class ${className} < Formula
-  desc "Supabase CLI"
-  homepage "https://supabase.com"
+  desc "DBase CLI"
+  homepage "https://dbase.to"
   version "${version}"
   license "MIT"
 
   on_macos do
     if Hardware::CPU.arm?
-      url "${baseUrl}/supabase_${version}_darwin_arm64.tar.gz"
-      sha256 "${yield* sha(`supabase_${version}_darwin_arm64.tar.gz`)}"
+      url "${baseUrl}/dbase_${version}_darwin_arm64.tar.gz"
+      sha256 "${yield* sha(`dbase_${version}_darwin_arm64.tar.gz`)}"
     else
-      url "${baseUrl}/supabase_${version}_darwin_amd64.tar.gz"
-      sha256 "${yield* sha(`supabase_${version}_darwin_amd64.tar.gz`)}"
+      url "${baseUrl}/dbase_${version}_darwin_amd64.tar.gz"
+      sha256 "${yield* sha(`dbase_${version}_darwin_amd64.tar.gz`)}"
     end
   end
 
   on_linux do
     if Hardware::CPU.arm?
-      url "${baseUrl}/supabase_${version}_linux_arm64.tar.gz"
-      sha256 "${yield* sha(`supabase_${version}_linux_arm64.tar.gz`)}"
+      url "${baseUrl}/dbase_${version}_linux_arm64.tar.gz"
+      sha256 "${yield* sha(`dbase_${version}_linux_arm64.tar.gz`)}"
     else
-      url "${baseUrl}/supabase_${version}_linux_amd64.tar.gz"
-      sha256 "${yield* sha(`supabase_${version}_linux_amd64.tar.gz`)}"
+      url "${baseUrl}/dbase_${version}_linux_amd64.tar.gz"
+      sha256 "${yield* sha(`dbase_${version}_linux_amd64.tar.gz`)}"
     end
   end
 

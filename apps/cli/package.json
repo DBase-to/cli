@@ -1,23 +1,23 @@
 {
-  "name": "supabase",
+  "name": "dbase",
   "version": "0.0.0-automated",
   "private": false,
-  "description": "Supabase CLI",
-  "homepage": "https://github.com/supabase/cli#readme",
+  "description": "DBase CLI",
+  "homepage": "https://github.com/DBase-to/cli#readme",
   "bugs": {
-    "url": "https://github.com/supabase/cli/issues"
+    "url": "https://github.com/DBase-to/cli/issues"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/supabase/cli.git",
+    "url": "https://github.com/DBase-to/cli.git",
     "directory": "apps/cli"
   },
   "bin": {
-    "supabase": "dist/supabase.js"
+    "dbase": "dist/dbase.js"
   },
   "files": [
-    "dist/supabase.js"
+    "dist/dbase.js"
   ],
   "type": "module",
   "publishConfig": {
@@ -26,16 +26,16 @@
   "scripts": {
     "build": "pnpm build:binary && pnpm build:shim",
     "build:binary": "bun scripts/build-binary.ts",
-    "build:shim": "bun build src/shared/cli/bin.ts --outfile dist/supabase.js --target node",
+    "build:shim": "bun build src/shared/cli/bin.ts --outfile dist/dbase.js --target node",
     "docs:spec": "bun scripts/generate-docs-spec.ts",
     "dev": "bun src/main.ts",
     "gen:feedback-types": "pnpm dev -- gen types typescript --project-id xguihxuzqibwxjnimxev --schema public > src/shared/feedback/database.types.ts",
     "test": "pnpm run test:unit --coverage.enabled && pnpm run test:integration --coverage.enabled && pnpm run test:e2e",
-    "test:unit": "pnpm exec turbo run supabase#test:unit:run --",
+    "test:unit": "pnpm exec turbo run dbase#test:unit:run --",
     "test:unit:run": "bun --bun vitest run --project unit --coverage.reportsDirectory=coverage/unit",
-    "test:integration": "pnpm exec turbo run supabase#test:integration:run --",
+    "test:integration": "pnpm exec turbo run dbase#test:integration:run --",
     "test:integration:run": "bun --bun vitest run --project integration --coverage.reportsDirectory=coverage/integration",
-    "test:e2e": "pnpm exec turbo run supabase#build && pnpm exec turbo run supabase#test:e2e:run --only --",
+    "test:e2e": "pnpm exec turbo run dbase#build && pnpm exec turbo run dbase#test:e2e:run --only --",
     "test:e2e:run": "bun --bun vitest run --project e2e --project e2e-exclusive",
     "test:live": "bun --bun vitest run --project live",
     "test:smoke": "bun run tests/smoke-test.ts",
@@ -83,14 +83,14 @@
     "yaml": "^2.9.0"
   },
   "optionalDependencies": {
-    "@supabase/cli-darwin-arm64": "workspace:*",
-    "@supabase/cli-darwin-x64": "workspace:*",
-    "@supabase/cli-linux-arm64": "workspace:*",
-    "@supabase/cli-linux-arm64-musl": "workspace:*",
-    "@supabase/cli-linux-x64": "workspace:*",
-    "@supabase/cli-linux-x64-musl": "workspace:*",
-    "@supabase/cli-windows-arm64": "workspace:*",
-    "@supabase/cli-windows-x64": "workspace:*"
+    "@dbase/cli-darwin-arm64": "workspace:*",
+    "@dbase/cli-darwin-x64": "workspace:*",
+    "@dbase/cli-linux-arm64": "workspace:*",
+    "@dbase/cli-linux-arm64-musl": "workspace:*",
+    "@dbase/cli-linux-x64": "workspace:*",
+    "@dbase/cli-linux-x64-musl": "workspace:*",
+    "@dbase/cli-windows-arm64": "workspace:*",
+    "@dbase/cli-windows-x64": "workspace:*"
   },
   "release": {
     "branches": [

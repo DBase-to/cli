@@ -73,11 +73,11 @@ describe("releaseAssets", () => {
 
 describe("uploadAssets", () => {
   const first = {
-    path: "dist/supabase_1.0.0_darwin_arm64.tar.gz",
+    path: "dist/dbase_1.0.0_darwin_arm64.tar.gz",
     name: "supabase_1.0.0_darwin_arm64.tar.gz",
   };
   const second = {
-    path: "dist/supabase_1.0.0_linux_amd64.deb",
+    path: "dist/dbase_1.0.0_linux_amd64.deb",
     name: "supabase_1.0.0_linux_amd64.deb",
   };
   const third = { path: "install", name: "install" };

@@ -87,11 +87,11 @@ export const stackStartAliasCommand = stackStartCommand.pipe(
   Command.withShortDescription("Start the local Supabase stack"),
   Command.withExamples([
     {
-      command: "supabase start",
+      command: "dbase start",
       description: "Start the current project stack",
     },
     {
-      command: "supabase start --stack feature-a --runtime docker",
+      command: "dbase start --stack feature-a --runtime docker",
       description: "Start a named Docker stack",
     },
   ]),
@@ -102,7 +102,7 @@ export const stackStopAliasCommand = stackStopCommand.pipe(
   Command.withShortDescription("Stop the local Supabase stack"),
   Command.withExamples([
     {
-      command: "supabase stop --stack feature-a",
+      command: "dbase stop --stack feature-a",
       description: "Stop the existing feature-a stack",
     },
   ]),
@@ -113,15 +113,15 @@ export const stackStatusAliasCommand = stackStatusCommand.pipe(
   Command.withShortDescription("Show the local Supabase stack status"),
   Command.withExamples([
     {
-      command: "supabase status",
+      command: "dbase status",
       description: "Show the current project stack",
     },
     {
-      command: "supabase status --stack feature-a",
+      command: "dbase status --stack feature-a",
       description: "Show a named stack",
     },
     {
-      command: "supabase status --env --output-format text > .env.local",
+      command: "dbase status --env --output-format text > .env.local",
       description: "Export connection variables as dotenv",
     },
   ]),
@@ -159,7 +159,7 @@ const agentDefaultOutputFormatFor = (
     : "json";
 
 export const rootCommandForFeatures = (options: RootCommandFeatures = {}) =>
-  Command.make("supabase").pipe(
+  Command.make("dbase").pipe(
     Command.withDescription(rootDescription(CLI_VERSION)),
     Command.withSubcommands([
       backupsCommand,

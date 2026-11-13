@@ -385,7 +385,7 @@ const publishAndVerify = Effect.fnUntraced(function* (
   const configPath = path.join(tmpPath, "config.yaml");
   const storageDir = path.join(tmpPath, "storage");
 
-  // Stores our published tarballs; the umbrella package's `@supabase/cli-*`
+  // Stores our published tarballs; the umbrella package's `@dbase/cli-*`
   // optional deps resolve here, while the public npm uplink stays available
   // for npm installer internals and other tooling.
   yield* fs.writeFileString(

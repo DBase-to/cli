@@ -29,8 +29,8 @@ let binPath = process.env["SUPABASE_CLI_BINARY_OVERRIDE"];
 if (!binPath) {
   for (const suffix of candidates) {
     try {
-      const pkgPath = path.dirname(require.resolve(`@supabase/cli-${suffix}/package.json`));
-      binPath = path.join(pkgPath, "bin", `supabase${ext}`);
+      const pkgPath = path.dirname(require.resolve(`@dbase/cli-${suffix}/package.json`));
+      binPath = path.join(pkgPath, "bin", `dbase${ext}`);
       break;
     } catch {
       // package not installed — try next candidate

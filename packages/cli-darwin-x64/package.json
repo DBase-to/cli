@@ -1,15 +1,15 @@
 {
-  "name": "@supabase/cli-darwin-x64",
+  "name": "@dbase/cli-darwin-x64",
   "version": "0.0.0",
-  "description": "Supabase CLI binary (darwin-x64)",
-  "homepage": "https://github.com/supabase/cli#readme",
+  "description": "DBase CLI binary (darwin-x64)",
+  "homepage": "https://github.com/DBase-to/cli#readme",
   "bugs": {
-    "url": "https://github.com/supabase/cli/issues"
+    "url": "https://github.com/DBase-to/cli/issues"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/supabase/cli.git",
+    "url": "https://github.com/DBase-to/cli.git",
     "directory": "packages/cli-darwin-x64"
   },
   "files": [
@@ -24,7 +24,7 @@
   "publishConfig": {
     "access": "public",
     "executableFiles": [
-      "bin/supabase"
+      "bin/dbase"
     ]
   },
   "preferUnplugged": true

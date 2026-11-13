@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-APP="supabase"
-REPO="supabase/cli"
-INSTALL_DIR="${SUPABASE_INSTALL_DIR:-"$HOME/.supabase/bin"}"
+APP="dbase"
+REPO="DBase-to/cli"
+INSTALL_DIR="${DBASE_INSTALL_DIR:-"$HOME/.dbase/bin"}"
 REQUESTED_VERSION="${VERSION:-}"
 NO_MODIFY_PATH=false
 BINARY_PATH=""
@@ -15,11 +15,11 @@ NC="\033[0m"
 
 usage() {
   cat <<EOF
-Install the Supabase CLI.
+Install the DBase CLI.
 
 Usage:
-  curl -fsSL https://raw.githubusercontent.com/supabase/cli/main/install | bash
-  curl -fsSL https://raw.githubusercontent.com/supabase/cli/main/install | bash -s -- --version 2.0.0
+  curl -fsSL https://raw.githubusercontent.com/DBase-to/cli/main/install | bash
+  curl -fsSL https://raw.githubusercontent.com/DBase-to/cli/main/install | bash -s -- --version 2.0.0
 
 Options:
   -v, --version <version>       Install a specific version, for example 2.0.0.
@@ -30,7 +30,7 @@ Options:
 
 Environment:
   VERSION                       Install a specific version.
-  SUPABASE_INSTALL_DIR          Install into a custom directory.
+  DBASE_INSTALL_DIR          Install into a custom directory.
 EOF
 }
 
@@ -181,22 +181,6 @@ verify_checksum() {
   fi
 }
 
-# Older releases still ship and need the `supabase-go` companion; single-binary releases
-# would otherwise leave a stale one behind.
-sync_go_companion() {
-  local ext="$1"
-  local source="$2"
-  local transfer="$3"
-  local dest="${INSTALL_DIR}/${APP}-go${ext}"
-
-  if [[ -f "$source" ]]; then
-    "$transfer" "$source" "$dest"
-    chmod 755 "$dest"
-  else
-    rm -f "$dest"
-  fi
-}
-
 install_from_binary() {
   local ext="$1"
 
@@ -208,7 +192,6 @@ install_from_binary() {
   mkdir -p "$INSTALL_DIR"
   cp "$BINARY_PATH" "${INSTALL_DIR}/${APP}${ext}"
   chmod 755 "${INSTALL_DIR}/${APP}${ext}"
-  sync_go_companion "$ext" "$(dirname "$BINARY_PATH")/${APP}-go${ext}" cp
 }
 
 download_and_install() {
@@ -227,18 +210,18 @@ download_and_install() {
     version="$(latest_version)"
   fi
   if [[ -z "$version" ]]; then
-    echo -e "${RED}Error: failed to resolve the latest Supabase CLI version.${NC}" >&2
+    echo -e "${RED}Error: failed to resolve the latest DBase CLI version.${NC}" >&2
     exit 1
   fi
   check_installed_version "$version"
 
-  filename="supabase_${version}_${target}.tar.gz"
+  filename="dbase_${version}_${target}.tar.gz"
   if [[ "$target" == linux_* ]] && is_musl_linux; then
-    filename="supabase_${version}_${target}.apk"
+    filename="dbase_${version}_${target}.apk"
   fi
 
   base_url="https://github.com/${REPO}/releases/download/v${version}"
-  tmp_dir="$(mktemp -d "${TMPDIR:-/tmp}/supabase-install.XXXXXX")"
+  tmp_dir="$(mktemp -d "${TMPDIR:-/tmp}/dbase-install.XXXXXX")"
   archive="${tmp_dir}/${filename}"
   checksums="${tmp_dir}/checksums.txt"
   source_dir="$tmp_dir"
@@ -267,7 +250,6 @@ download_and_install() {
   mv "${source_dir}/${APP}${ext}" "${INSTALL_DIR}/${APP}${ext}"
   chmod 755 "${INSTALL_DIR}/${APP}${ext}"
 
-  sync_go_companion "$ext" "${source_dir}/${APP}-go${ext}" mv
 }
 
 path_command_for_shell() {
@@ -312,7 +294,7 @@ add_to_path() {
 
   {
     echo ""
-    echo "# Supabase CLI"
+    echo "# DBase CLI"
     echo "$command"
   } >>"$config_file"
 
@@ -338,7 +320,7 @@ if [[ "${GITHUB_ACTIONS:-}" == "true" && -n "${GITHUB_PATH:-}" ]]; then
 fi
 
 say ""
-say "${GREEN}Supabase CLI installed to ${INSTALL_DIR}/${APP}${binary_ext}.${NC}"
+say "${GREEN}DBase CLI installed to ${INSTALL_DIR}/${APP}${binary_ext}.${NC}"
 say "Run '${APP} --version' to verify the installation."
 if [[ ":$PATH:" != *":$INSTALL_DIR:"* ]]; then
   say "${MUTED}Open a new terminal or run: export PATH=\"${INSTALL_DIR}:\$PATH\"${NC}"

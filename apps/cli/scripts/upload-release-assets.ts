@@ -19,18 +19,18 @@ const TRIPLES = [
 /** Every file the publish job attaches to a GitHub Release, in upload order. */
 export function releaseAssets(version: string): ReleaseAsset[] {
   const paths = [
-    ...TRIPLES.map((triple) => `dist/supabase_${version}_${triple}.tar.gz`),
-    `dist/supabase_${version}_linux_arm64.deb`,
-    `dist/supabase_${version}_linux_amd64.deb`,
-    `dist/supabase_${version}_linux_arm64.rpm`,
-    `dist/supabase_${version}_linux_amd64.rpm`,
-    `dist/supabase_${version}_linux_arm64.apk`,
-    `dist/supabase_${version}_linux_amd64.apk`,
-    `dist/supabase_${version}_windows_amd64.zip`,
-    `dist/supabase_${version}_windows_arm64.zip`,
+    ...TRIPLES.map((triple) => `dist/dbase_${version}_${triple}.tar.gz`),
+    `dist/dbase_${version}_linux_arm64.deb`,
+    `dist/dbase_${version}_linux_amd64.deb`,
+    `dist/dbase_${version}_linux_arm64.rpm`,
+    `dist/dbase_${version}_linux_amd64.rpm`,
+    `dist/dbase_${version}_linux_arm64.apk`,
+    `dist/dbase_${version}_linux_amd64.apk`,
+    `dist/dbase_${version}_windows_amd64.zip`,
+    `dist/dbase_${version}_windows_arm64.zip`,
     "dist/checksums.txt",
     // setup-cli, the install script, and docs download releases/latest/download/<unversioned>.
-    ...TRIPLES.map((triple) => `dist/supabase_${triple}.tar.gz`),
+    ...TRIPLES.map((triple) => `dist/dbase_${triple}.tar.gz`),
     "install",
   ];
   return paths.map((path) => ({ path, name: path.slice(path.lastIndexOf("/") + 1) }));

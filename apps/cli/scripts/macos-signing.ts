@@ -3,10 +3,10 @@
  * agree. `bun build --compile` emits an ad-hoc signature that macOS 26+ AMFI SIGKILLs at launch
  * (GitHub #5556); re-signing with a full ad-hoc signature fixes it without Apple credentials.
  */
-export type MacBinaryName = "supabase";
+export type MacBinaryName = "dbase";
 
 export const MACOS_IDENTIFIERS: Record<MacBinaryName, string> = {
-  supabase: "com.supabase.cli",
+  dbase: "com.dbase.cli",
 };
 
 /**
@@ -14,10 +14,10 @@ export const MACOS_IDENTIFIERS: Record<MacBinaryName, string> = {
  * macOS binary, so callers verifying an arbitrary path fail closed.
  */
 export function macIdentifierFor(binary: string): string | undefined {
-  return binary === "supabase" ? MACOS_IDENTIFIERS[binary] : undefined;
+  return binary === "dbase" ? MACOS_IDENTIFIERS[binary] : undefined;
 }
 
 /** The macOS binaries shipped for the CLI. */
 export function darwinBinaries(): MacBinaryName[] {
-  return ["supabase"];
+  return ["dbase"];
 }

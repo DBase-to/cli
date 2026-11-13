@@ -180,13 +180,13 @@ const main = Effect.gen(function* () {
             Effect.gen(function* () {
               yield* releaseStep(() => $`brew install supabase/test-tap/supabase`);
 
-              const output = yield* releaseStep(() => $`supabase --version`.text());
+              const output = yield* releaseStep(() => $`dbase --version`.text());
               const trimmed = output.trim();
               const shellCheck = yield* verifyExpectedShellEffect("supabase");
               const passed = /^\d+\.\d+\.\d+/.test(trimmed) && shellCheck.passed;
 
               yield* Console.log(
-                `[brew] ${passed ? "PASS" : "FAIL"} — supabase --version: ${trimmed}`,
+                `[brew] ${passed ? "PASS" : "FAIL"} — dbase --version: ${trimmed}`,
               );
               yield* Console.log(`[brew] ${shellCheck.detail}`);
               results.push({ name: "brew", status: passed ? "pass" : "fail" });

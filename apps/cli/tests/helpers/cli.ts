@@ -30,8 +30,8 @@ import {
 export { stripAnsi } from "./ansi.ts";
 
 const BINARY_EXT = process.platform === "win32" ? ".exe" : "";
-const SHIM_PATH = fileURLToPath(new URL("../../dist/supabase.js", import.meta.url));
-const BINARY_PATH = fileURLToPath(new URL(`../../dist/supabase${BINARY_EXT}`, import.meta.url));
+const SHIM_PATH = fileURLToPath(new URL("../../dist/dbase.js", import.meta.url));
+const BINARY_PATH = fileURLToPath(new URL(`../../dist/dbase${BINARY_EXT}`, import.meta.url));
 
 // E2E subprocesses should only enter agent output mode when a test explicitly
 // opts in via `options.env`. Keep this list aligned with @vercel/detect-agent
@@ -680,7 +680,7 @@ const spawnSupabaseProgram = Effect.fnUntraced(function* (
   if (!artifactsExist) {
     return yield* new CliBuildArtifactsError({
       message:
-        `Missing CLI build artifacts. Run \`pnpm --filter supabase build\` before invoking e2e tests.\n` +
+        `Missing CLI build artifacts. Run \`pnpm --filter dbase build\` before invoking e2e tests.\n` +
         `  expected shim:   ${SHIM_PATH}\n` +
         `  expected binary: ${BINARY_PATH}`,
     });

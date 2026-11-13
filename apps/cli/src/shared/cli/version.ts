@@ -12,7 +12,7 @@ export const CLI_VERSION =
  * invocation.
  */
 export const CLI_UPGRADE_GUIDE_URL =
-  "https://supabase.com/docs/guides/cli/getting-started#updating-the-supabase-cli";
+  "https://dbase.to/docs/guides/cli/getting-started";
 
 export interface ParsedSemver {
   readonly nums: readonly [string, string, string];

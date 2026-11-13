@@ -413,28 +413,28 @@ importers:
         specifier: ^2.9.0
         version: 2.9.0
     optionalDependencies:
-      '@supabase/cli-darwin-arm64':
+      '@dbase/cli-darwin-arm64':
         specifier: workspace:*
         version: link:../../packages/cli-darwin-arm64
-      '@supabase/cli-darwin-x64':
+      '@dbase/cli-darwin-x64':
         specifier: workspace:*
         version: link:../../packages/cli-darwin-x64
-      '@supabase/cli-linux-arm64':
+      '@dbase/cli-linux-arm64':
         specifier: workspace:*
         version: link:../../packages/cli-linux-arm64
-      '@supabase/cli-linux-arm64-musl':
+      '@dbase/cli-linux-arm64-musl':
         specifier: workspace:*
         version: link:../../packages/cli-linux-arm64-musl
-      '@supabase/cli-linux-x64':
+      '@dbase/cli-linux-x64':
         specifier: workspace:*
         version: link:../../packages/cli-linux-x64
-      '@supabase/cli-linux-x64-musl':
+      '@dbase/cli-linux-x64-musl':
         specifier: workspace:*
         version: link:../../packages/cli-linux-x64-musl
-      '@supabase/cli-windows-arm64':
+      '@dbase/cli-windows-arm64':
         specifier: workspace:*
         version: link:../../packages/cli-windows-arm64
-      '@supabase/cli-windows-x64':
+      '@dbase/cli-windows-x64':
         specifier: workspace:*
         version: link:../../packages/cli-windows-x64
 

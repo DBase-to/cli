@@ -92,7 +92,7 @@ const main = Effect.gen(function* () {
     const archivePath = path.join(
       root,
       "dist",
-      `supabase_${version}_windows_${archiveArch}.tar.gz`,
+      `dbase_${version}_windows_${archiveArch}.tar.gz`,
     );
     const extractDir = yield* fs.makeTempDirectory({ prefix: "supabase-windows-tarball-" });
 
@@ -137,7 +137,7 @@ const main = Effect.gen(function* () {
   if (!hasScoop) {
     yield* Console.log("[scoop] SKIP — scoop not found");
   } else {
-    const manifest = path.join(root, "dist", "supabase.json");
+    const manifest = path.join(root, "dist", "dbase.json");
 
     yield* Effect.gen(function* () {
       yield* Console.log("Generating Scoop manifest...");
@@ -150,13 +150,13 @@ const main = Effect.gen(function* () {
 
       yield* withFinally(
         Effect.gen(function* () {
-          const output = yield* releaseStep(() => $`supabase --version`.text());
+          const output = yield* releaseStep(() => $`dbase --version`.text());
           const trimmed = output.trim();
           const shellCheck = yield* verifyExpectedShellEffect("supabase");
           const passed = /^\d+\.\d+\.\d+/.test(trimmed) && shellCheck.passed;
 
           yield* Console.log(
-            `[scoop] ${passed ? "PASS" : "FAIL"} — supabase --version: ${trimmed}`,
+            `[scoop] ${passed ? "PASS" : "FAIL"} — dbase --version: ${trimmed}`,
           );
           yield* Console.log(`[scoop] ${shellCheck.detail}`);
           results.push({ name: "scoop", status: passed ? "pass" : "fail" });

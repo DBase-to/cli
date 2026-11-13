@@ -135,7 +135,7 @@ const main = Effect.gen(function* () {
           `linux-${arch}-tarball`,
           "debian:bookworm-slim",
           dockerPlatform,
-          `tar -xzf /dist/supabase_${version}_linux_${arch}.tar.gz -C /usr/local/bin && supabase --version && ${dispatchProbe}`,
+          `tar -xzf /dist/dbase_${version}_linux_${arch}.tar.gz -C /usr/local/bin && dbase --version && ${dispatchProbe}`,
         ),
       );
 
@@ -144,7 +144,7 @@ const main = Effect.gen(function* () {
           `linux-${arch}-deb`,
           "debian:bookworm-slim",
           dockerPlatform,
-          `dpkg -i /dist/supabase_${version}_linux_${arch}.deb && supabase --version && ${dispatchProbe}`,
+          `dpkg -i /dist/dbase_${version}_linux_${arch}.deb && dbase --version && ${dispatchProbe}`,
         ),
       );
 
@@ -153,7 +153,7 @@ const main = Effect.gen(function* () {
           `linux-${arch}-rpm`,
           "amazonlinux:2023",
           dockerPlatform,
-          `rpm -ivh /dist/supabase_${version}_linux_${arch}.rpm && supabase --version && ${dispatchProbe}`,
+          `rpm -ivh /dist/dbase_${version}_linux_${arch}.rpm && dbase --version && ${dispatchProbe}`,
         ),
       );
 
@@ -162,7 +162,7 @@ const main = Effect.gen(function* () {
           `linux-${arch}-apk`,
           "alpine:3.21",
           dockerPlatform,
-          `apk add --allow-untrusted /dist/supabase_${version}_linux_${arch}.apk && supabase --version && ${dispatchProbe}`,
+          `apk add --allow-untrusted /dist/dbase_${version}_linux_${arch}.apk && dbase --version && ${dispatchProbe}`,
         ),
       );
     }

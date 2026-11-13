@@ -7,9 +7,9 @@ import { Console, Data, Effect, FileSystem, Layer, Path, Schema } from "effect";
 const { values } = parseArgs({
   options: {
     version: { type: "string" },
-    repo: { type: "string", default: "supabase/cli" },
-    bucket: { type: "string", default: "supabase/scoop-bucket" },
-    name: { type: "string", default: "supabase" },
+    repo: { type: "string", default: "DBase-to/cli" },
+    bucket: { type: "string", default: "DBase-to/scoop-bucket" },
+    name: { type: "string", default: "dbase" },
     local: { type: "boolean", default: false },
     "dry-run": { type: "boolean", default: false },
   },
@@ -41,9 +41,9 @@ const main = Effect.gen(function* () {
   const local = values.local!;
   const dryRun = values["dry-run"]!;
 
-  // The shipped binary is always `supabase.exe`; only the manifest filename differs (e.g.
-  // `supabase-beta.json`), so stable and beta can coexist in the same bucket.
-  const binEntry = "supabase.exe";
+  // The shipped binary is always `dbase.exe`; only the manifest filename differs (e.g.
+  // `dbase-beta.json`), so stable and beta can coexist in the same bucket.
+  const binEntry = "dbase.exe";
   const root = path.resolve(import.meta.dir, "../../..");
   const distDir = path.join(root, "dist");
 
@@ -70,25 +70,25 @@ const main = Effect.gen(function* () {
   // Published releases use unversioned Windows tarball names (release-shared.yml copies the
   // versioned build); local builds only emit versioned archives, so --local keeps those names.
   const amd64Tar = local
-    ? `supabase_${version}_windows_amd64.tar.gz`
-    : "supabase_windows_amd64.tar.gz";
+    ? `dbase_${version}_windows_amd64.tar.gz`
+    : "dbase_windows_amd64.tar.gz";
   const arm64Tar = local
-    ? `supabase_${version}_windows_arm64.tar.gz`
-    : "supabase_windows_arm64.tar.gz";
+    ? `dbase_${version}_windows_arm64.tar.gz`
+    : "dbase_windows_arm64.tar.gz";
 
   const manifest = {
     version,
-    description: "Supabase CLI",
-    homepage: "https://supabase.com/",
+    description: "DBase CLI",
+    homepage: "https://dbase.to/",
     license: "MIT",
     architecture: {
       "64bit": {
         url: `${baseUrl}/${amd64Tar}`,
-        hash: yield* sha(`supabase_${version}_windows_amd64.tar.gz`),
+        hash: yield* sha(`dbase_${version}_windows_amd64.tar.gz`),
       },
       arm64: {
         url: `${baseUrl}/${arm64Tar}`,
-        hash: yield* sha(`supabase_${version}_windows_arm64.tar.gz`),
+        hash: yield* sha(`dbase_${version}_windows_arm64.tar.gz`),
       },
     },
     bin: binEntry,
@@ -98,14 +98,14 @@ const main = Effect.gen(function* () {
     autoupdate: {
       architecture: {
         "64bit": {
-          url: `https://github.com/${repo}/releases/download/v$version/supabase_windows_amd64.tar.gz`,
+          url: `https://github.com/${repo}/releases/download/v$version/dbase_windows_amd64.tar.gz`,
         },
         arm64: {
-          url: `https://github.com/${repo}/releases/download/v$version/supabase_windows_arm64.tar.gz`,
+          url: `https://github.com/${repo}/releases/download/v$version/dbase_windows_arm64.tar.gz`,
         },
       },
       hash: {
-        url: "$baseurl/supabase_$version_checksums.txt",
+        url: "$baseurl/dbase_$version_checksums.txt",
       },
     },
   };

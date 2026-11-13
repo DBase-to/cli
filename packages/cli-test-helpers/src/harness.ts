@@ -144,7 +144,7 @@ function assertTsCliBuilt(
     if (!(yield* exists(fs, shimPath)) || !(yield* exists(fs, binaryPath))) {
       return yield* new MissingCliBuildError({
         message:
-          `Missing CLI build artifacts. Run \`pnpm --filter supabase build\` before running e2e tests.\n` +
+          `Missing CLI build artifacts. Run \`pnpm --filter dbase build\` before running e2e tests.\n` +
           `  expected shim:   ${shimPath}\n` +
           `  expected binary: ${binaryPath}`,
       });
@@ -178,8 +178,8 @@ const execEffect = Effect.fnUntraced(function* (
   /* Builds the whole invocation before the first asynchronous step, in call order, so the caller
      can mutate its inputs once exec returns. */
   const start = performance.now();
-  const tsCliShim = path.join(WORKSPACE_ROOT, "apps/cli/dist/supabase.js");
-  const tsCliBinary = path.join(WORKSPACE_ROOT, `apps/cli/dist/supabase${BINARY_EXT}`);
+  const tsCliShim = path.join(WORKSPACE_ROOT, "apps/cli/dist/dbase.js");
+  const tsCliBinary = path.join(WORKSPACE_ROOT, `apps/cli/dist/dbase${BINARY_EXT}`);
   const built: BuiltCommand = { cmd: ["node", tsCliShim], binaryOverride: tsCliBinary };
 
   const env: Record<string, string> = {

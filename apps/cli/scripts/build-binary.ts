@@ -8,7 +8,7 @@ import { compileOptions, stackReleaseDefine } from "./compile-options.ts";
  * offline without bundling at runtime (supabase/supabase#45570).
  */
 const entrypoint = "src/main.ts";
-const outfile = "dist/supabase";
+const outfile = "dist/dbase";
 const packageJson = JSON.parse(
   await Bun.file(new URL("../package.json", import.meta.url)).text(),
 ) as {
