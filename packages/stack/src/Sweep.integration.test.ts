@@ -383,6 +383,20 @@ it.live("sweeps deleted stacks of its own root only, on the engine its owner pin
         ...pinned.argv,
         "ps",
         "--all",
+        "--filter",
+        "label=com.supabase.stack",
+        "--format",
+        "{{.ID}}",
+      ]);
+      expect(
+        engine.commands.filter(([, ...args]) => args.includes("inspect")),
+        "labels come from inspect, which Podman 4.9 supports",
+      ).not.toEqual([]);
+      expect(engine.commands).toContainEqual([
+        "docker",
+        ...pinned.argv,
+        "ps",
+        "--all",
         "--quiet",
         "--no-trunc",
         "--filter",

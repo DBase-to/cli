@@ -68,11 +68,13 @@ const TARGET_OPTIONS = ["--context", "--host", "--url", "--connection"];
 /**
  * Docker and Podman engines that each start with `containers`. Both answer the commands
  * `resolveEngineTarget` runs; a target's connection options are not part of a command's subcommand.
- * `ps --format` prints their labels as JSON lines, then every string entry as is; `ps --quiet`
- * prints the ids of those matching every `--filter`; `rm --force <id>` removes one. A command fails
- * with the given stderr when `failures` names its engine (`docker`) or its engine and subcommand
- * (`podman rm`). Every command is recorded and passed to `onCommand` before it is answered;
- * `remaining` lists an engine's containers.
+ * `ps --format '{{.ID}}'` prints container ids, then every string entry as is; `ps --format` with
+ * Docker's tuple template prints labels as JSON lines. `inspect --format` prints one container's
+ * label map. Podman 4.9 rejects `.Label` in a `ps` template, which this stub reproduces. `ps
+ * --quiet` prints the ids of those matching every `--filter`; `rm --force <id>` removes one. A
+ * command fails with the given stderr when `failures` names its engine (`docker`) or its engine and
+ * subcommand (`podman rm`). Every command is recorded and passed to `onCommand` before it is
+ * answered; `remaining` lists an engine's containers.
  */
 export const engineStub = (
   containers: ReadonlyArray<StubContainer | string>,
@@ -124,8 +126,17 @@ export const engineStub = (
         subcommand === "inspect" &&
         inspectedContainer === undefined &&
         !noise.includes(inspected ?? "")
-          ? "no such container"
+          ? command.command === "podman"
+            ? `Error: no such object: "${inspected}"`
+            : `Error: No such container: ${inspected}`
           : undefined;
+      // Podman 4.9's `ps` reporter has no `.Label` field, so a template that asks for one fails;
+      // the stub fails the same way so such a query cannot return to the suite unnoticed.
+      const templateFailure =
+        subcommand === "ps" && format?.includes(".Label") === true
+          ? `template: ps:1:20: executing "ps" at <.Label>: can't evaluate field Label in type containers.psReporter`
+          : undefined;
+      const errorText = failure ?? inspectFailure ?? templateFailure;
       const inspectStdout =
         subcommand === "inspect" && inspectedContainer !== undefined
           ? yield* encodeLabelMap({
@@ -138,7 +149,7 @@ export const engineStub = (
       const identity =
         command.command === "podman" ? "false|false|stub-host|/stub/graph" : "stub-id";
       const stdout =
-        failure !== undefined
+        errorText !== undefined
           ? ""
           : subcommand === "context"
             ? "stub-context"
@@ -149,7 +160,7 @@ export const engineStub = (
                 : subcommand === "inspect"
                   ? inspectStdout
                   : "";
-      if (failure === undefined && subcommand === "rm")
+      if (errorText === undefined && subcommand === "rm")
         inventories.set(
           command.command,
           inventory.filter(({ id }) => id !== commandArgs.at(-1)),
@@ -157,19 +168,15 @@ export const engineStub = (
       yield* onCommand(argv);
       return ChildProcessSpawner.makeHandle({
         pid: ChildProcessSpawner.ProcessId(0),
-        exitCode: Effect.succeed(
-          ChildProcessSpawner.ExitCode(
-            failure === undefined && inspectFailure === undefined ? 0 : 1,
-          ),
-        ),
+        exitCode: Effect.succeed(ChildProcessSpawner.ExitCode(errorText === undefined ? 0 : 1)),
         isRunning: Effect.succeed(false),
         kill: () => Effect.void,
         stdin: Sink.drain,
         stdout: Stream.succeed(new TextEncoder().encode(stdout)),
         stderr:
-          failure === undefined && inspectFailure === undefined
+          errorText === undefined
             ? Stream.empty
-            : Stream.succeed(new TextEncoder().encode(failure ?? inspectFailure)),
+            : Stream.succeed(new TextEncoder().encode(errorText)),
         all: Stream.empty,
         getInputFd: () => Sink.drain,
         getOutputFd: () => Stream.empty,
