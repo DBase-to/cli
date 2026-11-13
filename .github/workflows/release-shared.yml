@@ -204,7 +204,10 @@ jobs:
   smoke-test-macos:
     needs:
       - build
-    runs-on: macos-latest
+    # Intel image draws from a separate hosted-runner pool from arm64 `macos-latest`.
+    # Both darwin artifacts are still built and validated; move back to arm64 when
+    # capacity recovers. `macos-15-intel` is supported through August 2027.
+    runs-on: macos-15-intel
     timeout-minutes: 25
     env:
       NPM_TAG: ${{ inputs.npm_tag }}
