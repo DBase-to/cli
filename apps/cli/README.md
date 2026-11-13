@@ -48,7 +48,7 @@ Output in `dist/`:
 
 The shim resolves `DBASE_CLI_BINARY_OVERRIDE` (or the legacy
 `SUPABASE_CLI_BINARY_OVERRIDE`; an absolute binary path)
-before falling back to the `@dbase/cli-<platform>` optional-dependency lookup.
+before falling back to the `@dbase.to/cli-<platform>` optional-dependency lookup.
 The e2e test harness uses this override to invoke the real shim + compiled
 binary handoff against the per-shell builds in `dist/`.
 

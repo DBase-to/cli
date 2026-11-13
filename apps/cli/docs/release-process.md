@@ -10,7 +10,7 @@ covers three environments ("rings"):
    Homebrew / Scoop / GitHub-Release code paths production uses, but pointed at
    a reviewer's own GitHub account and a non-`dbase` artifact name. This is how
    the local and PoC rings validate the release before production.
-3. **Ring 3 — Production.** The `@dbase/cli` npm package +
+3. **Ring 3 — Production.** The `@dbase.to/cli` npm package +
    `DBase-to/homebrew-tap` + `DBase-to/scoop-bucket` + GitHub Releases on
    `DBase-to/cli`. Driven by GitHub Actions (`release.yml`, which dispatches
    `beta` and `stable` into `release-shared.yml`).
@@ -34,14 +34,17 @@ Before the first production cut:
 - [ ] `main` exists. The stable channel and the install-script URL
       (`raw.githubusercontent.com/DBase-to/cli/main/install`) both require it.
       Create it from `develop` before the first stable release.
-- [ ] The npm package name is registered. This fork publishes as
-      `@dbase/cli`; the unscoped `dbase` name is owned by an unrelated package.
-- [ ] Each npm package has a trusted publisher configured for the **calling**
-      workflow, `release.yml`. npm validates the calling workflow for
+- [ ] The `@dbase.to` npm organization owns the scope and all nine package
+      names are available: `@dbase.to/cli` plus the eight
+      `@dbase.to/cli-<platform>` binary packages. The unscoped `dbase` name is
+      owned by an unrelated package.
+- [ ] Each of the nine packages has a trusted publisher configured for the
+      **calling** workflow, `release.yml`. npm validates the calling workflow for
       `workflow_call`, not `release-shared.yml`. The very first publish of a
-      new package needs a granular `NPM_TOKEN` repository secret, because the
-      trusted-publisher settings page only exists after the package exists;
-      remove the secret afterwards.
+      new package needs a granular `NPM_TOKEN` repository secret with publish
+      access to the `@dbase.to` organization, because the trusted-publisher
+      settings page only exists after the package exists; remove the secret
+      afterwards.
 - [ ] `DBase-to/homebrew-tap` and `DBase-to/scoop-bucket` exist. They do; keep
       `publish_brew_scoop=false` until the GitHub App has `contents: write` on
       both, because with `true` and a missing app grant every release fails at
@@ -54,9 +57,9 @@ Before the first production cut:
 ## Ring 1 — Local Verdaccio
 
 Use this loop while iterating on build scripts, the Node shim, or anything that
-changes what gets packed into `@dbase/cli` or `@dbase/cli-<platform>`. It installs
+changes what gets packed into `@dbase.to/cli` or `@dbase.to/cli-<platform>`. It installs
 the CLI into a local npm registry and lets you
-`npx --registry http://localhost:4873 @dbase/cli` as if you'd installed from npm.
+`npx --registry http://localhost:4873 @dbase.to/cli` as if you'd installed from npm.
 
 Start the registry in one terminal:
 
@@ -75,12 +78,12 @@ pnpm cli-release
 Test it:
 
 ```sh
-npx --registry http://localhost:4873 @dbase/cli@<printed-version> --version
+npx --registry http://localhost:4873 @dbase.to/cli@<printed-version> --version
 ```
 
 [`tools/release/local-release.ts`](../../../tools/release/local-release.ts)
 does the heavy lifting: it builds the platform binary and the umbrella
-`@dbase/cli` package, materialises them in a tmp dir (so no workspace
+`@dbase.to/cli` package, materialises them in a tmp dir (so no workspace
 `package.json` is modified), and publishes both to Verdaccio. Cleanup is
 automatic even on failure.
 
@@ -303,8 +306,8 @@ flowchart TD
 
     shared["release-shared.yml"]
     shared --> build["build (ubuntu-latest)<br/>sync-versions, build.ts, nfpm<br/>cache build artifacts"]
-    build --> smoke["smoke-test<br/>ubuntu + windows<br/>smoke-test-macos<br/>macos-latest"]
-    smoke --> pub["publish (ubuntu-latest)<br/>id-token: write (OIDC trusted publishing)<br/>pnpm publish --provenance × 8 platform pkgs<br/>then the umbrella @dbase/cli package"]
+    build --> smoke["smoke-test<br/>ubuntu + windows<br/>smoke-test-macos<br/>macos-15-intel"]
+    smoke --> pub["publish (ubuntu-latest)<br/>id-token: write (OIDC trusted publishing)<br/>pnpm publish --provenance × 8 platform pkgs<br/>then the umbrella @dbase.to/cli package"]
     pub --> rel["softprops/action-gh-release<br/>(draft) → gh release edit --draft=false"]
     rel --> hb["publish-homebrew<br/>App-token-authed clone of homebrew-tap<br/>update-homebrew.ts --name <brew_name>"]
     rel --> sc["publish-scoop<br/>App-token-authed clone of scoop-bucket<br/>update-scoop.ts --name <scoop_name>"]

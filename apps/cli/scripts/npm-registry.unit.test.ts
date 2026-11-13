@@ -11,8 +11,8 @@ import {
 
 const REGISTRY_URL = "https://registry.test";
 const VERSION = "3.0.0";
-const DARWIN: PackageVersion = { name: "@dbase/cli-darwin-arm64", version: VERSION };
-const WINDOWS: PackageVersion = { name: "@dbase/cli-windows-x64", version: VERSION };
+const DARWIN: PackageVersion = { name: "@dbase.to/cli-darwin-arm64", version: VERSION };
+const WINDOWS: PackageVersion = { name: "@dbase.to/cli-windows-x64", version: VERSION };
 
 const notFound = () => new Response("{}", { status: 404 });
 const forbidden = () => new Response("{}", { status: 403 });
@@ -65,7 +65,7 @@ describe("waitUntilInstallable", () => {
       expect(installable).toEqual([DARWIN.name]);
       expect(registry.requests).toEqual(
         Array.from({ length: 3 }, () => ({
-          url: "https://registry.test/@dbase%2Fcli-darwin-arm64",
+          url: "https://registry.test/@dbase.to%2Fcli-darwin-arm64",
           accept: "application/vnd.npm.install-v1+json",
         })),
       );

@@ -1,5 +1,5 @@
 {
-  "name": "@dbase/cli-darwin-x64",
+  "name": "@dbase.to/cli-darwin-x64",
   "version": "0.0.0",
   "description": "DBase CLI binary (darwin-x64)",
   "homepage": "https://github.com/DBase-to/cli#readme",

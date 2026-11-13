@@ -81,13 +81,13 @@ To build a base binary from another commit without disturbing this worktree:
 ```sh
 mkdir /tmp/cli-base && git archive <sha> | tar -x -C /tmp/cli-base
 rm -f /tmp/cli-base/mise.toml /tmp/cli-base/mise.lock # if mise refuses the untrusted config
-(cd /tmp/cli-base && pnpm install && pnpm exec turbo run @dbase/cli#build)
+(cd /tmp/cli-base && pnpm install && pnpm exec turbo run @dbase.to/cli#build)
 ```
 
 ### Pull request benchmark
 
 `.github/workflows/cli-bench.yml` runs on every ready pull request into `develop` that touches the CLI, its packages, or
-the e2e replay fixtures. It builds the pull request and the base tip it merges into with `pnpm --filter @dbase/cli run build:binary`, runs both
+the e2e replay fixtures. It builds the pull request and the base tip it merges into with `pnpm --filter @dbase.to/cli run build:binary`, runs both
 through `bench-cli.ts` against a local replay server, and writes a job summary with `bench-summary.ts`.
 The job is report only: it never blocks a pull request, and a benchmark problem is reported in the
 summary instead of failing the job: a failed branch or base build or a replay server that does not

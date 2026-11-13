@@ -21,13 +21,12 @@ uplinks:
     url: https://registry.npmjs.org/
 
 packages:
-  # @supabase/* packages published locally are served from storage.
-  # All others (effect, ink, etc.) are proxied from npm.
-  "@supabase/*":
+  # DBase CLI packages published locally are served from storage, not proxied.
+  "@dbase.to/*":
     access: $all
     publish: $all
-    proxy: npmjs
 
+  # All others (effect, @supabase/* dependencies, etc.) are proxied from npm.
   "**":
     access: $all
     publish: $all

@@ -243,17 +243,17 @@ const dumpInstalledTree = Effect.fnUntraced(function* (testDir: string, ext: str
   yield* Console.log("\nInstalled tree state:");
   const interesting = [
     path.join(testDir, "node_modules", ".bin", `dbase${ext}`),
-    path.join(testDir, "node_modules", "@dbase", "cli", "package.json"),
-    path.join(testDir, "node_modules", "@dbase", "cli", "dist", "dbase.js"),
+    path.join(testDir, "node_modules", "@dbase.to", "cli", "package.json"),
+    path.join(testDir, "node_modules", "@dbase.to", "cli", "dist", "dbase.js"),
   ];
   for (const p of interesting) {
     yield* Console.log(`  ${path.relative(testDir, p)}: ${yield* describePath(p)}`);
   }
 
-  const scope = path.join(testDir, "node_modules", "@dbase");
+  const scope = path.join(testDir, "node_modules", "@dbase.to");
   const scopeEntries = yield* fs.readDirectory(scope).pipe(Effect.option);
   if (Option.isNone(scopeEntries)) {
-    yield* Console.log(`  node_modules/@dbase: MISSING`);
+    yield* Console.log(`  node_modules/@dbase.to: MISSING`);
     return;
   }
   for (const entry of scopeEntries.value.sort()) {
@@ -263,10 +263,12 @@ const dumpInstalledTree = Effect.fnUntraced(function* (testDir: string, ext: str
       Effect.flatMap(decodePackageIdentity),
       Effect.flatMap((pkgJson) =>
         Console.log(
-          `  node_modules/@dbase/${entry}: ${String(pkgJson.name)}@${String(pkgJson.version)}`,
+          `  node_modules/@dbase.to/${entry}: ${String(pkgJson.name)}@${String(pkgJson.version)}`,
         ),
       ),
-      Effect.catch(() => Console.log(`  node_modules/@dbase/${entry}: <unreadable package.json>`)),
+      Effect.catch(() =>
+        Console.log(`  node_modules/@dbase.to/${entry}: <unreadable package.json>`),
+      ),
     );
     const binDir = path.join(pkgDir, "bin");
     const binEntries = yield* fs.readDirectory(binDir).pipe(Effect.option);
@@ -282,7 +284,7 @@ const dumpInstalledTree = Effect.fnUntraced(function* (testDir: string, ext: str
 const findPlatformBinary = Effect.fnUntraced(function* (testDir: string, binaryExt: string) {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
-  const scope = path.join(testDir, "node_modules", "@dbase");
+  const scope = path.join(testDir, "node_modules", "@dbase.to");
   const entries = yield* fs.readDirectory(scope).pipe(Effect.option);
   if (Option.isNone(entries)) {
     return null;
@@ -301,15 +303,15 @@ const findPlatformBinary = Effect.fnUntraced(function* (testDir: string, binaryE
 const inspectVerdaccioTarball = Effect.fnUntraced(function* (storageDir: string, pkg: string) {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
-  const pkgStorage = path.join(storageDir, "@dbase", pkg);
+  const pkgStorage = path.join(storageDir, "@dbase.to", pkg);
   const files = yield* fs.readDirectory(pkgStorage).pipe(Effect.option);
   if (Option.isNone(files)) {
-    yield* Console.log(`  @dbase/${pkg}: <no tarball in verdaccio storage>`);
+    yield* Console.log(`  @dbase.to/${pkg}: <no tarball in verdaccio storage>`);
     return;
   }
   const tarball = files.value.find((f) => f.endsWith(".tgz"));
   if (!tarball) {
-    yield* Console.log(`  @dbase/${pkg}: <no .tgz under ${pkgStorage}>`);
+    yield* Console.log(`  @dbase.to/${pkg}: <no .tgz under ${pkgStorage}>`);
     return;
   }
   const tarballPath = path.join(pkgStorage, tarball);
@@ -320,17 +322,17 @@ const inspectVerdaccioTarball = Effect.fnUntraced(function* (storageDir: string,
     .filter((line) => line.includes("/bin/"))
     .map((line) => `    ${line.trim()}`);
   if (binLines.length === 0) {
-    yield* Console.log(`  @dbase/${pkg} (${tarball}): <no bin/ entries>`);
+    yield* Console.log(`  @dbase.to/${pkg} (${tarball}): <no bin/ entries>`);
     return;
   }
-  yield* Console.log(`  @dbase/${pkg} (${tarball}):`);
+  yield* Console.log(`  @dbase.to/${pkg} (${tarball}):`);
   for (const line of binLines) yield* Console.log(line);
 });
 
 const hasVerdaccioTarball = Effect.fnUntraced(function* (storageDir: string, pkg: string) {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
-  const pkgStorage = path.join(storageDir, "@dbase", pkg);
+  const pkgStorage = path.join(storageDir, "@dbase.to", pkg);
   return yield* fs.readDirectory(pkgStorage).pipe(
     Effect.map((files) => files.some((f) => f.endsWith(".tgz"))),
     Effect.orElseSucceed(() => false),
@@ -383,7 +385,7 @@ const publishAndVerify = Effect.fnUntraced(function* (
   const configPath = path.join(tmpPath, "config.yaml");
   const storageDir = path.join(tmpPath, "storage");
 
-  // Stores our published tarballs; the umbrella package's `@dbase/cli-*`
+  // Stores our published tarballs; the umbrella package's `@dbase.to/cli-*`
   // optional deps resolve here, while the public npm uplink stays available
   // for npm installer internals and other tooling.
   yield* fs.writeFileString(
@@ -397,7 +399,7 @@ uplinks:
   npmjs:
     url: https://registry.npmjs.org/
 packages:
-  "@dbase/*":
+  "@dbase.to/*":
     access: $all
     publish: $all
   "**":
@@ -477,7 +479,7 @@ const verifyWithRegistry = Effect.fnUntraced(function* (
       ),
     );
     yield* Console.log(
-      published ? `  @dbase/${pkg}` : `  @dbase/${pkg} (already present in local registry)`,
+      published ? `  @dbase.to/${pkg}` : `  @dbase.to/${pkg} (already present in local registry)`,
     );
   }
 
@@ -566,7 +568,7 @@ const verifyWithRegistry = Effect.fnUntraced(function* (
       yield* Console.log(`  stdout=${yield* jsonQuote(direct.stdout)}`);
       yield* Console.log(`  stderr=${yield* jsonQuote(direct.stderr)}`);
     } else {
-      yield* Console.log(`\n[verify] no platform binary found under node_modules/@dbase/*/bin/`);
+      yield* Console.log(`\n[verify] no platform binary found under node_modules/@dbase.to/*/bin/`);
     }
   }
 

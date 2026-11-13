@@ -1,5 +1,5 @@
 {
-  "name": "@dbase/cli",
+  "name": "@dbase.to/cli",
   "version": "0.0.0-automated",
   "private": false,
   "description": "DBase CLI",
@@ -31,11 +31,11 @@
     "dev": "bun src/main.ts",
     "gen:feedback-types": "pnpm dev -- gen types typescript --project-id xguihxuzqibwxjnimxev --schema public > src/shared/feedback/database.types.ts",
     "test": "pnpm run test:unit --coverage.enabled && pnpm run test:integration --coverage.enabled && pnpm run test:e2e",
-    "test:unit": "pnpm exec turbo run @dbase/cli#test:unit:run --",
+    "test:unit": "pnpm exec turbo run @dbase.to/cli#test:unit:run --",
     "test:unit:run": "bun --bun vitest run --project unit --coverage.reportsDirectory=coverage/unit",
-    "test:integration": "pnpm exec turbo run @dbase/cli#test:integration:run --",
+    "test:integration": "pnpm exec turbo run @dbase.to/cli#test:integration:run --",
     "test:integration:run": "bun --bun vitest run --project integration --coverage.reportsDirectory=coverage/integration",
-    "test:e2e": "pnpm exec turbo run @dbase/cli#build && pnpm exec turbo run @dbase/cli#test:e2e:run --only --",
+    "test:e2e": "pnpm exec turbo run @dbase.to/cli#build && pnpm exec turbo run @dbase.to/cli#test:e2e:run --only --",
     "test:e2e:run": "bun --bun vitest run --project e2e --project e2e-exclusive",
     "test:live": "bun --bun vitest run --project live",
     "test:smoke": "bun run tests/smoke-test.ts",
@@ -83,14 +83,14 @@
     "yaml": "^2.9.0"
   },
   "optionalDependencies": {
-    "@dbase/cli-darwin-arm64": "workspace:*",
-    "@dbase/cli-darwin-x64": "workspace:*",
-    "@dbase/cli-linux-arm64": "workspace:*",
-    "@dbase/cli-linux-arm64-musl": "workspace:*",
-    "@dbase/cli-linux-x64": "workspace:*",
-    "@dbase/cli-linux-x64-musl": "workspace:*",
-    "@dbase/cli-windows-arm64": "workspace:*",
-    "@dbase/cli-windows-x64": "workspace:*"
+    "@dbase.to/cli-darwin-arm64": "workspace:*",
+    "@dbase.to/cli-darwin-x64": "workspace:*",
+    "@dbase.to/cli-linux-arm64": "workspace:*",
+    "@dbase.to/cli-linux-arm64-musl": "workspace:*",
+    "@dbase.to/cli-linux-x64": "workspace:*",
+    "@dbase.to/cli-linux-x64-musl": "workspace:*",
+    "@dbase.to/cli-windows-arm64": "workspace:*",
+    "@dbase.to/cli-windows-x64": "workspace:*"
   },
   "release": {
     "branches": [

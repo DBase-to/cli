@@ -119,7 +119,7 @@ That pulls `.repos/effect/`, which is the local source of truth for Effect v4 AP
 
 | Workspace      | Purpose                                                                                                                           |
 | -------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `apps/cli`     | Main `@dbase/cli` package. Contains command handlers, runtime services, auth, output, telemetry, and docs generation scripts.     |
+| `apps/cli`     | Main `@dbase.to/cli` package. Contains command handlers, runtime services, auth, output, telemetry, and docs generation scripts.  |
 | `apps/cli-e2e` | Compatibility e2e test suite. Record-and-replay harness for testing the TypeScript CLI against recorded Management API responses. |
 | `apps/docs`    | Internal docs site built with Next.js and generated from the CLI docs sources.                                                    |
 
@@ -320,8 +320,8 @@ pnpm cli-release --version 0.0.0-local.1
 
 The script builds the CLI binary for the current platform only, compiles the Node.js shim, and publishes two packages to the local registry:
 
-- `@dbase/cli-<platform>@<version>` — the compiled binary
-- `dbase@<version>` — the shim that resolves and execs the binary
+- `@dbase.to/cli-<platform>@<version>` — the compiled binary
+- `@dbase.to/cli@<version>` — the shim that resolves and execs the binary
 
 No git-tracked files are modified. Build output goes to a system temp directory that is deleted after publish.
 
@@ -329,10 +329,10 @@ No git-tracked files are modified. Build output goes to a system temp directory 
 
 ```sh
 # Run directly with npx
-npx --registry http://localhost:4873 @dbase/cli@0.0.0-local.1 --version
+npx --registry http://localhost:4873 @dbase.to/cli@0.0.0-local.1 --version
 
 # Or install globally and run as `dbase`
-npm install -g --registry http://localhost:4873 @dbase/cli@0.0.0-local.1
+npm install -g --registry http://localhost:4873 @dbase.to/cli@0.0.0-local.1
 dbase --version
 ```
 
@@ -372,7 +372,7 @@ pnpm run generate
 **Build only the CLI:**
 
 ```sh
-pnpm exec turbo run @dbase/cli#build
+pnpm exec turbo run @dbase.to/cli#build
 ```
 
 The CLI build names its config prerequisites explicitly. The

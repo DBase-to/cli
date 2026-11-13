@@ -8,7 +8,7 @@ Bun monorepo with workspaces under `apps/` and `packages/`.
 
 ## Workspace Layout
 
-- `apps/cli` — main `@dbase/cli` package
+- `apps/cli` — main `@dbase.to/cli` package
 - `apps/docs` — internal Next.js docs site
 - `packages/api` — typed Management API client
 - `packages/config` — config schema and generated types
@@ -256,7 +256,7 @@ pnpm run build
 pnpm run generate
 
 # Build only the CLI and its Go sidecar
-pnpm exec turbo run @dbase/cli#build
+pnpm exec turbo run @dbase.to/cli#build
 
 # Run the live CLI suite
 pnpm run test:live

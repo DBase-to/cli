@@ -30,7 +30,7 @@ let binPath =
 if (!binPath) {
   for (const suffix of candidates) {
     try {
-      const pkgPath = path.dirname(require.resolve(`@dbase/cli-${suffix}/package.json`));
+      const pkgPath = path.dirname(require.resolve(`@dbase.to/cli-${suffix}/package.json`));
       binPath = path.join(pkgPath, "bin", `dbase${ext}`);
       break;
     } catch {

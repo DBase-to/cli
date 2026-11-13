@@ -680,7 +680,7 @@ const spawnSupabaseProgram = Effect.fnUntraced(function* (
   if (!artifactsExist) {
     return yield* new CliBuildArtifactsError({
       message:
-        `Missing CLI build artifacts. Run \`pnpm --filter @dbase/cli build\` before invoking e2e tests.\n` +
+        `Missing CLI build artifacts. Run \`pnpm --filter @dbase.to/cli build\` before invoking e2e tests.\n` +
         `  expected shim:   ${SHIM_PATH}\n` +
         `  expected binary: ${BINARY_PATH}`,
     });

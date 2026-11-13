@@ -144,7 +144,7 @@ function assertTsCliBuilt(
     if (!(yield* exists(fs, shimPath)) || !(yield* exists(fs, binaryPath))) {
       return yield* new MissingCliBuildError({
         message:
-          `Missing CLI build artifacts. Run \`pnpm --filter @dbase/cli build\` before running e2e tests.\n` +
+          `Missing CLI build artifacts. Run \`pnpm --filter @dbase.to/cli build\` before running e2e tests.\n` +
           `  expected shim:   ${shimPath}\n` +
           `  expected binary: ${binaryPath}`,
       });

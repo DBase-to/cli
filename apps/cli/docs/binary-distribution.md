@@ -7,23 +7,23 @@ This document explains how the DBase CLI is packaged and distributed as a compil
 The CLI is distributed as a set of platform-specific npm packages. Each platform package contains one binary:
 
 ```
-@dbase/cli-darwin-arm64/
+@dbase.to/cli-darwin-arm64/
 └── bin/
     └── dbase          ← TypeScript CLI (Bun single-file executable)
 ```
 
-The base `@dbase/cli` package routes to the correct platform package via `src/shared/cli/bin.ts`, which resolves and `execFileSync`s the platform-specific `bin/dbase` binary.
+The base `@dbase.to/cli` package routes to the correct platform package via `src/shared/cli/bin.ts`, which resolves and `execFileSync`s the platform-specific `bin/dbase` binary.
 
 ## Package Layout
 
 ```
 packages/
-  cli-darwin-arm64/bin/      supabase
-  cli-darwin-x64/bin/        supabase
-  cli-linux-arm64/bin/       supabase
-  cli-linux-x64/bin/         supabase
-  cli-linux-arm64-musl/bin/  supabase
-  cli-linux-x64-musl/bin/    supabase
+  cli-darwin-arm64/bin/      dbase
+  cli-darwin-x64/bin/        dbase
+  cli-linux-arm64/bin/       dbase
+  cli-linux-x64/bin/         dbase
+  cli-linux-arm64-musl/bin/  dbase
+  cli-linux-x64-musl/bin/    dbase
   cli-windows-arm64/bin/     dbase.exe
   cli-windows-x64/bin/       dbase.exe
 ```

@@ -181,7 +181,7 @@ const main = Effect.fnUntraced(function* () {
     yield* fs.makeDirectory(tmpPlatformBinDir, { recursive: true });
 
     const entrypoint = path.join(root, "apps", "cli", "src", "main.ts");
-    const bunBinary = path.join(tmpPlatformBinDir, `supabase${platform.ext}`);
+    const bunBinary = path.join(tmpPlatformBinDir, `dbase${platform.ext}`);
 
     yield* Console.log("[1/2] Compiling CLI binary...");
     const define = yield* tryAsync(() => stackReleaseDefine());
@@ -220,11 +220,11 @@ const main = Effect.fnUntraced(function* () {
       ),
     );
 
-    // The shim only uses Node built-ins; @dbase/* and catalog: deps are bundled in the platform
+    // The shim only uses Node built-ins; @dbase.to/* and catalog: deps are bundled in the platform
     // binary and must not appear here (catalog: and workspace:* are invalid outside pnpm workspaces).
     const resolvedOptionalDeps: Record<string, string> = {};
     for (const pkg of PLATFORM_PACKAGES) {
-      resolvedOptionalDeps[`@dbase/${pkg}`] = version;
+      resolvedOptionalDeps[`@dbase.to/${pkg}`] = version;
     }
 
     const publishPkgJson = {
@@ -250,7 +250,7 @@ const main = Effect.fnUntraced(function* () {
     yield* tryAsync(() => Bun.write(path.join(tmpCliDir, ".npmrc"), npmrc));
 
     yield* Console.log(
-      `\nPublishing @dbase/${platform.platformPkg}@${version} to local registry...`,
+      `\nPublishing @dbase.to/${platform.platformPkg}@${version} to local registry...`,
     );
     // bun publish (not pnpm) for the platform binary package: pnpm normalizes tarball file modes
     // and strips the execute bit from files outside the package's `bin` field; bun publish

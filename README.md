@@ -29,7 +29,7 @@ curl -fsSL https://raw.githubusercontent.com/DBase-to/cli/main/install | bash
 Or install it from npm:
 
 ```sh
-npm install -g @dbase/cli
+npm install -g @dbase.to/cli
 ```
 
 Linux packages (`.apk`, `.deb`, and `.rpm`) are available from

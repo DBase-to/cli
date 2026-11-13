@@ -1,5 +1,5 @@
 {
-  "name": "@dbase/cli-windows-arm64",
+  "name": "@dbase.to/cli-windows-arm64",
   "version": "0.0.0",
   "description": "DBase CLI binary (windows-arm64)",
   "homepage": "https://github.com/DBase-to/cli#readme",
