@@ -9,6 +9,11 @@ name: Test
 # jobs run on PRs into develop or next only for platform-sensitive paths, and
 # always in the merge queue, on PRs into main or v*.x, and under `run-ci`.
 on:
+  push:
+    branches:
+      - develop
+      - main
+      - next
   pull_request:
     types:
       - opened
@@ -56,7 +61,7 @@ jobs:
   check:
     if: |
       !startsWith(github.head_ref, 'release-notes/') &&
-      (github.event_name == 'merge_group' ||
+      (github.event_name != 'pull_request' ||
         inputs.force ||
         github.event.pull_request.draft == false)
     name: Check code quality
@@ -89,7 +94,7 @@ jobs:
   test-unit:
     if: |
       !startsWith(github.head_ref, 'release-notes/') &&
-      (github.event_name == 'merge_group' ||
+      (github.event_name != 'pull_request' ||
         inputs.force ||
         github.event.pull_request.draft == false)
     name: Run unit tests
@@ -112,7 +117,7 @@ jobs:
   test-integration:
     if: |
       !startsWith(github.head_ref, 'release-notes/') &&
-      (github.event_name == 'merge_group' ||
+      (github.event_name != 'pull_request' ||
         inputs.force ||
         github.event.pull_request.draft == false)
     name: Run integration tests (${{ matrix.name }})
@@ -125,8 +130,8 @@ jobs:
           - { package: "@supabase/stack", shard: 1/3, name: stack 1/3 }
           - { package: "@supabase/stack", shard: 2/3, name: stack 2/3 }
           - { package: "@supabase/stack", shard: 3/3, name: stack 3/3 }
-          - { package: dbase, shard: 1/2, name: cli 1/2 }
-          - { package: dbase, shard: 2/2, name: cli 2/2 }
+          - { package: "@dbase/cli", shard: 1/2, name: cli 1/2 }
+          - { package: "@dbase/cli", shard: 2/2, name: cli 2/2 }
           - { package: "@supabase/api", name: api, stack-e2e: true }
     steps:
       - name: Checkout
@@ -163,7 +168,7 @@ jobs:
   platform-changes:
     if: |
       !startsWith(github.head_ref, 'release-notes/') &&
-      (github.event_name == 'merge_group' ||
+      (github.event_name != 'pull_request' ||
         inputs.force ||
         github.event.pull_request.draft == false)
     name: Detect platform-sensitive changes
@@ -209,7 +214,7 @@ jobs:
   test-stack-ports:
     if: |
       !startsWith(github.head_ref, 'release-notes/') &&
-      (github.event_name == 'merge_group' ||
+      (github.event_name != 'pull_request' ||
         inputs.force ||
         github.event.pull_request.draft == false) &&
       needs.platform-changes.outputs.run == 'true'
@@ -274,7 +279,7 @@ jobs:
   test-stack-native-scenarios:
     if: |
       !startsWith(github.head_ref, 'release-notes/') &&
-      (github.event_name == 'merge_group' ||
+      (github.event_name != 'pull_request' ||
         inputs.force ||
         github.event.pull_request.draft == false) &&
       needs.platform-changes.outputs.run == 'true'
@@ -327,7 +332,7 @@ jobs:
     if: |
       always() &&
       !startsWith(github.head_ref, 'release-notes/') &&
-      (github.event_name == 'merge_group' ||
+      (github.event_name != 'pull_request' ||
         inputs.force ||
         github.event.pull_request.draft == false)
     name: Run unit and integration tests
@@ -355,7 +360,7 @@ jobs:
   test-e2e:
     if: |
       !startsWith(github.head_ref, 'release-notes/') &&
-      (github.event_name == 'merge_group' ||
+      (github.event_name != 'pull_request' ||
         inputs.force ||
         github.event.pull_request.draft == false)
     name: Run CLI end-to-end tests (${{ matrix.name }})
@@ -419,7 +424,7 @@ jobs:
   test-stack-e2e:
     if: |
       !startsWith(github.head_ref, 'release-notes/') &&
-      (github.event_name == 'merge_group' ||
+      (github.event_name != 'pull_request' ||
         inputs.force ||
         github.event.pull_request.draft == false)
     name: Run stack end-to-end tests (${{ matrix.runtime }}, ${{ matrix.suite }})
@@ -470,7 +475,7 @@ jobs:
   test-stack-podman-integration:
     if: |
       !startsWith(github.head_ref, 'release-notes/') &&
-      (github.event_name == 'merge_group' ||
+      (github.event_name != 'pull_request' ||
         inputs.force ||
         github.event.pull_request.draft == false)
     name: Run stack Podman integration tests
@@ -520,7 +525,7 @@ jobs:
     if: |
       always() &&
       !startsWith(github.head_ref, 'release-notes/') &&
-      (github.event_name == 'merge_group' ||
+      (github.event_name != 'pull_request' ||
         inputs.force ||
         github.event.pull_request.draft == false)
     name: Run end-to-end tests
