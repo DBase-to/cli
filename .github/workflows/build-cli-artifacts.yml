@@ -58,7 +58,7 @@ jobs:
       # Fail the build if the macOS signing tool is missing — release artifacts
       # must be signed. Local builds without rcodesign degrade to a
       # warning instead.
-      SUPABASE_CLI_REQUIRE_SIGNING: "1"
+      DBASE_CLI_REQUIRE_SIGNING: "1"
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

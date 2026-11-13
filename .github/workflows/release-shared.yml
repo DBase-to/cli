@@ -80,6 +80,8 @@ jobs:
     env:
       NPM_TAG: ${{ inputs.npm_tag }}
       VERSION: ${{ inputs.version }}
+      BREW_NAME: ${{ inputs.brew_name }}
+      SCOOP_NAME: ${{ inputs.scoop_name }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -207,6 +209,7 @@ jobs:
     env:
       NPM_TAG: ${{ inputs.npm_tag }}
       VERSION: ${{ inputs.version }}
+      BREW_NAME: ${{ inputs.brew_name }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

@@ -480,7 +480,7 @@ fixes it.
   "Install rcodesign" step of
   [`build-cli-artifacts.yml`](../../../.github/workflows/build-cli-artifacts.yml).
 - **CI hard-fails if signing is unavailable**: the build job sets
-  `SUPABASE_CLI_REQUIRE_SIGNING=1`, so a missing `rcodesign` fails the build
+  `DBASE_CLI_REQUIRE_SIGNING=1`, so a missing `rcodesign` fails the build
   rather than silently shipping unsigned binaries. Local builds without
   `rcodesign` degrade to a warning and skip signing.
 - **Validation gate (required before every production cut):** signing is

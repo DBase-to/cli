@@ -17,6 +17,8 @@ const { values } = parseArgs({
 
 const version = values.version!;
 const tag = values.tag;
+// oxlint-disable-next-line effecttsgo/process-env -- release channel name is supplied by the workflow.
+const brewName = process.env.BREW_NAME || "dbase";
 
 /** Removing the tap failed after the brew steps had already failed; both causes are kept. */
 class TapDisposalSuppressed extends Data.TaggedError("TapDisposalSuppressed")<{
@@ -80,7 +82,7 @@ const main = Effect.gen(function* () {
   {
     const arch = process.arch;
     const name = `native-darwin-${arch}`;
-    const binPath = path.join(root, "packages", `cli-darwin-${arch}`, "bin", "supabase");
+    const binPath = path.join(root, "packages", `cli-darwin-${arch}`, "bin", "dbase");
 
     yield* Console.log(`[${name}] Running ${binPath} --version...`);
     yield* Effect.gen(function* () {
@@ -104,7 +106,7 @@ const main = Effect.gen(function* () {
   {
     const arch = process.arch;
     const binDir = path.join(root, "packages", `cli-darwin-${arch}`, "bin");
-    const binaries = ["supabase"];
+    const binaries = ["dbase"];
 
     for (const binary of binaries) {
       const name = `native-darwin-${arch}-signature-${binary}`;
@@ -158,7 +160,9 @@ const main = Effect.gen(function* () {
     yield* Effect.gen(function* () {
       yield* Console.log("Generating Homebrew formula...");
       yield* releaseStep(() =>
-        $`bun run apps/cli/scripts/update-homebrew.ts --version ${version} --local`.cwd(root),
+        $`bun run apps/cli/scripts/update-homebrew.ts --version ${version} --local --name ${brewName}`.cwd(
+          root,
+        ),
       );
 
       // Create a local git-backed tap
@@ -167,22 +171,22 @@ const main = Effect.gen(function* () {
           yield* fs.makeDirectory(path.join(tap.path, "Formula"));
           yield* releaseStep(
             () =>
-              $`cp ${path.join(root, "dist", "supabase.rb")} ${path.join(tap.path, "Formula", "supabase.rb")}`,
+              $`cp ${path.join(root, "dist", `${brewName}.rb`)} ${path.join(tap.path, "Formula", `${brewName}.rb`)}`,
           );
           yield* releaseStep(() => $`git -C ${tap.path} init`.quiet());
           yield* releaseStep(() => $`git -C ${tap.path} add .`.quiet());
           yield* releaseStep(() => $`git -C ${tap.path} commit -m init`.quiet());
 
           yield* Console.log("Installing via Homebrew...");
-          yield* releaseStep(() => $`brew tap --force supabase/test-tap ${tap.path}`);
+          yield* releaseStep(() => $`brew tap --force dbase/test-tap ${tap.path}`);
 
           yield* withFinally(
             Effect.gen(function* () {
-              yield* releaseStep(() => $`brew install supabase/test-tap/supabase`);
+              yield* releaseStep(() => $`brew install dbase/test-tap/${brewName}`);
 
               const output = yield* releaseStep(() => $`dbase --version`.text());
               const trimmed = output.trim();
-              const shellCheck = yield* verifyExpectedShellEffect("supabase");
+              const shellCheck = yield* verifyExpectedShellEffect("dbase");
               const passed = /^\d+\.\d+\.\d+/.test(trimmed) && shellCheck.passed;
 
               yield* Console.log(
@@ -192,8 +196,8 @@ const main = Effect.gen(function* () {
               results.push({ name: "brew", status: passed ? "pass" : "fail" });
             }),
             Effect.gen(function* () {
-              yield* releaseStep(() => $`brew uninstall supabase`.nothrow());
-              yield* releaseStep(() => $`brew untap supabase/test-tap`.nothrow());
+              yield* releaseStep(() => $`brew uninstall ${brewName}`.nothrow());
+              yield* releaseStep(() => $`brew untap dbase/test-tap`.nothrow());
             }),
           );
         });

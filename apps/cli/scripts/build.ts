@@ -160,15 +160,15 @@ const main = Effect.gen(function* () {
   /**
    * Decides how to sign macOS binaries. `rcodesign` signs Mach-O binaries from Linux, so signing
    * runs inline on this build runner; falls back to "off" with a warning unless
-   * SUPABASE_CLI_REQUIRE_SIGNING=1, which fails the build when the tool is missing.
+   * DBASE_CLI_REQUIRE_SIGNING=1, which fails the build when the tool is missing.
    */
   const resolveSignMode = Effect.fnUntraced(function* () {
     if (Bun.which("rcodesign")) {
       return "adhoc";
     }
-    if ((yield* envOrEmpty("SUPABASE_CLI_REQUIRE_SIGNING")) === "1") {
+    if ((yield* envOrEmpty("DBASE_CLI_REQUIRE_SIGNING")) === "1") {
       yield* Console.error(
-        "rcodesign not found but SUPABASE_CLI_REQUIRE_SIGNING=1 is set. Release builds " +
+        "rcodesign not found but DBASE_CLI_REQUIRE_SIGNING=1 is set. Release builds " +
           "must sign the macOS binaries. Install rcodesign (https://github.com/indygreg/apple-platform-rs).",
       );
       process.exit(1);

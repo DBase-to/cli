@@ -109,7 +109,7 @@ const verifyGatekeeperAcceptsQuarantined = Effect.fnUntraced(function* (
   /* `try { assess } finally { remove }`: a failed removal replaces the assessment's outcome. */
   return yield* Effect.uninterruptibleMask((restore) =>
     Effect.gen(function* () {
-      const dir = yield* fs.makeTempDirectory({ prefix: "supabase-gatekeeper-" });
+      const dir = yield* fs.makeTempDirectory({ prefix: "dbase-gatekeeper-" });
       const outcome = yield* Effect.exit(restore(assessCopy(dir)));
       yield* fs.remove(dir, { recursive: true, force: true });
       return yield* outcome;

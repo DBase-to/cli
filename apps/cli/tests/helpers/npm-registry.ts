@@ -242,33 +242,31 @@ const dumpInstalledTree = Effect.fnUntraced(function* (testDir: string, ext: str
   const path = yield* Path.Path;
   yield* Console.log("\nInstalled tree state:");
   const interesting = [
-    path.join(testDir, "node_modules", ".bin", `supabase${ext}`),
-    path.join(testDir, "node_modules", "supabase", "package.json"),
-    path.join(testDir, "node_modules", "supabase", "dist", "supabase.js"),
+    path.join(testDir, "node_modules", ".bin", `dbase${ext}`),
+    path.join(testDir, "node_modules", "@dbase", "cli", "package.json"),
+    path.join(testDir, "node_modules", "@dbase", "cli", "dist", "dbase.js"),
   ];
   for (const p of interesting) {
     yield* Console.log(`  ${path.relative(testDir, p)}: ${yield* describePath(p)}`);
   }
 
-  const supabaseScope = path.join(testDir, "node_modules", "@supabase");
-  const scopeEntries = yield* fs.readDirectory(supabaseScope).pipe(Effect.option);
+  const scope = path.join(testDir, "node_modules", "@dbase");
+  const scopeEntries = yield* fs.readDirectory(scope).pipe(Effect.option);
   if (Option.isNone(scopeEntries)) {
-    yield* Console.log(`  node_modules/@supabase: MISSING`);
+    yield* Console.log(`  node_modules/@dbase: MISSING`);
     return;
   }
   for (const entry of scopeEntries.value.sort()) {
-    const pkgDir = path.join(supabaseScope, entry);
+    const pkgDir = path.join(scope, entry);
     const pkgJsonPath = path.join(pkgDir, "package.json");
     yield* readUtf8(fs, pkgJsonPath).pipe(
       Effect.flatMap(decodePackageIdentity),
       Effect.flatMap((pkgJson) =>
         Console.log(
-          `  node_modules/@supabase/${entry}: ${String(pkgJson.name)}@${String(pkgJson.version)}`,
+          `  node_modules/@dbase/${entry}: ${String(pkgJson.name)}@${String(pkgJson.version)}`,
         ),
       ),
-      Effect.catch(() =>
-        Console.log(`  node_modules/@supabase/${entry}: <unreadable package.json>`),
-      ),
+      Effect.catch(() => Console.log(`  node_modules/@dbase/${entry}: <unreadable package.json>`)),
     );
     const binDir = path.join(pkgDir, "bin");
     const binEntries = yield* fs.readDirectory(binDir).pipe(Effect.option);
@@ -281,16 +279,16 @@ const dumpInstalledTree = Effect.fnUntraced(function* (testDir: string, ext: str
   }
 });
 
-const findPlatformBinary = Effect.fnUntraced(function* (testDir: string, ext: string) {
+const findPlatformBinary = Effect.fnUntraced(function* (testDir: string, binaryExt: string) {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
-  const supabaseScope = path.join(testDir, "node_modules", "@supabase");
-  const entries = yield* fs.readDirectory(supabaseScope).pipe(Effect.option);
+  const scope = path.join(testDir, "node_modules", "@dbase");
+  const entries = yield* fs.readDirectory(scope).pipe(Effect.option);
   if (Option.isNone(entries)) {
     return null;
   }
   for (const entry of entries.value) {
-    const candidate = path.join(supabaseScope, entry, "bin", `supabase${ext}`);
+    const candidate = path.join(scope, entry, "bin", `dbase${binaryExt}`);
     const found = yield* fs.stat(candidate).pipe(
       Effect.as(true),
       Effect.orElseSucceed(() => false),
@@ -303,15 +301,15 @@ const findPlatformBinary = Effect.fnUntraced(function* (testDir: string, ext: st
 const inspectVerdaccioTarball = Effect.fnUntraced(function* (storageDir: string, pkg: string) {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
-  const pkgStorage = path.join(storageDir, "@supabase", pkg);
+  const pkgStorage = path.join(storageDir, "@dbase", pkg);
   const files = yield* fs.readDirectory(pkgStorage).pipe(Effect.option);
   if (Option.isNone(files)) {
-    yield* Console.log(`  @supabase/${pkg}: <no tarball in verdaccio storage>`);
+    yield* Console.log(`  @dbase/${pkg}: <no tarball in verdaccio storage>`);
     return;
   }
   const tarball = files.value.find((f) => f.endsWith(".tgz"));
   if (!tarball) {
-    yield* Console.log(`  @supabase/${pkg}: <no .tgz under ${pkgStorage}>`);
+    yield* Console.log(`  @dbase/${pkg}: <no .tgz under ${pkgStorage}>`);
     return;
   }
   const tarballPath = path.join(pkgStorage, tarball);
@@ -322,17 +320,17 @@ const inspectVerdaccioTarball = Effect.fnUntraced(function* (storageDir: string,
     .filter((line) => line.includes("/bin/"))
     .map((line) => `    ${line.trim()}`);
   if (binLines.length === 0) {
-    yield* Console.log(`  @supabase/${pkg} (${tarball}): <no bin/ entries>`);
+    yield* Console.log(`  @dbase/${pkg} (${tarball}): <no bin/ entries>`);
     return;
   }
-  yield* Console.log(`  @supabase/${pkg} (${tarball}):`);
+  yield* Console.log(`  @dbase/${pkg} (${tarball}):`);
   for (const line of binLines) yield* Console.log(line);
 });
 
 const hasVerdaccioTarball = Effect.fnUntraced(function* (storageDir: string, pkg: string) {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
-  const pkgStorage = path.join(storageDir, "@supabase", pkg);
+  const pkgStorage = path.join(storageDir, "@dbase", pkg);
   return yield* fs.readDirectory(pkgStorage).pipe(
     Effect.map((files) => files.some((f) => f.endsWith(".tgz"))),
     Effect.orElseSucceed(() => false),
@@ -399,10 +397,7 @@ uplinks:
   npmjs:
     url: https://registry.npmjs.org/
 packages:
-  "supabase":
-    access: $all
-    publish: $all
-  "@supabase/*":
+  "@dbase/*":
     access: $all
     publish: $all
   "**":
@@ -419,7 +414,18 @@ listen: 0.0.0.0:${PORT}
   // `npm_config_userconfig`.
   const publishNpmrc = path.join(tmpPath, "publish.npmrc");
   yield* fs.writeFileString(publishNpmrc, `//localhost:${PORT}/:_authToken=dummy\n`);
-  const publishEnv = { ...process.env, npm_config_userconfig: publishNpmrc };
+
+  // pnpm 12 attempts OIDC trusted publishing first whenever GitHub Actions exposes an
+  // id-token endpoint. Verdaccio has no token-exchange endpoint, so it warns and falls back
+  // to the auth token. Remove the endpoint for this local publish so the test deterministically
+  // exercises the token path; the real release keeps OIDC and its token fallback.
+  const publishEnv: Record<string, string | undefined> = {
+    ...process.env,
+    npm_config_userconfig: publishNpmrc,
+  };
+  delete publishEnv.ACTIONS_ID_TOKEN_REQUEST_URL;
+  delete publishEnv.ACTIONS_ID_TOKEN_REQUEST_TOKEN;
+  delete publishEnv.NPM_ID_TOKEN;
 
   // Sync versions across all packages
   yield* Console.log(`Syncing versions to ${version}...`);
@@ -471,7 +477,7 @@ const verifyWithRegistry = Effect.fnUntraced(function* (
       ),
     );
     yield* Console.log(
-      published ? `  @supabase/${pkg}` : `  @supabase/${pkg} (already present in local registry)`,
+      published ? `  @dbase/${pkg}` : `  @dbase/${pkg} (already present in local registry)`,
     );
   }
 
@@ -536,7 +542,8 @@ const verifyWithRegistry = Effect.fnUntraced(function* (
 
   yield* Console.log("\nVerifying...");
   const ext = process.platform === "win32" ? ".cmd" : "";
-  const binPath = path.join(testDir, "node_modules", ".bin", `supabase${ext}`);
+  const binaryExt = process.platform === "win32" ? ".exe" : "";
+  const binPath = path.join(testDir, "node_modules", ".bin", `dbase${ext}`);
 
   yield* dumpInstalledTree(testDir, ext);
 
@@ -545,13 +552,13 @@ const verifyWithRegistry = Effect.fnUntraced(function* (
     versionResult.exitCode === 0 && /^\d+\.\d+\.\d+/.test(versionResult.stdout);
 
   if (!hasValidVersion) {
-    yield* Console.log(`\n[verify] supabase --version FAILED:`);
+    yield* Console.log(`\n[verify] dbase --version FAILED:`);
     yield* Console.log(`  exit=${versionResult.exitCode}`);
     yield* Console.log(`  stdout=${yield* jsonQuote(versionResult.stdout)}`);
     yield* Console.log(`  stderr=${yield* jsonQuote(versionResult.stderr)}`);
 
     // Isolate "shim broken" from "platform binary broken".
-    const platformBin = yield* findPlatformBinary(testDir, ext);
+    const platformBin = yield* findPlatformBinary(testDir, binaryExt);
     if (platformBin) {
       yield* Console.log(`\n[verify] retrying via platform binary: ${platformBin}`);
       const direct = yield* runCliEffect(platformBin, ["--version"]);
@@ -559,7 +566,7 @@ const verifyWithRegistry = Effect.fnUntraced(function* (
       yield* Console.log(`  stdout=${yield* jsonQuote(direct.stdout)}`);
       yield* Console.log(`  stderr=${yield* jsonQuote(direct.stderr)}`);
     } else {
-      yield* Console.log(`\n[verify] no platform binary found under node_modules/@supabase/*/bin/`);
+      yield* Console.log(`\n[verify] no platform binary found under node_modules/@dbase/*/bin/`);
     }
   }
 
@@ -567,7 +574,7 @@ const verifyWithRegistry = Effect.fnUntraced(function* (
   const passed = hasValidVersion && shellCheck.passed;
 
   yield* Console.log(
-    `\n${passed ? "PASS" : "FAIL"} — supabase --version exit=${versionResult.exitCode} stdout=${yield* jsonQuote(versionResult.stdout)}`,
+    `\n${passed ? "PASS" : "FAIL"} — dbase --version exit=${versionResult.exitCode} stdout=${yield* jsonQuote(versionResult.stdout)}`,
   );
   yield* Console.log(shellCheck.detail);
 

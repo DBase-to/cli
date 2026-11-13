@@ -32,7 +32,7 @@ const main = Effect.gen(function* () {
   const root = path.resolve(import.meta.dir, "../../..");
   const distDir = path.join(root, "dist");
 
-  const dispatchProbe = "supabase init --help 2>&1 | grep -q init";
+  const dispatchProbe = "dbase init --help 2>&1 | grep -q init";
 
   interface TestResult {
     name: string;
@@ -48,7 +48,7 @@ const main = Effect.gen(function* () {
   {
     const arch = process.arch;
     const name = `native-linux-${arch}`;
-    const binPath = path.join(root, "packages", `cli-linux-${arch}`, "bin", "supabase");
+    const binPath = path.join(root, "packages", `cli-linux-${arch}`, "bin", "dbase");
 
     yield* Console.log(`[${name}] Running ${binPath} --version...`);
     yield* Effect.gen(function* () {

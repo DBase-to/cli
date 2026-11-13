@@ -4,6 +4,7 @@ import { Console, Effect, FileSystem, Layer, Path } from "effect";
 import process from "node:process";
 import { parseArgs } from "node:util";
 import { isPublishableNpmTag, PUBLISHABLE_NPM_TAGS_HINT } from "../scripts/release-channels.ts";
+import { describeError } from "./helpers/npm-registry.ts";
 import { releaseStep, verifyExpectedShellEffect } from "./helpers/release-shell.ts";
 
 const { values } = parseArgs({
@@ -15,6 +16,8 @@ const { values } = parseArgs({
 
 const version = values.version!;
 const tag = values.tag;
+// oxlint-disable-next-line effecttsgo/process-env -- release channel name is supplied by the workflow.
+const scoopName = process.env.SCOOP_NAME || "dbase";
 
 const gitBashPath = Effect.fnUntraced(function* (filePath: string) {
   return process.platform === "win32"
@@ -61,7 +64,7 @@ const main = Effect.gen(function* () {
 
   {
     const name = `native-windows-${arch}`;
-    const binPath = path.join(root, "packages", `cli-windows-${arch}`, "bin", "supabase.exe");
+    const binPath = path.join(root, "packages", `cli-windows-${arch}`, "bin", "dbase.exe");
 
     yield* Console.log(`[${name}] Running ${binPath} --version...`);
     yield* Effect.gen(function* () {
@@ -75,7 +78,7 @@ const main = Effect.gen(function* () {
     }).pipe(
       Effect.catch((e) =>
         Effect.gen(function* () {
-          yield* Console.log(`[${name}] FAIL — ${e.cause}`);
+          yield* Console.log(`[${name}] FAIL — ${describeError(e.cause)}`);
           results.push({ name, status: "fail" });
         }),
       ),
@@ -90,7 +93,7 @@ const main = Effect.gen(function* () {
     const archiveArch = arch === "arm64" ? "arm64" : "amd64";
     const name = `windows-${archiveArch}-tarball`;
     const archivePath = path.join(root, "dist", `dbase_${version}_windows_${archiveArch}.tar.gz`);
-    const extractDir = yield* fs.makeTempDirectory({ prefix: "supabase-windows-tarball-" });
+    const extractDir = yield* fs.makeTempDirectory({ prefix: "dbase-windows-tarball-" });
 
     yield* Console.log(`[${name}] Extracting ${archivePath}...`);
     yield* Effect.onExit(
@@ -98,7 +101,7 @@ const main = Effect.gen(function* () {
         const archiveBashPath = yield* gitBashPath(archivePath);
         const extractBashPath = yield* gitBashPath(extractDir);
         yield* releaseStep(() => $`tar -xzf ${archiveBashPath} -C ${extractBashPath}`);
-        const binPath = path.join(extractDir, "supabase.exe");
+        const binPath = path.join(extractDir, "dbase.exe");
         const output = yield* releaseStep(() => $`${binPath} --version`.text());
         const trimmed = output.trim();
         const shellCheck = yield* verifyExpectedShellEffect(binPath);
@@ -110,7 +113,7 @@ const main = Effect.gen(function* () {
       }).pipe(
         Effect.catch((e) =>
           Effect.gen(function* () {
-            yield* Console.error(`[${name}] Error: ${e.cause}`);
+            yield* Console.error(`[${name}] Error: ${describeError(e.cause)}`);
             results.push({ name, status: "fail" });
           }),
         ),
@@ -133,12 +136,14 @@ const main = Effect.gen(function* () {
   if (!hasScoop) {
     yield* Console.log("[scoop] SKIP — scoop not found");
   } else {
-    const manifest = path.join(root, "dist", "dbase.json");
+    const manifest = path.join(root, "dist", `${scoopName}.json`);
 
     yield* Effect.gen(function* () {
       yield* Console.log("Generating Scoop manifest...");
       yield* releaseStep(() =>
-        $`bun run apps/cli/scripts/update-scoop.ts --version ${version} --local`.cwd(root),
+        $`bun run apps/cli/scripts/update-scoop.ts --version ${version} --local --name ${scoopName}`.cwd(
+          root,
+        ),
       );
 
       yield* Console.log("Installing via Scoop...");
@@ -148,14 +153,14 @@ const main = Effect.gen(function* () {
         Effect.gen(function* () {
           const output = yield* releaseStep(() => $`dbase --version`.text());
           const trimmed = output.trim();
-          const shellCheck = yield* verifyExpectedShellEffect("supabase");
+          const shellCheck = yield* verifyExpectedShellEffect("dbase");
           const passed = /^\d+\.\d+\.\d+/.test(trimmed) && shellCheck.passed;
 
           yield* Console.log(`[scoop] ${passed ? "PASS" : "FAIL"} — dbase --version: ${trimmed}`);
           yield* Console.log(`[scoop] ${shellCheck.detail}`);
           results.push({ name: "scoop", status: passed ? "pass" : "fail" });
         }),
-        releaseStep(() => $`scoop uninstall supabase`.nothrow()),
+        releaseStep(() => $`scoop uninstall ${scoopName}`.nothrow()),
       );
     }).pipe(
       Effect.catch((e) =>

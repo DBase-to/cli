@@ -24,29 +24,26 @@ describe("isPublishableNpmTag", () => {
 
 describe("homebrewClassName", () => {
   test.each([
-    ["supabase", "Supabase"],
-    ["supabase-beta", "SupabaseBeta"],
-    ["supabase-shim-poc", "SupabaseShimPoc"],
-    ["supabase@2", "SupabaseAT2"],
-    ["supabase@10", "SupabaseAT10"],
+    ["dbase", "Dbase"],
+    ["dbase-beta", "DbaseBeta"],
+    ["dbase-shim-poc", "DbaseShimPoc"],
+    ["dbase@2", "DbaseAT2"],
+    ["dbase@10", "DbaseAT10"],
   ])("%s -> %s", (name, expected) => {
     expect(homebrewClassName(name)).toBe(expected);
   });
 });
 
 describe("homebrewConflictsLine", () => {
-  test.each(["supabase@2", "supabase@10"])("%s conflicts with the unversioned formula", (name) => {
+  test.each(["dbase@2", "dbase@10"])("%s conflicts with the unversioned formula", (name) => {
     expect(homebrewConflictsLine(name)).toBe(
-      '  conflicts_with "supabase", because: "both install a `supabase` binary"',
+      '  conflicts_with "dbase", because: "both install a `dbase` binary"',
     );
   });
 
-  test.each(["supabase", "supabase-beta", "supabase-shim-poc"])(
-    "%s declares no conflict",
-    (name) => {
-      expect(homebrewConflictsLine(name)).toBeUndefined();
-    },
-  );
+  test.each(["dbase", "dbase-beta", "dbase-shim-poc"])("%s declares no conflict", (name) => {
+    expect(homebrewConflictsLine(name)).toBeUndefined();
+  });
 });
 
 describe("releaseBranchForTag", () => {

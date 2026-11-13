@@ -9,7 +9,7 @@ export function isPublishableNpmTag(tag: string): boolean {
 
 export const PUBLISHABLE_NPM_TAGS_HINT = "latest, beta, next, alpha, or v<N>.stable";
 
-/** Mirrors Homebrew's `Formulary.class_s`, so `supabase@2` becomes `SupabaseAT2`. */
+/** Mirrors Homebrew's `Formulary.class_s`, so `dbase@2` becomes `DbaseAT2`. */
 export function homebrewClassName(formulaName: string): string {
   const capitalized = formulaName.charAt(0).toUpperCase() + formulaName.slice(1).toLowerCase();
   return capitalized
@@ -18,11 +18,11 @@ export function homebrewClassName(formulaName: string): string {
     .replace(/(.)@(\d)/, "$1AT$2");
 }
 
-/** A versioned formula (`supabase@2`) installs the same `bin/supabase` as the unversioned one. */
+/** A versioned formula (`dbase@2`) installs the same `bin/dbase` as the unversioned one. */
 export function homebrewConflictsLine(formulaName: string): string | undefined {
-  return /^[^@]+@\d+$/.test(formulaName)
-    ? '  conflicts_with "supabase", because: "both install a `supabase` binary"'
-    : undefined;
+  if (!/^[^@]+@\d+$/.test(formulaName)) return undefined;
+  const base = formulaName.replace(/@\d+$/, "");
+  return `  conflicts_with "${base}", because: "both install a \`dbase\` binary"`;
 }
 
 /** The release branch a tag was cut from; a stable tag off `main` belongs to its `v<N>.x` line. */
