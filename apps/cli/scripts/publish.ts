@@ -131,26 +131,28 @@ const main = Effect.gen(function* () {
 
   // Every platform package must already be at the umbrella version; `sync-versions.ts` runs
   // before this in the release workflow, so a mismatch means the script ran out of order.
+  const platformPackages: Array<{ readonly pkg: string; readonly name: string }> = [];
   for (const pkg of PLATFORM_PACKAGES) {
     const pkgJson = yield* step(() =>
       Bun.file(path.join(root, "packages", pkg, "package.json")).json(),
     );
     if (pkgJson.version !== umbrellaVersion) {
       yield* Console.error(
-        `Version mismatch: @dbase/${pkg} is ${pkgJson.version}, expected ${umbrellaVersion}. Run sync-versions.ts first.`,
+        `Version mismatch: ${pkgJson.name} is ${pkgJson.version}, expected ${umbrellaVersion}. Run sync-versions.ts first.`,
       );
       return yield* Effect.sync(() => process.exit(1));
     }
+    platformPackages.push({ pkg, name: pkgJson.name });
   }
 
   yield* Console.log("Publishing platform packages...");
   /* Detached so a failed job fails the run without cancelling its siblings; callers observe
      completion with Fiber.joinAll. */
   const platformResults = yield* Fiber.joinAll(
-    yield* Effect.forEach(PLATFORM_PACKAGES, (pkg) =>
+    yield* Effect.forEach(platformPackages, ({ pkg, name }) =>
       publishPackage({
         registryUrl,
-        name: `@supabase/${pkg}`,
+        name,
         version: umbrellaVersion,
         cwd: path.join(root, "packages", pkg),
         extraFlags: ["--access", "public"],
@@ -164,10 +166,7 @@ const main = Effect.gen(function* () {
     yield* Console.log("\nWaiting for platform packages to become installable...");
     yield* waitUntilInstallable({
       registryUrl,
-      packages: PLATFORM_PACKAGES.map((pkg) => ({
-        name: `@supabase/${pkg}`,
-        version: umbrellaVersion,
-      })),
+      packages: platformPackages.map(({ name }) => ({ name, version: umbrellaVersion })),
       onInstallable: ({ name, version }) => Console.log(`  ${name}@${version} is installable.`),
     });
   }
