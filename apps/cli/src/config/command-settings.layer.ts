@@ -45,7 +45,7 @@ function unknownMessage(error: unknown): string {
 
 /**
  * Resolves the profile: explicit `--profile` (last occurrence wins) → `SUPABASE_PROFILE` env →
- * persisted `~/.supabase/profile` file (trimmed) → `supabase`, then loads its token — failing
+ * persisted `~/.supabase/profile` file (trimmed) → `dbase`, then loads its token — failing
  * rather than silently falling back to the `supabase` profile's token.
  */
 function resolveProfile(
@@ -58,7 +58,7 @@ function resolveProfile(
 ): Effect.Effect<LoadedProfile, ProfileLoadError> {
   return Effect.gen(function* () {
     let token: string;
-    if (explicitFlagValue !== undefined || flagValue !== "supabase") {
+    if (explicitFlagValue !== undefined || flagValue !== "dbase") {
       const flag = explicitFlagValue ?? flagValue;
       yield* debugLogger.debug(`Loading profile from flag: ${flag}`);
       token = flag;
@@ -83,10 +83,10 @@ function resolveProfile(
         ),
       );
       token = Option.match(content, {
-        onNone: () => "supabase",
+        onNone: () => "dbase",
         onSome: (value) => {
           const trimmed = value.trim();
-          return trimmed.length === 0 ? "supabase" : trimmed;
+          return trimmed.length === 0 ? "dbase" : trimmed;
         },
       });
     }

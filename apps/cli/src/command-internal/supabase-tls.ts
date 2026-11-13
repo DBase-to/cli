@@ -12,7 +12,13 @@ export function rootCaBundle() {
 }
 
 /** Built-in profiles whose database servers chain to {@link rootCaBundle}. */
-const PINNED_PROFILES: ReadonlySet<string> = new Set(["supabase", "supabase-staging", "snap"]);
+const PINNED_PROFILES: ReadonlySet<string> = new Set([
+  "dbase",
+  "dbase-test",
+  "supabase",
+  "supabase-staging",
+  "snap",
+]);
 
 /**
  * Pins the bundled Supabase CA (`require` plus an inline root CA, which the driver promotes to
