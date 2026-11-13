@@ -280,6 +280,9 @@ jobs:
             channel="$natural"
             should_release=true
           fi
+          # Keep brew/scoop off until the GitHub App has contents:write on
+          # DBase-to/homebrew-tap and DBase-to/scoop-bucket; both repositories
+          # exist, but a missing app grant fails the release after npm publishes.
           case "$channel" in
             beta)
               npm_tag=beta
