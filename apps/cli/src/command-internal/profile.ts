@@ -24,17 +24,29 @@ interface ProfileEndpoints {
 }
 
 const BUILT_IN: Readonly<Record<string, ProfileEndpoints>> = {
+  dbase: {
+    apiUrl: "https://api.dbase.to",
+    projectHost: "dbase.to",
+    dashboardUrl: "https://dbase.to",
+    poolerHost: "dbase.to",
+  },
+  "dbase-test": {
+    apiUrl: "https://testapi.dbase.to",
+    projectHost: "dbase.to",
+    dashboardUrl: "https://test.dbase.to",
+    poolerHost: "dbase.to",
+  },
   supabase: {
-    apiUrl: "https://api.supabase.com",
-    projectHost: "supabase.co",
-    dashboardUrl: "https://supabase.com/dashboard",
-    poolerHost: "supabase.com",
+    apiUrl: "https://api.dbase.to",
+    projectHost: "dbase.to",
+    dashboardUrl: "https://dbase.to",
+    poolerHost: "dbase.to",
   },
   "supabase-staging": {
-    apiUrl: "https://api.supabase.green",
-    projectHost: "supabase.red",
-    dashboardUrl: "https://supabase.green/dashboard",
-    poolerHost: "supabase.green",
+    apiUrl: "https://testapi.dbase.to",
+    projectHost: "dbase.to",
+    dashboardUrl: "https://test.dbase.to",
+    poolerHost: "dbase.to",
   },
   "supabase-local": {
     apiUrl: "http://localhost:8080",
@@ -59,7 +71,7 @@ export function isBuiltinProfileName(profile: string): profile is ProfileName {
   return profile in BUILT_IN;
 }
 
-const DEFAULT_ENDPOINTS: ProfileEndpoints = BUILT_IN.supabase!;
+const DEFAULT_ENDPOINTS: ProfileEndpoints = BUILT_IN.dbase!;
 
 export function apiUrl(profile: string): string {
   return (BUILT_IN[profile] ?? DEFAULT_ENDPOINTS).apiUrl;

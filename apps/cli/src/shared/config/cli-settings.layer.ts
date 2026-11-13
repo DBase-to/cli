@@ -5,9 +5,9 @@ import { resolvePosthogConfig } from "../telemetry/posthog-config.ts";
 import { CliSettings } from "./cli-settings.service.ts";
 import { CliProjectContext } from "./cli-project-context.service.ts";
 
-const SUPABASE_API_URL = "https://api.supabase.com";
-const SUPABASE_DASHBOARD_URL = "https://supabase.com/dashboard";
-const SUPABASE_PROJECT_HOST = "supabase.co";
+const SUPABASE_API_URL = "https://api.dbase.to";
+const SUPABASE_DASHBOARD_URL = "https://dbase.to";
+const SUPABASE_PROJECT_HOST = "dbase.to";
 
 const makeCliSettings = Effect.gen(function* () {
   const path = yield* Path.Path;

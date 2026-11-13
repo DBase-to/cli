@@ -23,16 +23,10 @@ export function readProjectField(project: unknown, key: string): string {
 // Dashboard URL per profile. Defaults to the production dashboard for
 // unknown / file-based profiles.
 
-const PRODUCTION_DASHBOARD_URL = "https://supabase.com/dashboard";
-
-const DASHBOARD_URLS: Readonly<Record<string, string>> = {
-  supabase: PRODUCTION_DASHBOARD_URL,
-  "supabase-staging": "https://supabase.green/dashboard",
-  "supabase-local": "http://localhost:8082",
-};
+import { dashboardUrl } from "../../command-internal/profile.ts";
 
 export function dashboardUrlForProfile(profile: string): string {
-  return DASHBOARD_URLS[profile] ?? PRODUCTION_DASHBOARD_URL;
+  return dashboardUrl(profile);
 }
 
 // `renderGlamourTable` lays out cells directly, so a literal `|` in a project name passes
