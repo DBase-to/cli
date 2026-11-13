@@ -391,6 +391,8 @@ OrgsCreateUnexpectedStatusError
 OrgsEnvNotSupportedError
 OrgsListNetworkError
 OrgsListUnexpectedStatusError
+OrgsMembersListNetworkError
+OrgsMembersListUnexpectedStatusError
 PflagWorkdirError
 PgDeltaEngineError
 PgDeltaFilesError

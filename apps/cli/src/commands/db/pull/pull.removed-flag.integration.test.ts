@@ -169,7 +169,7 @@ describe("db pull removed surfaces through command dispatch", () => {
 
   it.live("a missing profile fails plain db pull with a profile load error", () =>
     Effect.gen(function* () {
-      const { exit } = yield* runDbPull([], { env: { SUPABASE_PROFILE: "missing-profile" } });
+      const { exit } = yield* runDbPull(["--profile", "missing-profile"]);
 
       expect(passedRemovalGuard(exit)).toMatchObject({ _tag: "ProfileLoadError" });
     }),

@@ -42,7 +42,7 @@ describe("stack backend top-level alias help text", () => {
         ),
       );
       const text = calls.join("\n");
-      expect(text).toContain("supabase start");
+      expect(text).toContain("dbase start");
       expect(text).not.toContain("stack start");
       expect(text).not.toContain("Start a managed local stack");
     }),
@@ -57,7 +57,7 @@ describe("stack backend top-level alias help text", () => {
         ),
       );
       const text = calls.join("\n");
-      expect(text).toContain("supabase status");
+      expect(text).toContain("dbase status");
       expect(text).not.toContain("stack status");
     }),
   );
@@ -71,7 +71,7 @@ describe("stack backend top-level alias help text", () => {
         ),
       );
       const text = calls.join("\n");
-      expect(text).toContain("supabase stop");
+      expect(text).toContain("dbase stop");
       expect(text).not.toContain("stack stop");
     }),
   );

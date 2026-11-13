@@ -24,7 +24,7 @@ import {
 const scriptPath = fileURLToPath(new URL("./upload-release-assets.ts", import.meta.url));
 const asset = {
   path: "dist/dbase_1.0.0_darwin_arm64.tar.gz",
-  name: "supabase_1.0.0_darwin_arm64.tar.gz",
+  name: "dbase_1.0.0_darwin_arm64.tar.gz",
 };
 const platformLayer = Layer.mergeAll(
   BunFileSystem.layer,

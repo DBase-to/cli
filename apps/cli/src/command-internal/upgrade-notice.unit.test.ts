@@ -69,7 +69,7 @@ describe("formatUpgradeNotice", () => {
     expect(stripVTControlCharacters(formatUpgradeNotice("v2.114.0", "2.113.0"))).toBe(
       "A new version of Supabase CLI is available: v2.114.0 (currently installed v2.113.0)\n" +
         "We recommend updating regularly for new features and bug fixes: " +
-        "https://supabase.com/docs/guides/cli/getting-started#updating-the-supabase-cli",
+        "https://dbase.to/docs/guides/cli/getting-started",
     );
   });
 });

@@ -998,7 +998,7 @@ describe("resolveCommandPath", () => {
     expect(result.matchedPath).toEqual(["branches", "list"]);
     expect(result.leftoverArgs).toEqual([]);
     expect(result.commandChain.map((command) => command.name)).toEqual([
-      "supabase",
+      "dbase",
       "branches",
       "list",
     ]);
@@ -1026,7 +1026,7 @@ describe("resolveCommandPath", () => {
     const result = resolveCommandPath(rootCommand, []);
     expect(result.matchedPath).toEqual([]);
     expect(result.leftoverArgs).toEqual([]);
-    expect(result.commandChain.map((command) => command.name)).toEqual(["supabase"]);
+    expect(result.commandChain.map((command) => command.name)).toEqual(["dbase"]);
   });
 });
 

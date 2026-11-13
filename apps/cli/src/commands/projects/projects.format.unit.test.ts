@@ -45,13 +45,15 @@ const CREATED: CreatedProject = {
 
 describe("dashboardUrlForProfile", () => {
   it("resolves the built-in profile dashboard URLs", () => {
+    expect(dashboardUrlForProfile("dbase")).toBe("https://dbase.to");
+    expect(dashboardUrlForProfile("dbase-test")).toBe("https://test.dbase.to");
     expect(dashboardUrlForProfile("supabase")).toBe("https://supabase.com/dashboard");
     expect(dashboardUrlForProfile("supabase-staging")).toBe("https://supabase.green/dashboard");
     expect(dashboardUrlForProfile("supabase-local")).toBe("http://localhost:8082");
   });
 
   it("defaults to the production dashboard for unknown profiles", () => {
-    expect(dashboardUrlForProfile("/path/to/profile.yaml")).toBe("https://supabase.com/dashboard");
+    expect(dashboardUrlForProfile("/path/to/profile.yaml")).toBe("https://dbase.to");
   });
 });
 

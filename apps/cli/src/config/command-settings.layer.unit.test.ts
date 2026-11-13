@@ -34,7 +34,7 @@ function makeLayer(opts: {
   /** Raw argv for explicit `--profile` detection. */
   argv?: ReadonlyArray<string>;
 }) {
-  const profileFlag = opts.profileFlag ?? "supabase";
+  const profileFlag = opts.profileFlag ?? "dbase";
   const workdirFlag = opts.workdirFlag ?? Option.none<string>();
   return commandSettingsLayer.pipe(
     Layer.provide(debugLoggerLayer),
@@ -115,15 +115,15 @@ describe("commandSettingsLayer", () => {
     }).pipe(Effect.provide(makeLayer({ cwd: tempRoot.current, env })));
   });
 
-  it.effect("defaults to supabase profile and api.supabase.com when no flags or env", () =>
+  it.effect("defaults to the dbase profile and api.dbase.to when no flags or env", () =>
     Effect.gen(function* () {
       const config = yield* CommandSettings;
-      expect(config.profile).toBe("supabase");
+      expect(config.profile).toBe("dbase");
       expect(config.profileEnvValue).toEqual(Option.none());
-      expect(config.apiUrl).toBe("https://api.supabase.com");
-      expect(config.projectHost).toBe("supabase.co");
-      expect(config.poolerHost).toBe("supabase.com");
-      expect(config.dashboardUrl).toBe("https://supabase.com/dashboard");
+      expect(config.apiUrl).toBe("https://api.dbase.to");
+      expect(config.projectHost).toBe("dbase.to");
+      expect(config.poolerHost).toBe("dbase.to");
+      expect(config.dashboardUrl).toBe("https://dbase.to");
     }).pipe(Effect.provide(makeLayer({ cwd: tempRoot.current }))),
   );
 
@@ -183,7 +183,7 @@ describe("commandSettingsLayer", () => {
   it.effect("preserves an empty SUPABASE_PROFILE without selecting a profile", () =>
     Effect.gen(function* () {
       const config = yield* CommandSettings;
-      expect(config.profile).toBe("supabase");
+      expect(config.profile).toBe("dbase");
       expect(config.profileEnvValue).toEqual(Option.some(""));
     }).pipe(Effect.provide(makeLayer({ env: { SUPABASE_PROFILE: "" }, cwd: tempRoot.current }))),
   );
@@ -266,7 +266,7 @@ describe("commandSettingsLayer", () => {
         makeLayer({ home, cwd: tempRoot.current, debug: true }),
       );
       const logged = stderr.mock.calls.map(([chunk]) => String(chunk)).join("");
-      expect(config.profile).toBe("supabase");
+      expect(config.profile).toBe("dbase");
       expect(logged).toContain(`No profile file at ${profilePath}; using the default profile.\n`);
       expect(logged).not.toContain(rawError.message);
     }).pipe(
@@ -291,7 +291,7 @@ describe("commandSettingsLayer", () => {
         );
         const logged = stderr.mock.calls.map(([chunk]) => String(chunk)).join("");
         expect(rawError.reason._tag).not.toBe("NotFound");
-        expect(config.profile).toBe("supabase");
+        expect(config.profile).toBe("dbase");
         expect(logged).toContain(`${rawError.message}\n`);
         expect(logged).not.toContain("No profile file at");
       }).pipe(
@@ -514,7 +514,7 @@ describe("commandSettingsLayer", () => {
   it.effect("ignores SUPABASE_API_URL", () =>
     Effect.gen(function* () {
       const config = yield* CommandSettings;
-      expect(config.apiUrl).toBe("https://api.supabase.com");
+      expect(config.apiUrl).toBe("https://api.dbase.to");
     }).pipe(
       Effect.provide(
         makeLayer({ env: { SUPABASE_API_URL: "https://nope.example.com" }, cwd: tempRoot.current }),

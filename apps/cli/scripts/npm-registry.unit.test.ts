@@ -65,7 +65,7 @@ describe("waitUntilInstallable", () => {
       expect(installable).toEqual([DARWIN.name]);
       expect(registry.requests).toEqual(
         Array.from({ length: 3 }, () => ({
-          url: "https://registry.test/@supabase%2Fcli-darwin-arm64",
+          url: "https://registry.test/@dbase%2Fcli-darwin-arm64",
           accept: "application/vnd.npm.install-v1+json",
         })),
       );

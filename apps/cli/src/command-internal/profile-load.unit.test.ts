@@ -36,6 +36,8 @@ describe("loadProfile", () => {
   it.effect("resolves built-in profile names case-insensitively", () =>
     Effect.gen(function* () {
       expect(yield* load("SUPABASE-LOCAL")).toBe("http://localhost:8080");
+      expect(yield* load("dbase")).toBe("https://api.dbase.to");
+      expect(yield* load("dbase-test")).toBe("https://testapi.dbase.to");
       expect(yield* load("supabase")).toBe("https://api.supabase.com");
       expect(yield* load("supabase-staging")).toBe("https://api.supabase.green");
       expect(yield* load("snap")).toBe("https://cloudapi.snap.com");
@@ -122,6 +124,10 @@ describe("loadProfile", () => {
   it.effect("returns the full endpoint set for built-in and YAML profiles", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
+      const dbase = yield* loadProfile("dbase", fs);
+      expect(dbase.projectHost).toBe("dbase.to");
+      expect(dbase.poolerHost).toBe("dbase.to");
+      expect(dbase.dashboardUrl).toBe("https://dbase.to");
       const builtin = yield* loadProfile("supabase-staging", fs);
       expect(builtin.projectHost).toBe("supabase.red");
       expect(builtin.poolerHost).toBe("supabase.green");

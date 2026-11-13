@@ -61,10 +61,10 @@ describe("releaseAssets", () => {
     const names = assets.map((asset) => asset.name);
 
     expect(assets).toHaveLength(22);
-    expect(names).toContain("supabase_2.118.0-beta.60_darwin_arm64.tar.gz");
-    expect(names).toContain("supabase_2.118.0-beta.60_linux_amd64.deb");
+    expect(names).toContain("dbase_2.118.0-beta.60_darwin_arm64.tar.gz");
+    expect(names).toContain("dbase_2.118.0-beta.60_linux_amd64.deb");
     expect(names).toContain("checksums.txt");
-    expect(names).toContain("supabase_darwin_arm64.tar.gz");
+    expect(names).toContain("dbase_darwin_arm64.tar.gz");
     expect(names).toContain("install");
     expect(new Set(names).size).toBe(22);
     expect(assets.find((asset) => asset.name === "install")?.path).toBe("install");
@@ -74,11 +74,11 @@ describe("releaseAssets", () => {
 describe("uploadAssets", () => {
   const first = {
     path: "dist/dbase_1.0.0_darwin_arm64.tar.gz",
-    name: "supabase_1.0.0_darwin_arm64.tar.gz",
+    name: "dbase_1.0.0_darwin_arm64.tar.gz",
   };
   const second = {
     path: "dist/dbase_1.0.0_linux_amd64.deb",
-    name: "supabase_1.0.0_linux_amd64.deb",
+    name: "dbase_1.0.0_linux_amd64.deb",
   };
   const third = { path: "install", name: "install" };
   const assets = [first, second, third];
