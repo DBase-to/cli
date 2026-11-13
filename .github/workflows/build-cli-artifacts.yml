@@ -116,10 +116,10 @@ jobs:
           echo "Checking dist/..."
           ls -la dist/
 
-          # Every channel ships a single `supabase` binary; no `supabase-go` companion.
+          # Every channel ships a single `dbase` binary; no `dbase-go` companion.
           shopt -s nullglob
-          for f in packages/*/bin/supabase-go*; do
-            echo "::error::${f} is a supabase-go companion binary"
+          for f in packages/*/bin/dbase-go*; do
+            echo "::error::${f} is a dbase-go companion binary"
             exit 1
           done
 
@@ -131,8 +131,8 @@ jobs:
               echo "::error::failed to list the contents of ${artifact}"
               exit 1
             fi
-            if grep -q 'supabase-go' <<<"$listing"; then
-              echo "::error::${artifact} contains supabase-go"
+            if grep -q 'dbase-go' <<<"$listing"; then
+              echo "::error::${artifact} contains dbase-go"
               exit 1
             fi
           }
@@ -145,7 +145,7 @@ jobs:
             if command -v rpm >/dev/null; then
               for a in "${rpms[@]}"; do check_listing "$a" rpm -qlp "$a"; done
             else
-              echo "::notice::rpm is not installed on this runner; rpm contents were not checked for supabase-go"
+              echo "::notice::rpm is not installed on this runner; rpm contents were not checked for dbase-go"
             fi
           fi
 

@@ -1,26 +1,46 @@
-# Supabase
+# Contributing to DBase CLI
 
-Bun monorepo for exploring the next generation of the Supabase CLI and local development stack.
+## Upstream first
+
+DBase CLI is a downstream fork of [`supabase/cli`](https://github.com/supabase/cli).
+We regularly merge changes from that repository, including security fixes, and
+we intend to stay close to it.
+
+If your change affects behavior that is not specific to DBase, please open it
+against [`supabase/cli`](https://github.com/supabase/cli) first. Once it lands
+there, it reaches this repository through the regular upstream sync. That keeps
+one implementation for shared behavior and avoids divergent patches that are
+hard to maintain.
+
+Open a pull request here when the change is specific to this fork, for example:
+
+- DBase API endpoints, authentication, or project metadata
+- DBase branding, install channels, or release tooling
+- This repository's workspace layout, CI, or contributor tooling
+
+Maintainers may close a pull request here and ask for it to be filed upstream
+when the change applies to both projects. For security issues, use the
+repository's private vulnerability reporting (**Security → Report a
+vulnerability**) instead of opening a public issue; fixes that also affect
+upstream are coordinated through `supabase/cli`.
 
 ## Contribution workflow
 
-Before you open a pull request:
+For changes that belong in this repository:
 
-1. **Open an issue first**, using one of the [issue templates](https://github.com/supabase/cli/issues/new/choose).
+1. **Open an issue first**, using one of the [issue templates](https://github.com/DBase-to/cli/issues/new/choose).
 2. **Wait for maintainer triage.** A maintainer categorizes the issue (`✨ Feature`, `🐛 Bug`, or `📘 Docs`) and adds the **`open-for-contribution`** label once it is ready to be worked on.
 3. **Open a pull request only after the `open-for-contribution` label is set**, and link the issue with a closing keyword (for example `Closes #123`).
 
-Until the `open-for-contribution` label is present, the issue is still in triage, so work should not start and a pull request should not be opened.
+Until the `open-for-contribution` label is present, the issue is still in triage, so work should not start and a pull request should not be opened. Changes that belong upstream follow the upstream repository's process instead; the labels and automation below are specific to this fork.
 
-Target your pull request at `develop`. Changes that break existing behaviour use a `type(scope)!:` title (for example `feat(cli)!: remove ...`) and target `next` instead; a maintainer will tell you if a change should be breaking.
-
-Pull requests from external contributors that do not follow this workflow are commented on and closed automatically by the [Contribution Gate](.github/workflows/contribution-gate.yml). Supabase members are exempt, so they can work from Linear tickets that are not public on GitHub. Maintainers: see [`.github/MAINTAINERS.md`](.github/MAINTAINERS.md).
+Pull requests from external contributors that do not follow this workflow are commented on and closed automatically by the [Contribution Gate](.github/workflows/contribution-gate.yml). DBase maintainers are exempt, so they can work from Linear tickets that are not public on GitHub. Maintainers: see [`.github/MAINTAINERS.md`](.github/MAINTAINERS.md).
 
 ## Setup
 
 ### Tool versions
 
-This repo pins the versions of Node, Bun, and pnpm that contributors are expected to build against, and uses [`mise`](https://mise.jdx.dev/) — a polyglot version manager — to install and activate them automatically. If you don't already have these tools installed, `mise` is a great way to get up and running quickly.
+This repo pins the versions of Node, Bun, Go, pnpm, and golangci-lint that contributors are expected to build against, and uses [`mise`](https://mise.jdx.dev/) — a polyglot version manager — to install and activate them automatically. If you don't already have these tools installed, `mise` is a great way to get up and running quickly.
 
 #### Installing mise
 
@@ -52,19 +72,21 @@ mise install
 
 `mise install` resolves the versions this repo expects from a handful of files, rather than hardcoding them all in one place:
 
-| Tool        | Version source                                      |
-| ----------- | --------------------------------------------------- |
-| Bun         | `.bun-version`                                      |
-| Node.js     | `.node-version`                                     |
-| pnpm        | `devEngines.packageManager` field in `package.json` |
-| jactionlint | `mise.toml`                                         |
-| shellcheck  | `mise.toml`                                         |
+| Tool          | Version source                                      |
+| ------------- | --------------------------------------------------- |
+| Bun           | `.bun-version`                                      |
+| Node.js       | `.node-version`                                     |
+| pnpm          | `devEngines.packageManager` field in `package.json` |
+| Go            | `mise.toml`                                         |
+| golangci-lint | `mise.toml`                                         |
+
+The Go and golangci-lint entries in `mise.toml` are intentionally temporary while the Go CLI remains in the repo. The canonical Go module metadata still lives in `apps/cli-go/go.mod`; keep the `mise.toml` entries aligned only until the Go code is removed.
 
 Once installed, `mise` activates these versions automatically whenever your shell is inside this repo — no manual `nvm use`, `gvm use`, or similar switching required.
 
 #### Without mise
 
-`mise` is not required. If you already have Bun, Node, pnpm, jactionlint, and shellcheck installed and managed some other way, just make sure your versions match the ones pinned in `.bun-version`, `.node-version`, `mise.toml`, and `package.json`. `pnpm check:all` runs jactionlint, which only checks workflow `run:` scripts when shellcheck is on `PATH`.
+`mise` is not required. If you already have Bun, Node, pnpm, and Go installed and managed some other way, just make sure your versions match the ones pinned in `.bun-version`, `.node-version`, `mise.toml`, `package.json`, and `apps/cli-go/go.mod`.
 
 ### Install dependencies
 
@@ -89,12 +111,12 @@ That pulls `.repos/effect/`, which is the local source of truth for Effect v4 AP
 ```text
 .
 |-- apps/
-|   |-- cli/   # Published Supabase CLI package
+|   |-- cli/   # Published DBase CLI package
 |   `-- docs/  # Next.js docs site generated from the CLI
 |-- packages/
-|   |-- api/                  # Typed Supabase Management API client
-|   |-- config/               # Supabase config schema and generated types
-|   |-- stack/                # Programmatic local Supabase stack runtime
+|   |-- api/                  # Typed Management API client
+|   |-- config/               # CLI config schema and generated types
+|   |-- stack/                # Programmatic local stack runtime
 |   `-- cli-*/                # Platform-specific CLI binary packages
 |-- tools/                    # Repository tooling (release scripts, etc.)
 |-- docs/                     # ADRs, design notes, and implementation docs
@@ -103,20 +125,20 @@ That pulls `.repos/effect/`, which is the local source of truth for Effect v4 AP
 
 ## Apps
 
-| Workspace      | Purpose                                                                                                                                |
-| -------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `apps/cli`     | Main `supabase` package. Contains command handlers, runtime services, auth, output, telemetry, and docs generation scripts.            |
-| `apps/cli-e2e` | Compatibility e2e test suite. Record-and-replay harness for testing the TypeScript CLI against real Supabase Management API responses. |
-| `apps/docs`    | Internal docs site built with Next.js and generated from the CLI docs sources.                                                         |
+| Workspace      | Purpose                                                                                                                           |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/cli`     | Main `dbase` package. Contains command handlers, runtime services, auth, output, telemetry, and docs generation scripts.          |
+| `apps/cli-e2e` | Compatibility e2e test suite. Record-and-replay harness for testing the TypeScript CLI against recorded Management API responses. |
+| `apps/docs`    | Internal docs site built with Next.js and generated from the CLI docs sources.                                                    |
 
 ## Packages
 
 | Workspace                       | Purpose                                                                                       |
 | ------------------------------- | --------------------------------------------------------------------------------------------- |
-| `packages/api`                  | Auto-generated TypeScript client for the Supabase Management API.                             |
+| `packages/api`                  | Auto-generated TypeScript client for the Management API.                                      |
 | `packages/cli-test-helpers`     | CLI test harness library — `createHarness`/`exec` API for spawning CLI subprocesses in tests. |
-| `packages/config`               | JSON Schema and generated TypeScript types for Supabase configuration.                        |
-| `packages/stack`                | Programmatic local Supabase stack used by the CLI and other tooling.                          |
+| `packages/config`               | JSON Schema and generated TypeScript types for DBase CLI configuration.                       |
+| `packages/stack`                | Programmatic local stack used by the CLI and other tooling.                                   |
 | `packages/cli-darwin-arm64`     | Published native CLI binary wrapper for macOS arm64.                                          |
 | `packages/cli-darwin-x64`       | Published native CLI binary wrapper for macOS x64.                                            |
 | `packages/cli-linux-arm64`      | Published native CLI binary wrapper for Linux arm64 (glibc).                                  |
@@ -124,6 +146,7 @@ That pulls `.repos/effect/`, which is the local source of truth for Effect v4 AP
 | `packages/cli-linux-x64`        | Published native CLI binary wrapper for Linux x64 (glibc).                                    |
 | `packages/cli-linux-x64-musl`   | Published native CLI binary wrapper for Linux x64 (musl).                                     |
 | `packages/cli-windows-x64`      | Published native CLI binary wrapper for Windows x64.                                          |
+| `packages/cli-windows-arm64`    | Published native CLI binary wrapper for Windows arm64.                                        |
 
 ## Working In The Monorepo
 
@@ -176,18 +199,20 @@ pnpm run test:unit && pnpm run test:integration
 ```
 
 The root unit and integration scripts use Turbo to fan out the package-local
-`test:*:run` tasks across the standard TypeScript/Vitest workspaces. Unit and
-integration tasks are uncached for now; e2e tasks are also uncached and run
-one package at a time. Forward a Vitest shard to every e2e package with
-`pnpm run test:e2e --shard=1/3`.
+`test:*:run` tasks across the standard TypeScript/Vitest workspaces. The Go
+workspace remains package-local because its tests run directly through Go:
+`pnpm --dir apps/cli-go run test:unit`. Go tests are covered by the dedicated
+Go CI workflow. Unit and integration tasks are uncached for now; e2e tasks are
+also uncached and run one package at a time. Forward a Vitest shard to every
+e2e package with `pnpm run test:e2e --shard=1/3`.
 
 ## E2E Compatibility Test Suite
 
-`apps/cli-e2e` implements the replay-and-record compatibility harness for the TypeScript CLI. Live tests are owned by `apps/cli` and run from the command they cover.
+`apps/cli-e2e` implements the replay-and-record compatibility harness for the TypeScript CLI. Live tests are owned by `apps/cli` and run from the command they cover. The CLI still shells out to the bundled Go binary for the handful of commands the TS port proxies (`db diff --use-pg-schema`, `db branch *`, `db remote changes`, `gen keys`, `functions download`), so `apps/cli-go/` is built alongside the TS CLI for these suites, but there is no Go-vs-TypeScript parity runner.
 
 ### Architecture
 
-Replay fixtures are recorded by running the CLI against the real Supabase staging API and capturing request/response pairs. Replay runs serve those committed fixtures back to the same CLI, so compatibility tests are fast and deterministic with no network access. The replay/record suite remains entirely under `apps/cli-e2e`.
+Replay fixtures are recorded by running the CLI against a real staging Management API and capturing request/response pairs. Replay runs serve those committed fixtures back to the same CLI, so compatibility tests are fast and deterministic with no network access. The replay/record suite remains entirely under `apps/cli-e2e`.
 
 The replay/record harness has two modes:
 
@@ -228,13 +253,13 @@ pnpm exec turbo run @supabase/cli-e2e#test:e2e:run
 
 ### Recording fixtures
 
-Recording proxies CLI traffic to the Supabase staging API. Provide a staging access token and a project ref for commands that need one — everything else is baked into the script:
+Recording proxies CLI traffic to a staging Management API. Provide a staging access token and a project ref for commands that need one — everything else is baked into the script:
 
 ```sh
 SUPABASE_ACCESS_TOKEN=<your-staging-token> SUPABASE_TEST_PROJECT_REF=<your-project-ref> SUPABASE_STAGING_URL=<stagingUrl> pnpm run record
 ```
 
-Review the generated files in `apps/cli-e2e/fixtures/recorded/` before committing — verify that no real tokens, UUIDs, or project refs appear (they should be replaced with `__ACCESS_TOKEN__` and `__UUID__` placeholders and the fixed `replayfixtureprojref` ref).
+Review the generated files in `apps/cli-e2e/fixtures/recorded/` before committing — verify that no real tokens, UUIDs, or project refs appear (they should be replaced with `__ACCESS_TOKEN__`, `__UUID__`, `__PROJECT_REF__` placeholders).
 
 ### Verifying fixtures
 
@@ -280,6 +305,7 @@ Test a real end-to-end publish and install of the CLI against a local npm regist
 ### Prerequisites
 
 - **Bun** — for compiling the CLI binary and running the scripts
+- **Go** — required to build the `dbase-go` sidecar (commands proxied to the Go binary)
 - **pnpm** — already required by this repo
 - **Node.js** — required by `npx` / `npm install -g` to test the published package
 
@@ -305,8 +331,8 @@ pnpm cli-release --version 0.0.0-local.1
 
 The script builds the CLI binary for the current platform only, compiles the Node.js shim, and publishes two packages to the local registry:
 
-- `@supabase/cli-<platform>@<version>` — the compiled binary
-- `supabase@<version>` — the shim that resolves and execs the binary
+- `@dbase/cli-<platform>@<version>` — the compiled binary
+- `dbase@<version>` — the shim that resolves and execs the binary
 
 No git-tracked files are modified. Build output goes to a system temp directory that is deleted after publish.
 
@@ -314,11 +340,11 @@ No git-tracked files are modified. Build output goes to a system temp directory 
 
 ```sh
 # Run directly with npx
-npx --registry http://localhost:4873 supabase@0.0.0-local.1 --version
+npx --registry http://localhost:4873 dbase@0.0.0-local.1 --version
 
-# Or install globally and run as `supabase`
-npm install -g --registry http://localhost:4873 supabase@0.0.0-local.1
-supabase --version
+# Or install globally and run as `dbase`
+npm install -g --registry http://localhost:4873 dbase@0.0.0-local.1
+dbase --version
 ```
 
 ### Troubleshooting
@@ -326,6 +352,8 @@ supabase --version
 | Problem                                                                         | Fix                                                                                                                                                                                                                                                                                                                                                                                                             |
 | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `Error: Something is already running on port 4873`                              | Kill the leftover Verdaccio process (`lsof -ti:4873 \| xargs kill`) and retry                                                                                                                                                                                                                                                                                                                                   |
+| `go not found in PATH`                                                          | Install Go from https://go.dev/dl/                                                                                                                                                                                                                                                                                                                                                                              |
+| `Error: Go CLI source not found`                                                | Run `pnpm repos:install` to clone `apps/cli-go`                                                                                                                                                                                                                                                                                                                                                                 |
 | `npm` / `pnpm` tries to fetch from `localhost:4873` when no registry is running | Stale global registry override left behind by an older version of `local-registry.ts` (the current script never modifies global config). Run `npm config delete registry` and `pnpm config delete registry`. Note that pnpm stores the override in its own global config (`~/Library/Preferences/pnpm/auth.ini` on macOS, `~/.config/pnpm/` on Linux), not `~/.npmrc` — check there if the delete command fails |
 | `npx` resolves from npm instead of local                                        | Pass `--registry http://localhost:4873` explicitly to `npx` / `npm install`                                                                                                                                                                                                                                                                                                                                     |
 
@@ -354,15 +382,15 @@ pnpm run build
 pnpm run generate
 ```
 
-**Build only the CLI:**
+**Build only the CLI and its Go sidecar:**
 
 ```sh
-pnpm exec turbo run supabase#build
+pnpm exec turbo run dbase#build
 ```
 
-The CLI build names its config build prerequisite explicitly. The remaining
-CLI workspace dependencies intentionally have no build script, so strict
-Turbo task selection does not synthesize no-op `^build` tasks for them.
+The CLI build names its config and Go build prerequisites explicitly. The
+remaining CLI workspace dependencies intentionally have no build script, so
+strict Turbo task selection does not synthesize no-op `^build` tasks for them.
 
 **Run the live suite:**
 

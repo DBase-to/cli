@@ -84,7 +84,7 @@ jobs:
           set -euo pipefail
           bun apps/cli/scripts/sync-versions.ts --version "${PREVIEW_VERSION}"
           pnpm --dir apps/cli build:shim
-          find packages -path '*/bin/supabase*' -type f -exec chmod +x {} +
+          find packages -path '*/bin/dbase*' -type f -exec chmod +x {} +
 
       - name: Publish preview package
         run: |
@@ -112,9 +112,9 @@ jobs:
             node -e "
               const fs = require('node:fs');
               const metadata = JSON.parse(fs.readFileSync('pkg-pr-new.json', 'utf8'));
-              const pkg = metadata.packages.find((entry) => entry.name === 'supabase');
+              const pkg = metadata.packages.find((entry) => entry.name === 'dbase');
               if (!pkg?.url) {
-                throw new Error('pkg-pr-new.json did not include a supabase package URL');
+                throw new Error('pkg-pr-new.json did not include a dbase package URL');
               }
               console.log(pkg.url);
             "
@@ -146,7 +146,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          marker="<!-- supabase-cli-preview-package -->"
+          marker="<!-- dbase-cli-preview-package -->"
           short_sha="${HEAD_SHA:0:7}"
           comment_file="$(mktemp)"
 

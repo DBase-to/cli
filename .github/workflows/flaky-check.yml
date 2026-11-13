@@ -148,7 +148,7 @@ jobs:
 
       - name: Build CLI
         if: matrix.suite == 'e2e'
-        run: pnpm exec turbo run supabase#build
+        run: pnpm exec turbo run dbase#build
 
       - name: Run tests
         id: run

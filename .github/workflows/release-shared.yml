@@ -29,19 +29,15 @@ on:
         type: boolean
         default: false
       brew_name:
-        description: Homebrew formula name (e.g. supabase, supabase-beta or supabase@<N>)
+        description: Homebrew formula name (e.g. dbase, dbase-beta or dbase@<N>)
         required: false
         type: string
-        default: supabase
+        default: dbase
       scoop_name:
-        description: Scoop manifest name (e.g. supabase, supabase-beta or supabase-v<N>-stable)
+        description: Scoop manifest name (e.g. dbase, dbase-beta or dbase-v<N>-stable)
         required: false
         type: string
-        default: supabase
-    outputs:
-      setup_cli_npm_fallback:
-        description: "'true' when a setup-cli v3 smoke job installed from the GitHub release because the npm install failed"
-        value: ${{ jobs.setup-cli-smoke.outputs.npm_fallback }}
+        default: dbase
     secrets:
       SENTRY_DSN:
         required: false
@@ -212,7 +208,7 @@ jobs:
 
       - name: Fix binary permissions
         if: runner.os != 'Windows'
-        run: chmod +x packages/cli-*/bin/supabase || true
+        run: chmod +x packages/cli-*/bin/dbase || true
 
       - name: Run smoke tests
         # Force bash so ${VERSION}/${NPM_TAG} expand identically across the ubuntu/macos/windows
@@ -251,7 +247,7 @@ jobs:
           fail-on-cache-miss: true
 
       - name: Fix binary permissions
-        run: chmod +x packages/cli-*/bin/supabase || true
+        run: chmod +x packages/cli-*/bin/dbase || true
 
       - name: Run smoke tests
         shell: bash
@@ -369,7 +365,7 @@ jobs:
         run: |
           set -euo pipefail
           for triple in darwin_arm64 darwin_amd64 linux_arm64 linux_amd64 windows_arm64 windows_amd64; do
-            cp "dist/supabase_${VERSION}_${triple}.tar.gz" "dist/supabase_${triple}.tar.gz"
+            cp "dist/dbase_${VERSION}_${triple}.tar.gz" "dist/dbase_${triple}.tar.gz"
           done
 
       # Created empty; the next step uploads the assets so each one can be retried on its own.
@@ -409,7 +405,7 @@ jobs:
         uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
         with:
           subject-path: |
-            dist/supabase_${{ inputs.version }}_*
+            dist/dbase_${{ inputs.version }}_*
             dist/checksums.txt
             install
 

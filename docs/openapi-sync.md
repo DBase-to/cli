@@ -1,84 +1,52 @@
 # OpenAPI Sync Workflows
 
-> Extracted from [ADR 0005](adr/0005-openapi-driven-code-generation.md). This document covers the GitHub Actions workflows that keep checked-in OpenAPI types in sync with the live Management API. For the three-layer generation strategy and architectural decisions, see the ADR.
+> Extracted from [ADR 0005](adr/0005-openapi-driven-code-generation.md). This
+> document covers the GitHub Actions workflows that keep checked-in OpenAPI
+> types in sync with the live Management API. For the generation strategy and
+> architectural decisions, see the ADR.
 
-> This document describes an earlier iteration of the API sync pipeline; see [`.github/workflows/api-package-sync.yml`](../.github/workflows/api-package-sync.yml) for the current workflow.
+Two workflows keep the generated clients in sync with the Management API:
 
-Three GitHub Actions workflows keep the checked-in `v1.d.ts` in sync with the live Management API spec across the private API repo and the public CLI repo.
+| Workflow                                 | Generated output                                                                  | Source                                                                 |
+| ---------------------------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `.github/workflows/api-package-sync.yml` | `packages/api/src/generated` (`contracts.ts`, `openapi.json`, `effect-client.ts`) | Management API OpenAPI documents (`/api/v1-json`, `/api/v2-json`)      |
+| `.github/workflows/cli-go-api-sync.yml`  | `apps/cli-go/api/v1-openapi.yaml` and `apps/cli-go/pkg/api`                       | The v1 OpenAPI document, regenerated with `go generate` (oapi-codegen) |
 
-## 1. Sync workflow (CLI repo — `.github/workflows/openapi-sync.yml`)
+`api-package-sync.yml` runs the package's `pnpm generate`. `cli-go-api-sync.yml`
+refreshes the committed snapshot and runs oapi-codegen. Both open a PR against
+`develop` and enable auto-merge rather than pushing directly.
 
-Triggered by three events:
+## Triggers
 
-- **`repository_dispatch`** (`openapi-spec-changed`) — pushed from the API repo after production deploy
-- **`schedule`** (daily cron) — fallback in case a dispatch is lost
-- **`workflow_dispatch`** — manual trigger for debugging or ad-hoc sync
+- `api-package-sync.yml`: `workflow_dispatch` only. The hourly schedule is
+  disabled.
+- `cli-go-api-sync.yml`: `repository_dispatch` (`api-sync`) and
+  `workflow_dispatch`. The daily schedule is disabled.
 
-Steps:
+Both schedules are off while the DBase Management API document is reconciled
+with the generated client surface. `https://api.dbase.to/openapi.json` renames
+48 operation ids and omits 12 paths the CLI still calls, so both workflows
+continue to read the upstream documents. Re-enable the schedules once that gap
+is closed; at that point `api-package-sync.yml` must also switch from the split
+`/api/v1-json` + `/api/v2-json` documents to the combined `/openapi.json`
+document.
 
-1. Check out the CLI repo
-2. Install dependencies (`bun install --frozen-lockfile`)
-3. Regenerate types (`bun run generate` — runs `openapi-typescript` against the live spec URL)
-4. Check `git diff --exit-code packages/api/src/v1.d.ts` — if unchanged, exit early (no PR)
-5. Run quality gates: `bun run ts:check`, `bun run lint`, `bun run fmt:check`, `bun run knip`
-6. Open or update a PR via `peter-evans/create-pull-request` with:
-   - **`add-paths`** restricted to `packages/api/src/v1.d.ts` — prevents accidental lockfile or unrelated changes from being committed
-   - **Branch**: `chore/openapi-sync`
-   - **Labels**: `automated`, `api-types`
+## Change detection
 
-Concurrency:
+Both workflows rely on `git diff` rather than spec hashes or ETags:
 
-```yaml
-concurrency:
-  group: openapi-sync
-  cancel-in-progress: true
-```
+- If the generated files are byte-identical, the workflow stops without opening
+  a PR.
+- If they differ, the PR contains only the generated paths and the snapshot, so
+  an unrelated lockfile update cannot leak into the sync.
+- Auto-merge is enabled on the PR once checks pass.
 
-This ensures at most one sync PR exists at any time — a new dispatch cancels any in-flight run and supersedes the previous PR.
+## Sender workflow (API repo)
 
-## 2. Verify workflow (CLI repo — `.github/workflows/openapi-verify.yml`)
+The legacy sender dispatched `openapi-spec-changed` to `supabase/cli`. A DBase
+equivalent should dispatch the `api-sync` event consumed by
+`cli-go-api-sync.yml` after a production deploy, using a GitHub App installation
+token rather than a PAT: installation tokens are short-lived (~1 hour), scoped
+to specific repositories, and are not tied to a personal account.
 
-Scheduled twice weekly (e.g., Tuesday and Friday). Acts as a safety net for silent dispatch failures.
-
-Steps:
-
-1. Check out the CLI repo
-2. Install dependencies
-3. Regenerate types (`bun run generate`)
-4. Run `git diff --exit-code packages/api/src/v1.d.ts`
-5. **Fail the workflow** if the checked-in types don't match what `openapi-typescript` produces
-
-This workflow does **not** open a PR — it only alerts. If it fails, a developer triggers the sync workflow manually or investigates why dispatches stopped arriving.
-
-## 3. Sender workflow (API repo, private — `.github/workflows/notify-cli.yml`)
-
-Fires after a production deploy completes, using `workflow_run` as the trigger (so it runs only after a successful deploy, not on every push).
-
-Steps:
-
-1. Generate a short-lived installation token via `actions/create-github-app-token@v1` scoped to the CLI repo
-2. Dispatch the `openapi-spec-changed` event to the CLI repo via `peter-evans/repository-dispatch`
-
-```yaml
-- uses: actions/create-github-app-token@v1
-  id: app-token
-  with:
-    app-id: ${{ secrets.SYNC_APP_ID }}
-    private-key: ${{ secrets.SYNC_APP_PRIVATE_KEY }}
-    repositories: "cli"
-
-- uses: peter-evans/repository-dispatch@v3
-  with:
-    token: ${{ steps.app-token.outputs.token }}
-    repository: supabase/cli
-    event-type: openapi-spec-changed
-```
-
-**Why a GitHub App instead of a PAT**: GitHub App installation tokens are short-lived (~1 hour), scoped to specific repositories, and don't tie permissions to a personal account. A long-lived PAT would need to be rotated manually and grants broader access than necessary.
-
-## Design Decisions
-
-- **Change detection via `git diff`** — comparing the regenerated file against what's checked in is simpler and more robust than tracking spec hashes or ETags across repos. If the output is byte-identical, there's nothing to do.
-- **`add-paths` restriction** — `peter-evans/create-pull-request` commits everything that changed in the working tree by default. Restricting to `v1.d.ts` prevents accidental lockfile updates or unrelated diffs from leaking into the sync PR.
-- **Concurrency group with `cancel-in-progress`** — if the API deploys twice in quick succession, only the latest sync matters. The concurrency group ensures the first run is cancelled, avoiding duplicate PRs.
-- **Verify as a separate workflow** — decoupling verification from sync keeps failure signals clean. A verify failure means "types are stale", not "the PR couldn't be created".
+That sender lives outside this repository.

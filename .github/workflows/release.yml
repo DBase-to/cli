@@ -284,16 +284,16 @@ jobs:
             beta)
               npm_tag=beta
               prerelease=true
-              brew_name=supabase-beta
-              scoop_name=supabase-beta
-              publish_brew_scoop=true
+              brew_name=dbase-beta
+              scoop_name=dbase-beta
+              publish_brew_scoop=false
               ;;
             stable)
               npm_tag=latest
               prerelease=false
-              brew_name=supabase
-              scoop_name=supabase
-              publish_brew_scoop=true
+              brew_name=dbase
+              scoop_name=dbase
+              publish_brew_scoop=false
               ;;
             next)
               npm_tag=next
@@ -311,9 +311,9 @@ jobs:
               fi
               npm_tag="v${major}.stable"
               prerelease=false
-              brew_name="supabase@${major}"
-              scoop_name="supabase-v${major}-stable"
-              publish_brew_scoop=true
+              brew_name="dbase@${major}"
+              scoop_name="dbase-v${major}-stable"
+              publish_brew_scoop=false
               ;;
             *)
               echo "Unknown channel: $channel" >&2
@@ -366,97 +366,6 @@ jobs:
       LINEAR_CLI_BETA_RELEASE_ACCESS_KEY: ${{ secrets.LINEAR_CLI_BETA_RELEASE_ACCESS_KEY }}
       SUPABASE_E2E_CLI_LIVE_STAGING_ACCESS_TOKEN: ${{ secrets.SUPABASE_E2E_CLI_LIVE_STAGING_ACCESS_TOKEN }}
 
-  # Republishes the CLI reference and the config schemas to supabase.com. Stable only: both
-  # document the CLI users actually install, so pre-releases and maintenance lines are skipped.
-  # Nothing depends on this job, so a docs-site failure cannot affect the already-completed
-  # release; a failed publish reaches Slack through notify-slack-publish-failure.
-  docs:
-    name: Publish to supabase.com
-    needs: [plan, release]
-    if: ${{ !cancelled() && needs.release.result == 'success' && needs.plan.outputs.channel == 'stable' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
-    continue-on-error: true
-    outputs:
-      failed: ${{ steps.report.outputs.failed }}
-    steps:
-      # Scoped to supabase/supabase: this job pushes a branch and opens a PR
-      # there, and needs nothing beyond a plain read-only checkout here.
-      - id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
-        with:
-          client-id: ${{ vars.GH_APP_CLIENT_ID }}
-          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-          owner: ${{ github.repository_owner }}
-          repositories: |
-            supabase
-          permission-contents: write
-          permission-pull-requests: write
-      - uses: useblacksmith/checkout@6fd481652155169ed4d2f25ebaf97464f685175f # v1
-        with:
-          persist-credentials: false
-      - name: Setup
-        uses: ./.github/actions/setup
-        with:
-          dependency-firewall-token: ${{ secrets.DF_FIREWALL_TOKEN }}
-      - name: Authenticate git for the docs push
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-        run: gh auth setup-git
-      - name: Publish the CLI reference
-        id: reference
-        continue-on-error: true
-        working-directory: apps/cli
-        # `shell: bash` for `-o pipefail`: the default `run:` shell takes only the publisher's
-        # exit status, so a generator that died part-way would look like a successful run.
-        shell: bash
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          VERSION: ${{ needs.plan.outputs.version }}
-          DRY_RUN: ${{ needs.plan.outputs.dry_run }}
-        run: |
-          args=()
-          if [[ "$DRY_RUN" == "true" ]]; then
-            args+=(--dry-run)
-          fi
-          bun scripts/generate-docs-spec.ts "$VERSION" \
-            | bun scripts/publish-docs-spec.ts --version "$VERSION" "${args[@]}"
-      - name: Publish the config schemas
-        id: schemas
-        continue-on-error: true
-        working-directory: apps/cli
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          VERSION: ${{ needs.plan.outputs.version }}
-          DRY_RUN: ${{ needs.plan.outputs.dry_run }}
-        run: |
-          args=()
-          if [[ "$DRY_RUN" == "true" ]]; then
-            args+=(--dry-run)
-          fi
-          bun scripts/publish-schemas.ts --version "$VERSION" "${args[@]}"
-      - name: Report failed publishes
-        id: report
-        if: ${{ !cancelled() }}
-        env:
-          REFERENCE_OUTCOME: ${{ steps.reference.outcome }}
-          SCHEMAS_OUTCOME: ${{ steps.schemas.outcome }}
-        run: |
-          failed=false
-          report() {
-            if [[ "$2" != "success" ]]; then
-              failed=true
-              echo "::error title=Publishing the $1 failed::The $1 was not published to supabase.com (step outcome: $2)."
-              echo "- The $1 was not published to supabase.com (step outcome: $2)." >> "$GITHUB_STEP_SUMMARY"
-            fi
-          }
-          report "CLI reference" "$REFERENCE_OUTCOME"
-          report "config schemas" "$SCHEMAS_OUTCOME"
-          echo "failed=$failed" >> "$GITHUB_OUTPUT"
-          if [[ "$failed" == "true" ]]; then
-            exit 1
-          fi
-
   # Notifies real (non-dry-run) stable and maintenance cuts. Nothing depends on this job, so a
   # Slack failure can't affect the already-completed release.
   notify-slack:
@@ -469,46 +378,8 @@ jobs:
       (needs.plan.outputs.channel == 'stable' || needs.plan.outputs.channel == 'maintenance') }}
     uses: ./.github/workflows/slack-notify.yml
     with:
-      package: Supabase CLI
+      package: DBase CLI
       status: success
-      version: ${{ needs.plan.outputs.version }}
-      channel: ${{ needs.plan.outputs.channel }}
-      setup_cli_npm_fallback: ${{ needs.release.outputs.setup_cli_npm_fallback == 'true' }}
-    secrets:
-      SLACK_RELEASE_WEBHOOK: ${{ secrets.SLACK_RELEASE_WEBHOOK }}
-
-  # notify-slack posts no success message for beta and next, so a setup-cli npm fallback on those
-  # channels gets a notice of its own.
-  notify-slack-npm-fallback:
-    name: Notify Slack (setup-cli npm fallback)
-    needs: [plan, release]
-    if: >-
-      ${{ !cancelled() &&
-      needs.release.result == 'success' &&
-      needs.plan.outputs.dry_run != 'true' &&
-      needs.release.outputs.setup_cli_npm_fallback == 'true' &&
-      needs.plan.outputs.channel != 'stable' &&
-      needs.plan.outputs.channel != 'maintenance' }}
-    uses: ./.github/workflows/slack-notify.yml
-    with:
-      package: Supabase CLI
-      status: setup-cli-npm-fallback
-      version: ${{ needs.plan.outputs.version }}
-      channel: ${{ needs.plan.outputs.channel }}
-    secrets:
-      SLACK_RELEASE_WEBHOOK: ${{ secrets.SLACK_RELEASE_WEBHOOK }}
-
-  # Pages when the release shipped but the supabase.com publish did not. The docs job's
-  # continue-on-error hides its own failures, so its report step exports `failed`; a job that ran
-  # without exporting `failed=false` (timeout, crash before the report step) counts as failed.
-  notify-slack-publish-failure:
-    name: Notify Slack (publish failure)
-    needs: [plan, docs]
-    if: ${{ !cancelled() && needs.plan.outputs.dry_run != 'true' && needs.docs.result != 'skipped' && needs.docs.outputs.failed != 'false' }}
-    uses: ./.github/workflows/slack-notify.yml
-    with:
-      package: Supabase CLI
-      status: publish-failure
       version: ${{ needs.plan.outputs.version }}
       channel: ${{ needs.plan.outputs.channel }}
     secrets:
@@ -526,7 +397,7 @@ jobs:
     if: ${{ failure() && !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
     uses: ./.github/workflows/slack-notify.yml
     with:
-      package: Supabase CLI
+      package: DBase CLI
       status: failure
       version: ${{ needs.plan.outputs.version }}
       channel: ${{ needs.plan.outputs.channel || (github.ref_name == 'next' && 'next') || '' }}

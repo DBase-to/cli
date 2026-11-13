@@ -1,91 +1,73 @@
 <p align="center">
-  <a href="https://supabase.com">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="./docs/assets/supabase-cli-wordmark-dark.svg">
-      <img src="./docs/assets/supabase-cli-wordmark-light.svg" alt="Supabase CLI" width="360">
-    </picture>
-  </a>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./docs/assets/DBase-Wordmark-Dark.png">
+    <img src="./docs/assets/DBase-Wordmark-Light.png" alt="DBase CLI" width="360">
+  </picture>
 </p>
 
 <p align="center">
-  Develop locally and deploy to the Supabase Platform from your terminal.
+  Develop locally and deploy to DBase from your terminal.
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/supabase"><img alt="npm" src="https://img.shields.io/npm/v/supabase?style=flat-square&color=3ECF8E"></a>
-  <a href="https://github.com/supabase/cli/actions/workflows/test.yml"><img alt="Build" src="https://img.shields.io/github/actions/workflow/status/supabase/cli/test.yml?branch=develop&label=build&style=flat-square&color=3ECF8E"></a>
-  <a href="https://www.npmjs.com/package/supabase"><img alt="License" src="https://img.shields.io/npm/l/supabase.svg?style=flat-square&color=3ECF8E"></a>
-  <a href="https://discord.supabase.com"><img alt="Discord" src="https://img.shields.io/discord/839993398554656828?label=discord&style=flat-square&color=3ECF8E"></a>
+  <a href="#license"><img alt="License" src="https://img.shields.io/badge/license-MIT-blue?style=flat-square"></a>
 </p>
 
 ---
 
-Supabase CLI brings the Supabase Platform to your terminal. Run the full local stack, manage database migrations, deploy Edge Functions, generate types, and automate project workflows.
+DBase CLI brings DBase to your terminal. Run the full local stack, manage database migrations, deploy Edge Functions, generate types, and automate project workflows.
 
 ## Installation
 
+Install the CLI with the install script:
+
 ```sh
-# YOLO
-curl -fsSL https://raw.githubusercontent.com/supabase/cli/main/install | bash
-
-# npm
-npm install -D supabase                   # or bun/pnpm/yarn add -D supabase
-npm install -D supabase@beta              # beta channel
-
 # macOS and Linux
-brew install supabase/tap/supabase        # always up to date
-brew install supabase                     # official formula, may be delayed
-brew install supabase/tap/supabase-beta   # beta channel
-
-# Windows
-scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
-scoop install supabase
-scoop install supabase-beta               # beta channel
-
-# Linux packages
-# Download .apk, .deb, .rpm, or .pkg.tar.zst from GitHub Releases.
+curl -fsSL https://raw.githubusercontent.com/DBase-to/cli/main/install | bash
 ```
 
-Linux packages are available from [Releases](https://github.com/supabase/cli/releases). Community-maintained packages are also available through [pkgx](https://pkgx.sh/) and [Nixpkgs](https://nixos.org/).
+Linux packages (`.apk`, `.deb`, and `.rpm`) are available from
+[Releases](https://github.com/DBase-to/cli/releases).
+
+npm, Homebrew, and Scoop channels are planned. Until they are published, run
+the CLI from source as described in [Developing](#developing).
 
 ## Start Local Development
 
-Create a Supabase workspace and start the local stack:
+Create a DBase workspace and start the local stack:
 
 ```sh
-supabase init
-supabase start
-supabase status
+dbase init
+dbase start
+dbase status
 ```
 
-The local stack includes Postgres, Auth, Realtime, Storage, Edge Functions, and the Supabase APIs.
+The local stack includes Postgres, Auth, Realtime, Storage, Edge Functions, and the DBase APIs.
 
 Start from a template:
 
 ```sh
-supabase bootstrap
+dbase bootstrap
 ```
 
 ## Link A Project
 
-Connect your local workspace to a hosted Supabase project:
+Connect your local workspace to a hosted DBase project:
 
 ```sh
-supabase login
-supabase link
+dbase login
+dbase link
 ```
 
 ## Manage Your Database
 
-Create migrations, compare schemas, and apply changes to your local database. Add `--remote` to act
-on your linked project instead:
+Create migrations, compare schemas, and apply changes locally or to your linked project:
 
 ```sh
-supabase migration new create_profiles
-supabase db diff
-supabase db push
-supabase db push --remote
-supabase db reset
+dbase migration new create_profiles
+dbase db diff
+dbase db push
+dbase db reset
 ```
 
 ## Deploy Edge Functions
@@ -93,9 +75,9 @@ supabase db reset
 Build, serve, and deploy functions from the same project workspace:
 
 ```sh
-supabase functions new hello-world
-supabase functions serve
-supabase functions deploy hello-world
+dbase functions new hello-world
+dbase functions serve
+dbase functions deploy hello-world
 ```
 
 ## Generate Types
@@ -103,8 +85,8 @@ supabase functions deploy hello-world
 Generate TypeScript types from your local database or linked project:
 
 ```sh
-supabase gen types
-supabase gen types --remote
+dbase gen types --local
+dbase gen types --linked
 ```
 
 ## Reference
@@ -112,13 +94,13 @@ supabase gen types --remote
 Use `--help` on any command to explore flags and examples:
 
 ```sh
-supabase db --help
-supabase functions deploy --help
+dbase db --help
+dbase functions deploy --help
 ```
 
-- [CLI reference](https://supabase.com/docs/reference/cli/about)
-- [Local development guide](https://supabase.com/docs/guides/local-development)
-- [Supabase docs](https://supabase.com/docs)
+- [CLI reference](https://dbase.to/docs/reference/cli)
+- [Local development guide](https://dbase.to/docs/guides/local-development)
+- [DBase docs](https://dbase.to/docs)
 
 ## Developing
 
@@ -130,18 +112,20 @@ pnpm check:all
 
 cd apps/cli
 
+pnpm dev -- --help
 pnpm types:check
 pnpm run test:unit && pnpm run test:integration
 ```
 
 Useful source entry points:
 
-| Path              | Purpose                              |
-| ----------------- | ------------------------------------ |
-| `apps/cli`        | TypeScript/Bun CLI package           |
-| `packages/stack`  | Local Supabase stack runtime         |
-| `packages/config` | Config schema and generated types    |
-| `packages/api`    | Typed Supabase Management API client |
+| Path              | Purpose                                         |
+| ----------------- | ----------------------------------------------- |
+| `apps/cli`        | TypeScript/Bun CLI package                      |
+| `apps/cli-go`     | Go CLI source used by the CLI                   |
+| `packages/stack`  | Local DBase stack runtime                       |
+| `packages/config` | Config schema and generated types               |
+| `packages/api`    | Typed Management API client (OpenAPI-generated) |
 
 After a fresh clone, install the reference repositories used for agent and developer inspection:
 
@@ -152,6 +136,8 @@ pnpm repos:install
 ## Contributing
 
 We love focused pull requests with a clear problem, a small surface area, and tests that match the user-facing behavior.
+
+DBase CLI is a downstream fork of [`supabase/cli`](https://github.com/supabase/cli). Changes that are not specific to DBase should be opened upstream; see [CONTRIBUTING.md](./CONTRIBUTING.md#upstream-first).
 
 Open an issue first and wait for a maintainer to add the `open-for-contribution` label before starting work — external pull requests that don't link a labeled, open issue are closed automatically. See [CONTRIBUTING.md](./CONTRIBUTING.md#contribution-workflow) for the full workflow.
 
@@ -181,4 +167,4 @@ fix(cli): handle linked projects without cached service versions
 
 ## License
 
-Supabase CLI packages are released under the MIT license.
+DBase CLI packages are released under the MIT license.

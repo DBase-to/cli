@@ -16,11 +16,11 @@ on:
         required: true
         type: string
       brew_name:
-        description: Homebrew formula name (e.g. supabase, supabase-beta, or supabase@2)
+        description: Homebrew formula name (e.g. dbase, dbase-beta, or dbase@2)
         required: true
         type: string
       scoop_name:
-        description: Scoop manifest name (e.g. supabase, supabase-beta, or supabase-v2-stable)
+        description: Scoop manifest name (e.g. dbase, dbase-beta, or dbase-v2-stable)
         required: true
         type: string
   workflow_dispatch:
@@ -30,15 +30,15 @@ on:
         required: true
         type: string
       brew_name:
-        description: Homebrew formula name (e.g. supabase, supabase-beta, or supabase@2)
+        description: Homebrew formula name (e.g. dbase, dbase-beta, or dbase@2)
         required: false
         type: string
-        default: supabase
+        default: dbase
       scoop_name:
-        description: Scoop manifest name (e.g. supabase, supabase-beta, or supabase-v2-stable)
+        description: Scoop manifest name (e.g. dbase, dbase-beta, or dbase-v2-stable)
         required: false
         type: string
-        default: supabase
+        default: dbase
 
 permissions:
   contents: read
@@ -60,7 +60,7 @@ jobs:
       VERSION: ${{ inputs.version }}
       BREW_NAME: ${{ inputs.brew_name }}
       # Skips Homebrew's own auto-update; `brew install <user>/<tap>/<formula>` taps
-      # supabase/homebrew-tap from git HEAD regardless, so the fresh formula is picked up anyway.
+      # DBase-to/homebrew-tap from git HEAD regardless, so the fresh formula is picked up anyway.
       #
       # Do not also set HOMEBREW_NO_INSTALL_FROM_API: it only affects homebrew/core + cask taps,
       # and on Linux it forces a slow homebrew/core checkout that hangs this job for 10+ minutes.
@@ -79,7 +79,7 @@ jobs:
       - name: Install from Homebrew tap
         run: |
           set -euo pipefail
-          # `brew install <user>/<tap>/<formula>` taps supabase/homebrew-tap at
+          # `brew install <user>/<tap>/<formula>` taps DBase-to/homebrew-tap at
           # its current git HEAD and installs from source, verifying the
           # formula's sha256 against the downloaded tarball. A checksum mismatch
           # (the v2.107.0 failure mode) aborts the install here.
@@ -102,7 +102,7 @@ jobs:
           max_attempts=3
           while :; do
             attempts=$((attempts + 1))
-            if out="$(brew install "supabase/tap/${BREW_NAME}" 2>&1)"; then
+            if out="$(brew install "DBase-to/tap/${BREW_NAME}" 2>&1)"; then
               printf '%s\n' "${out}"
               break
             fi
@@ -122,21 +122,21 @@ jobs:
                 ;;
             esac
           done
-      - name: Verify supabase --version
+      - name: Verify dbase --version
         run: |
           set -euo pipefail
-          # `supabase --version` prints the version without the leading `v`,
+          # `dbase --version` prints the version without the leading `v`,
           # while release tags / dispatch inputs may include it, so strip it
           # before comparing.
           expected="${VERSION#v}"
-          actual="$(supabase --version | tr -d '\r' | head -n1)"
-          echo "supabase --version: ${actual}"
+          actual="$(dbase --version | tr -d '\r' | head -n1)"
+          echo "dbase --version: ${actual}"
           if [ "${actual}" != "${expected}" ]; then
             echo "Version mismatch: expected ${expected}, got ${actual}" >&2
             exit 1
           fi
-      - name: Exercise supabase --help
-        run: supabase --help
+      - name: Exercise dbase --help
+        run: dbase --help
 
   scoop:
     name: Scoop (${{ inputs.scoop_name }})
@@ -155,28 +155,28 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
-          # Adding the bucket clones supabase/scoop-bucket at its current HEAD;
+          # Adding the bucket clones DBase-to/scoop-bucket at its current HEAD;
           # `scoop install` then verifies the manifest hash against the
           # downloaded tarball before extracting it. A hash mismatch (the
           # v2.107.0 failure mode) aborts the install here.
-          scoop bucket add supabase https://github.com/supabase/scoop-bucket
-          scoop install "supabase/$env:SCOOP_NAME"
-      - name: Verify supabase --version
+          scoop bucket add dbase https://github.com/DBase-to/scoop-bucket
+          scoop install "dbase/$env:SCOOP_NAME"
+      - name: Verify dbase --version
         # Force bash so ${VERSION} expands the same way as the other legs — windows-latest
         # defaults to pwsh, which treats it as an empty PowerShell variable.
         shell: bash
         run: |
           set -euo pipefail
           expected="${VERSION#v}"
-          actual="$(supabase --version | tr -d '\r' | head -n1)"
-          echo "supabase --version: ${actual}"
+          actual="$(dbase --version | tr -d '\r' | head -n1)"
+          echo "dbase --version: ${actual}"
           if [ "${actual}" != "${expected}" ]; then
             echo "Version mismatch: expected ${expected}, got ${actual}" >&2
             exit 1
           fi
-      - name: Exercise supabase --help
+      - name: Exercise dbase --help
         shell: bash
-        run: supabase --help
+        run: dbase --help
 
   install-script:
     name: install script (${{ matrix.runner }})
@@ -206,20 +206,20 @@ jobs:
           # Release tarball plus checksums.txt and aborts on a sha256 mismatch.
           # --no-modify-path keeps it from editing the runner's shell rc files;
           # in GitHub Actions it still appends the install dir to $GITHUB_PATH,
-          # so `supabase` is on PATH for the verification steps below.
-          curl -fsSL "https://github.com/supabase/cli/releases/download/v${version}/install" -o install.sh
+          # so `dbase` is on PATH for the verification steps below.
+          curl -fsSL "https://github.com/DBase-to/cli/releases/download/v${version}/install" -o install.sh
           bash install.sh --version "${version}" --no-modify-path
-      - name: Verify supabase --version
+      - name: Verify dbase --version
         shell: bash
         run: |
           set -euo pipefail
           expected="${VERSION#v}"
-          actual="$(supabase --version | tr -d '\r' | head -n1)"
-          echo "supabase --version: ${actual}"
+          actual="$(dbase --version | tr -d '\r' | head -n1)"
+          echo "dbase --version: ${actual}"
           if [ "${actual}" != "${expected}" ]; then
             echo "Version mismatch: expected ${expected}, got ${actual}" >&2
             exit 1
           fi
-      - name: Exercise supabase --help
+      - name: Exercise dbase --help
         shell: bash
-        run: supabase --help
+        run: dbase --help

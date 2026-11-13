@@ -127,8 +127,8 @@ jobs:
           - { package: "@supabase/stack", shard: 1/3, name: stack 1/3 }
           - { package: "@supabase/stack", shard: 2/3, name: stack 2/3 }
           - { package: "@supabase/stack", shard: 3/3, name: stack 3/3 }
-          - { package: supabase, shard: 1/2, name: cli 1/2 }
-          - { package: supabase, shard: 2/2, name: cli 2/2 }
+          - { package: dbase, shard: 1/2, name: cli 1/2 }
+          - { package: dbase, shard: 2/2, name: cli 2/2 }
           - { package: "@supabase/api", name: api, stack-e2e: true }
     steps:
       - name: Checkout
@@ -389,16 +389,16 @@ jobs:
           sticky-disks: "true"
           docker-images: "true"
 
-      # The e2e harness invokes `node apps/cli/dist/supabase.js` with
+      # The e2e harness invokes `node apps/cli/dist/dbase.js` with
       # `SUPABASE_CLI_BINARY_OVERRIDE` pointing at the compiled binary in
       # `apps/cli/dist/`. Build the CLI explicitly before invoking every
       # package-local e2e suite.
       - name: Build CLI
-        run: pnpm exec turbo run supabase#build
+        run: pnpm exec turbo run dbase#build
 
       - name: Run end-to-end tests
         if: matrix.suite == 'cli'
-        run: pnpm exec turbo run test:e2e:run --only --filter=supabase -- --shard=${{ matrix.shard }}/${{ matrix.shards }}
+        run: pnpm exec turbo run test:e2e:run --only --filter=dbase -- --shard=${{ matrix.shard }}/${{ matrix.shards }}
         env:
           SUPABASE_E2E_WORKERS: "4"
 
