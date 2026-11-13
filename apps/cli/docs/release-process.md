@@ -54,9 +54,9 @@ Before the first production cut:
 ## Ring 1 — Local Verdaccio
 
 Use this loop while iterating on build scripts, the Node shim, or anything that
-changes what gets packed into `dbase` or `@dbase/cli-<platform>`. It installs
+changes what gets packed into `@dbase/cli` or `@dbase/cli-<platform>`. It installs
 the CLI into a local npm registry and lets you
-`npx --registry http://localhost:4873 dbase` as if you'd installed from npm.
+`npx --registry http://localhost:4873 @dbase/cli` as if you'd installed from npm.
 
 Start the registry in one terminal:
 
@@ -304,7 +304,7 @@ flowchart TD
     shared["release-shared.yml"]
     shared --> build["build (ubuntu-latest)<br/>sync-versions, build.ts, nfpm<br/>cache build artifacts"]
     build --> smoke["smoke-test<br/>ubuntu + windows<br/>smoke-test-macos<br/>macos-latest"]
-    smoke --> pub["publish (ubuntu-latest)<br/>id-token: write (OIDC trusted publishing)<br/>pnpm publish --provenance × 8 platform pkgs<br/>then the umbrella dbase package"]
+    smoke --> pub["publish (ubuntu-latest)<br/>id-token: write (OIDC trusted publishing)<br/>pnpm publish --provenance × 8 platform pkgs<br/>then the umbrella @dbase/cli package"]
     pub --> rel["softprops/action-gh-release<br/>(draft) → gh release edit --draft=false"]
     rel --> hb["publish-homebrew<br/>App-token-authed clone of homebrew-tap<br/>update-homebrew.ts --name <brew_name>"]
     rel --> sc["publish-scoop<br/>App-token-authed clone of scoop-bucket<br/>update-scoop.ts --name <scoop_name>"]

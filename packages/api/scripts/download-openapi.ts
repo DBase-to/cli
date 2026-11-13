@@ -5,7 +5,7 @@ import { NodeServices } from "@effect/platform-node";
 import { Config, ConfigProvider, Console, Effect, FileSystem, Layer, Option, Schema } from "effect";
 import { FetchHttpClient, HttpClient } from "effect/http";
 
-const DEFAULT_SUPABASE_API_URL = "https://api.supabase.com";
+const DEFAULT_SUPABASE_API_URL = "https://api.dbase.to";
 const OPENAPI_SPEC_PATH = fileURLToPath(new URL("../src/generated/openapi.json", import.meta.url));
 const OPENAPI_OVERRIDES_PATH = fileURLToPath(new URL("openapi-overrides.json", import.meta.url));
 const OPENAPI_SOURCE_PATH = fileURLToPath(new URL("openapi-source.json", import.meta.url));

@@ -16,7 +16,7 @@ import {
 
 describe("download-openapi", () => {
   test("defaults to the production API spec URL", () => {
-    expect(resolveOpenApiSpecUrl(undefined)).toBe("https://api.supabase.com/api/v1-json");
+    expect(resolveOpenApiSpecUrl(undefined)).toBe("https://api.dbase.to/api/v1-json");
   });
 
   test("derives the spec URL from SUPABASE_API_URL", () => {
@@ -117,18 +117,18 @@ describe("download-openapi", () => {
   });
 
   test("derives the v2 spec URL and still normalizes a trailing slash", () => {
-    expect(resolveOpenApiSpecUrl("https://api.supabase.com", "v2")).toBe(
-      "https://api.supabase.com/api/v2-json",
+    expect(resolveOpenApiSpecUrl("https://api.dbase.to", "v2")).toBe(
+      "https://api.dbase.to/api/v2-json",
     );
-    expect(resolveOpenApiSpecUrl("https://api.supabase.com/", "v2")).toBe(
-      "https://api.supabase.com/api/v2-json",
+    expect(resolveOpenApiSpecUrl("https://api.dbase.to/", "v2")).toBe(
+      "https://api.dbase.to/api/v2-json",
     );
   });
 
   test("resolves both the v1 and v2 spec URLs for a single base URL", () => {
-    expect(resolveOpenApiSpecUrls("https://api.supabase.com")).toEqual([
-      { version: "v1", url: "https://api.supabase.com/api/v1-json" },
-      { version: "v2", url: "https://api.supabase.com/api/v2-json" },
+    expect(resolveOpenApiSpecUrls("https://api.dbase.to")).toEqual([
+      { version: "v1", url: "https://api.dbase.to/api/v1-json" },
+      { version: "v2", url: "https://api.dbase.to/api/v2-json" },
     ]);
   });
 
@@ -142,7 +142,7 @@ describe("download-openapi", () => {
     expect(resolveOpenApiBaseUrl({ pinnedBaseUrl: "https://pinned.supabase.com" })).toBe(
       "https://pinned.supabase.com",
     );
-    expect(resolveOpenApiBaseUrl({})).toBe("https://api.supabase.com");
+    expect(resolveOpenApiBaseUrl({})).toBe("https://api.dbase.to");
   });
 
   test("merging a single document is an identity for its paths and schemas", () => {
