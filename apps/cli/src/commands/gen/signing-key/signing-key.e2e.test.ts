@@ -27,7 +27,7 @@ const makeProject = Effect.gen(function* () {
  * layer, not the mocked `Stdin` the integration suite provides. Per-branch prompt/format
  * coverage lives in the integration suite.
  */
-describe("supabase gen signing-key", () => {
+describe("dbase gen signing-key", () => {
   it.live(
     "declines the overwrite on a piped 'n' without crashing or writing the file",
     () =>

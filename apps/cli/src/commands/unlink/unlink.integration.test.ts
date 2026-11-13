@@ -132,7 +132,7 @@ describe("unlink integration", () => {
       const stillExists = yield* tempDirExists(workdir);
       expect(stillExists).toBe(false);
       expect(credentials.deletedRefs).toEqual([VALID_REF]);
-      expect(out.stdoutText).toContain("Finished supabase unlink.");
+      expect(out.stdoutText).toContain("Finished dbase unlink.");
     }).pipe(Effect.provide(layer));
   });
 
@@ -152,7 +152,7 @@ describe("unlink integration", () => {
     return Effect.gen(function* () {
       yield* seedProjectRef(workdir, VALID_REF);
       yield* unlink();
-      expect(out.stdoutText).toContain("Finished supabase unlink.");
+      expect(out.stdoutText).toContain("Finished dbase unlink.");
     }).pipe(Effect.provide(layer));
   });
 
@@ -227,7 +227,7 @@ describe("unlink integration", () => {
       yield* unlink();
       const success = out.messages.find((m) => m.type === "success");
       expect(success?.data).toMatchObject({ project_ref: VALID_REF });
-      expect(out.stdoutText).not.toContain("Finished supabase unlink.");
+      expect(out.stdoutText).not.toContain("Finished dbase unlink.");
     }).pipe(Effect.provide(layer));
   });
 
@@ -291,7 +291,7 @@ describe("unlink integration", () => {
         yield* unlink();
         expect(yield* linkDocumentExists(workdir)).toBe(false);
         expect(credentials.deletedRefs).toEqual(["branchprojectrefabcd"]);
-        expect(out.stdoutText).toContain("Finished supabase unlink.");
+        expect(out.stdoutText).toContain("Finished dbase unlink.");
       }).pipe(Effect.provide(layer));
     });
 
@@ -417,7 +417,7 @@ describe("unlink integration", () => {
         yield* unlink();
         expect(yield* linkDocumentExists(workdir)).toBe(false);
         expect(credentials.deletedRefs).toEqual([]);
-        expect(out.stdoutText).toContain("Finished supabase unlink.");
+        expect(out.stdoutText).toContain("Finished dbase unlink.");
       }).pipe(Effect.provide(layer));
     });
   });

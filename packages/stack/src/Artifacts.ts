@@ -23,7 +23,7 @@ export type ServiceKind =
   | "analytics"
   | "pooler";
 
-/** A catalog artifact: a stack service kind, or an artifact only the legacy `supabase start` runs. */
+/** A catalog artifact: a stack service kind, or an artifact only the legacy `dbase start` runs. */
 export type ArtifactKind = ServiceKind | "vector";
 
 const isServiceKind = (kind: ArtifactKind): kind is ServiceKind => kind !== "vector";

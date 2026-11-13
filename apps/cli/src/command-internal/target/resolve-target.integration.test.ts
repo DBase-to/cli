@@ -491,7 +491,7 @@ describe("resolveTarget", () => {
         const error = failureOf(result.exit);
         expect(error).toMatchObject({ _tag: "LinkBranchListStatusError", status: 401 });
         expect(String((error as Error).message)).toBe(
-          "Authentication failed: your access token is invalid or has expired. Run `supabase login` to re-authenticate.",
+          "Authentication failed: your access token is invalid or has expired. Run `dbase login` to re-authenticate.",
         );
       }),
     );
@@ -538,8 +538,8 @@ describe("resolveTarget", () => {
     const args = ["db", "pull", "--remote", "feature-x"];
     const command = ["db", "pull"];
     const bare = { ...none, ...remote({ _tag: "Linked" }) };
-    const options = `For the branch: supabase db pull --remote=feature-x. For the linked project: supabase db pull feature-x --remote`;
-    const placeholderOptions = `For the branch: supabase db pull --remote=<branch>. For the linked project, put --remote last: supabase db pull <operands> --remote`;
+    const options = `For the branch: dbase db pull --remote=feature-x. For the linked project: dbase db pull feature-x --remote`;
+    const placeholderOptions = `For the branch: dbase db pull --remote=<branch>. For the linked project, put --remote last: dbase db pull <operands> --remote`;
 
     it.effect("fails when the word is a branch of the linked project", () =>
       Effect.gen(function* () {
@@ -602,7 +602,7 @@ describe("resolveTarget", () => {
           });
           expect(failureOf(result.exit)).toMatchObject({
             _tag: "TargetRemoteAmbiguousError",
-            message: `"${FLAG_REF}" after --remote looks like a project ref. For that project: supabase db pull --remote=${FLAG_REF}. To keep it as an operand, put --remote last: supabase db pull <operands> --remote`,
+            message: `"${FLAG_REF}" after --remote looks like a project ref. For that project: dbase db pull --remote=${FLAG_REF}. To keep it as an operand, put --remote last: dbase db pull <operands> --remote`,
           });
           expect(result.apiRequests).toEqual([]);
           expect(result.refFlags).toEqual([]);
@@ -694,7 +694,7 @@ describe("resolveTarget", () => {
         branches: "unauthorized",
         storedToken: true,
         status: 401,
-        suggestion: "Run `supabase login` with an account that can list this project's branches.",
+        suggestion: "Run `dbase login` with an account that can list this project's branches.",
         actionability: statusCodeActionability(401),
       },
       {
@@ -710,7 +710,7 @@ describe("resolveTarget", () => {
         branches: "missing",
         storedToken: false,
         status: 404,
-        suggestion: `If ${FILE_REF} is itself a preview branch, link its parent project first: supabase link --project-ref <parent-ref>`,
+        suggestion: `If ${FILE_REF} is itself a preview branch, link its parent project first: dbase link --project-ref <parent-ref>`,
         actionability: actionability.provideFlags,
       },
     ] as const)("suggests the fix when the branch listing is $name", (testCase) =>
@@ -740,14 +740,14 @@ describe("resolveTarget", () => {
         name: "no access token",
         failure: new AccessTokenRequiredError({ message: "Access token not provided." }),
         reason: "no access token is set",
-        suggestion: "Run `supabase login` with an account that can list this project's branches.",
+        suggestion: "Run `dbase login` with an account that can list this project's branches.",
         actionability: actionability.authLogin,
       },
       {
         name: "a malformed stored access token",
         failure: new InvalidAccessTokenError({ message: "Invalid access token format." }),
         reason: "the stored access token is not valid",
-        suggestion: "Run `supabase login` with an account that can list this project's branches.",
+        suggestion: "Run `dbase login` with an account that can list this project's branches.",
         actionability: actionability.authLogin,
       },
       {
@@ -810,7 +810,7 @@ describe("resolveTarget", () => {
         const error = failureOf(result.exit);
         expect(error).toMatchObject({
           _tag: "TargetRemoteAmbiguousError",
-          message: `Can't tell whether the word after --remote is a branch (listing the branches of project ${FILE_REF} failed: HTTP 403). For the branch: supabase secrets unset --remote=<branch>. For the linked project, put --remote last: supabase secrets unset <operands> --remote`,
+          message: `Can't tell whether the word after --remote is a branch (listing the branches of project ${FILE_REF} failed: HTTP 403). For the branch: dbase secrets unset --remote=<branch>. For the linked project, put --remote last: dbase secrets unset <operands> --remote`,
         });
         expect(stringifyJson(error)).not.toContain("sk_live_secret");
       }),
@@ -826,7 +826,7 @@ describe("resolveTarget", () => {
         });
         expect(failureOf(result.exit)).toMatchObject({
           _tag: "TargetRemoteAmbiguousError",
-          message: `"feature-y" isn't a branch, but "feature-x" is. For the branch: supabase db pull --remote=feature-x. For the linked project: supabase db pull feature-y --remote`,
+          message: `"feature-y" isn't a branch, but "feature-x" is. For the branch: dbase db pull --remote=feature-x. For the linked project: dbase db pull feature-y --remote`,
         });
         expect(result.refFlags).toEqual([]);
       }),
@@ -862,7 +862,7 @@ describe("resolveTarget", () => {
         });
         expect(failureOf(result.exit)).toMatchObject({
           _tag: "TargetRemoteAmbiguousError",
-          message: `"stagign" isn't a branch, but "staging" is. For the branch: supabase db pull --remote=staging. For the linked project: supabase db pull stagign --remote`,
+          message: `"stagign" isn't a branch, but "staging" is. For the branch: dbase db pull --remote=staging. For the linked project: dbase db pull stagign --remote`,
         });
       }),
     );
@@ -876,7 +876,7 @@ describe("resolveTarget", () => {
           branches: [fileBranch("main", { project_ref: FILE_REF, is_default: true })],
         });
         expect(failureOf(result.exit)).toMatchObject({
-          message: `"Main" isn't a branch, but "main" is. For the branch: supabase db pull --remote=main. For the linked project: supabase db pull Main --remote`,
+          message: `"Main" isn't a branch, but "main" is. For the branch: dbase db pull --remote=main. For the linked project: dbase db pull Main --remote`,
         });
       }),
     );
@@ -890,7 +890,7 @@ describe("resolveTarget", () => {
           branches: [fileBranch("feature-x")],
         });
         expect(failureOf(result.exit)).toMatchObject({
-          message: `"Feature-X" isn't a branch, but "feature-x" is. For the branch: supabase db pull --remote=feature-x. For the linked project: supabase db pull Feature-X --remote`,
+          message: `"Feature-X" isn't a branch, but "feature-x" is. For the branch: dbase db pull --remote=feature-x. For the linked project: dbase db pull Feature-X --remote`,
         });
       }),
     );

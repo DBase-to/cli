@@ -482,7 +482,7 @@ const persistIdentityReset = Effect.fn("telemetry.persistIdentityReset")(functio
  *  - Reuses an existing `device_id` if the file is present.
  *  - Rotates `session_id` if `session_last_active` is older than 30 minutes.
  *  - Always sets `enabled: true` on a fresh state — the field is only flipped to `false` if the
- *    user has run `supabase telemetry disable`, in which case the prior value is preserved. The
+ *    user has run `dbase telemetry disable`, in which case the prior value is preserved. The
  *    `SUPABASE_TELEMETRY_DISABLED`/`DO_NOT_TRACK` env vars suppress event delivery, not
  *    state-file writes.
  *  - Always writes, even when telemetry is disabled; only event delivery is suppressed.

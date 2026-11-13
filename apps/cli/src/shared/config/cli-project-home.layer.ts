@@ -55,7 +55,7 @@ const makeCliProjectHome = Effect.gen(function* () {
     ) {
       return Effect.fail(
         new CliProjectHomeNotDirectoryError({
-          message: `${projectHomeDir} could not be created: a file (or a symlink loop) exists at that path or on one of its parent directories. Remove or rename it so the Supabase CLI can store project state there.`,
+          message: `${projectHomeDir} could not be created: a file (or a symlink loop) exists at that path or on one of its parent directories. Remove or rename it so the DBase CLI can store project state there.`,
         }),
       );
     }

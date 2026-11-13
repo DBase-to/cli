@@ -31,11 +31,11 @@ export const storageRmCommand = Command.make("rm", config).pipe(
   Command.withShortDescription("Remove objects by file path"),
   Command.withExamples([
     {
-      command: "supabase storage rm -r ss:///bucket/docs",
+      command: "dbase storage rm -r ss:///bucket/docs",
       description: "Recursively remove a directory from storage",
     },
     {
-      command: "supabase storage rm ss:///bucket/docs/example.md ss:///bucket/readme.md",
+      command: "dbase storage rm ss:///bucket/docs/example.md ss:///bucket/readme.md",
       description: "Remove multiple files from storage",
     },
   ]),

@@ -18,7 +18,7 @@ describe("config pull CLI surface", () => {
   it.live("plain `config pull` parses — no boolean flag is accidentally required", () =>
     Effect.gen(function* () {
       // A Flag.Boolean without Flag.withDefault(false) is a required flag, so a missing default
-      // on --dry-run/--force would fail plain `supabase config pull`. Integration tests hand the
+      // on --dry-run/--force would fail plain `dbase config pull`. Integration tests hand the
       // handler pre-built flags and never exercise the parser, so this needs pinning at the
       // subprocess boundary.
       const fs = yield* FileSystem.FileSystem;
@@ -33,7 +33,7 @@ describe("config pull CLI surface", () => {
       // reached the handler prints this exact load error — a vacuously-green regression (e.g.
       // the binary failing to start) wouldn't.
       expect(combined).toContain(
-        "failed to read supabase/config.toml, config.json or config.jsonc: file not found. Run `supabase init` to create one.",
+        "failed to read supabase/config.toml, config.json or config.jsonc: file not found. Run `dbase init` to create one.",
       );
     }).pipe(Effect.scoped, Effect.provide(BunServices.layer)),
   );

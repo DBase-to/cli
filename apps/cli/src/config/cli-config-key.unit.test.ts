@@ -18,7 +18,13 @@ import {
   type CliConfigSources,
 } from "./cli-config-key.ts";
 import { CLI_CONFIG_FAMILIES } from "./cli-config-key-annotations.ts";
-import { cliConfigFamilyKey, cliConfigRegistry, type AnyCliConfigKey } from "./cli-config-keys.ts";
+import type { CliConfigFlagDeclaration } from "./cli-config-flags.ts";
+import {
+  CliConfigKeys,
+  cliConfigFamilyKey,
+  cliConfigRegistry,
+  type AnyCliConfigKey,
+} from "./cli-config-keys.ts";
 
 const pathService = Effect.runSync(Effect.provide(Path.Path, Path.layer));
 
@@ -65,13 +71,19 @@ const seed = requiredCliConfigKey({
   default: true,
 });
 
-const valueOf = <A, X>(key: CliConfigKey<A, X>, parts?: SourceParts) => {
+const valueOf = <A, X, F extends CliConfigFlagDeclaration>(
+  key: CliConfigKey<A, X, F>,
+  parts?: SourceParts,
+) => {
   const picked = pickCliConfigKey(key, makeSources(parts));
   if (Result.isFailure(picked)) throw picked.failure;
   return picked.success;
 };
 
-const failureOf = <A, X>(key: CliConfigKey<A, X>, parts?: SourceParts) => {
+const failureOf = <A, X, F extends CliConfigFlagDeclaration>(
+  key: CliConfigKey<A, X, F>,
+  parts?: SourceParts,
+) => {
   const picked = pickCliConfigKey(key, makeSources(parts));
   if (Result.isSuccess(picked)) throw new Error("expected a failure");
   return picked.failure;
@@ -109,6 +121,19 @@ describe("pickCliConfigKey tiers", () => {
       origin: { tier: "config" },
     });
     expect(valueOf(seed, withoutConfig)).toEqual({ value: true, origin: { tier: "default" } });
+  });
+
+  it("prefers DBASE_* over the legacy SUPABASE_* twin", () => {
+    const key = CliConfigKeys.db.seed.enabled;
+    expect(
+      valueOf(key, {
+        shell: { DBASE_DB_SEED_ENABLED: "true", SUPABASE_DB_SEED_ENABLED: "false" },
+      }),
+    ).toMatchObject({ value: true, origin: { tier: "shell", envName: "DBASE_DB_SEED_ENABLED" } });
+    expect(valueOf(key, { shell: { SUPABASE_DB_SEED_ENABLED: "false" } })).toMatchObject({
+      value: false,
+      origin: { tier: "shell", envName: "SUPABASE_DB_SEED_ENABLED" },
+    });
   });
 
   it("lets a set-but-empty shell variable shadow the project env and fall through to config", () => {

@@ -820,7 +820,7 @@ describe("db query integration", () => {
         flags({ sql: Option.some("select 1"), remote: REMOTE_LINKED }),
       ).pipe(Effect.exit);
       expect(Exit.isFailure(exit)).toBe(true);
-      expect(failMessage(exit)).toBe("Cannot find project ref. Have you run supabase link?");
+      expect(failMessage(exit)).toBe("Cannot find project ref. Have you run dbase link?");
     }).pipe(Effect.provide(layer));
   });
 

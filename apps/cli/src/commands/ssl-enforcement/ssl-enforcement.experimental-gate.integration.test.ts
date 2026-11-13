@@ -21,7 +21,7 @@ import { sslEnforcementCommand } from "./ssl-enforcement.command.ts";
 
 const tempRoot = useTempWorkdir("supabase-ssl-enforcement-experimental-int-");
 
-const testRoot = Command.make("supabase").pipe(
+const testRoot = Command.make("dbase").pipe(
   Command.withSubcommands([sslEnforcementCommand]),
   Command.withGlobalFlags(GLOBAL_FLAGS),
 );

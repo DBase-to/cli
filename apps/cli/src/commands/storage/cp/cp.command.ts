@@ -70,15 +70,15 @@ export const storageCpCommand = Command.make("cp", config).pipe(
   Command.withShortDescription("Copy objects from src to dst path"),
   Command.withExamples([
     {
-      command: "supabase storage cp readme.md ss:///bucket/readme.md",
+      command: "dbase storage cp readme.md ss:///bucket/readme.md",
       description: "Upload a local file to storage",
     },
     {
-      command: "supabase storage cp -r docs ss:///bucket/docs",
+      command: "dbase storage cp -r docs ss:///bucket/docs",
       description: "Upload a directory recursively to storage",
     },
     {
-      command: "supabase storage cp -r ss:///bucket/docs .",
+      command: "dbase storage cp -r ss:///bucket/docs .",
       description: "Download a directory from storage",
     },
   ]),

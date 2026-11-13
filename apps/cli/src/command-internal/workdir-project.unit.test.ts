@@ -3,22 +3,22 @@ import { describe, expect, it } from "vitest";
 import { describeConfigParseError, missingProjectConfigMessage } from "./workdir-project.ts";
 
 describe("missingProjectConfigMessage", () => {
-  it("points at `supabase init` for a defaulted workdir", () => {
+  it("points at `dbase init` for a defaulted workdir", () => {
     // Pinned byte-for-byte: `diff.e2e.test.ts`/`pull.e2e.test.ts` assert this
     // exact string when run with no `--workdir`.
     expect(missingProjectConfigMessage({ workdir: "/repo/sub", explicitWorkdir: false })).toBe(
-      "failed to read supabase/config.toml, config.json or config.jsonc: file not found. Run `supabase init` to create one.",
+      "failed to read supabase/config.toml, config.json or config.jsonc: file not found. Run `dbase init` to create one.",
     );
   });
 
-  it("names the resolved path and never suggests `supabase init` for an explicit workdir", () => {
+  it("names the resolved path and never suggests `dbase init` for an explicit workdir", () => {
     const message = missingProjectConfigMessage({
       workdir: "/repo/sub",
       explicitWorkdir: true,
     });
     expect(message).toContain("/repo/sub");
     expect(message).toContain("--workdir/SUPABASE_WORKDIR");
-    expect(message).not.toContain("supabase init");
+    expect(message).not.toContain("dbase init");
   });
 
   it("sanitizes control characters out of an explicit workdir before interpolating it", () => {

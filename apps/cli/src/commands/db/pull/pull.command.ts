@@ -75,7 +75,7 @@ const DECLARATIVE_SUGGESTION =
   "Use --declarative to pull the declarative schema. The diff engine is chosen with --diff-engine or experimental.pgdelta.enabled in the config file.";
 
 const EXPERIMENTAL_SUGGESTION =
-  "Use --declarative to pull per-object schema files, or pass --experimental=false (or unset SUPABASE_EXPERIMENTAL) for a migration pull.";
+  "Use --declarative to pull per-object schema files, or pass --experimental=false (or unset DBASE_EXPERIMENTAL) for a migration pull.";
 
 // Rejected on a credential-free runtime: `dbPullRuntimeLayer` loads the profile and command
 // settings eagerly, so building it first could fail before the removal message.

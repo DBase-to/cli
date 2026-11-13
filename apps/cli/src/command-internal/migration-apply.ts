@@ -1,6 +1,6 @@
 import { Data, Effect, type FileSystem, type Path } from "effect";
 
-import { envValue } from "../shared/config/env-option.ts";
+import { envValueBoth } from "../shared/config/env-option.ts";
 import { Output } from "../shared/output/output.service.ts";
 import { bold } from "./colors.ts";
 import { DbConnectError, DbExecError } from "./db-connection.errors.ts";
@@ -238,8 +238,11 @@ export const checkScannerBufferSize = <E>(
   projectEnv: Readonly<Record<string, string>> = {},
 ): Effect.Effect<void, E> =>
   Effect.gen(function* () {
-    const shell = yield* envValue("SUPABASE_SCANNER_BUFFER_SIZE");
-    const raw = shell ?? projectEnv["SUPABASE_SCANNER_BUFFER_SIZE"];
+    const shell = yield* envValueBoth("DBASE_SCANNER_BUFFER_SIZE", "SUPABASE_SCANNER_BUFFER_SIZE");
+    const raw =
+      shell ??
+      projectEnv["DBASE_SCANNER_BUFFER_SIZE"] ??
+      projectEnv["SUPABASE_SCANNER_BUFFER_SIZE"];
     if (raw === undefined) return;
     const configuredLimit = parseScannerBufferSize(raw);
     // Covers both an explicit non-positive size and an unparseable value (see
@@ -332,7 +335,7 @@ export const formatExecBatchError = (e: DbExecError, index: number, stat: string
     msg.push("Hint: This type may be defined in a schema that's not in your search_path.");
     msg.push("      Use schema-qualified type references to avoid this error:");
     msg.push(`        CREATE TABLE example (col extensions.${typeName});`);
-    msg.push("      Learn more: supabase migration new --help");
+    msg.push("      Learn more: dbase migration new --help");
   }
   if (e.code === "25P01") {
     msg.push("");
@@ -702,7 +705,7 @@ export const execSqlFile = <E>(
  * this function only performs the branch's body and never re-checks the gate.
  *
  * Two behaviors that would otherwise look like bugs are intentional:
- * - An empty `schema_paths` (the `supabase init` default) silently applies nothing and succeeds.
+ * - An empty `schema_paths` (the `dbase init` default) silently applies nothing and succeeds.
  * - A partial glob failure is silently dropped: per-pattern warnings only surface when no pattern
  *   matched anything at all.
  *

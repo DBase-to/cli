@@ -81,7 +81,7 @@ export const diffDeclarativeToMigrations = Effect.fn("DeclarativeSchema.plan")(f
   const exists = yield* fs.exists(run.declarativeDir).pipe(Effect.orElseSucceed(() => false));
   if (!exists) {
     return yield* declarativeError(
-      "No declarative schema directory found. Run supabase db schema declarative generate first.",
+      "No declarative schema directory found. Run dbase db schema declarative generate first.",
     );
   }
   const files = yield* LoadPgDeltaSqlFiles(fs, path, run.declarativeDir).pipe(

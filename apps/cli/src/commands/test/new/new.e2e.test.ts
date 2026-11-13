@@ -6,7 +6,7 @@ import { runSupabaseEffect } from "../../../../tests/helpers/cli.ts";
 
 const E2E_TIMEOUT_MS = 30_000;
 
-describe("supabase test new", () => {
+describe("dbase test new", () => {
   it.live(
     "scaffolds supabase/tests/<name>_test.sql and prints the created path",
     () =>

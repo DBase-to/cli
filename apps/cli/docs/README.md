@@ -1,6 +1,6 @@
 # CLI reference
 
-Source content for the [CLI reference](https://supabase.com/docs/reference/cli) published on the Supabase docs site.
+Source content for the [CLI reference](https://supabase.com/docs/reference/cli) published on the DBase docs site.
 
 - `supabase/` — long-form command descriptions, one file per command path
 - `templates/examples.yaml` — per-command usage examples, keyed by doc id

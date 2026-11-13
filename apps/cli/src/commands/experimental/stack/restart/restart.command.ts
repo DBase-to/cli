@@ -21,12 +21,12 @@ export type StackRestartFlags = CliCommand.Command.Config.Infer<typeof config>;
 
 export const stackRestartCommand = Command.make("restart", config).pipe(
   Command.withDescription(
-    "Restart an existing managed local Supabase stack using its saved configuration, including the previous start's service selection and activation policy. Project config changes are not applied.",
+    "Restart an existing managed local DBase stack using its saved configuration, including the previous start's service selection and activation policy. Project config changes are not applied.",
   ),
   Command.withShortDescription("Restart a managed local stack"),
   Command.withExamples([
     {
-      command: "supabase stack restart",
+      command: "dbase stack restart",
       description: "Restart the current project stack",
     },
   ]),

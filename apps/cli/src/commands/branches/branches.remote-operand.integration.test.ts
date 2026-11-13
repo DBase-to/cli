@@ -92,7 +92,7 @@ describe("a bare --remote followed by a word on a parent-scoped command", () => 
       );
       expect(error).toMatchObject({
         _tag: "TargetRemoteAmbiguousError",
-        message: `"${OTHER_REF}" after --remote looks like a project ref. For that project: supabase branches get --remote=${OTHER_REF}. To keep it as an operand, put --remote last: supabase branches get <operands> --remote`,
+        message: `"${OTHER_REF}" after --remote looks like a project ref. For that project: dbase branches get --remote=${OTHER_REF}. To keep it as an operand, put --remote last: dbase branches get <operands> --remote`,
       });
       expect(api.requests).toEqual([]);
     }).pipe(Effect.provide(layer));

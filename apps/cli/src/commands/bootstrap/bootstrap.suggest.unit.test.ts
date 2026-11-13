@@ -28,8 +28,8 @@ describe("suggestAppStart", () => {
   it.effect("omits the cd line for a '.' relative path", () =>
     Effect.gen(function* () {
       const path = yield* Path.Path;
-      expect(suggestAppStart(path, "/home/me/app", "/home/me/app", "supabase start")).toBe(
-        "To start your app:\n  supabase start",
+      expect(suggestAppStart(path, "/home/me/app", "/home/me/app", "dbase start")).toBe(
+        "To start your app:\n  dbase start",
       );
     }).pipe(Effect.provide(BunServices.layer)),
   );

@@ -10,7 +10,7 @@ class PullLiveError extends Data.TaggedError("PullLiveError")<{
 }> {}
 
 // Golden path only: the real four-step orchestration reaching a live Management API and its
-// project's data plane in one pass, against a fresh `supabase init` checkout. Branch coverage for
+// project's data plane in one pass, against a fresh `dbase init` checkout. Branch coverage for
 // other dispositions lives in pull.aggregate.unit.test.ts and handler-level integration tests.
 test("pulls config, migration history, db schema, and functions from a fresh project", ({
   cliEffect,

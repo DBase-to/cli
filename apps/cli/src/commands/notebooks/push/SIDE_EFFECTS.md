@@ -1,4 +1,4 @@
-# `supabase notebooks push [Notebook name]`
+# `dbase notebooks push [Notebook name]`
 
 Target: hosted, consent default No — see [Command target](../../../../docs/command-target.md)
 
@@ -10,14 +10,14 @@ notebook, and one with no match creates a new notebook.
 
 ## Files Read
 
-| Path                                           | Format     | When                                                                                                             |
-| ---------------------------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------------- |
-| `<workdir>/supabase/notebooks/`                | dir        | always — the file names are the notebook names; missing means empty, while any other read failure aborts         |
-| `<workdir>/supabase/notebooks/<name>.json`     | JSON       | one per notebook being pushed; all of them are read and decoded before the first call                            |
-| `<workdir>/supabase/.temp/project-ref`         | plain text | when `--remote=<ref>` and `SUPABASE_PROJECT_ID` are both unset, and as the linked parent for `--remote=<branch>` |
-| `<workdir>/supabase/.temp/linked-project.json` | JSON       | existence check before the cache fill, once the project ref resolves                                             |
-| `<SUPABASE_HOME or ~/.supabase>/profile`       | plain text | when neither `--profile` nor `SUPABASE_PROFILE` is set — names the profile, defaulting to `supabase`             |
-| `<SUPABASE_PROFILE>` (YAML)                    | YAML       | when `SUPABASE_PROFILE` is a filesystem path rather than a built-in name; a read failure aborts the command      |
+| Path                                           | Format     | When                                                                                                          |
+| ---------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------- |
+| `<workdir>/supabase/notebooks/`                | dir        | always — the file names are the notebook names; missing means empty, while any other read failure aborts      |
+| `<workdir>/supabase/notebooks/<name>.json`     | JSON       | one per notebook being pushed; all of them are read and decoded before the first call                         |
+| `<workdir>/supabase/.temp/project-ref`         | plain text | when `--remote=<ref>` and `DBASE_PROJECT_ID` are both unset, and as the linked parent for `--remote=<branch>` |
+| `<workdir>/supabase/.temp/linked-project.json` | JSON       | existence check before the cache fill, once the project ref resolves                                          |
+| `<DBASE_HOME or ~/.supabase>/profile`          | plain text | when neither `--profile` nor `DBASE_PROFILE` is set — names the profile, defaulting to `supabase`             |
+| `<DBASE_PROFILE>` (YAML)                       | YAML       | when `DBASE_PROFILE` is a filesystem path rather than a built-in name; a read failure aborts the command      |
 
 Every file is read and decoded **before** the first write, so a directory holding
 one unreadable notebook fails without having half-pushed the rest.
@@ -34,7 +34,7 @@ kept or deleted remotely. All selected downloads are read before uploads begin.
 | `<workdir>/supabase/notebooks/.notebook-<random>/<random>` | JSON   | scoped temporary file; atomically linked to `<name>.json`, then cleaned                                                                                                                          |
 | `<workdir>/supabase/notebooks/<name>.json`                 | JSON   | only for a project-only notebook the user chose to write into the directory                                                                                                                      |
 | `<workdir>/supabase/.temp/linked-project.json`             | JSON   | after the project ref resolves, success or failure — only when no cached file exists, `.temp/project-ref` is absent or names the same ref, a token is available, and the project lookup succeeds |
-| `<SUPABASE_HOME or ~/.supabase>/telemetry.json`            | JSON   | whenever the handler runs — flushed on success and on failure                                                                                                                                    |
+| `<DBASE_HOME or ~/.supabase>/telemetry.json`               | JSON   | whenever the handler runs — flushed on success and on failure                                                                                                                                    |
 
 Nothing local is ever removed by `push`.
 
@@ -64,17 +64,17 @@ entry are canonicalized and refused when they resolve outside the project root.
 
 ## API Routes
 
-| Method | Path                                | Auth         | Request body                           | Response (used fields)                                                                                                                                                                                                                                   |
-| ------ | ----------------------------------- | ------------ | -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `GET`  | `/v1/projects/{parent}/branches`    | Bearer token | none                                   | `[{id, name, project_ref, is_default}]` — only for `--remote=<branch>` (or the deprecated `--project-ref=<branch>`), and for a bare `--remote` followed by a word that could name a branch; `{parent}` is `SUPABASE_PROJECT_ID`, else the linked project |
-| `GET`  | `/v1/branches/{id}`                 | Bearer token | none                                   | `{ref, status, …}` — only for `--remote=<branch UUID>` when no project is linked                                                                                                                                                                         |
-| GET    | `/v2/projects/{ref}/notebooks`      | Bearer       | —                                      | `data[].id`, `data[].attributes.name`, `links.next`                                                                                                                                                                                                      |
-| POST   | `/v2/projects/{ref}/notebooks`      | Bearer       | `data.attributes` — name plus the file | —                                                                                                                                                                                                                                                        |
-| PATCH  | `/v2/projects/{ref}/notebooks/{id}` | Bearer       | `data.attributes` — name plus the file | —                                                                                                                                                                                                                                                        |
-| DELETE | `/v2/projects/{ref}/notebooks/{id}` | Bearer       | —                                      | — (only for the delete answer)                                                                                                                                                                                                                           |
-| GET    | `/v2/projects/{ref}/notebooks/{id}` | Bearer       | —                                      | — (only for the write-locally answer)                                                                                                                                                                                                                    |
-| GET    | `/v1/projects`                      | Bearer       | —                                      | `id`, `name`, `organization_slug`, `region` — project picker; only when no ref comes from `--remote=<ref>`, `SUPABASE_PROJECT_ID` or `.temp/project-ref`, stdin is a TTY and output is interactive                                                       |
-| GET    | `/v1/projects/{ref}`                | Bearer       | —                                      | linked-project cache fill — best-effort, only when `.temp/linked-project.json` is absent, `.temp/project-ref` is absent or names the same ref, and a token is available; failures are ignored                                                            |
+| Method | Path                                | Auth         | Request body                           | Response (used fields)                                                                                                                                                                                                                                |
+| ------ | ----------------------------------- | ------------ | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET`  | `/v1/projects/{parent}/branches`    | Bearer token | none                                   | `[{id, name, project_ref, is_default}]` — only for `--remote=<branch>` (or the deprecated `--project-ref=<branch>`), and for a bare `--remote` followed by a word that could name a branch; `{parent}` is `DBASE_PROJECT_ID`, else the linked project |
+| `GET`  | `/v1/branches/{id}`                 | Bearer token | none                                   | `{ref, status, …}` — only for `--remote=<branch UUID>` when no project is linked                                                                                                                                                                      |
+| GET    | `/v2/projects/{ref}/notebooks`      | Bearer       | —                                      | `data[].id`, `data[].attributes.name`, `links.next`                                                                                                                                                                                                   |
+| POST   | `/v2/projects/{ref}/notebooks`      | Bearer       | `data.attributes` — name plus the file | —                                                                                                                                                                                                                                                     |
+| PATCH  | `/v2/projects/{ref}/notebooks/{id}` | Bearer       | `data.attributes` — name plus the file | —                                                                                                                                                                                                                                                     |
+| DELETE | `/v2/projects/{ref}/notebooks/{id}` | Bearer       | —                                      | — (only for the delete answer)                                                                                                                                                                                                                        |
+| GET    | `/v2/projects/{ref}/notebooks/{id}` | Bearer       | —                                      | — (only for the write-locally answer)                                                                                                                                                                                                                 |
+| GET    | `/v1/projects`                      | Bearer       | —                                      | `id`, `name`, `organization_slug`, `region` — project picker; only when no ref comes from `--remote=<ref>`, `DBASE_PROJECT_ID` or `.temp/project-ref`, stdin is a TTY and output is interactive                                                       |
+| GET    | `/v1/projects/{ref}`                | Bearer       | —                                      | linked-project cache fill — best-effort, only when `.temp/linked-project.json` is absent, `.temp/project-ref` is absent or names the same ref, and a token is available; failures are ignored                                                         |
 
 `content` replaces the whole notebook body, and a cell keeps its identity by
 echoing back its `id` — which is why a pulled file carries cell ids and a push
@@ -101,14 +101,14 @@ never mentions `favorite` keeps whatever the dashboard set.
 
 ## Environment Variables
 
-| Variable                | Purpose                                                                                                          | Required?                                                                 |
-| ----------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `SUPABASE_ACCESS_TOKEN` | Management API bearer token                                                                                      | no (falls back to the stored login)                                       |
-| `SUPABASE_PROFILE`      | built-in profile name or YAML file path                                                                          | no (falls back to `~/.supabase/profile` -> `supabase`)                    |
-| `SUPABASE_PROJECT_ID`   | project ref when `--remote=<ref>` is unset; also the parent project that `--remote=<branch>` is resolved against | no (falls back to `supabase/.temp/project-ref`, then the picker on a TTY) |
-| `SUPABASE_WORKDIR`      | project directory the command acts on                                                                            | no (falls back to `--workdir`, then the ancestor walk)                    |
-| `SUPABASE_HOME`         | directory holding `telemetry.json`                                                                               | no (falls back to `~/.supabase`)                                          |
-| `SUPABASE_YES`          | confirms the hosted mutation without asking; only the shell environment counts, never `supabase/.env`            | no (falls back to the interactive prompt)                                 |
+| Variable             | Purpose                                                                                                          | Required?                                                                 |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `DBASE_ACCESS_TOKEN` | Management API bearer token                                                                                      | no (falls back to the stored login)                                       |
+| `DBASE_PROFILE`      | built-in profile name or YAML file path                                                                          | no (falls back to `~/.supabase/profile` -> `supabase`)                    |
+| `DBASE_PROJECT_ID`   | project ref when `--remote=<ref>` is unset; also the parent project that `--remote=<branch>` is resolved against | no (falls back to `supabase/.temp/project-ref`, then the picker on a TTY) |
+| `DBASE_WORKDIR`      | project directory the command acts on                                                                            | no (falls back to `--workdir`, then the ancestor walk)                    |
+| `DBASE_HOME`         | directory holding `telemetry.json`                                                                               | no (falls back to `~/.supabase`)                                          |
+| `DBASE_YES`          | confirms the hosted mutation without asking; only the shell environment counts, never `supabase/.env`            | no (falls back to the interactive prompt)                                 |
 
 ## Telemetry Events Fired
 

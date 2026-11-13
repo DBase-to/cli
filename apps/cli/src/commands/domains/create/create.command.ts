@@ -18,7 +18,7 @@ import { projectTargetFlags } from "../../../command-internal/target/target-flag
 const config = {
   ...projectTargetFlags(),
   customHostname: Flag.String("custom-hostname").pipe(
-    Flag.withDescription("The custom hostname to use for your Supabase project."),
+    Flag.withDescription("The custom hostname to use for your DBase project."),
   ),
   // Kept parsed (and hidden) only so using it produces the removal error instead of an
   // unknown-flag parse error.
@@ -36,13 +36,12 @@ export type DomainsCreateFlags = CliCommand.Command.Config.Infer<typeof config>;
 
 export const domainsCreateCommand = Command.make("create", config).pipe(
   Command.withDescription(
-    "Create a custom hostname for your Supabase project. Expects your custom hostname to have a CNAME record to your Supabase project's subdomain.",
+    "Create a custom hostname for your DBase project. Expects your custom hostname to have a CNAME record to your DBase project's subdomain.",
   ),
   Command.withShortDescription("Create a custom hostname"),
   Command.withExamples([
     {
-      command:
-        "supabase domains create --custom-hostname example.com --remote=abcdefghijklmnopqrst",
+      command: "dbase domains create --custom-hostname example.com --remote=abcdefghijklmnopqrst",
       description: "Create a custom hostname for a project",
     },
   ]),

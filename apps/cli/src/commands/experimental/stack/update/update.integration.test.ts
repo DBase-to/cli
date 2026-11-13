@@ -276,7 +276,7 @@ describe("experimental stack update", () => {
         yield* json.run;
 
         expect(text.output.stdoutText).toContain("rest is stale (");
-        expect(text.output.stdoutText).toContain("supabase stack update rest");
+        expect(text.output.stdoutText).toContain("dbase stack update rest");
         expect(text.output.stdoutText).not.toContain("already up to date");
         expect(yield* fs.readFileString(lockPath(root))).toBe(written);
         const result = json.output.messages.find((entry) => entry.type === "success");
@@ -346,7 +346,7 @@ describe("experimental stack update and saved stack data", () => {
       .filter((message) => message.startsWith("stack "));
 
   const destroy = (stackId: string) =>
-    `run \`supabase stack destroy --stack-id ${stackId}\` to recreate the stack — this permanently deletes its local database data`;
+    `run \`dbase stack destroy --stack-id ${stackId}\` to recreate the stack — this permanently deletes its local database data`;
 
   const lockedAt =
     (databaseUpstream: string) =>
@@ -375,7 +375,7 @@ describe("experimental stack update and saved stack data", () => {
         yield* run;
 
         expect(stackWarnings(output)).toEqual([
-          `stack ${stackId}: the next supabase start refuses these pins: PostgreSQL data was initialized by stock PostgreSQL build ${OLDER_BUILD}, but stock PostgreSQL build ${BUILT} was requested; keep this data by pinning \`local.services.database.version\` to \`"${OLDER_BUILD}"\` in your config file, or ${destroy(stackId)}`,
+          `stack ${stackId}: the next dbase start refuses these pins: PostgreSQL data was initialized by stock PostgreSQL build ${OLDER_BUILD}, but stock PostgreSQL build ${BUILT} was requested; keep this data by pinning \`local.services.database.version\` to \`"${OLDER_BUILD}"\` in your config file, or ${destroy(stackId)}`,
         ]);
         expect((yield* readServices(root)).database.resolved.upstreamVersion).toBe(BUILT);
       }).pipe(Effect.provide([BunServices.layer, BunCrypto.layer])),

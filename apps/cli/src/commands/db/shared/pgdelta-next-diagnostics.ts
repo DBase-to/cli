@@ -141,7 +141,7 @@ export function pgDeltaNextFeedbackInvitation(kinds: readonly string[]): string 
   const solution = "Add pg-delta support for these PostgreSQL object kinds.";
   return [
     "Request pg-delta support:",
-    `  supabase issue feature --problem ${shellQuote(problem)} --proposed-solution ${shellQuote(solution)}`,
+    `  dbase issue feature --problem ${shellQuote(problem)} --proposed-solution ${shellQuote(solution)}`,
   ].join("\n");
 }
 

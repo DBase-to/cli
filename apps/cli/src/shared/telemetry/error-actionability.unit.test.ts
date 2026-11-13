@@ -94,7 +94,7 @@ describe("classifyCliErrorActionability", () => {
       error_fingerprint: "tag:DeclaredError",
       has_suggestion: true,
       suggestion_type: "login",
-      suggested_command: "supabase login",
+      suggested_command: "dbase login",
     });
     expect(
       classifyCliErrorActionability(new PlainDeclaredError({ message: "private" }))
@@ -169,7 +169,7 @@ describe("classifyCliErrorActionability", () => {
           error_category: "auth",
           has_suggestion: true,
           suggestion_type: "login",
-          suggested_command: "supabase login --token secret",
+          suggested_command: "dbase login --token secret",
         };
       }
     }

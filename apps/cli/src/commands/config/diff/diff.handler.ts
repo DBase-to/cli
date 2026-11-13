@@ -75,7 +75,7 @@ export const configDiff = Effect.fn("config.diff")(function* (flags: ConfigDiffF
       Effect.mapError((error) => new ConfigDiffWorkdirError({ message: error.message })),
     );
 
-    // The config loads before target resolution so a missing file points at `supabase init`
+    // The config loads before target resolution so a missing file points at `dbase init`
     // rather than a not-linked error, and a malformed document doesn't burn a
     // branch-resolution round trip.
     const earlyResolvedConfig = yield* loadResolvedConfig(

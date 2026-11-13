@@ -12,7 +12,7 @@ import { stackApiLayer } from "../../../command-internal/stack-api.ts";
 import { stackCatalogSetupLayer } from "../../../command-internal/stack-catalog-setup.ts";
 
 /**
- * Runtime layer for `supabase db start`, matching `supabase start`'s own composition.
+ * Runtime layer for `dbase db start`, matching `dbase start`'s own composition.
  * `dockerRunLayer`/`dbConnectionLayer`/`httpClientLayer` back the native container
  * bootstrap: migrate jobs run through `DockerRun`, schema SQL over `DbConnection`, and the
  * health wait requires `HttpClient.HttpClient` in its signature even though `db start` never

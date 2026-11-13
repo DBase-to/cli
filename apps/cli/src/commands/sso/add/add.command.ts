@@ -65,13 +65,13 @@ export type SsoAddFlags = CliCommand.Command.Config.Infer<typeof config>;
 
 export const ssoAddCommand = Command.make("add", config).pipe(
   Command.withDescription(
-    "Add and configure a new connection to a SSO identity provider to your Supabase project.",
+    "Add and configure a new connection to a SSO identity provider to your DBase project.",
   ),
   Command.withShortDescription("Add a new SSO identity provider"),
   Command.withExamples([
     {
       command:
-        "supabase sso add --type saml --metadata-url 'https://...' --domains example.com --remote=mwjylndxudmiehsxhmmz",
+        "dbase sso add --type saml --metadata-url 'https://...' --domains example.com --remote=mwjylndxudmiehsxhmmz",
       description: "Add a new SAML SSO provider",
     },
   ]),

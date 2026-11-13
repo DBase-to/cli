@@ -25,7 +25,7 @@ export const domainsActivate = Effect.fn("domains.activate")(function* (
   yield* Effect.gen(function* () {
     yield* requireHostedMutationConsent({
       action: "Activate the custom hostname",
-      details: ["Third-party auth providers stop working on the Supabase-provisioned subdomain."],
+      details: ["Third-party auth providers stop working on the DBase-provisioned subdomain."],
     });
 
     const activating =

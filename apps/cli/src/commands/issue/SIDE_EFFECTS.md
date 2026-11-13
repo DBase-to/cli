@@ -1,4 +1,4 @@
-# `supabase issue`
+# `dbase issue`
 
 ## Side effects
 
@@ -9,5 +9,5 @@
 
 ## No local project changes
 
-This command does not read or write Supabase project files, stack state, credentials, or linked
+This command does not read or write DBase project files, stack state, credentials, or linked
 project metadata.

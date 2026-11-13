@@ -23,15 +23,15 @@ const config = {
 export type ProjectsApiKeysFlags = CliCommand.Command.Config.Infer<typeof config>;
 
 export const projectsApiKeysCommand = Command.make("api-keys", config).pipe(
-  Command.withDescription("List all API keys for a Supabase project."),
+  Command.withDescription("List all API keys for a DBase project."),
   Command.withShortDescription("List API keys"),
   Command.withExamples([
     {
-      command: "supabase projects api-keys --remote=abcdefghijklmnopqrst",
+      command: "dbase projects api-keys --remote=abcdefghijklmnopqrst",
       description: "List all API keys for a project",
     },
     {
-      command: "supabase projects api-keys --reveal --output json",
+      command: "dbase projects api-keys --reveal --output json",
       description: "List API keys with the secret keys revealed in full",
     },
   ]),

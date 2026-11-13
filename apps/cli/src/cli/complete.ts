@@ -32,8 +32,8 @@ import { formatCliError, normalizeCliError } from "../shared/output/normalize-er
 import { ambientEnvironment } from "../shared/config/cli-config-provider.layer.ts";
 
 /**
- * Implements the shell completion protocol that the generated scripts (`supabase
- * completion {bash,zsh,fish,powershell}`) call into via `supabase __complete`/
+ * Implements the shell completion protocol that the generated scripts (`dbase
+ * completion {bash,zsh,fish,powershell}`) call into via `dbase __complete`/
  * `__completeNoDesc` on every tab press. Completion argv can contain partial or malformed
  * flag tokens (e.g. `--de` mid-word), so this bypasses the structured CLI parser and
  * reflects directly over `rootCommand` to compute candidates.
@@ -308,7 +308,7 @@ export function resolveCommandPath(
 
 /**
  * File-extension filtering for a small, fixed set of file-path flags. Key =
- * `<space-joined resolved command path (excluding "supabase")>:<flag name>`.
+ * `<space-joined resolved command path (excluding "dbase")>:<flag name>`.
  */
 const COMPLETION_FLAG_FILE_EXTENSIONS: ReadonlyMap<string, ReadonlyArray<string>> = new Map([
   ["sso add:metadata-file", ["xml"]],
@@ -340,7 +340,7 @@ function isRequiredCompletionFlag(matchedPath: ReadonlyArray<string>, flagName: 
 /**
  * Commands whose completion always returns the `NoFileComp` directive with
  * zero candidates, since they take no positional arguments to complete. Key =
- * space-joined `matchedPath` (excluding "supabase").
+ * space-joined `matchedPath` (excluding "dbase").
  */
 const COMPLETION_NO_FILE_COMP_PATHS: ReadonlySet<string> = new Set([
   "completion",

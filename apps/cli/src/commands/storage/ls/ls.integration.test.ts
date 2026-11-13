@@ -702,7 +702,7 @@ describe("stack backend", () => {
           (error) => error instanceof StackStorageUnavailableError,
         );
         expect(unavailable).toBeInstanceOf(StackStorageUnavailableError);
-        expect(unavailable?.suggestion).toContain("supabase start");
+        expect(unavailable?.suggestion).toContain("dbase start");
         expect(requests).toHaveLength(0);
       });
     },
@@ -722,7 +722,7 @@ describe("stack backend", () => {
         (error) => error instanceof StackStorageUnavailableError,
       );
       expect(unavailable).toBeInstanceOf(StackStorageUnavailableError);
-      expect(unavailable?.suggestion).toContain("supabase start");
+      expect(unavailable?.suggestion).toContain("dbase start");
       expect(requests).toHaveLength(0);
     });
   });
@@ -1003,8 +1003,8 @@ describe("stack backend", () => {
         (error) => error instanceof StackStorageCapabilityError,
       );
       expect(capability).toBeInstanceOf(StackStorageCapabilityError);
-      expect(capability?.suggestion).toContain("supabase start without --exclude storage");
-      expect(capability?.suggestion).not.toContain("supabase stack restart");
+      expect(capability?.suggestion).toContain("dbase start without --exclude storage");
+      expect(capability?.suggestion).not.toContain("dbase stack restart");
     });
   });
 
@@ -1022,7 +1022,7 @@ describe("stack backend", () => {
         (error) => error instanceof StackStorageUnavailableError,
       );
       expect(unavailable).toBeInstanceOf(StackStorageUnavailableError);
-      expect(unavailable?.suggestion).toContain("run supabase start once it has stopped");
+      expect(unavailable?.suggestion).toContain("run dbase start once it has stopped");
     });
   });
 

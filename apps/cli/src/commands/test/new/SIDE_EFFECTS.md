@@ -1,4 +1,4 @@
-# `supabase test new <name>`
+# `dbase test new <name>`
 
 ## Files Read
 

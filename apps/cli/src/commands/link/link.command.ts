@@ -25,9 +25,7 @@ const config = {
     Argument.optional,
   ),
   projectRef: Flag.String("project-ref").pipe(
-    Flag.withDescription(
-      "Project ref of the Supabase project, or the name of one of its branches.",
-    ),
+    Flag.withDescription("Project ref of the DBase project, or the name of one of its branches."),
     Flag.optional,
   ),
   password: CliConfigKeys.linkedDb.password.flag({
@@ -64,15 +62,15 @@ const warnPasswordIgnored = Effect.fnUntraced(function* (flags: LinkFlags) {
 });
 
 export const linkCommand = Command.make("link", config).pipe(
-  Command.withDescription("Link to a Supabase project."),
-  Command.withShortDescription("Link to a Supabase project"),
+  Command.withDescription("Link to a DBase project."),
+  Command.withShortDescription("Link to a DBase project"),
   Command.withExamples([
     {
-      command: "supabase link abcdefghijklmnopqrst",
+      command: "dbase link abcdefghijklmnopqrst",
       description: "Link to a project by ref",
     },
     {
-      command: "supabase link my-branch",
+      command: "dbase link my-branch",
       description: "Link to a branch of the currently linked project by name",
     },
   ]),

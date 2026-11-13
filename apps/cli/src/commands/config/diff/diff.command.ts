@@ -23,7 +23,7 @@ const config = {
       "Exit with status 2 when any difference is found (errors keep exiting 1).",
     ),
     // Boolean flags are required by the parser without an explicit default, which would break
-    // plain `supabase config diff` with a missing-required-flag error.
+    // plain `dbase config diff` with a missing-required-flag error.
     Flag.withDefault(false),
   ),
 } as const;
@@ -49,11 +49,11 @@ export const configDiffCommand = Command.make("diff", config).pipe(
   Command.withShortDescription("Diff local config against a remote project"),
   Command.withExamples([
     {
-      command: "supabase config diff",
+      command: "dbase config diff",
       description: "Diff against the linked project",
     },
     {
-      command: "supabase config diff --exit-code --remote=staging",
+      command: "dbase config diff --exit-code --remote=staging",
       description: "Diff against the 'staging' branch, exiting 2 on drift",
     },
   ]),

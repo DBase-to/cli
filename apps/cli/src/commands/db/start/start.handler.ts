@@ -9,10 +9,10 @@ import { DbStartFromBackupUnsupportedError } from "./start.errors.ts";
 import type { DbStartFlags } from "./start.command.ts";
 
 /**
- * `supabase db start` — start the local Postgres database. Fully native: the bring-up
+ * `dbase db start` — start the local Postgres database. Fully native: the bring-up
  * sequence is the shared `startLocalDatabase` helper, also used by `db schema declarative`'s
  * `ensureLocalDatabaseStarted`. This handler only adds the output-format-aware terminal
- * message and telemetry flush. Unlike `supabase start`, it has no status table, no
+ * message and telemetry flush. Unlike `dbase start`, it has no status table, no
  * `cli_stack_started` event, and no `--exclude`/`--ignore-health-check` flags.
  *
  * When `[experimental].stack` is on, this command starts a postgres-only project stack

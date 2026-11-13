@@ -277,7 +277,7 @@ describe("pullFailedStepResult", () => {
   it("extracts message, suggestion, and code (the squashed cause's own _tag) from a real Cause.squash-produced tagged error", () => {
     const error = new DbPullMigrationConflictError({
       message: "remote migration history does not match local files",
-      suggestion: "Run supabase migration repair to reconcile the history table.",
+      suggestion: "Run dbase migration repair to reconcile the history table.",
     });
     const squashed = Cause.squash(Cause.fail(error));
     expect(pullFailedStepResult("db", squashed)).toEqual({
@@ -287,7 +287,7 @@ describe("pullFailedStepResult", () => {
       detail: {},
       failure: {
         message: "remote migration history does not match local files",
-        suggestion: "Run supabase migration repair to reconcile the history table.",
+        suggestion: "Run dbase migration repair to reconcile the history table.",
         code: "DbPullMigrationConflictError",
       },
     });
@@ -408,51 +408,51 @@ describe("pullFailedStepResult", () => {
 describe("pullRetryHint", () => {
   const ref = "abcdefghijklmnopqrst";
 
-  it("names 'supabase config pull --remote=<ref>' for the config step", () => {
+  it("names 'dbase config pull --remote=<ref>' for the config step", () => {
     expect(pullRetryHint("config", ref, undefined)).toBe(
-      "To retry just this step, run: supabase config pull --remote=abcdefghijklmnopqrst",
+      "To retry just this step, run: dbase config pull --remote=abcdefghijklmnopqrst",
     );
   });
 
   it("appends a shell-quoted --remote-label to the config hint when one was passed", () => {
     expect(pullRetryHint("config", ref, "staging-remote")).toBe(
-      "To retry just this step, run: supabase config pull --remote-label 'staging-remote' --remote=abcdefghijklmnopqrst",
+      "To retry just this step, run: dbase config pull --remote-label 'staging-remote' --remote=abcdefghijklmnopqrst",
     );
   });
 
   it("shell-quotes a --remote-label containing whitespace, so the suggested command stays copy-pasteable", () => {
     expect(pullRetryHint("config", ref, "staging remote")).toBe(
-      "To retry just this step, run: supabase config pull --remote-label 'staging remote' --remote=abcdefghijklmnopqrst",
+      "To retry just this step, run: dbase config pull --remote-label 'staging remote' --remote=abcdefghijklmnopqrst",
     );
   });
 
   it("escapes an embedded single quote in --remote-label using the POSIX '\"'\"' pattern", () => {
     expect(pullRetryHint("config", ref, "o'brien")).toBe(
-      "To retry just this step, run: supabase config pull --remote-label 'o'\"'\"'brien' --remote=abcdefghijklmnopqrst",
+      "To retry just this step, run: dbase config pull --remote-label 'o'\"'\"'brien' --remote=abcdefghijklmnopqrst",
     );
   });
 
   it("strips control characters from --remote-label before quoting it (CWE-117)", () => {
     expect(pullRetryHint("config", ref, "staging\r\nFAKE")).toBe(
-      "To retry just this step, run: supabase config pull --remote-label 'staging FAKE' --remote=abcdefghijklmnopqrst",
+      "To retry just this step, run: dbase config pull --remote-label 'staging FAKE' --remote=abcdefghijklmnopqrst",
     );
   });
 
-  it("names 'supabase migration fetch --remote=<ref>' for the migration_history step", () => {
+  it("names 'dbase migration fetch --remote=<ref>' for the migration_history step", () => {
     expect(pullRetryHint("migration_history", ref, undefined)).toBe(
-      "To retry just this step, run: supabase migration fetch --remote=abcdefghijklmnopqrst",
+      "To retry just this step, run: dbase migration fetch --remote=abcdefghijklmnopqrst",
     );
   });
 
-  it("names 'supabase db pull --experimental=false --remote=<ref>' so the db step avoids the structured-dump rejection", () => {
+  it("names 'dbase db pull --experimental=false --remote=<ref>' so the db step avoids the structured-dump rejection", () => {
     expect(pullRetryHint("db", ref, undefined)).toBe(
-      "To retry just this step, run: supabase db pull --experimental=false --remote=abcdefghijklmnopqrst",
+      "To retry just this step, run: dbase db pull --experimental=false --remote=abcdefghijklmnopqrst",
     );
   });
 
-  it("names 'supabase functions download --remote=<ref>' for the functions step", () => {
+  it("names 'dbase functions download --remote=<ref>' for the functions step", () => {
     expect(pullRetryHint("functions", ref, undefined)).toBe(
-      "To retry just this step, run: supabase functions download --remote=abcdefghijklmnopqrst",
+      "To retry just this step, run: dbase functions download --remote=abcdefghijklmnopqrst",
     );
   });
 
@@ -470,13 +470,13 @@ describe("pullWithMigrationHistoryCommand", () => {
 
   it("names the resolved --remote=<ref>, so a blind rerun can never silently retarget the linked project", () => {
     expect(pullWithMigrationHistoryCommand(ref, undefined)).toBe(
-      "supabase pull --with-migration-history --remote=abcdefghijklmnopqrst",
+      "dbase pull --with-migration-history --remote=abcdefghijklmnopqrst",
     );
   });
 
   it("appends a shell-quoted --remote-label when one was passed, matching pullRetryHint's own rendering", () => {
     expect(pullWithMigrationHistoryCommand(ref, "staging remote")).toBe(
-      "supabase pull --with-migration-history --remote-label 'staging remote' --remote=abcdefghijklmnopqrst",
+      "dbase pull --with-migration-history --remote-label 'staging remote' --remote=abcdefghijklmnopqrst",
     );
   });
 });

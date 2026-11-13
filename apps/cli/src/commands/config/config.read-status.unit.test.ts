@@ -8,7 +8,7 @@ const API_HOST = "https://api.supabase.com";
 describe("configReadStatusMessage", () => {
   test("401 points at re-authenticating", () => {
     expect(configReadStatusMessage(401, '{"message":"unauthorized"}', REF, API_HOST)).toBe(
-      "Authentication failed: your access token is invalid or has expired. Run `supabase login` to re-authenticate.",
+      "Authentication failed: your access token is invalid or has expired. Run `dbase login` to re-authenticate.",
     );
   });
 
@@ -20,7 +20,7 @@ describe("configReadStatusMessage", () => {
 
   test("404 names the sanitized ref, suggests projects list, and hedges the api host", () => {
     expect(configReadStatusMessage(404, '{"message":"not found"}', REF, API_HOST)).toBe(
-      `Could not read configuration for project ${REF} (404). Check the project ref with \`supabase projects list\`; if the ref is correct, this Supabase API endpoint may not be available at ${API_HOST}.`,
+      `Could not read configuration for project ${REF} (404). Check the project ref with \`dbase projects list\`; if the ref is correct, this DBase API endpoint may not be available at ${API_HOST}.`,
     );
   });
 

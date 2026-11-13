@@ -27,7 +27,7 @@ export class InvalidServiceVersionTagError extends Data.TaggedError(
 
 /**
  * `supabase/.temp/{gotrue,rest,storage,realtime,studio,pgmeta,logflare,pooler}-version` pin
- * files, written by `supabase link` for a linked/bootstrap project and read before any
+ * files, written by `dbase link` for a linked/bootstrap project and read before any
  * command that pulls or starts these services to override their image tag. `gotrue`/
  * `postgrest` are additionally gated on `majorVersion > 14`.
  */
@@ -76,7 +76,7 @@ export const readServiceVersionOverrides = Effect.fn("ServiceVersionOverrides.re
     if (version.length === 0) continue;
     if (!isUsableServiceVersionTag(service, version)) {
       return yield* new InvalidServiceVersionTagError({
-        message: `invalid ${service} image tag "${version}" in ${path.relative(workdir, paths[file])}; run supabase link again`,
+        message: `invalid ${service} image tag "${version}" in ${path.relative(workdir, paths[file])}; run dbase link again`,
       });
     }
     versions[service] = version;

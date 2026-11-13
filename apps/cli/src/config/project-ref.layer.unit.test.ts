@@ -32,7 +32,7 @@ function mockCliSettings(opts: { workdir: string; projectId?: string }) {
     projectId: opts.projectId === undefined ? Option.none() : Option.some(opts.projectId),
     workdir: opts.workdir,
     explicitWorkdir: false,
-    userAgent: "SupabaseCLI/0.0.0-dev",
+    userAgent: "DBaseCLI/0.0.0-dev",
     apiMaxRetries: Option.none(),
   });
 }
@@ -193,7 +193,7 @@ describe("projectRefLayer", () => {
       if (Exit.isFailure(exit)) {
         const errorJson = yield* encodeJson(exit.cause);
         expect(errorJson).toContain("ProjectRefNotLinkedError");
-        expect(errorJson).toContain("supabase link");
+        expect(errorJson).toContain("dbase link");
       }
     }).pipe(Effect.provide(layer));
   });

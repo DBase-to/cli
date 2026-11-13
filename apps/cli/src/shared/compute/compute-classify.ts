@@ -3,7 +3,7 @@ import { DEFAULT_COMPUTE_RUNTIME, type ComputeRuntime } from "./compute-runtimes
 
 /**
  * Best-effort classification of a compute directory into a {@link ComputeRuntime}
- * from common marker files, so `supabase compute push` can deploy a directory
+ * from common marker files, so `dbase compute push` can deploy a directory
  * that has no `[compute.<name>] runtime` at all. The guess is always reported,
  * with a nudge to pin it down, rather than applied silently.
  */

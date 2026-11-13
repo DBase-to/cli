@@ -17,7 +17,7 @@ const DEAD_DB_URL = `postgres://postgres:${DEAD_DB_PASSWORD}@127.0.0.1:1/postgre
 const TEXT_MODE = "--agent";
 const TEXT_MODE_VALUE = "no";
 
-describe("supabase inspect db", () => {
+describe("dbase inspect db", () => {
   it.live(
     "inspect db locks fails gracefully when the database is unreachable",
     () =>

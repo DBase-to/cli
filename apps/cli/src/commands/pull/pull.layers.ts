@@ -25,7 +25,7 @@ import {
 } from "../../command-internal/pgdelta-engine-runtime.layer.ts";
 
 /**
- * Runtime layer for `supabase pull`: composes `db pull`'s db-specific pieces with the eager
+ * Runtime layer for `dbase pull`: composes `db pull`'s db-specific pieces with the eager
  * Management API stack and `MachineErrorContext` for single-envelope machine failures. Excludes
  * `dbSchemaPullRuntimeLayer`'s `linkedDbResolverRuntimeLayer` piece, which independently binds
  * the same services via a different (lazy) factory — merging both would race over which

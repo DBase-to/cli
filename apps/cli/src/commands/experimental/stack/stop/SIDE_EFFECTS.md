@@ -1,8 +1,8 @@
-# `supabase stack stop`
+# `dbase stack stop`
 
 Stops the selected managed stack's entire namespace, including standalone
 services and attached jobs. Definitions, data, and assigned ports remain saved.
-The experimental top-level `supabase stop` alias delegates to this handler.
+The experimental top-level `dbase stop` alias delegates to this handler.
 
 ## Selection and output
 
@@ -36,13 +36,13 @@ itself fails discovery.
 
 ## Files and network
 
-Reads saved state under `<SUPABASE_HOME or ~/.supabase>/stacks/<id>/` and the
+Reads saved state under `<DBASE_HOME or ~/.supabase>/stacks/<id>/` and the
 current project/Git identity when no explicit ID is supplied. Shared routing and
 settings may read project configuration and the selected profile. Communicates
 only with local owner endpoints; no hosted API requests. Shutdown updates owned
 runtime resources but preserves persistent instance definitions, data and automatic
 port reservations in the per-user registry at `<passwd home>/.supabase/ports.sqlite`
-(unaffected by `SUPABASE_HOME`; WAL mode, with `ports.sqlite-wal` and `ports.sqlite-shm`
+(unaffected by `DBASE_HOME`; WAL mode, with `ports.sqlite-wal` and `ports.sqlite-shm`
 alongside while open); configured ports are released with their listeners.
 Killing the owner process preserves every reservation, but another stack may take over
 a configured port while no owner runs. No caller-owned upload files are removed.
@@ -53,4 +53,4 @@ Exit 0 on successful shutdown or reclaim, or absent default selection;
 1 for invalid flags, selection/registry failure, or shutdown or reclaim failure; 130 on
 interruption. The command wrapper retains standard command telemetry, with no
 custom events. Telemetry flushes on success and failure to
-`<SUPABASE_HOME or ~/.supabase>/telemetry.json`.
+`<DBASE_HOME or ~/.supabase>/telemetry.json`.

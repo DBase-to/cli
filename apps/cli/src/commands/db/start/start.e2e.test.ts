@@ -11,7 +11,7 @@ const DB_START_COMMAND_TIMEOUT_MS = 480_000;
 const DB_START_CLEANUP_TIMEOUT_MS = 120_000;
 const DB_START_TEST_TIMEOUT_MS = DB_START_COMMAND_TIMEOUT_MS + DB_START_CLEANUP_TIMEOUT_MS;
 
-describe("supabase db start (e2e)", () => {
+describe("dbase db start (e2e)", () => {
   it.live(
     "boots the local database",
     () =>

@@ -33,7 +33,7 @@ const config = {
     Flag.optional,
   ),
   prune: Flag.Boolean("prune").pipe(
-    Flag.withDescription("Delete Functions that exist in Supabase project but not locally."),
+    Flag.withDescription("Delete Functions that exist in DBase project but not locally."),
     Flag.withDefault(false),
   ),
   jobs: Flag.Int("jobs").pipe(
@@ -65,15 +65,15 @@ const dockerPath = [
 ] as const;
 
 export const functionsDeployCommand = Command.make("deploy", config).pipe(
-  Command.withDescription("Deploy a Function to the linked Supabase project."),
-  Command.withShortDescription("Deploy a Function to Supabase"),
+  Command.withDescription("Deploy a Function to the linked DBase project."),
+  Command.withShortDescription("Deploy a Function to DBase"),
   Command.withExamples([
     {
-      command: "supabase functions deploy hello-world",
+      command: "dbase functions deploy hello-world",
       description: "Deploy a single function to the linked project",
     },
     {
-      command: "supabase functions deploy --remote=abcdefghijklmnopqrst",
+      command: "dbase functions deploy --remote=abcdefghijklmnopqrst",
       description: "Deploy all local functions to a specific project",
     },
   ]),

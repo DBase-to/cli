@@ -76,7 +76,7 @@ const assertSuccess = (
   expect(result.exitCode, `${name}\nstdout:\n${result.stdout}\nstderr:\n${result.stderr}`).toBe(0);
 };
 
-describe("supabase db diff (stack shadow baseline cache)", () => {
+describe("dbase db diff (stack shadow baseline cache)", () => {
   for (const runtime of ["native", "docker"] as const) {
     if (runtime === "native" && !nativeSupported) continue;
 

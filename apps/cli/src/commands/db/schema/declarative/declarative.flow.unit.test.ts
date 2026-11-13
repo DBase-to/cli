@@ -172,11 +172,11 @@ describe("formatDeclarativeUpgradeGate", () => {
       [
         "Upgrade without changing the active supabase/schemas tree:",
         "",
-        "  supabase db schema declarative generate --overwrite \\",
+        "  dbase db schema declarative generate --overwrite \\",
         "    --output-dir supabase/schemas-next --experimental",
         "  # review supabase/schemas-next",
         "  rm -rf supabase/schemas && mv supabase/schemas-next supabase/schemas",
-        "  supabase db schema declarative sync --no-apply --experimental",
+        "  dbase db schema declarative sync --no-apply --experimental",
       ].join("\n"),
     );
   });
@@ -219,7 +219,7 @@ describe("formatDeclarativeUpgradeGate", () => {
     });
 
     expect(gate.suggestion).toContain(
-      "  supabase db schema declarative generate --overwrite --output-dir 'supabase/custom schema-next' --experimental",
+      "  dbase db schema declarative generate --overwrite --output-dir 'supabase/custom schema-next' --experimental",
     );
     expect(gate.suggestion).toContain(
       "  Remove-Item -Recurse -Force -ErrorAction Stop 'supabase/custom schema'; Move-Item 'supabase/custom schema-next' 'supabase/custom schema'",

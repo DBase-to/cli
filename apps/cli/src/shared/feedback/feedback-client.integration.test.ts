@@ -22,7 +22,7 @@ const SUBMISSION: FeedbackSubmission = {
   userId: USER_ID,
   context: {
     cliVersion: "9.9.9",
-    userAgent: "SupabaseCLI/9.9.9",
+    userAgent: "DBaseCLI/9.9.9",
     os: "darwin",
     arch: "arm64",
     isAgent: true,
@@ -86,7 +86,7 @@ describe("feedbackClientLayer", () => {
         expect(request.headers.get("apikey")).toBe(TEST_ENV.key);
         expect(yield* decodeJsonBody(bodyText)).toEqual({
           feedback: "port conflicts when running two stacks",
-          user_agent: "SupabaseCLI/9.9.9",
+          user_agent: "DBaseCLI/9.9.9",
           project_ref: PROJECT_REF,
           user_id: USER_ID,
           metadata: {
@@ -109,7 +109,7 @@ describe("feedbackClientLayer", () => {
           message: "no project linked",
           context: {
             cliVersion: "9.9.9",
-            userAgent: "SupabaseCLI/9.9.9",
+            userAgent: "DBaseCLI/9.9.9",
             os: "linux",
             arch: "x64",
             isAgent: false,

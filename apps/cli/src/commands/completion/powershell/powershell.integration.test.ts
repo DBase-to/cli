@@ -13,7 +13,7 @@ function setupCompletionPowershell() {
 }
 
 function testRoot() {
-  return Command.make("supabase").pipe(Command.withSubcommands([completionPowershellCommand]));
+  return Command.make("dbase").pipe(Command.withSubcommands([completionPowershellCommand]));
 }
 
 describe("completion powershell", () => {
@@ -21,7 +21,7 @@ describe("completion powershell", () => {
     const out = setupCompletionPowershell();
     return Effect.gen(function* () {
       yield* completionPowershell({ noDescriptions: false });
-      expect(out.stdoutText).toContain("# powershell completion for supabase");
+      expect(out.stdoutText).toContain("# powershell completion for dbase");
       expect(out.stdoutText).not.toContain("__completeNoDesc");
       expect(out.stdoutText).toContain("__complete");
     }).pipe(Effect.provide(out.layer));

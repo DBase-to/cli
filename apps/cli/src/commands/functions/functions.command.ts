@@ -7,8 +7,8 @@ import { functionsNewCommand } from "./new/new.command.ts";
 import { functionsServeCommand } from "./serve/serve.command.ts";
 
 export const functionsCommand = Command.make("functions").pipe(
-  Command.withDescription("Manage Supabase Edge functions."),
-  Command.withShortDescription("Manage Supabase Edge functions"),
+  Command.withDescription("Manage DBase Edge functions."),
+  Command.withShortDescription("Manage DBase Edge functions"),
   Command.withSubcommands([
     functionsListCommand,
     functionsDeleteCommand,

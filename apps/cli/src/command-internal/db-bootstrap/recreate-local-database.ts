@@ -255,7 +255,7 @@ const resetRecreateDatabases = Effect.fn("DbBootstrap.recreateDatabases")(functi
   }
 });
 
-const STACK_RECOVERY_HINT = "Run supabase stop && supabase start to bring the local stack back.";
+const STACK_RECOVERY_HINT = "Run dbase stop && dbase start to bring the local stack back.";
 
 /** PG >= 15 recreate path — see this module's own header for the full sequence. */
 const recreateLocalDatabase15 = <E>(
@@ -411,7 +411,7 @@ const recreateLocalDatabase14 = <E>(
         // Same drop-then-conditionally-recreate sequence fresh setup runs
         // (`db-setup.ts`'s `requiresPg14WebhooksCleanup`): the PG14 dump installs pg_net
         // unconditionally, so without this drop a reset with webhooks disabled would leave
-        // pg_net installed, causing drift against a fresh `supabase start`. `MigrateAndSeed`
+        // pg_net installed, causing drift against a fresh `dbase start`. `MigrateAndSeed`
         // re-applies every migration below, so a user migration that creates pg_net still gets
         // it back.
         yield* removeDatabaseWebhooks(session, fs, path, tmpDir);

@@ -99,7 +99,7 @@ export const unverifiedTargetBanner = (ref: string = VALID_REF): string =>
 
 export const VALID_TOKEN = "sbp_" + "a".repeat(40);
 export const DEFAULT_API_URL = "https://api.supabase.com";
-const DEFAULT_USER_AGENT = "SupabaseCLI/0.0.0-dev";
+const DEFAULT_USER_AGENT = "DBaseCLI/0.0.0-dev";
 
 // No-op layers — drop-in for tests that don't assert on telemetry / cache state.
 export const mockLinkedProjectCacheLayer = Layer.succeed(LinkedProjectCache, {

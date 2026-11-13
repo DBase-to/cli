@@ -265,7 +265,7 @@ describe("migration up", () => {
         suggestion: expect.stringContaining("migration repair --status reverted 20240199000000\n"),
       });
       expect(error).toMatchObject({
-        suggestion: expect.stringContaining("supabase db pull\n"),
+        suggestion: expect.stringContaining("dbase db pull\n"),
       });
     }).pipe(Effect.provide(layer));
   });

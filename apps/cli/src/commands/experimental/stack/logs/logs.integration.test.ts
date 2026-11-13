@@ -256,7 +256,7 @@ const fixture = Effect.fn("StackLogsTest.fixture")(function* (options: {
       const runLogs = Effect.gen(function* () {
         if (mode === "legacy")
           return yield* Command.runWith(
-            Command.make("supabase").pipe(Command.withSubcommands([stackLogsCommand])),
+            Command.make("dbase").pipe(Command.withSubcommands([stackLogsCommand])),
             { version: "test" },
           )(legacyArgs).pipe(
             Effect.provide(
@@ -701,7 +701,7 @@ describe("retained local logs", () => {
       expect(failure(followed.exit)).toMatchObject({
         reason: "lifecycle",
         suggestion:
-          "Run supabase stack logs without --follow to read retained logs, or supabase stack start first.",
+          "Run dbase stack logs without --follow to read retained logs, or dbase stack start first.",
       });
       expect(followed.output.stdoutText).toBe("");
       expect(followed.output.stderrText).toBe("");
@@ -956,7 +956,7 @@ describe("retained local logs", () => {
         reason: "lifecycle",
         message:
           "The running stack serves none of the selected services, so there are no new lines to follow.",
-        suggestion: "Run supabase stack logs without --follow to read retained logs.",
+        suggestion: "Run dbase stack logs without --follow to read retained logs.",
       });
     }).pipe(Effect.scoped, Effect.provide(live)),
   );

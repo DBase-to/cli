@@ -180,7 +180,7 @@ export const logs = Effect.fn("logs")(function* (flags: LogsFlags) {
     if (target.kind === "local" && (yield* currentProjectStateMode) !== "stack")
       return yield* new LogsInputError({
         message:
-          "Local logs require the experimental stack backend. Set SUPABASE_EXPERIMENTAL_STACK=1 or [experimental] stack = true in supabase/config.toml, or use --remote for hosted logs.",
+          "Local logs require the experimental stack backend. Set DBASE_EXPERIMENTAL_STACK=1 or [experimental] stack = true in supabase/config.toml, or use --remote for hosted logs.",
       });
     const output = yield* Output;
     const interactive = yield* useLogsBrowser();
@@ -310,7 +310,7 @@ export const logsSources = Effect.fn("logs.sources")(function* (flags: LogsSourc
     if ((yield* currentProjectStateMode) !== "stack")
       return yield* new LogsInputError({
         message:
-          "Local log discovery requires the experimental stack backend. Set SUPABASE_EXPERIMENTAL_STACK=1 or [experimental] stack = true in supabase/config.toml, or use --remote for hosted sources.",
+          "Local log discovery requires the experimental stack backend. Set DBASE_EXPERIMENTAL_STACK=1 or [experimental] stack = true in supabase/config.toml, or use --remote for hosted sources.",
       });
     return yield* Effect.gen(function* () {
       yield* validateStackTarget({

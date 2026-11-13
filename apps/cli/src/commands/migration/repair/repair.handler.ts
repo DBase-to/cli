@@ -170,9 +170,9 @@ const runRepair = Effect.fnUntraced(function* (input: MigrationRepairInput) {
 
     if (output.format === "text") {
       // Success banner to stdout; follow-up suggestion to stderr.
-      yield* output.raw(`Finished ${aqua("supabase migration repair")}.\n`);
+      yield* output.raw(`Finished ${aqua("dbase migration repair")}.\n`);
       yield* emitSuccessTrailer(
-        `Run ${aqua(withTargetFlags("supabase migration list", flagsForTarget(target)))} to show the updated migration history.\n`,
+        `Run ${aqua(withTargetFlags("dbase migration list", flagsForTarget(target)))} to show the updated migration history.\n`,
       );
     } else {
       yield* output.success("Migration history repaired", {

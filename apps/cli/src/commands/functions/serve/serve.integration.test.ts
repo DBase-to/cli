@@ -2733,7 +2733,7 @@ describe("functions serve integration", () => {
             expect(declaration.error_kind).not.toBe("internal_bug");
           }
           // A kill the CLI can't attribute gets one re-inspect before failing, to
-          // distinguish it from a `supabase stop` force-kill the prune hasn't caught up to.
+          // distinguish it from a `dbase stop` force-kill the prune hasn't caught up to.
           expect(containerInspectCalls(childSpawner)).toHaveLength(2);
         });
       },
@@ -3902,7 +3902,7 @@ describe("functions serve integration", () => {
 
       expect(error).toBeInstanceOf(ServeLocalDbNotRunningError);
       if (error instanceof ServeLocalDbNotRunningError) {
-        expect(error.message).toContain("supabase start is not running.");
+        expect(error.message).toContain("dbase start is not running.");
         expect(error[ErrorActionabilityId]).toEqual(actionability.startStack);
       }
     });

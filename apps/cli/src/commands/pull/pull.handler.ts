@@ -160,7 +160,7 @@ function pullWithRetryHint(
 }
 
 /**
- * `supabase pull` orchestrates `config pull`, an optional `migration fetch`, `db pull`, and
+ * `dbase pull` orchestrates `config pull`, an optional `migration fetch`, `db pull`, and
  * `functions download` behind one target resolution, one confirmation, and one aggregated
  * result (see ADR 0024). The `db` step also writes to the remote database's migration history
  * table and requires Docker.

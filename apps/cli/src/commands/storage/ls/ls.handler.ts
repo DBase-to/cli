@@ -15,7 +15,7 @@ import {
 import type { StorageLsFlags } from "./ls.command.ts";
 
 /**
- * `supabase storage ls [path]` — list objects by path prefix.
+ * `dbase storage ls [path]` — list objects by path prefix.
  *
  * The default path is `ss:///` (all buckets); `--recursive` walks the tree
  * with BFS. Text mode prints one entry per line to **stdout**;

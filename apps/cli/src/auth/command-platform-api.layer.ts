@@ -12,7 +12,7 @@ import { AccessTokenRequiredError } from "./errors.ts";
 import { CommandPlatformApi } from "./command-platform-api.service.ts";
 
 const MISSING_TOKEN_MESSAGE =
-  "Access token not provided. Supply an access token by running `supabase login` or setting the SUPABASE_ACCESS_TOKEN environment variable.";
+  "Access token not provided. Supply an access token by running `dbase login` or setting the SUPABASE_ACCESS_TOKEN environment variable.";
 
 export const makeCommandPlatformApi = Effect.gen(function* () {
   const cliSettings = yield* CommandSettings;
@@ -52,7 +52,7 @@ export const makeCommandPlatformApi = Effect.gen(function* () {
   if (Option.isNone(authGateToken)) {
     return yield* new AccessTokenRequiredError({ message: MISSING_TOKEN_MESSAGE });
   }
-  yield* debugLogger.debug(`Supabase CLI ${CLI_VERSION}`);
+  yield* debugLogger.debug(`DBase CLI ${CLI_VERSION}`);
   yield* debugLogger.debug(`Using profile: ${cliSettings.profile} (${cliSettings.projectHost})`);
   const storedToken = yield* resolveAccessToken;
   if (Option.isNone(storedToken)) {

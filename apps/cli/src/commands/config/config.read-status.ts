@@ -24,7 +24,7 @@ export function configReadStatusMessage(
     return `Access denied for project ${sanitizeInlineName(ref)}: your account does not have permission to view its configuration.`;
   }
   if (status === 404) {
-    return `Could not read configuration for project ${sanitizeInlineName(ref)} (404). Check the project ref with \`supabase projects list\`; if the ref is correct, this Supabase API endpoint may not be available at ${sanitizeInlineName(apiHost)}.`;
+    return `Could not read configuration for project ${sanitizeInlineName(ref)} (404). Check the project ref with \`dbase projects list\`; if the ref is correct, this DBase API endpoint may not be available at ${sanitizeInlineName(apiHost)}.`;
   }
   return unexpectedStatusMessage(status, body);
 }

@@ -2,7 +2,7 @@
  * Heredoc'd into `/docker-entrypoint-initdb.d/migrate.sh` by the Postgres container's entrypoint
  * only when `--from-backup` is set — restores roles then schema from the bind-mounted
  * `/etc/backup.sql`, then runs `/etc/postgresql.schema.sql` (the initial schema, written by the
- * same entrypoint) as a post-init step so a restored database still gets Supabase's
+ * same entrypoint) as a post-init step so a restored database still gets DBase's
  * roles/passwords applied. `${…}` sequences are escaped as `\${…}` so shell variable expansion
  * stays literal instead of being interpolated by JS.
  */

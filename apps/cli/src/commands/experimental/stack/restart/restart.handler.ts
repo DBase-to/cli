@@ -55,7 +55,7 @@ export const stackRestart = Effect.fn("experimental.stack.restart")(function* (
       return yield* new StackCommandRestartError({
         reason: "not-found",
         message: "No managed stack exists for the selected project.",
-        suggestion: "Run supabase stack start first.",
+        suggestion: "Run dbase stack start first.",
       });
     const stack = yield* api
       .open({
@@ -69,7 +69,7 @@ export const stackRestart = Effect.fn("experimental.stack.restart")(function* (
       return yield* new StackCommandRestartError({
         reason: "lifecycle",
         message: "The selected stack has not been configured yet.",
-        suggestion: "Run supabase stack start first.",
+        suggestion: "Run dbase stack start first.",
       });
     const task = yield* output.task("Restarting the saved stack composition...");
     const observations = yield* stack.composition.restart.pipe(

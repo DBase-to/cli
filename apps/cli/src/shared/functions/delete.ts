@@ -81,7 +81,7 @@ export const deleteFunction = Effect.fn("functions.delete")(function* <
       break;
     case 404:
       return yield* new FunctionNotFoundError({
-        message: `Function ${flags.slug} does not exist on the Supabase project: nothing to delete`,
+        message: `Function ${flags.slug} does not exist on the DBase project: nothing to delete`,
       });
     default: {
       const body = yield* response.text.pipe(Effect.orElseSucceed(() => ""));

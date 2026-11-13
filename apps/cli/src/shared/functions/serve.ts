@@ -1261,7 +1261,7 @@ const streamContainerLogs = Effect.fn("functions.serve.streamContainerLogs")(fun
       if (state.exitCode === 0) {
         return ContainerLogsEndReason.ContainerExited();
       }
-      // `supabase stop` force-kills a runtime that ignored SIGTERM and prunes it immediately
+      // `dbase stop` force-kills a runtime that ignored SIGTERM and prunes it immediately
       // after, so a second inspect separates that teardown from a kill that leaves the
       // container in place.
       if (state.exitCode === 137 && !state.oomKilled) {
@@ -1337,7 +1337,7 @@ const assertLocalDbRunning = Effect.fn("functions.serve.assertLocalDbRunning")(f
   }
 
   if (result.stderr.includes("No such container") || result.stderr.includes("No such object")) {
-    return yield* new ServeLocalDbNotRunningError({ message: "supabase start is not running." });
+    return yield* new ServeLocalDbNotRunningError({ message: "dbase start is not running." });
   }
 
   const message =

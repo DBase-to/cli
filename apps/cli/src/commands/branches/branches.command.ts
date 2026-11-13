@@ -9,7 +9,7 @@ import { branchesDeleteCommand } from "./delete/delete.command.ts";
 import { branchesDisableCommand } from "./disable/disable.command.ts";
 
 export const branchesCommand = Command.make("branches").pipe(
-  Command.withDescription("Manage Supabase preview branches."),
+  Command.withDescription("Manage DBase preview branches."),
   Command.withShortDescription("Manage preview branches"),
   Command.withSubcommands([
     branchesListCommand,

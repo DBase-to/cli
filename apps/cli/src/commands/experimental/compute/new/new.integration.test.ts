@@ -105,7 +105,7 @@ describe("compute new", () => {
         expect(out.stdoutText).toContain("Created new Compute at supabase/compute/api");
         expect(out.stdoutText).toContain("Runtime");
         // The deploy hint is a success trailer, which lands on stderr.
-        expect(out.stderrText).toContain("supabase compute push api");
+        expect(out.stderrText).toContain("dbase compute push api");
       }).pipe(Effect.provide(layer));
     }).pipe(Effect.scoped, Effect.provide(BunServices.layer)),
   );
@@ -168,7 +168,7 @@ describe("compute new", () => {
     { label: "not interactive", setup: { interactive: false } },
     // Stdout is a TTY, but claimed by the payload, so a prompt would corrupt it.
     { label: "-o json", setup: { outputFlag: "json" as const } },
-    // `printf 'orders\n' | supabase compute new`: stdout is still a
+    // `printf 'orders\n' | dbase compute new`: stdout is still a
     // terminal, so `output.interactive` on its own would have fed the pipe
     // straight into the name prompt instead of taking this documented path.
     { label: "piped stdin", setup: { stdinIsTty: false } },
@@ -193,8 +193,8 @@ describe("compute new", () => {
           return yield* Effect.die("expected MissingComputeNameError");
         }
         // The retry has to name the path the command is actually registered at;
-        // `supabase compute new` requires an explicit compute name.
-        expect(error.suggestion).toContain("supabase compute new");
+        // `dbase compute new` requires an explicit compute name.
+        expect(error.suggestion).toContain("dbase compute new");
         expect(out.promptTextCalls).toEqual([]);
         expect(yield* fs.exists(path.join(repo.dir, "supabase", "compute"))).toBe(false);
         expect(yield* repo.config).toBe(CONFIG_WITH_COMMENTS);
@@ -638,7 +638,7 @@ describe("compute new", () => {
       }).pipe(Effect.provide(layer));
     }).pipe(Effect.scoped, Effect.provide(BunServices.layer)),
   );
-  it.effect("scaffolds in a directory that has no Supabase project yet", () =>
+  it.effect("scaffolds in a directory that has no DBase project yet", () =>
     Effect.gen(function* () {
       const path = yield* Path.Path;
       const fs = yield* FileSystem.FileSystem;

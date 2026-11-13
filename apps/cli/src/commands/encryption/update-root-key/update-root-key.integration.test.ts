@@ -85,7 +85,7 @@ describe("encryption update-root-key integration", () => {
       // ANSI wraps the command path in colour-capable environments, so assert on
       // the surrounding tokens instead of the full string.
       expect(out.stderrText).toContain("Finished ");
-      expect(out.stderrText).toContain("supabase root-key update");
+      expect(out.stderrText).toContain("dbase root-key update");
       expect(out.stdoutText).toBe("\n");
       assertPermissionDrift({
         command: "encryption update-root-key",

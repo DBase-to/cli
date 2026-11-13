@@ -203,7 +203,7 @@ describe("branches delete integration", () => {
   });
 
   it.effect(
-    "resolves a branch NAME against the linked PARENT (not the branch's own ref) after `supabase link <branch>` (CLI-2167 follow-up)",
+    "resolves a branch NAME against the linked PARENT (not the branch's own ref) after `dbase link <branch>` (CLI-2167 follow-up)",
     () => {
       const PARENT_REF = "parentprojectrefxxxx";
       const BRANCH_OWN_REF = "branchownrefyyyyyyyy";
@@ -249,7 +249,7 @@ describe("branches delete integration", () => {
       return Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        // Simulates the state left by `supabase link <branch>`: project-ref holds the branch's own
+        // Simulates the state left by `dbase link <branch>`: project-ref holds the branch's own
         // ref, but linked-project.json still holds the real parent — `branches delete` must
         // resolve the parent for the name lookup, not the branch ref sitting in project-ref.
         const tempDir = path.join(tempRoot.current, "supabase", ".temp");

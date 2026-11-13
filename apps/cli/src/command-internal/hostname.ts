@@ -128,7 +128,7 @@ export const resolveDockerDaemonEndpoint = Effect.fnUntraced(function* (): Effec
   return yield* dockerContextEndpointHost(contextName);
 });
 
-/** Resolves the hostname for local service connections: `SUPABASE_SERVICES_HOSTNAME` (shell, then project `.env*`), else the shell-selected Docker daemon's tcp host. */
+/** Resolves the hostname for local service connections: `DBASE_SERVICES_HOSTNAME` (or legacy `SUPABASE_SERVICES_HOSTNAME`; shell, then project `.env*`), else the shell-selected Docker daemon's tcp host. */
 export const getHostname = (
   resolvedConfig: Pick<ResolvedCliConfig, "envValues">,
 ): Effect.Effect<
@@ -137,9 +137,9 @@ export const getHostname = (
   RuntimeInfo | FileSystem.FileSystem | Path.Path | Digest.Digest
 > =>
   Effect.gen(function* () {
-    const { SUPABASE_SERVICES_HOSTNAME: override } = yield* resolvedConfig.envValues([
-      "SUPABASE_SERVICES_HOSTNAME",
-    ]);
+    const { DBASE_SERVICES_HOSTNAME: dbaseOverride, SUPABASE_SERVICES_HOSTNAME: supabaseOverride } =
+      yield* resolvedConfig.envValues(["DBASE_SERVICES_HOSTNAME", "SUPABASE_SERVICES_HOSTNAME"]);
+    const override = dbaseOverride ?? supabaseOverride;
     if (override !== undefined) return override;
     const endpoint = yield* resolveDockerDaemonEndpoint();
     if (Option.isSome(endpoint)) {

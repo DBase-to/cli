@@ -19,15 +19,15 @@ const config = {
 export type FunctionsListFlags = CliCommand.Command.Config.Infer<typeof config>;
 
 export const functionsListCommand = Command.make("list", config).pipe(
-  Command.withDescription("List all Functions in the linked Supabase project."),
-  Command.withShortDescription("List all Functions in Supabase"),
+  Command.withDescription("List all Functions in the linked DBase project."),
+  Command.withShortDescription("List all Functions in DBase"),
   Command.withExamples([
     {
-      command: "supabase functions list",
+      command: "dbase functions list",
       description: "List all deployed functions in the linked project",
     },
     {
-      command: "supabase functions list --remote=abcdefghijklmnopqrst",
+      command: "dbase functions list --remote=abcdefghijklmnopqrst",
       description: "List all deployed functions in a specific project",
     },
   ]),

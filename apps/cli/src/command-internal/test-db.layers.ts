@@ -14,7 +14,7 @@ import { commandRuntimeLayer } from "../shared/runtime/command-runtime.layer.ts"
 import { stackApiLayer } from "./stack-api.ts";
 import { bundledPostgresClientLayer } from "./bundled-postgres-client.ts";
 /**
- * Runtime layer shared by `supabase test db` and its hidden alias `supabase
+ * Runtime layer shared by `dbase test db` and its hidden alias `supabase
  * db test`, both calling this same factory and `runTestDbCommand`.
  *
  * The Management API stack is intentionally not merged here: it resolves an

@@ -93,7 +93,7 @@ export const browserLogin = Effect.fn("Login.browser")(function* (opts: BrowserL
   if (opts.openBrowser) {
     if (isText) {
       yield* output.raw(
-        "Hello from Supabase! Press Enter to open browser and login automatically.\n",
+        "Hello from DBase! Press Enter to open browser and login automatically.\n",
         "stdout",
       );
     }

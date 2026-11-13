@@ -67,7 +67,7 @@ const overrideStackPortsIn = (projectDir: string) =>
 // PUBLIC` on a function was silently dropped from the generated migration. Fixed upstream in
 // @supabase/pg-delta@1.0.0-alpha.33. Uses local Docker-stack e2e coverage; see AGENTS.md's "E2e
 // tests" section.
-describe("supabase db diff (e2e, pg-delta declarative privileges)", () => {
+describe("dbase db diff (e2e, pg-delta declarative privileges)", () => {
   it.live(
     "keeps REVOKE ... FROM PUBLIC on a function when diffing a declarative schema against local",
     () =>

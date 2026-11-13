@@ -32,7 +32,7 @@ const config = {
 } as const;
 
 export const dbRemoteChangesCommand = Command.make("changes", config).pipe(
-  Command.withDescription("Removed: use `supabase db diff --remote` instead."),
+  Command.withDescription("Removed: use `dbase db diff --remote` instead."),
   Command.withShortDescription("Removed: use `db diff --remote` instead"),
   // Removed: fails before any Management API call, so no flag changes what it calls.
   withPermissions({
@@ -40,7 +40,7 @@ export const dbRemoteChangesCommand = Command.make("changes", config).pipe(
     noApiEffectFlags: ["db-url", "linked", "password", "schema"],
   }),
   Command.withHandler(() =>
-    removedCommand("Use `supabase db diff --remote` instead.").pipe(
+    removedCommand("Use `dbase db diff --remote` instead.").pipe(
       withCommandTelemetry(),
       withJsonErrorHandling,
     ),

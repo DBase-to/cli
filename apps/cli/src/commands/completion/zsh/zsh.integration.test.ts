@@ -13,7 +13,7 @@ function setupCompletionZsh() {
 }
 
 function testRoot() {
-  return Command.make("supabase").pipe(Command.withSubcommands([completionZshCommand]));
+  return Command.make("dbase").pipe(Command.withSubcommands([completionZshCommand]));
 }
 
 describe("completion zsh", () => {
@@ -21,7 +21,7 @@ describe("completion zsh", () => {
     const out = setupCompletionZsh();
     return Effect.gen(function* () {
       yield* completionZsh({ noDescriptions: false });
-      expect(out.stdoutText).toContain("#compdef supabase");
+      expect(out.stdoutText).toContain("#compdef dbase");
       expect(out.stdoutText).not.toContain("__completeNoDesc");
       expect(out.stdoutText).toContain("__complete");
     }).pipe(Effect.provide(out.layer));

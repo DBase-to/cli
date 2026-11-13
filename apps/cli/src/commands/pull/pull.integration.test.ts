@@ -106,7 +106,7 @@ import { pullHandler } from "./pull.command.ts";
 import { warningsOf } from "../../../tests/helpers/remote-selection.ts";
 
 /**
- * Scenario-oriented integration coverage for `supabase pull` (ADR 0024), driving the real
+ * Scenario-oriented integration coverage for `dbase pull` (ADR 0024), driving the real
  * exported `pullHandler` against a fully mocked db-pull/migration-fetch/functions-download
  * substrate. `PgDeltaEngine` is mocked directly to force the pg-delta diff engine; `DbConnection`
  * shares one fake Postgres session across the migration-history and db steps, since both read
@@ -1628,7 +1628,7 @@ describe("pull integration", () => {
   );
 
   it.effect(
-    "supabase pull -o json fails with a message pointing at --output-format, not a machine payload",
+    "dbase pull -o json fails with a message pointing at --output-format, not a machine payload",
     () => {
       const { layer, api } = setup({ outputFlag: Option.some("json") });
       return Effect.gen(function* () {
@@ -1798,7 +1798,7 @@ describe("pull integration", () => {
           expect(stepLine(out.stdoutText, "functions")).toContain("changed");
 
           expect(out.stdoutText).toContain(
-            `To retry just this step, run: supabase config pull --remote=${VALID_REF}`,
+            `To retry just this step, run: dbase config pull --remote=${VALID_REF}`,
           );
         }).pipe(Effect.provide(layer));
       },
@@ -1829,7 +1829,7 @@ describe("pull integration", () => {
           expect(stepLine(out.stdoutText, "config")).toContain("failed");
 
           expect(out.stdoutText).toContain(
-            `To retry just this step, run: supabase config pull --remote-label 'staging-remote' --remote=${VALID_REF}`,
+            `To retry just this step, run: dbase config pull --remote-label 'staging-remote' --remote=${VALID_REF}`,
           );
         }).pipe(Effect.provide(layer));
       },
@@ -1862,7 +1862,7 @@ describe("pull integration", () => {
           expect(yield* readConfigFile).not.toContain("[remotes.staging]");
 
           expect(out.stdoutText).toContain(
-            `To retry just this step, run: supabase config pull --remote-label 'staging' --remote=${BRANCH_REF}`,
+            `To retry just this step, run: dbase config pull --remote-label 'staging' --remote=${BRANCH_REF}`,
           );
         }).pipe(Effect.provide(layer));
       },
@@ -1903,10 +1903,10 @@ describe("pull integration", () => {
           expect(stepLine(out.stdoutText, "functions")).toContain("unchanged");
 
           expect(out.stdoutText).toContain(
-            `To retry just this step, run: supabase migration fetch --remote=${VALID_REF}`,
+            `To retry just this step, run: dbase migration fetch --remote=${VALID_REF}`,
           );
           expect(out.stdoutText).toContain(
-            `To retry just this step, run: supabase db pull --experimental=false --remote=${VALID_REF}`,
+            `To retry just this step, run: dbase db pull --experimental=false --remote=${VALID_REF}`,
           );
         }).pipe(Effect.provide(layer));
       },
@@ -1977,7 +1977,7 @@ describe("pull integration", () => {
           expect(stepLine(out.stdoutText, "functions")).toContain("unchanged");
 
           expect(out.stdoutText).toContain(
-            `To retry just this step, run: supabase db pull --experimental=false --remote=${VALID_REF}`,
+            `To retry just this step, run: dbase db pull --experimental=false --remote=${VALID_REF}`,
           );
         }).pipe(Effect.provide(layer));
       },
@@ -2011,10 +2011,10 @@ describe("pull integration", () => {
 
           const suggestion = envelope.steps.db.failure.suggestion;
           const migrationHistoryHintIndex = suggestion.indexOf(
-            `Alternatively, rerun \`supabase pull --with-migration-history --remote=${VALID_REF}\``,
+            `Alternatively, rerun \`dbase pull --with-migration-history --remote=${VALID_REF}\``,
           );
           const retryHintIndex = suggestion.indexOf(
-            `To retry just this step, run: supabase db pull --experimental=false --remote=${VALID_REF}`,
+            `To retry just this step, run: dbase db pull --experimental=false --remote=${VALID_REF}`,
           );
           expect(migrationHistoryHintIndex).toBeGreaterThan(-1);
           expect(retryHintIndex).toBeGreaterThan(migrationHistoryHintIndex);
@@ -2043,7 +2043,7 @@ describe("pull integration", () => {
             capturingStdio.stdout[0],
           );
           expect(envelope.steps.db.failure.suggestion).toContain(
-            `Alternatively, rerun \`supabase pull --with-migration-history --remote-label 'staging remote' --remote=${VALID_REF}\``,
+            `Alternatively, rerun \`dbase pull --with-migration-history --remote-label 'staging remote' --remote=${VALID_REF}\``,
           );
         }).pipe(Effect.provide(layer));
       },
@@ -2138,7 +2138,7 @@ describe("pull integration", () => {
           expect(stepLine(out.stdoutText, "functions")).toContain("failed");
           expect(out.stdoutText).toContain("500");
           expect(out.stdoutText).toContain(
-            `To retry just this step, run: supabase functions download --remote=${VALID_REF}`,
+            `To retry just this step, run: dbase functions download --remote=${VALID_REF}`,
           );
         }).pipe(Effect.provide(layer));
       },

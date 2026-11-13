@@ -208,7 +208,7 @@ const runStatusEnv = (input: {
           workdir,
           explicitWorkdir: Option.isSome(workdirFlag),
           workdirEnvValue: Option.none(),
-          userAgent: "SupabaseCLI/pointer-test",
+          userAgent: "DBaseCLI/pointer-test",
           apiMaxRetries: Option.none(),
         });
       }),
@@ -224,7 +224,7 @@ const runStatusEnv = (input: {
       Command.provide(commandRuntimeLayer(["status"])),
       Command.provide(Layer.mergeAll(resolver, api, commandSettings, telemetry.layer)),
     );
-    const testRoot = Command.make("supabase").pipe(
+    const testRoot = Command.make("dbase").pipe(
       Command.withSubcommands([command]),
       Command.withGlobalFlags(GLOBAL_FLAGS),
     );
@@ -277,7 +277,7 @@ describe("stack start export pointer", () => {
           { explicitWorkdir: true, projectRoot, stack: "docker" },
           "posix",
         );
-        expect(pointer).toBe(`supabase status --env --workdir ${projectRoot} --stack docker`);
+        expect(pointer).toBe(`dbase status --env --workdir ${projectRoot} --stack docker`);
       }),
   );
 
@@ -304,7 +304,7 @@ describe("stack start export pointer", () => {
           "posix",
         );
         expect(pointer).toBe(
-          `supabase status --env --workdir '${projectRoot}' --stack 'feature one'"'"'s box'`,
+          `dbase status --env --workdir '${projectRoot}' --stack 'feature one'"'"'s box'`,
         );
       }),
   );

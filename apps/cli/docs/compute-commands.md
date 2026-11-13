@@ -3,7 +3,7 @@
 The experimental Compute command family runs application containers alongside a
 project; it is separate from the database instance size. Its commands and local
 configuration may change incompatibly while experimental. The family is opt in. Enable it with
-`SUPABASE_EXPERIMENTAL_COMPUTE=1` or by setting `compute = true` under
+`DBASE_EXPERIMENTAL_COMPUTE=1` or by setting `compute = true` under
 `[experimental]` in `supabase/config.toml`.
 
 The environment variable accepts a boolean (`1`, `t`, `T`, `TRUE`, `true`, `True` / `0`, `f`, `F`, `FALSE`, `false`, `False`;
@@ -32,16 +32,16 @@ For `supabase/config.json`, use the equivalent JSON object:
 
 When enabled, the CLI exposes:
 
-- `supabase compute new`
-- `supabase compute push`
-- `supabase compute list`
-- `supabase compute status`
-- `supabase compute logs`
-- `supabase compute delete`
+- `dbase compute new`
+- `dbase compute push`
+- `dbase compute list`
+- `dbase compute status`
+- `dbase compute logs`
+- `dbase compute delete`
 
-`supabase compute logs` remains available until v4 with its existing `--tail`,
+`dbase compute logs` remains available until v4 with its existing `--tail`,
 `--kind`, and `-f/--follow` options. It prints a deprecation warning on stderr.
-For the new log browser, read Compute logs with `supabase logs --remote --service compute`. Use
+For the new log browser, read Compute logs with `dbase logs --remote --service compute`. Use
 `--resource <name>` to select an application and `--kind app|requests|builds` to
 select its log stream. Press `L` in the interactive browser to load more logs.
 
@@ -56,6 +56,6 @@ its deployment settings.
 
 `compute push` and `compute delete` change the remote project, so both ask for
 confirmation first, and both default to no. `compute delete` asks for the
-compute's name to be typed back. Pass `--yes`, or set `SUPABASE_YES` in your
+compute's name to be typed back. Pass `--yes`, or set `DBASE_YES` in your
 shell, to confirm in scripts and CI; without it, a run that cannot prompt fails
 before changing anything.

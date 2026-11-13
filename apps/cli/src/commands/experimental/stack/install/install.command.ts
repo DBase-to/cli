@@ -29,11 +29,11 @@ export const stackInstallCommand = Command.make("install", config).pipe(
   Command.withShortDescription("Resolve and download local stack artifacts"),
   Command.withExamples([
     {
-      command: "supabase stack install",
+      command: "dbase stack install",
       description: "Resolve the lock and download artifacts for the available runtime",
     },
     {
-      command: "supabase stack install --frozen --runtime native",
+      command: "dbase stack install --frozen --runtime native",
       description: "Download the locked native archives, failing if the lock is stale",
     },
   ]),

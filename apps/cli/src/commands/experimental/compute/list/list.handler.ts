@@ -16,7 +16,7 @@ import { discoverComputeNames, loadComputeProject } from "../compute.shared.ts";
 import type { ComputeListFlags } from "./list.command.ts";
 
 /**
- * `supabase compute list` — every compute in this project, deployed or not.
+ * `dbase compute list` — every compute in this project, deployed or not.
  *
  * Merges two sources that are each misleading alone: the project's
  * `[compute.*]` entries (maybe never deployed) and what the API reports as
@@ -176,7 +176,7 @@ export const computeList = Effect.fn("compute.list")(function* (flags: ComputeLi
 
     if (rows.length === 0) {
       yield* output.raw(
-        `No compute found. Scaffold one with ${aqua("supabase compute new <name>", process.stdout)}.\n`,
+        `No compute found. Scaffold one with ${aqua("dbase compute new <name>", process.stdout)}.\n`,
       );
       return;
     }

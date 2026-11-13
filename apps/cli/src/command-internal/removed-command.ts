@@ -42,7 +42,7 @@ export const removedCommand = (suggestion: string) =>
       const commandRuntime = yield* CommandRuntime;
       const command = getCommandRuntimeCommand(commandRuntime);
       return yield* new RemovedSurfaceError({
-        message: `supabase ${command} was removed.`,
+        message: `dbase ${command} was removed.`,
         suggestion,
         kind: "command",
       });

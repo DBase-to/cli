@@ -70,7 +70,7 @@ describe("readSelectionOrBundled without a lock", () => {
 
           expect(error).toBeInstanceOf(LockResolutionError);
           expect(error.message).toBe(
-            "supabase/supabase.lock not found; run supabase start to create it",
+            "supabase/supabase.lock not found; run dbase start to create it",
           );
         }),
       ),
@@ -222,7 +222,7 @@ describe("selectionForRequest with a stale lock", () => {
 
         expect(error).toMatchObject({ _tag: "LockResolutionError", reason: "frozen-stale" });
         expect(error.message).toBe(
-          "supabase/supabase.lock is stale for: auth (specifier v2.1.0 ≠ locked linked); run supabase start to refresh it",
+          "supabase/supabase.lock is stale for: auth (specifier v2.1.0 ≠ locked linked); run dbase start to refresh it",
         );
       }),
     ),

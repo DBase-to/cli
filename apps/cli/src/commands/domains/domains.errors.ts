@@ -43,7 +43,7 @@ class DomainsUnexpectedStatusError extends Data.TaggedError("DomainsUnexpectedSt
 /**
  * The CNAME pre-check in `domains create` failed — either the DNS lookup did
  * not resolve to a CNAME, or it resolved to a host other than the expected
- * Supabase subdomain.
+ * DBase subdomain.
  */
 export class DomainsCnameError extends Data.TaggedError("DomainsCnameError")<{
   readonly message: string;

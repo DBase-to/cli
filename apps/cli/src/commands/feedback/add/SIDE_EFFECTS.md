@@ -1,21 +1,21 @@
-# `supabase feedback add [message...] [--project-ref <ref>]`
+# `dbase feedback add [message...] [--project-ref <ref>]`
 
 Target: account, no consent — see [Command target](../../../../docs/command-target.md)
 
 ## Files Read
 
-| Path                                            | Format                              | When                                                                                                                                                                                                                         |
-| ----------------------------------------------- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `~/.supabase/profile`                           | plain text (profile name)           | when `--profile` and `SUPABASE_PROFILE` are unset (profile resolution via `commandSettingsLayer`)                                                                                                                            |
-| `$SUPABASE_PROFILE`                             | YAML (`api_url:` / `gotrue_url:` …) | when `SUPABASE_PROFILE` is set to a file path instead of a built-in profile name                                                                                                                                             |
-| `<workdir>/supabase/.temp/project-ref`          | plain text (project ref)            | when `--project-ref` and `SUPABASE_PROJECT_ID` are unset — supplies the submission's `project_ref`. Absent, blank, unreadable, or malformed → `null` (never fails the submission)                                            |
-| `<SUPABASE_HOME or ~/.supabase>/telemetry.json` | JSON (telemetry state)              | read at startup by the shared telemetry runtime — its `distinct_id` (gotrue user id stamped at login) supplies the submission's `user_id` when telemetry consent is granted. Absent, logged-out, or consent-denied → omitted |
+| Path                                         | Format                              | When                                                                                                                                                                                                                         |
+| -------------------------------------------- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `~/.supabase/profile`                        | plain text (profile name)           | when `--profile` and `DBASE_PROFILE` are unset (profile resolution via `commandSettingsLayer`)                                                                                                                               |
+| `$DBASE_PROFILE`                             | YAML (`api_url:` / `gotrue_url:` …) | when `DBASE_PROFILE` is set to a file path instead of a built-in profile name                                                                                                                                                |
+| `<workdir>/supabase/.temp/project-ref`       | plain text (project ref)            | when `--project-ref` and `DBASE_PROJECT_ID` are unset — supplies the submission's `project_ref`. Absent, blank, unreadable, or malformed → `null` (never fails the submission)                                               |
+| `<DBASE_HOME or ~/.supabase>/telemetry.json` | JSON (telemetry state)              | read at startup by the shared telemetry runtime — its `distinct_id` (gotrue user id stamped at login) supplies the submission's `user_id` when telemetry consent is granted. Absent, logged-out, or consent-denied → omitted |
 
 ## Files Written
 
-| Path                                            | Format | When                                                                                                                  |
-| ----------------------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------- |
-| `<SUPABASE_HOME or ~/.supabase>/telemetry.json` | JSON   | every invocation, success or failure — the shared telemetry-state finalizer (device id persistence, session rotation) |
+| Path                                         | Format | When                                                                                                                  |
+| -------------------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------- |
+| `<DBASE_HOME or ~/.supabase>/telemetry.json` | JSON   | every invocation, success or failure — the shared telemetry-state finalizer (device id persistence, session rotation) |
 
 ## API Routes
 
@@ -33,12 +33,12 @@ request times out after 10 s.
 
 ## Environment Variables
 
-| Variable                | Purpose                                                                                                                                                       | Required?                                                          |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `SUPABASE_PROFILE`      | built-in profile name or YAML file path                                                                                                                       | no (falls back to `~/.supabase/profile` → `supabase`)              |
-| `SUPABASE_WORKDIR`      | project directory override                                                                                                                                    | no (falls back to `--workdir` → cwd)                               |
-| `SUPABASE_ACCESS_TOKEN` | access token captured by `commandSettingsLayer`                                                                                                               | no (unused by this command)                                        |
-| `SUPABASE_PROJECT_ID`   | supplies the submission's `project_ref` when `--project-ref` is unset, taking priority over the linked-ref file; must be a well-formed ref (exit 1 otherwise) | no (falls back to `<workdir>/supabase/.temp/project-ref` → `null`) |
+| Variable             | Purpose                                                                                                                                                       | Required?                                                          |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `DBASE_PROFILE`      | built-in profile name or YAML file path                                                                                                                       | no (falls back to `~/.supabase/profile` → `supabase`)              |
+| `DBASE_WORKDIR`      | project directory override                                                                                                                                    | no (falls back to `--workdir` → cwd)                               |
+| `DBASE_ACCESS_TOKEN` | access token captured by `commandSettingsLayer`                                                                                                               | no (unused by this command)                                        |
+| `DBASE_PROJECT_ID`   | supplies the submission's `project_ref` when `--project-ref` is unset, taking priority over the linked-ref file; must be a well-formed ref (exit 1 otherwise) | no (falls back to `<workdir>/supabase/.temp/project-ref` → `null`) |
 
 Agent-detection env vars (e.g. `CLAUDECODE`) are read indirectly by
 `@vercel/detect-agent` via `aiToolLayer` to set the submission's
@@ -47,14 +47,14 @@ every command.
 
 ## Exit Codes
 
-| Code | Condition                                                                                           |
-| ---- | --------------------------------------------------------------------------------------------------- |
-| `0`  | success                                                                                             |
-| `1`  | no message from args, piped stdin, or an interactive prompt (`-o json` never prompts)               |
-| `1`  | message over the 1000-character limit (checked client-side, no request sent)                        |
-| `1`  | `--project-ref` or `SUPABASE_PROJECT_ID` is set but not a well-formed project ref (no request sent) |
-| `1`  | submit failure (PostgREST error, network failure, or 10s timeout)                                   |
-| `1`  | `-o`/`--output` value outside the command's `pretty\|json` enum (validated pre-run)                 |
+| Code | Condition                                                                                        |
+| ---- | ------------------------------------------------------------------------------------------------ |
+| `0`  | success                                                                                          |
+| `1`  | no message from args, piped stdin, or an interactive prompt (`-o json` never prompts)            |
+| `1`  | message over the 1000-character limit (checked client-side, no request sent)                     |
+| `1`  | `--project-ref` or `DBASE_PROJECT_ID` is set but not a well-formed project ref (no request sent) |
+| `1`  | submit failure (PostgREST error, network failure, or 10s timeout)                                |
+| `1`  | `-o`/`--output` value outside the command's `pretty\|json` enum (validated pre-run)              |
 
 ## Telemetry Events Fired
 
@@ -76,7 +76,7 @@ table via the API route above.
 
 ```
 Thanks for the feedback!
-To delete this feedback later, run: supabase feedback delete <delete-token>
+To delete this feedback later, run: dbase feedback delete <delete-token>
 ```
 
 When the submission carried a `project_ref`, the hint appends
@@ -84,7 +84,7 @@ When the submission carried a `project_ref`, the hint appends
 presented:
 
 ```
-To delete this feedback later, run: supabase feedback delete <delete-token> --project-ref <ref>
+To delete this feedback later, run: dbase feedback delete <delete-token> --project-ref <ref>
 ```
 
 Rendered as a clack success line plus an info line after a "Sending
@@ -118,26 +118,26 @@ event); the shared stream-json layer emits these for every `output.task`.
 
 - Telemetry records `command: "feedback add"`.
 - Messages starting with a dash need the `--` end-of-options sentinel:
-  `supabase feedback add -- "--yes should be the default"`.
+  `dbase feedback add -- "--yes should be the default"`.
 - Message resolution order: positional args → piped stdin (non-TTY) →
   interactive prompt (TTY, text mode) → error.
 - Piped stdin is read in constant memory with a 64 KB cap; input past the cap
   fails as over-limit (exit 1) without buffering the rest of the pipe. A read
   error mid-pipe discards whatever was buffered and falls through to the next
   source (never submits a truncated prefix).
-- Submission context: CLI version, user agent (`SupabaseCLI/<version>` from
+- Submission context: CLI version, user agent (`DBaseCLI/<version>` from
   `CommandSettings`), OS/arch, agent detection, and — when `--project-ref`,
-  `SUPABASE_PROJECT_ID`, or a linked project supplies one — the project ref.
+  `DBASE_PROJECT_ID`, or a linked project supplies one — the project ref.
   The resolved access token is never sent.
-- The persisted gotrue user id from `<SUPABASE_HOME or ~/.supabase>/telemetry.json` (`distinct_id`,
+- The persisted gotrue user id from `<DBASE_HOME or ~/.supabase>/telemetry.json` (`distinct_id`,
   stamped at login) is sent as `user_id` when present **and** telemetry consent
   is granted; opted-out or logged-out runs omit it. The lookup is a synchronous
   in-memory read — no auth or network dependency is added. A row submitted with
   a `user_id` additionally requires the matching `x-feedback-user-id` header to
   delete it later (`feedback delete` sends it automatically).
 - Project-ref resolution order: `--project-ref` (an empty value counts as
-  unset) → `SUPABASE_PROJECT_ID` → `<workdir>/supabase/.temp/project-ref`
-  (written by `supabase link`) → `null`, the same order as `feedback delete`.
+  unset) → `DBASE_PROJECT_ID` → `<workdir>/supabase/.temp/project-ref`
+  (written by `dbase link`) → `null`, the same order as `feedback delete`.
   The flag and env values are validated like every other command's explicit
   ref (a malformed value fails with the shared invalid-ref error); the file is the
   soft half of `ProjectRefResolver.resolveOptional`, read directly so the
@@ -148,5 +148,5 @@ event); the shared stream-json layer emits these for every `output.task`.
 - Submission goes through the SECURITY DEFINER `submit_interfaces_feedback`
   RPC (the table has no insert grant), which returns a server-generated
   `delete_token` exactly once. The token is the only way to delete the
-  feedback later (`supabase feedback delete <token>`), so the ack surfaces it
+  feedback later (`dbase feedback delete <token>`), so the ack surfaces it
   in every output format; the CLI never stores it.

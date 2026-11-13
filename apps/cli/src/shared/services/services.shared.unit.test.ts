@@ -233,7 +233,7 @@ describe("services shared", () => {
     ).toContainEqual({
       name: "ghcr.io/supabase/cli/auth",
       // The catalog's release version (`v2.197.0-r0`) is a Dockerfile/manifest tag; the row shows
-      // the upstream version so a `supabase services` mismatch check compares upstream to upstream.
+      // the upstream version so a `dbase services` mismatch check compares upstream to upstream.
       local: "v2.197.0",
       remote: "",
     });

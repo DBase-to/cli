@@ -25,7 +25,7 @@ const config = {
   // resolution all run first; required-ness is enforced in the handler after ref
   // resolution.
   desiredSubdomain: Flag.String("desired-subdomain").pipe(
-    Flag.withDescription("The desired vanity subdomain to use for your Supabase project."),
+    Flag.withDescription("The desired vanity subdomain to use for your DBase project."),
     Flag.optional,
   ),
 } as const;

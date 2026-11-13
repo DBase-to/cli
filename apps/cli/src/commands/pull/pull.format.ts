@@ -2,7 +2,7 @@ import { pullCounts } from "./pull.aggregate.ts";
 import { PULL_STEP_ORDER, type PullAggregate, type PullStepResult } from "./pull.types.ts";
 
 /**
- * Pure text/JSON formatters for `supabase pull`; rendering and status-summary decisions live
+ * Pure text/JSON formatters for `dbase pull`; rendering and status-summary decisions live
  * here and in `pull.aggregate.ts`.
  */
 

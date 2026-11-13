@@ -1,4 +1,4 @@
-# `supabase logout`
+# `dbase logout`
 
 Target: account, no consent — see [Command target](../../../docs/command-target.md)
 
@@ -13,11 +13,11 @@ API calls.
 
 ## Files Written
 
-| Path                                            | Format | When                                                                         |
-| ----------------------------------------------- | ------ | ---------------------------------------------------------------------------- |
-| `~/.supabase/access-token`                      | —      | deleted first, always (a missing file is ignored)                            |
-| OS keyring (`Supabase CLI` namespace)           | —      | the access-token entries **and** all project DB-password entries are deleted |
-| `<SUPABASE_HOME or ~/.supabase>/telemetry.json` | JSON   | always (post-run flush)                                                      |
+| Path                                         | Format | When                                                                         |
+| -------------------------------------------- | ------ | ---------------------------------------------------------------------------- |
+| `~/.supabase/access-token`                   | —      | deleted first, always (a missing file is ignored)                            |
+| OS keyring (`DBase CLI` namespace)           | —      | the access-token entries **and** all project DB-password entries are deleted |
+| `<DBASE_HOME or ~/.supabase>/telemetry.json` | JSON   | always (post-run flush)                                                      |
 
 ## API Routes
 
@@ -27,10 +27,10 @@ API calls.
 
 ## Environment Variables
 
-| Variable               | Purpose                                            | Required? |
-| ---------------------- | -------------------------------------------------- | --------- |
-| `SUPABASE_YES`/`--yes` | auto-confirm the logout prompt                     | no        |
-| `SUPABASE_NO_KEYRING`  | disables the OS keyring (forces the file fallback) | no        |
+| Variable            | Purpose                                            | Required? |
+| ------------------- | -------------------------------------------------- | --------- |
+| `DBASE_YES`/`--yes` | auto-confirm the logout prompt                     | no        |
+| `DBASE_NO_KEYRING`  | disables the OS keyring (forces the file fallback) | no        |
 
 ## Exit Codes
 
@@ -65,7 +65,7 @@ with `NonInteractiveError` in these modes.
 
 - **Deliberate quirk:** `deleteAccessToken` removes the file first, but the
   outcome is decided solely by the profile-keyring delete. On a no-keyring host
-  (WSL / `SUPABASE_NO_KEYRING`) or when the token lived only in the file, the file is
+  (WSL / `DBASE_NO_KEYRING`) or when the token lived only in the file, the file is
   removed yet logout still reports `You were not logged in, nothing to do.` and exits 0.
 - The legacy `access-token` keyring entry delete is best-effort — its failure never
   changes the outcome.

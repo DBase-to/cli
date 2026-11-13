@@ -26,7 +26,7 @@ const tempRoot = useTempWorkdir("supabase-status-string-slice-int-");
 // requirement only from what's already accumulated, so subcommand requirements need to be unioned
 // in first. Reversing the order would leave those context tags in `Command.runWith`'s Environment
 // type, even though this parse-failure path never reaches the handler.
-const testRoot = Command.make("supabase").pipe(
+const testRoot = Command.make("dbase").pipe(
   Command.withSubcommands([statusCommand]),
   Command.withGlobalFlags(GLOBAL_FLAGS),
 );

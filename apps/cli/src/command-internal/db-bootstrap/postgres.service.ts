@@ -1,5 +1,5 @@
 /**
- * Builds the {@link StartContainerSpec} for the Postgres container both `supabase start` and
+ * Builds the {@link StartContainerSpec} for the Postgres container both `dbase start` and
  * `db start`'s native container bootstrap use, including `db start`'s `fromBackup`
  * entrypoint/bind override.
  *
@@ -363,7 +363,7 @@ export interface ShadowPostgresContainerSpecInput {
  * healthcheck, and entrypoint-script shape as the real `db` container (with
  * {@link SHADOW_ENTRYPOINT_ARGS} added), but ephemeral and unnamed. It still joins the network
  * without aliases — Docker's embedded DNS resolves it by its auto-generated name and short
- * container id — and still carries labels, so `supabase stop`'s label-filtered sweep also
+ * container id — and still carries labels, so `dbase stop`'s label-filtered sweep also
  * catches an orphaned shadow.
  */
 export function buildShadowPostgresContainerSpec(

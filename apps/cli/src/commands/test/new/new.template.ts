@@ -1,5 +1,5 @@
 /**
- * Boilerplate written by `supabase test new` for the `pgtap` template.
+ * Boilerplate written by `dbase test new` for the `pgtap` template.
  * Byte-for-byte (109 bytes, trailing newline included).
  */
 export const PGTAP_TEMPLATE = `BEGIN;

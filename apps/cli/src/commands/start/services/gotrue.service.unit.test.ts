@@ -191,7 +191,7 @@ describe("buildGotrueEnv", () => {
     test("wires passkey and webauthn settings", () => {
       const webauthn: GotrueWebauthnInput = {
         rpId: "localhost",
-        rpDisplayName: "Supabase",
+        rpDisplayName: "DBase",
         rpOrigins: ["http://127.0.0.1:5173", "http://localhost:5173"],
       };
       const env = buildGotrueEnv({
@@ -202,7 +202,7 @@ describe("buildGotrueEnv", () => {
 
       expect(env["GOTRUE_PASSKEY_ENABLED"]).toBe("true");
       expect(env["GOTRUE_WEBAUTHN_RP_ID"]).toBe("localhost");
-      expect(env["GOTRUE_WEBAUTHN_RP_DISPLAY_NAME"]).toBe("Supabase");
+      expect(env["GOTRUE_WEBAUTHN_RP_DISPLAY_NAME"]).toBe("DBase");
       expect(env["GOTRUE_WEBAUTHN_RP_ORIGINS"]).toBe("http://127.0.0.1:5173,http://localhost:5173");
     });
 

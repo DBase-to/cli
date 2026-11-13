@@ -36,7 +36,7 @@ export const domainsDeleteCommand = Command.make("delete", config).pipe(
   Command.withShortDescription("Delete the custom hostname config"),
   Command.withExamples([
     {
-      command: "supabase domains delete --remote=abcdefghijklmnopqrst",
+      command: "dbase domains delete --remote=abcdefghijklmnopqrst",
       description: "Delete the custom hostname config for a project",
     },
   ]),

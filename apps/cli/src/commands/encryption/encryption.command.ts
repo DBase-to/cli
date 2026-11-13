@@ -3,7 +3,7 @@ import { encryptionGetRootKeyCommand } from "./get-root-key/get-root-key.command
 import { encryptionUpdateRootKeyCommand } from "./update-root-key/update-root-key.command.ts";
 
 export const encryptionCommand = Command.make("encryption").pipe(
-  Command.withDescription("Manage encryption keys of Supabase projects"),
+  Command.withDescription("Manage encryption keys of DBase projects"),
   Command.withShortDescription("Manage encryption keys"),
   Command.withSubcommands([encryptionGetRootKeyCommand, encryptionUpdateRootKeyCommand]),
 );

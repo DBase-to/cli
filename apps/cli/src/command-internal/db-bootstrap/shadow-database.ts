@@ -186,7 +186,7 @@ export interface CreateShadowDatabaseInput extends ShadowPostgresContainerSpecIn
    * Set only by the shadow baseline cache's cold path, to `false`: that path must `docker
    * stop`/`start` the container mid-run to snapshot it, and Docker removes an auto-removed
    * container the moment it exits, leaving nothing to restart. Still removed by `docker rm -f -v`
-   * on release, so a SIGKILLed CLI leaves a stopped container behind (swept by `supabase stop`)
+   * on release, so a SIGKILLed CLI leaves a stopped container behind (swept by `dbase stop`)
    * instead of nothing.
    */
   readonly autoRemove?: boolean;

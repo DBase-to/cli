@@ -1,11 +1,11 @@
-# `supabase compute logs <name>`
+# `dbase compute logs <name>`
 
 Target: hosted, no consent — see [Command target](../../../../../docs/command-target.md)
 
 ## Feature gate
 
 This command is registered only when `experimental.compute` is enabled. Set
-`SUPABASE_EXPERIMENTAL_COMPUTE=1` to enable it, or `0` to disable it; an unset
+`DBASE_EXPERIMENTAL_COMPUTE=1` to enable it, or `0` to disable it; an unset
 or empty variable uses the project configuration. Any non-boolean value
 reports an invalid feature-flag value before command parsing. When disabled, this command has
 no discovery or side effects.
@@ -19,12 +19,12 @@ no discovery or side effects.
 
 ## Files Read
 
-| Path                                          | Format     | When                                                                                                        |
-| --------------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------- |
-| `<SUPABASE_HOME or ~/.supabase>/access-token` | plain text | when `SUPABASE_ACCESS_TOKEN` is unset and the keyring holds no credential                                   |
-| `<workdir>/supabase/.temp/project-ref`        | plain text | when neither `--remote=<ref>` nor `SUPABASE_PROJECT_ID` is set — names the linked project                   |
-| `<SUPABASE_HOME or ~/.supabase>/profile`      | plain text | when neither `--profile` nor `SUPABASE_PROFILE` is set — names the profile, defaulting to `supabase`        |
-| `<SUPABASE_PROFILE>` (YAML)                   | YAML       | when `SUPABASE_PROFILE` is a filesystem path rather than a built-in name; a read failure aborts the command |
+| Path                                       | Format     | When                                                                                                     |
+| ------------------------------------------ | ---------- | -------------------------------------------------------------------------------------------------------- |
+| `<DBASE_HOME or ~/.supabase>/access-token` | plain text | when `DBASE_ACCESS_TOKEN` is unset and the keyring holds no credential                                   |
+| `<workdir>/supabase/.temp/project-ref`     | plain text | when neither `--remote=<ref>` nor `DBASE_PROJECT_ID` is set — names the linked project                   |
+| `<DBASE_HOME or ~/.supabase>/profile`      | plain text | when neither `--profile` nor `DBASE_PROFILE` is set — names the profile, defaulting to `supabase`        |
+| `<DBASE_PROFILE>` (YAML)                   | YAML       | when `DBASE_PROFILE` is a filesystem path rather than a built-in name; a read failure aborts the command |
 
 The project config is **not** read. Unlike `status` and `delete`, nothing in this
 command's output depends on local state — there is no source path to report — so
@@ -32,10 +32,10 @@ command's output depends on local state — there is no source path to report �
 
 ## Files Written
 
-| Path                                            | Format | When                                                                                                                                                                                                                              |
-| ----------------------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `<SUPABASE_HOME or ~/.supabase>/telemetry.json` | JSON   | always — flushed on success and on failure                                                                                                                                                                                        |
-| `<workdir>/supabase/.temp/linked-project.json`  | JSON   | post-run, once the project ref has resolved (success or failure), only when no such file exists, `<workdir>/supabase/.temp/project-ref` doesn't name another ref, an access token exists and `GET /v1/projects/{ref}` returns 200 |
+| Path                                           | Format | When                                                                                                                                                                                                                              |
+| ---------------------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `<DBASE_HOME or ~/.supabase>/telemetry.json`   | JSON   | always — flushed on success and on failure                                                                                                                                                                                        |
+| `<workdir>/supabase/.temp/linked-project.json` | JSON   | post-run, once the project ref has resolved (success or failure), only when no such file exists, `<workdir>/supabase/.temp/project-ref` doesn't name another ref, an access token exists and `GET /v1/projects/{ref}` returns 200 |
 
 ## API Routes
 
@@ -45,7 +45,7 @@ command's output depends on local state — there is no source path to report �
 | `GET`  | `/v2/projects/{ref}/compute/{name}`           | Bearer token | none — **only when there are no log rows** (the query returned none, or `--tail 0 --follow` ran no query), to tell "not deployed" from "deployed and quiet" | presence only                                                                                                                                                                                                                                                                                   |
 | `GET`  | `/v1/projects`                                | Bearer token | none — only when no ref resolved and the session is interactive                                                                                             | project picker                                                                                                                                                                                                                                                                                  |
 | `GET`  | `/v1/projects/{ref}`                          | Bearer token | none                                                                                                                                                        | `ref`, `name`, `organization_id`, `organization_slug` — linked-project cache miss only (best-effort, post-run): written only when `<workdir>/supabase/.temp/linked-project.json` doesn't exist, `.temp/project-ref` doesn't name another ref, an access token exists and the lookup returns 200 |
-| `GET`  | `/v1/projects/{parent}/branches`              | Bearer token | none                                                                                                                                                        | `[{id, name, project_ref, is_default}]` — only for `--remote=<branch>` (or the deprecated `--project-ref=<branch>`), and for a bare `--remote` followed by a word that could name a branch; `{parent}` is `SUPABASE_PROJECT_ID`, else the linked project                                        |
+| `GET`  | `/v1/projects/{parent}/branches`              | Bearer token | none                                                                                                                                                        | `[{id, name, project_ref, is_default}]` — only for `--remote=<branch>` (or the deprecated `--project-ref=<branch>`), and for a bare `--remote` followed by a word that could name a branch; `{parent}` is `DBASE_PROJECT_ID`, else the linked project                                           |
 | `GET`  | `/v1/branches/{id}`                           | Bearer token | none                                                                                                                                                        | `{ref, status, …}` — only for `--remote=<branch UUID>` when no project is linked                                                                                                                                                                                                                |
 
 Requires the `analytics_logs_read` permission, and the project must be on the
@@ -111,14 +111,14 @@ guaranteed and is deduplicated on the Logflare-minted `id`.
 
 ## Environment Variables
 
-| Variable                        | Purpose                                                                                                                                         | Required?                                                        |
-| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| `SUPABASE_EXPERIMENTAL_COMPUTE` | command registration (boolean `1`/`true` enables, `0`/`false` disables; unset/empty uses `experimental.compute`; non-boolean values are errors) | no                                                               |
-| `SUPABASE_ACCESS_TOKEN`         | auth token (bypasses credential file/keyring lookup)                                                                                            | no (falls back to keyring → `~/.supabase/access-token`)          |
-| `SUPABASE_PROFILE`              | built-in profile name or YAML file path                                                                                                         | no (falls back to `~/.supabase/profile` -> `supabase`)           |
-| `SUPABASE_PROJECT_ID`           | project ref, consulted after `--remote=<ref>`                                                                                                   | no (falls back to `supabase/.temp/project-ref`, then the picker) |
-| `SUPABASE_WORKDIR`              | project directory the command acts on                                                                                                           | no (falls back to `--workdir`, then the ancestor walk)           |
-| `SUPABASE_HOME`                 | directory holding `telemetry.json`                                                                                                              | no (falls back to `~/.supabase`)                                 |
+| Variable                     | Purpose                                                                                                                                         | Required?                                                        |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `DBASE_EXPERIMENTAL_COMPUTE` | command registration (boolean `1`/`true` enables, `0`/`false` disables; unset/empty uses `experimental.compute`; non-boolean values are errors) | no                                                               |
+| `DBASE_ACCESS_TOKEN`         | auth token (bypasses credential file/keyring lookup)                                                                                            | no (falls back to keyring → `~/.supabase/access-token`)          |
+| `DBASE_PROFILE`              | built-in profile name or YAML file path                                                                                                         | no (falls back to `~/.supabase/profile` -> `supabase`)           |
+| `DBASE_PROJECT_ID`           | project ref, consulted after `--remote=<ref>`                                                                                                   | no (falls back to `supabase/.temp/project-ref`, then the picker) |
+| `DBASE_WORKDIR`              | project directory the command acts on                                                                                                           | no (falls back to `--workdir`, then the ancestor walk)           |
+| `DBASE_HOME`                 | directory holding `telemetry.json`                                                                                                              | no (falls back to `~/.supabase`)                                 |
 
 ## Telemetry Events Fired
 
@@ -172,4 +172,4 @@ preserved so a stack trace survives intact.
 
 ## Deprecation
 
-The command prints a warning on stderr before reading logs. It names `supabase logs --remote --service compute --resource <name>` as the replacement and v4 as the removal version. Existing flags, history defaults, follow defaults, and output remain unchanged.
+The command prints a warning on stderr before reading logs. It names `dbase logs --remote --service compute --resource <name>` as the replacement and v4 as the removal version. Existing flags, history defaults, follow defaults, and output remain unchanged.

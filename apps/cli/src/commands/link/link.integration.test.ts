@@ -385,7 +385,7 @@ describe("link integration", () => {
         expect(yield* readTemp(workdir, "pooler-url")).toBe(
           "postgresql://postgres.ref@pooler.example.co:5432/postgres",
         );
-        expect(out.stdoutText).toContain("Finished supabase link.");
+        expect(out.stdoutText).toContain("Finished dbase link.");
       }).pipe(Effect.provide(layer));
     });
 
@@ -506,7 +506,7 @@ describe("link integration", () => {
         expect(error).toMatchObject({
           message: expect.stringContaining("project is paused"),
           suggestion: expect.stringContaining(
-            `An admin must unpause it from the Supabase dashboard at https://supabase.com/dashboard/project/${VALID_REF}`,
+            `An admin must unpause it from the DBase dashboard at https://supabase.com/dashboard/project/${VALID_REF}`,
           ),
         });
       }).pipe(Effect.provide(layer));
@@ -578,7 +578,7 @@ describe("link integration", () => {
       return Effect.gen(function* () {
         yield* link(flags());
         expect(yield* readTemp(workdir, "project-ref")).toBe(VALID_REF);
-        expect(out.stdoutText).toContain("Finished supabase link.");
+        expect(out.stdoutText).toContain("Finished dbase link.");
       }).pipe(Effect.provide(layer));
     });
 
@@ -613,7 +613,7 @@ describe("link integration", () => {
       return Effect.gen(function* () {
         yield* link(flags());
         expect(yield* readTemp(workdir, "project-ref")).toBe(VALID_REF);
-        expect(out.stdoutText).toContain("Finished supabase link.");
+        expect(out.stdoutText).toContain("Finished dbase link.");
         expect(yield* existsTemp(workdir, "storage-migration")).toBe(false);
         expect(yield* existsTemp(workdir, "rest-version")).toBe(false);
       }).pipe(Effect.provide(layer));
@@ -769,7 +769,7 @@ describe("link integration", () => {
         const success = out.messages.find((m) => m.type === "success");
         expect(success?.data).toMatchObject({ project_ref: VALID_REF });
         expect(success?.data).not.toHaveProperty("branch");
-        expect(out.stdoutText).not.toContain("Finished supabase link.");
+        expect(out.stdoutText).not.toContain("Finished dbase link.");
         expect(yield* readTemp(workdir, "project-ref")).toBe(VALID_REF);
       }).pipe(Effect.provide(layer));
     });
@@ -867,7 +867,7 @@ describe("link integration", () => {
     it.effect(
       "THE HEADLINE REGRESSION: relinking a different branch resolves via the cached real parent, not the previously-linked branch ref",
       () => {
-        // Simulates the state left behind by a prior `supabase link feature-branch`:
+        // Simulates the state left behind by a prior `dbase link feature-branch`:
         // project-ref holds the branch's own ref, but linked-project.json still holds the
         // real parent.
         const { layer, workdir, apiMock } = setup({
@@ -981,7 +981,7 @@ describe("link integration", () => {
               `Cannot resolve branch "feature-branch": the linked project ref is invalid`,
             );
             expect(causeText).toContain(
-              "Relink the parent project first: supabase link --project-ref",
+              "Relink the parent project first: dbase link --project-ref",
             );
           }
           expect(apiMock.requests).toHaveLength(0);
@@ -1003,7 +1003,7 @@ describe("link integration", () => {
             expect(causeText).toContain("LinkBranchNotLinkedError");
             expect(causeText).toContain(`Cannot resolve "feature-branch": it is not a project ref`);
             expect(causeText).toContain(
-              "If it is a branch name, link the parent project first: supabase link --project-ref",
+              "If it is a branch name, link the parent project first: dbase link --project-ref",
             );
           }
           expect(apiMock.requests).toHaveLength(0);
@@ -1267,7 +1267,7 @@ describe("link integration", () => {
           expect(causeText).toContain("branch-00");
           expect(causeText).toContain("branch-19");
           expect(causeText).not.toContain("branch-20");
-          expect(causeText).toContain("… (5 more — run supabase branches list)");
+          expect(causeText).toContain("… (5 more — run dbase branches list)");
         }
       }).pipe(Effect.provide(layer));
     });
@@ -1370,7 +1370,7 @@ describe("link integration", () => {
               `Cannot list branches for project ${PARENT_REF} (HTTP 404)`,
             );
             expect(causeText).toContain(
-              `If ${PARENT_REF} is itself a preview branch, link its parent project first: supabase link --project-ref`,
+              `If ${PARENT_REF} is itself a preview branch, link its parent project first: dbase link --project-ref`,
             );
           }
         }).pipe(Effect.provide(layer));
@@ -1434,7 +1434,7 @@ describe("link integration", () => {
             `Resolved branch "feature-branch" of project ${PARENT_REF} to project ref ${BRANCH_PROJECT_REF}.\n` +
               unverifiedTargetBanner(BRANCH_PROJECT_REF),
           );
-          expect(out.stdoutText).toBe("Finished supabase link.\n");
+          expect(out.stdoutText).toBe("Finished dbase link.\n");
         }).pipe(Effect.provide(layer));
       },
     );

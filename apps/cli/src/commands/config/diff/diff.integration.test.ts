@@ -700,7 +700,7 @@ describe("config diff integration", () => {
     }).pipe(Effect.provide(layer));
   });
 
-  it.effect("a missing config file points at supabase init before any resolution", () => {
+  it.effect("a missing config file points at dbase init before any resolution", () => {
     const { layer, telemetry, api } = setup();
     return Effect.gen(function* () {
       const exit = yield* configDiff(noFlags).pipe(Effect.exit);
@@ -712,7 +712,7 @@ describe("config diff integration", () => {
         expect(causeText).toContain(
           "supabase/config.toml, config.json or config.jsonc: file not found",
         );
-        expect(causeText).toContain("supabase init");
+        expect(causeText).toContain("dbase init");
       }
       expect(api.requests).toHaveLength(0);
       expect(telemetry.flushed).toBe(true);
@@ -740,9 +740,9 @@ describe("config diff integration", () => {
           const causeText = Cause.pretty(exit.cause);
           expect(causeText).toContain("ConfigDiffLoadConfigError");
           expect(causeText).toContain("file not found");
-          // An explicit workdir skips the ancestor-search "supabase init" hint; it names the
+          // An explicit workdir skips the ancestor-search "dbase init" hint; it names the
           // resolved directory and the flag/env var to change instead.
-          expect(causeText).not.toContain("supabase init");
+          expect(causeText).not.toContain("dbase init");
           expect(causeText).toContain("--workdir/SUPABASE_WORKDIR");
           expect(causeText).toContain(sub);
           // The ancestor has a valid project, so the message also hints at it via the "Did you
@@ -962,7 +962,7 @@ describe("config diff integration", () => {
       if (Exit.isFailure(exit)) {
         const causeText = Cause.pretty(exit.cause);
         expect(causeText).toContain("ConfigDiffReadStatusError");
-        expect(causeText).toContain("supabase login");
+        expect(causeText).toContain("dbase login");
       }
     }).pipe(Effect.provide(layer));
   });
@@ -981,7 +981,7 @@ describe("config diff integration", () => {
           const causeText = Cause.pretty(exit.cause);
           expect(causeText).toContain("ConfigDiffReadStatusError");
           expect(causeText).toContain(`Could not read configuration for project ${VALID_REF}`);
-          expect(causeText).toContain("supabase projects list");
+          expect(causeText).toContain("dbase projects list");
           expect(causeText).toContain(DEFAULT_API_URL);
         }
       }).pipe(Effect.provide(layer));

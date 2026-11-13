@@ -323,7 +323,7 @@ describe("bootstrap linked-project cache location", () => {
         expect(out.stderrText).toContain("Applying migration 20240101000000_test.sql...");
         const questions = out.promptConfirmCalls.map((c) => c.message);
         expect(questions).toEqual([
-          expect.stringContaining("Create a new Supabase project from the"),
+          expect.stringContaining("Create a new DBase project from the"),
           expect.stringContaining("overwrite existing files"),
         ]);
         expect(out.stderrText).toContain("Seeding globals from roles.sql...");

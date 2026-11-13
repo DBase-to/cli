@@ -40,19 +40,18 @@ Before the first production cut:
       (`raw.githubusercontent.com/DBase-to/cli/main/install`) both require it.
       The weekly `deploy.yml` PR, or the `fast-forward` job on an approved
       `develop` → `main` PR, creates it.
-- [ ] The npm package name is registered. `dbase` is currently owned by an
-      unrelated package; `@dbase/cli` is the fallback if the name cannot be
-      acquired.
+- [ ] The npm package name is registered. This fork publishes as
+      `@dbase/cli`; the unscoped `dbase` name is owned by an unrelated package.
 - [ ] Each npm package has a trusted publisher configured for the **calling**
       workflow, `release.yml`. npm validates the calling workflow for
       `workflow_call`, not `release-shared.yml`. The very first publish of a
       new package needs a granular `NPM_TOKEN`, because the trusted-publisher
       settings page only exists after the package exists; remove the token
       afterwards.
-- [ ] `DBase-to/homebrew-tap` and `DBase-to/scoop-bucket` exist, or
-      `release.yml` keeps `publish_brew_scoop=false`. With `true` and missing
-      repositories, every release fails at the tap/bucket push after npm has
-      already published.
+- [ ] `DBase-to/homebrew-tap` and `DBase-to/scoop-bucket` exist. They do; keep
+      `publish_brew_scoop=false` until the GitHub App has `contents: write` on
+      both, because with `true` and a missing app grant every release fails at
+      the tap/bucket push after npm has already published.
 - [ ] A `dry_run=true` dispatch is green, including the macOS smoke legs.
 
 ---
@@ -74,7 +73,7 @@ Publish the CLI into it from another terminal (current platform only, faster
 than a cross-platform build):
 
 ```sh
-# CLI (Bun SFE + Go sidecar — requires Go on PATH and `pnpm repos:install`):
+# CLI (Bun single-file executable; run `pnpm repos:install` once for Effect types):
 pnpm cli-release
 ```
 
@@ -85,8 +84,8 @@ npx --registry http://localhost:4873 @dbase/cli@<printed-version> --version
 ```
 
 [`tools/release/local-release.ts`](../../../tools/release/local-release.ts)
-does the heavy lifting: it builds the platform SFE (+ Go sidecar) and the
-umbrella `dbase` package, materialises them in a tmp dir (so no workspace
+does the heavy lifting: it builds the platform binary and the umbrella
+`@dbase/cli` package, materialises them in a tmp dir (so no workspace
 `package.json` is modified), and publishes both to Verdaccio. Cleanup is
 automatic even on failure.
 
@@ -144,7 +143,7 @@ tap/bucket.
 
 ```sh
 # Build all eight platform archives + linux packages + checksums.txt.
-# Ships the Go sidecar alongside the Bun SFE.
+# Builds the Bun single-file executables.
 bun apps/cli/scripts/build.ts --version 0.0.1
 
 # Render the Homebrew formula against your PoC release host + tap.
@@ -239,23 +238,18 @@ dbase --version         # expect: dbase v0.0.1
 
 ### What to validate
 
-Beyond `--version` and `brew test`, confirm the Go sidecar was installed next to
-the main binary. `dbase --version` is served by the Bun wrapper and never
-touches the sidecar, so it is not a sufficient check:
+Beyond `--version` and `brew test`, confirm the binary runs. `dbase --version`
+only proves the launcher works, so also exercise the command tree:
 
 ```sh
-# macOS / Linux
-bin_dir="$(dirname "$(command -v dbase)")"
-test -x "${bin_dir}/dbase-go"
-
-# Windows
-test -f "${HOME}/scoop/apps/dbase-shim-poc/current/dbase-go.exe"
+dbase --help
+dbase status --help
 ```
 
-If the sidecar is missing, check that
-[`update-homebrew.ts`](../scripts/update-homebrew.ts)'s install block ran
-`bin.install "dbase-go" if File.exist?("dbase-go")`, and that the built archive
-actually contains `dbase-go` (it should, for any release build).
+If the binary is missing, check that
+[`update-homebrew.ts`](../scripts/update-homebrew.ts)'s install block installed
+`dbase`, and that the built archive actually contains it (it should, for any
+release build).
 
 ### Local-artifact testing (no GitHub Release upload)
 
@@ -400,8 +394,7 @@ or stale-bytes release.
 1. [`sync-versions.ts`](../scripts/sync-versions.ts) writes the release version
    into every `package.json` (umbrella + eight platform packages).
 2. [`build.ts`](../scripts/build.ts) cross-compiles the Bun SFE for all eight
-   targets (including windows-arm64), cross-compiles the Go sidecar, ad-hoc
-   signs the macOS binaries (see [Code signing (macOS)](#code-signing-macos)),
+   targets (including windows-arm64), ad-hoc signs the macOS binaries (see [Code signing (macOS)](#code-signing-macos)),
    builds the Linux packages via `nfpm`, produces the tar/zip archives, and
    writes `dist/checksums.txt`.
 3. The build artifacts are cached for the downstream jobs.
@@ -459,8 +452,8 @@ It performs a **real** `brew install` (macOS **and** Linux, so both the
 `on_macos` and `on_linux` stanzas of the formula are exercised), a `scoop
 install`, and a `curl | bash` install of the **published** install script
 (fetched from the release asset, not the repo checkout). Each leg asserts
-`dbase --version` matches and that the `dbase-go` sidecar is present and
-executable, so a package that omits or misplaces it fails too. brew, scoop, and
+`dbase --version` matches and that `dbase --help` lists commands, so a package
+that omits or misplaces the binary fails too. brew, scoop, and
 the install script each verify the published `sha256`/`hash` against the
 downloaded tarball.
 
@@ -470,14 +463,13 @@ version from the Actions tab.
 
 ### Code signing (macOS)
 
-The macOS binaries (`dbase` Bun SFE + `dbase-go` sidecar, `darwin-arm64` and
-`darwin-x64`) are signed inside `build.ts` between compilation and archiving, so
+The macOS binaries (`dbase`, `darwin-arm64` and `darwin-x64`) are signed inside `build.ts` between compilation and archiving, so
 the signed bytes flow into every channel that consumes
 `packages/cli-darwin-*/bin/` — npm platform packages, Homebrew, and the GitHub
 Release tarballs (which also feed the `install` script). Background:
 [ADR 0014](../../../docs/adr/0014-macos-code-signing-and-notarization.md).
 
-Why this exists: `bun build --compile` and the Go linker emit only a degenerate
+Why this exists: `bun build --compile` emits only a degenerate
 "linker-signed" ad-hoc signature (identifier `a.out`, no requirements blob).
 macOS 26+ AMFI rejects it and SIGKILLs the process at launch (CLI-1621 /
 [#5556](https://github.com/supabase/cli/issues/5556)). A full ad-hoc signature
@@ -564,9 +556,8 @@ There is no cross-channel state to reconcile.
 - [ADR 0011](../../../docs/adr/0011-cli-release-and-distribution-strategy.md) —
   the decision record. Channel choices, signing rationale, open pre-cutover
   gates.
-- [`apps/cli/docs/binary-distribution.md`](./binary-distribution.md) — why each
-  platform package contains two binaries (`dbase` SFE + `dbase-go` sidecar) and
-  how they are resolved at runtime.
+- [`apps/cli/docs/binary-distribution.md`](./binary-distribution.md) — how each
+  platform package ships and resolves its binary at runtime.
 - [`tools/release/local-release.ts`](../../../tools/release/local-release.ts) —
   Ring 1 implementation.
 - [`apps/cli/scripts/build.ts`](../scripts/build.ts),

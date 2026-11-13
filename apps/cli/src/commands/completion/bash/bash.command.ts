@@ -19,12 +19,12 @@ export const completionBashCommand = Command.make("bash", config).pipe(
       "This script depends on the 'bash-completion' package.\n" +
       "If it is not installed already, you can install it via your OS's package manager.\n\n" +
       "To load completions in your current shell session:\n\n" +
-      "\tsource <(supabase completion bash)\n\n" +
+      "\tsource <(dbase completion bash)\n\n" +
       "To load completions for every new session, execute once:\n\n" +
       "#### Linux:\n\n" +
-      "\tsupabase completion bash > /etc/bash_completion.d/supabase\n\n" +
+      "\tdbase completion bash > /etc/bash_completion.d/dbase\n\n" +
       "#### macOS:\n\n" +
-      "\tsupabase completion bash > $(brew --prefix)/etc/bash_completion.d/supabase\n\n" +
+      "\tdbase completion bash > $(brew --prefix)/etc/bash_completion.d/dbase\n\n" +
       "You will need to start a new shell for this setup to take effect.",
   ),
   Command.withShortDescription("Generate the autocompletion script for bash"),

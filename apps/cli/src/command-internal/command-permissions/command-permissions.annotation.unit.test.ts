@@ -36,7 +36,7 @@ describe("withPermissions", () => {
     Command.provide(Layer.empty),
     Command.withGlobalFlags([]),
   );
-  const root = Command.make("supabase").pipe(
+  const root = Command.make("dbase").pipe(
     Command.withSubcommands([Command.make("db").pipe(Command.withSubcommands([leaf]))]),
   );
 

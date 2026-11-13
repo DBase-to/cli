@@ -16,17 +16,17 @@ const config = {};
 export type ServicesFlags = CliCommand.Command.Config.Infer<typeof config>;
 
 export const servicesCommand = Command.make("services", config).pipe(
-  Command.withDescription("Show versions of all Supabase services."),
-  Command.withShortDescription("Show versions of all Supabase services"),
+  Command.withDescription("Show versions of all DBase services."),
+  Command.withShortDescription("Show versions of all DBase services"),
   withPermissions(
     compose(
       withContext(
         linkedServiceVersions,
-        "a 20-letter linked project ref (SUPABASE_PROJECT_ID, else supabase/.temp/project-ref) and an access token",
+        "a 20-letter linked project ref (DBASE_PROJECT_ID, else supabase/.temp/project-ref) and an access token",
       ),
       withContext(
         linkedProjectCache,
-        "a linked project ref (SUPABASE_PROJECT_ID, else supabase/.temp/project-ref; not format-checked)",
+        "a linked project ref (DBASE_PROJECT_ID, else supabase/.temp/project-ref; not format-checked)",
       ),
     ),
   ),

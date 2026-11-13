@@ -102,7 +102,7 @@ function mockResolver(opts: { ipv6Error?: boolean } = {}) {
         if (opts.ipv6Error === true) {
           return yield* new DbConfigIpv6Error({
             message: "IPv6 is not supported on your current network",
-            suggestion: "Run supabase link --project-ref abc to setup IPv4 connection.",
+            suggestion: "Run dbase link --project-ref abc to setup IPv4 connection.",
           });
         }
         return {
@@ -769,7 +769,7 @@ describe("db advisors — linked", () => {
       expect(error).toBeInstanceOf(DbAdvisorsNotLoggedInError);
       expect(error).toMatchObject({
         message: expect.stringContaining("Access token not provided"),
-        suggestion: expect.stringContaining("supabase login"),
+        suggestion: expect.stringContaining("dbase login"),
       });
     }).pipe(Effect.provide(layer));
   });
@@ -781,7 +781,7 @@ describe("db advisors — linked", () => {
       expect(error).toBeInstanceOf(DbAdvisorsInvalidTokenError);
       expect(error).toMatchObject({
         message: expect.stringContaining("Invalid access token format"),
-        suggestion: expect.stringContaining("supabase login"),
+        suggestion: expect.stringContaining("dbase login"),
       });
       // The token gate fails before any advisors request is made.
       expect(api.requests).toHaveLength(0);

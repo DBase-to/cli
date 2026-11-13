@@ -30,7 +30,7 @@ const onRunFailure = (error: TestDbRunError | TestDbNoTestsError) =>
     yield* processControl.setExitCode(1);
   });
 
-/** Flag config shared by `supabase test db` and its hidden `supabase db test` alias. */
+/** Flag config shared by `dbase test db` and its hidden `dbase db test` alias. */
 export const testDbConfig = {
   paths: Argument.String("path").pipe(
     Argument.withDescription("Paths to test files or directories."),

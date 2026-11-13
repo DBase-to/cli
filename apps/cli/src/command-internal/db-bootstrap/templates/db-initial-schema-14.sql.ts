@@ -1519,7 +1519,7 @@ ALTER TABLE supabase_functions.hooks OWNER TO supabase_functions_admin;
 -- Name: TABLE hooks; Type: COMMENT; Schema: supabase_functions; Owner: supabase_functions_admin
 --
 
-COMMENT ON TABLE supabase_functions.hooks IS 'Supabase Functions Hooks: Audit trail for triggered hooks.';
+COMMENT ON TABLE supabase_functions.hooks IS 'DBase Functions Hooks: Audit trail for triggered hooks.';
 
 
 --

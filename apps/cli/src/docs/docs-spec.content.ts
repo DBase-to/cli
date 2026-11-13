@@ -10,7 +10,7 @@ import type { DocsExample } from "./docs-spec.ts";
 
 /**
  * Loads the docs-spec content inputs from `apps/cli/docs/`: description overlay markdown
- * under `supabase/` (keyed by docs-relative POSIX path) and per-command examples from
+ * under `dbase/` (keyed by docs-relative POSIX path) and per-command examples from
  * `templates/examples.yaml` (keyed by doc id). Shared by the generator
  * (`scripts/generate-docs-spec.ts`) and the unit tests.
  */
@@ -68,7 +68,7 @@ export const readDocsContent = Effect.fn("docs.readDocsContent")(function* (
         }
       }
     });
-  yield* walk(path.join(docsDir, "supabase"));
+  yield* walk(path.join(docsDir, "dbase"));
 
   const examplesPath = path.join(docsDir, "templates/examples.yaml");
   const text = yield* readUtf8(examplesPath);

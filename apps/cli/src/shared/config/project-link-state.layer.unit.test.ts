@@ -331,7 +331,7 @@ describe("projectLinkStateLayer", () => {
           expect(error.value).toBeInstanceOf(ProjectNotLinkedError);
           expect(error.value).toMatchObject({
             _tag: "ProjectNotLinkedError",
-            suggestion: "Run `supabase link` to link this checkout to a Supabase project first.",
+            suggestion: "Run `dbase link` to link this checkout to a DBase project first.",
           });
         }
       }

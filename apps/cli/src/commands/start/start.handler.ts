@@ -662,7 +662,7 @@ export const start = Effect.fn("start")(function* (flags: StartFlags) {
 
       if (output.format === "text") {
         // Distinct from, and stacks with, `startAlreadyRunningMessage()` above.
-        yield* output.raw(`${aqua("supabase")} local development setup is running.\n\n`, "stderr");
+        yield* output.raw(`${aqua("dbase")} local development setup is running.\n\n`, "stderr");
         const { values: statusValues, names } = yield* buildStatusValues(excluded);
         yield* output.raw(renderStatusPretty(statusValues, names));
       } else {
@@ -1234,7 +1234,7 @@ export const start = Effect.fn("start")(function* (flags: StartFlags) {
           networkId,
           configImage: postgresConfigImage,
           rootKey: values.rootKey,
-          // `fromBackup` stays unset: `supabase start` always calls the DB
+          // `fromBackup` stays unset: `dbase start` always calls the DB
           // bootstrap with an empty `fromBackup` — only `db start` ever sets it.
         },
         // Already resolved as part of this run's batched pre-pull above — `start` has no

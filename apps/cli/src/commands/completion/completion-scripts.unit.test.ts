@@ -17,7 +17,7 @@ describe("generateCompletionScript", () => {
   describe("bash", () => {
     it("contains the bash completion V2 header", () => {
       const script = generateCompletionScript("bash", { noDescriptions: false });
-      expect(script).toContain("# bash completion V2 for supabase");
+      expect(script).toContain("# bash completion V2 for dbase");
     });
 
     it("calls back into __complete by default and never mentions __completeNoDesc", () => {
@@ -41,8 +41,8 @@ describe("generateCompletionScript", () => {
   describe("zsh", () => {
     it("contains the #compdef header and the trailing compdef invocation", () => {
       const script = generateCompletionScript("zsh", { noDescriptions: false });
-      expect(script).toContain("#compdef supabase");
-      expect(script).toContain("compdef _supabase supabase");
+      expect(script).toContain("#compdef dbase");
+      expect(script).toContain("compdef _dbase dbase");
     });
 
     it("calls back into __complete by default and never mentions __completeNoDesc", () => {
@@ -64,10 +64,10 @@ describe("generateCompletionScript", () => {
   });
 
   describe("fish", () => {
-    it("contains the fish completion header and disables activeHelp via SUPABASE_ACTIVE_HELP=0", () => {
+    it("contains the fish completion header and disables activeHelp via DBASE_ACTIVE_HELP=0", () => {
       const script = generateCompletionScript("fish", { noDescriptions: false });
-      expect(script).toContain("# fish completion for supabase");
-      expect(script).toContain("SUPABASE_ACTIVE_HELP=0");
+      expect(script).toContain("# fish completion for dbase");
+      expect(script).toContain("DBASE_ACTIVE_HELP=0");
     });
 
     it("calls back into __complete by default and never mentions __completeNoDesc", () => {
@@ -89,9 +89,9 @@ describe("generateCompletionScript", () => {
   });
 
   describe("powershell", () => {
-    it("registers the argument completer for the supabase command", () => {
+    it("registers the argument completer for the dbase command", () => {
       const script = generateCompletionScript("powershell", { noDescriptions: false });
-      expect(script).toContain("Register-ArgumentCompleter -CommandName 'supabase'");
+      expect(script).toContain("Register-ArgumentCompleter -CommandName 'dbase'");
     });
 
     it("calls back into __complete by default and never mentions __completeNoDesc", () => {
@@ -116,7 +116,7 @@ describe("generateCompletionScript", () => {
     });
   });
 
-  // Fixtures are the literal stdout of `supabase completion <shell> [--no-descriptions]`,
+  // Fixtures are the literal stdout of `dbase completion <shell> [--no-descriptions]`,
   // captured once and checked in.
   describe("byte-exact match with the checked-in fixtures", () => {
     const shells: ReadonlyArray<CompletionShell> = ["bash", "zsh", "fish", "powershell"];

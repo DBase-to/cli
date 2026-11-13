@@ -18,7 +18,7 @@ import { compute } from "./compute.ts";
 const projectId = Schema.optionalKey(
   Schema.String.annotate({
     description:
-      "A string used to distinguish different Supabase projects on the same host. Defaults to the working directory name when running `supabase init`.",
+      "A string used to distinguish different DBase projects on the same host. Defaults to the working directory name when running `dbase init`.",
     tags: ["general"],
   }),
 );

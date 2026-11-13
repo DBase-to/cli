@@ -137,7 +137,7 @@ describe("whoami integration", () => {
         expect(error.status).toBe(401);
         expect(error.body).toContain("Unauthorized");
         expect(error.message).toBe(
-          "Authentication failed: your access token is invalid or has expired. Run `supabase login` to re-authenticate.",
+          "Authentication failed: your access token is invalid or has expired. Run `dbase login` to re-authenticate.",
         );
       }
       assertPermissionDrift({ command: "whoami", requests: api.requests });

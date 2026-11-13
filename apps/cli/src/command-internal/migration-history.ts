@@ -236,10 +236,10 @@ export function suggestMigrationRepair(
   let result =
     "\nMake sure your local git repo is up-to-date. If the error persists, try repairing the migration history table:\n";
   for (const version of extraRemote) {
-    result += `${bold(withTargetFlags(`supabase migration repair --status reverted ${version}`, targetFlags))}\n`;
+    result += `${bold(withTargetFlags(`dbase migration repair --status reverted ${version}`, targetFlags))}\n`;
   }
   for (const version of extraLocal) {
-    result += `${bold(withTargetFlags(`supabase migration repair --status applied ${version}`, targetFlags))}\n`;
+    result += `${bold(withTargetFlags(`dbase migration repair --status applied ${version}`, targetFlags))}\n`;
   }
   return result;
 }
@@ -248,9 +248,9 @@ export function suggestMigrationRepair(
 export function suggestRevertHistory(versions: ReadonlyArray<string>, targetFlags: string): string {
   return (
     "\nMake sure your local git repo is up-to-date. If the error persists, try repairing the migration history table:\n" +
-    `${bold(withTargetFlags(`supabase migration repair --status reverted ${versions.join(" ")}`, targetFlags))}\n` +
+    `${bold(withTargetFlags(`dbase migration repair --status reverted ${versions.join(" ")}`, targetFlags))}\n` +
     "\nAnd update local migrations to match remote database:\n" +
-    `${bold(withTargetFlags("supabase db pull", targetFlags))}\n`
+    `${bold(withTargetFlags("dbase db pull", targetFlags))}\n`
   );
 }
 

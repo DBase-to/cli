@@ -63,7 +63,7 @@ export const unexpectedStatus = Effect.fnUntraced(function* (
     detail: `The Compute API answered ${response.status} while trying to ${operation}${
       trimmed === "" ? "" : `: ${trimmed}`
     }.`,
-    suggestion: "Retry shortly; if it persists, report it with `supabase issue`.",
+    suggestion: "Retry shortly; if it persists, report it with `dbase issue`.",
   });
 });
 
@@ -135,6 +135,6 @@ export const projectNotFound = (projectRef: string) =>
   new ComputeProjectNotFoundError({
     detail: `No project ${projectRef} was found for this account.`,
     suggestion:
-      "Check the project ref, or pick the project again with `supabase link`. " +
-      "If it belongs to another account, log in with `supabase login`.",
+      "Check the project ref, or pick the project again with `dbase link`. " +
+      "If it belongs to another account, log in with `dbase login`.",
   });

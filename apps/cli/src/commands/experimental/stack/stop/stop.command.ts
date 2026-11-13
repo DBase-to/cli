@@ -24,11 +24,11 @@ const config = {
 export type StackStopFlags = CliCommand.Command.Config.Infer<typeof config>;
 
 export const stackStopCommand = Command.make("stop", config).pipe(
-  Command.withDescription("Stop a managed local Supabase stack while preserving its data."),
+  Command.withDescription("Stop a managed local DBase stack while preserving its data."),
   Command.withShortDescription("Stop a managed local stack"),
   Command.withExamples([
     {
-      command: "supabase stack stop --stack feature-a",
+      command: "dbase stack stop --stack feature-a",
       description: "Stop the existing feature-a stack",
     },
   ]),

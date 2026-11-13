@@ -1,4 +1,4 @@
-# `supabase db branch <create|delete|list|switch>`
+# `dbase db branch <create|delete|list|switch>`
 
 Single shared side-effect document for all four `db branch` leaves. Local database
 branches are no longer supported; each leaf is a tombstone that fails with a
@@ -6,15 +6,15 @@ removal error and a replacement suggestion instead of performing any work.
 
 ## Files Read
 
-| Path                                            | Format | When                                     |
-| ----------------------------------------------- | ------ | ---------------------------------------- |
-| `<SUPABASE_HOME or ~/.supabase>/telemetry.json` | JSON   | always (post-run `TelemetryState.flush`) |
+| Path                                         | Format | When                                     |
+| -------------------------------------------- | ------ | ---------------------------------------- |
+| `<DBASE_HOME or ~/.supabase>/telemetry.json` | JSON   | always (post-run `TelemetryState.flush`) |
 
 ## Files Written
 
-| Path                                            | Format | When                                                                                       |
-| ----------------------------------------------- | ------ | ------------------------------------------------------------------------------------------ |
-| `<SUPABASE_HOME or ~/.supabase>/telemetry.json` | JSON   | always (post-run `TelemetryState.flush`), created if missing, even with telemetry disabled |
+| Path                                         | Format | When                                                                                       |
+| -------------------------------------------- | ------ | ------------------------------------------------------------------------------------------ |
+| `<DBASE_HOME or ~/.supabase>/telemetry.json` | JSON   | always (post-run `TelemetryState.flush`), created if missing, even with telemetry disabled |
 
 ## API Routes
 
@@ -24,9 +24,9 @@ removal error and a replacement suggestion instead of performing any work.
 
 ## Environment Variables
 
-| Variable        | Purpose                            | Required?                      |
-| --------------- | ---------------------------------- | ------------------------------ |
-| `SUPABASE_HOME` | directory holding `telemetry.json` | no (defaults to `~/.supabase`) |
+| Variable     | Purpose                            | Required?                      |
+| ------------ | ---------------------------------- | ------------------------------ |
+| `DBASE_HOME` | directory holding `telemetry.json` | no (defaults to `~/.supabase`) |
 
 ## Exit Codes
 
@@ -42,8 +42,8 @@ Writes the removal message and the replacement suggestion to stderr, two lines,
 regardless of `-o`/`--output`:
 
 ```
-supabase db branch <leaf> was removed.
-Local database branches are no longer supported. For hosted preview branches, see `supabase branches --help`.
+dbase db branch <leaf> was removed.
+Local database branches are no longer supported. For hosted preview branches, see `dbase branches --help`.
 ```
 
 ### `--output-format json` / `stream-json`
@@ -64,6 +64,6 @@ One `cli_command_executed` event per invocation, with `exit_code: 1` and an
   parse with a missing-argument error.
 - No positional or flag value is read; every leaf fails identically regardless of
   its arguments.
-- `supabase branches --help` covers the hosted preview-branching product this
+- `dbase branches --help` covers the hosted preview-branching product this
   suggestion points to, which is a different product from local DB branches, not a
   drop-in replacement.

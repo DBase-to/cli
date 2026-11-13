@@ -101,27 +101,27 @@ export const computeNewCommand = Command.make("new", config).pipe(
   Command.withShortDescription("Scaffold a compute locally"),
   Command.withExamples([
     {
-      command: "supabase compute new",
+      command: "dbase compute new",
       description: "Prompt for the name, then for runtime, size and exposure",
     },
     {
-      command: "supabase compute new api",
+      command: "dbase compute new api",
       description: "Scaffold supabase/compute/api, prompting for runtime, size and exposure",
     },
     {
-      command: "supabase compute new api --runtime node",
+      command: "dbase compute new api --runtime node",
       description: "Scaffold supabase/compute/api on the node runtime",
     },
     {
-      command: "supabase compute new api --exposure private",
+      command: "dbase compute new api --exposure private",
       description: "Scaffold a compute with no internet-facing URL",
     },
     {
-      command: "supabase compute new api --instances 3",
+      command: "dbase compute new api --instances 3",
       description: "Scaffold a compute that deploys at three instances",
     },
     {
-      command: "supabase compute new api --source packages/api",
+      command: "dbase compute new api --source packages/api",
       description: "Scaffold the compute outside the compute directory",
     },
   ]),

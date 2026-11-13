@@ -3,7 +3,7 @@ import { stringEnum } from "./lib/schema.ts";
 
 const links = [
   {
-    name: "Supabase Realtime",
+    name: "DBase Realtime",
     link: "https://supabase.com/docs/guides/realtime",
   },
 ];
@@ -27,7 +27,7 @@ export const realtime = Schema.Struct({
     tags,
     links: [
       {
-        name: "Supabase Realtime Configuration",
+        name: "DBase Realtime Configuration",
         link: "https://supabase.com/docs/guides/realtime/self-hosting",
       },
     ],

@@ -6,7 +6,7 @@ import {
 } from "../../../shared/telemetry/error-actionability.ts";
 
 export const FEEDBACK_EMPTY_MESSAGE =
-  `Nothing to submit. Pass a message (e.g. supabase feedback add "port conflicts when running two stacks"), ` +
+  `Nothing to submit. Pass a message (e.g. dbase feedback add "port conflicts when running two stacks"), ` +
   `pipe it via stdin, or put -- before a message that starts with a dash.`;
 
 /** No message from arguments, piped stdin, or an interactive prompt. */
@@ -27,7 +27,7 @@ export const FEEDBACK_MESSAGE_LIMIT = 1000;
  * Bytes of piped stdin read before bailing out as over-limit. Sixteen times
  * the limit's worst-case UTF-8 size (4 bytes per code point), so anything a
  * plausible message produces — including generous whitespace padding — stays
- * under it, while `cat huge.log | supabase feedback add` fails fast instead
+ * under it, while `cat huge.log | dbase feedback add` fails fast instead
  * of buffering the whole pipe.
  */
 export const FEEDBACK_PIPE_CAP_BYTES = 64 * 1024;

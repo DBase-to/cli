@@ -12,7 +12,7 @@ import { randomLayer } from "../../../shared/runtime/random.layer.ts";
 import { stdinLayer } from "../../../shared/runtime/stdin.layer.ts";
 
 /**
- * Runtime layer for `supabase db query`.
+ * Runtime layer for `dbase db query`.
  *
  * The `--local`/`--db-url` paths go through `DbConfigResolver` + `DbConnection` (auth-free). The
  * `--linked` path POSTs to the Management API, supplied by `linkedDbResolverRuntimeLayer`, which

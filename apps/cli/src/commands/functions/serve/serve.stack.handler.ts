@@ -142,7 +142,7 @@ const follow = Effect.fn("functions.serve.follow")(function* (
                 reason: "runtime",
                 message:
                   status.error?.message ?? "The Functions service stopped or became unhealthy.",
-                suggestion: "Run supabase start to make Functions available again.",
+                suggestion: "Run dbase start to make Functions available again.",
               }),
             )
           : Effect.void;
@@ -181,7 +181,7 @@ const session = Effect.fn("functions.serve.session")(function* (flags: Functions
     return yield* new FunctionsServeStackError({
       reason: "lifecycle",
       message: "The local stack is not running.",
-      suggestion: "Run supabase start first.",
+      suggestion: "Run dbase start first.",
     });
   const { stack, database } = opened.value;
   /* The stack saved its paths under the real project root, so a symlinked workdir must resolve

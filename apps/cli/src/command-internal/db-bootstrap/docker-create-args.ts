@@ -1,5 +1,5 @@
 /**
- * Builds `docker create` argv for the per-service containers `supabase start` launches.
+ * Builds `docker create` argv for the per-service containers `dbase start` launches.
  *
  * Flag order is a fixed convention (identity, env, volumes, ports, healthcheck, restart and
  * security, network, labels, entrypoint/image/cmd) so unit-test snapshots stay stable.
@@ -240,7 +240,7 @@ export function isDockerClientEnvKey(key: string): boolean {
 }
 
 /**
- * Assembles the `docker create` argv for one `supabase start` service container. Pure (no
+ * Assembles the `docker create` argv for one `dbase start` service container. Pure (no
  * Effect) so every flag mapping is unit-testable in isolation. The caller prepends only the
  * `docker`/`podman` binary itself.
  *

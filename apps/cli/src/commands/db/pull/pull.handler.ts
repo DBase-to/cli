@@ -1,4 +1,5 @@
-import { Config, ConfigProvider, Effect, FileSystem, Option, Path } from "effect";
+import { configOptionBoth } from "../../../shared/config/env-names.ts";
+import { ConfigProvider, Effect, FileSystem, Option, Path } from "effect";
 
 import { aqua } from "../../../command-internal/colors.ts";
 import { loadProjectEnvValues } from "../../../command-internal/db-config.read.ts";
@@ -17,7 +18,7 @@ import type { DbPullFlags } from "./pull.command.ts";
 /**
  * Resolves the removed `--experimental` structured-dump mode and the project `.env` values from
  * the same workdir `CommandSettings` computes, without loading the profile. Skipped under
- * `--declarative`. Kept out of `runDbPull` so `supabase pull` ignores `SUPABASE_EXPERIMENTAL`.
+ * `--declarative`. Kept out of `runDbPull` so `dbase pull` ignores `SUPABASE_EXPERIMENTAL`.
  */
 export const resolveRemovedExperimental = Effect.fn("db.pull.resolveRemovedExperimental")(
   function* (flags: DbPullFlags) {
@@ -28,7 +29,9 @@ export const resolveRemovedExperimental = Effect.fn("db.pull.resolveRemovedExper
     const path = yield* Path.Path;
     const runtimeInfo = yield* RuntimeInfo;
     const provider = yield* ConfigProvider.ConfigProvider;
-    const workdirEnvValue = yield* Config.option(Config.String("SUPABASE_WORKDIR")).parse(provider);
+    const workdirEnvValue = yield* configOptionBoth("DBASE_WORKDIR", "SUPABASE_WORKDIR").parse(
+      provider,
+    );
     const { workdir } = yield* resolveWorkdir(
       yield* WorkdirFlag,
       workdirEnvValue,
@@ -93,6 +96,6 @@ export const dbPull = Effect.fn("db.pull")(function* (
       });
     }
   } else {
-    yield* output.raw(`Finished ${aqua("supabase db pull")}.\n`);
+    yield* output.raw(`Finished ${aqua("dbase db pull")}.\n`);
   }
 });

@@ -37,7 +37,7 @@ function deleteArgs(overrides: Partial<FeedbackDeleteArgs> = {}): FeedbackDelete
   return { token: TOKEN, projectRef: Option.none(), ...overrides };
 }
 
-// Seeds `<workdir>/supabase/.temp/project-ref`, the file `supabase link` writes.
+// Seeds `<workdir>/supabase/.temp/project-ref`, the file `dbase link` writes.
 // Passing `asDirectory` creates the path as a directory instead, which makes the
 // read fail with a non-NotFound error (the "broken ref file" degradation path).
 const writeLinkedProjectRef = Effect.fnUntraced(function* (
@@ -128,7 +128,7 @@ function setupFeedbackDelete(
     }),
     mockCommandSettings({
       workdir: tempRoot.current,
-      userAgent: "SupabaseCLI/9.9.9",
+      userAgent: "DBaseCLI/9.9.9",
       projectId: opts.projectIdEnv === undefined ? Option.none() : Option.some(opts.projectIdEnv),
     }),
     Layer.succeed(YesFlag, opts.yes ?? false),
@@ -224,7 +224,7 @@ describe("feedback delete", () => {
     }).pipe(Effect.provide(layer));
   });
 
-  it.effect("sends the linked project ref written by supabase link", () => {
+  it.effect("sends the linked project ref written by dbase link", () => {
     const { layer, client } = setupFeedbackDelete({ yes: true });
     return Effect.gen(function* () {
       yield* writeLinkedProjectRef(tempRoot.current, VALID_REF);

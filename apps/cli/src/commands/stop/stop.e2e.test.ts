@@ -121,7 +121,7 @@ const remainingContainerIds = (projectId: string) =>
 // `stop` never calls the Management API — it talks directly to the real local Docker stack
 // `start` creates. The suite needs a Docker daemon and no platform credentials; see the
 // tests section of apps/cli/AGENTS.md.
-describe("supabase stop (e2e)", () => {
+describe("dbase stop (e2e)", () => {
   it.live(
     "starts a real local stack, then stops it and removes its containers",
     () =>

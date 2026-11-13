@@ -91,12 +91,12 @@ export function parentNotLinkedMessage(value: string): string {
     `Cannot resolve "${value}": it is not a project ref (refs are exactly 20 lowercase letters, ` +
     "like `abcdefghijklmnopqrst`), so it was treated as a branch name — but no project is linked " +
     "to search for branches.\n" +
-    "  If it is a branch name, link the parent project first: supabase link --project-ref <parent-ref>" +
+    "  If it is a branch name, link the parent project first: dbase link --project-ref <parent-ref>" +
     parentRefTypoHint(value)
   );
 }
 
 /** The branch-name lookup error for an invalid linked ref, shared by `link` and `config diff`. */
 export function parentRefInvalidMessage(value: string): string {
-  return `Cannot resolve branch "${value}": the linked project ref is invalid (checked SUPABASE_PROJECT_ID, supabase/.temp/linked-project.json, supabase/.temp/project-ref). Relink the parent project first: supabase link --project-ref <parent-ref>`;
+  return `Cannot resolve branch "${value}": the linked project ref is invalid (checked SUPABASE_PROJECT_ID, supabase/.temp/linked-project.json, supabase/.temp/project-ref). Relink the parent project first: dbase link --project-ref <parent-ref>`;
 }

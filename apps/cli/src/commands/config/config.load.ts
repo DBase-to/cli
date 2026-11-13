@@ -47,7 +47,7 @@ export const mapConfigLoadError =
 /**
  * Loads the resolved config for the `config` family: the `[remotes.*]` block matched to
  * `projectRef`, the env overlay and the `env()` values every command resolves. A missing file
- * suggests `supabase init` only for a defaulted workdir.
+ * suggests `dbase init` only for a defaulted workdir.
  */
 export const loadResolvedConfig = Effect.fnUntraced(function* <E>(
   cliSettings: ConfigWorkdir,

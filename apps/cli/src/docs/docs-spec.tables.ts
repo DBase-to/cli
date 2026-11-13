@@ -21,68 +21,68 @@ export const DOCS_INFO_TAGS: ReadonlyArray<DocsInfoTag> = [
 
 /** Docs-site section tag per top-level command. */
 export const DOCS_TAGS: Readonly<Record<string, ReadonlyArray<string>>> = {
-  "supabase-bootstrap": ["quick-start"],
-  "supabase-backups": ["management-api"],
-  "supabase-branches": ["management-api"],
-  "supabase-completion": ["other-commands"],
-  "supabase-config": ["management-api"],
-  "supabase-db": ["local-dev"],
-  "supabase-domains": ["management-api"],
-  "supabase-encryption": ["management-api"],
-  "supabase-feedback": ["other-commands"],
-  "supabase-functions": ["management-api"],
-  "supabase-gen": ["local-dev"],
-  "supabase-init": ["local-dev"],
-  "supabase-inspect": ["local-dev"],
-  "supabase-issue": ["other-commands"],
-  "supabase-link": ["local-dev"],
-  "supabase-login": ["local-dev"],
-  "supabase-logout": ["local-dev"],
-  "supabase-logs": ["management-api", "local-dev"],
-  "supabase-migration": ["local-dev"],
-  "supabase-network-bans": ["management-api"],
-  "supabase-network-restrictions": ["management-api"],
-  "supabase-notebooks": ["management-api"],
-  "supabase-orgs": ["management-api"],
-  "supabase-postgres-config": ["management-api"],
-  "supabase-projects": ["management-api"],
-  "supabase-pull": ["other-commands"],
-  "supabase-secrets": ["management-api"],
-  "supabase-seed": ["local-dev"],
-  "supabase-services": ["local-dev"],
-  "supabase-snippets": ["management-api"],
-  "supabase-ssl-enforcement": ["management-api"],
-  "supabase-sso": ["management-api"],
-  "supabase-start": ["local-dev"],
-  "supabase-status": ["local-dev"],
-  "supabase-stop": ["local-dev"],
-  "supabase-storage": ["management-api"],
-  "supabase-telemetry": ["local-dev"],
-  "supabase-test": ["local-dev"],
-  "supabase-unlink": ["local-dev"],
-  "supabase-vanity-subdomains": ["management-api"],
-  "supabase-whoami": ["management-api"],
+  "dbase-bootstrap": ["quick-start"],
+  "dbase-backups": ["management-api"],
+  "dbase-branches": ["management-api"],
+  "dbase-completion": ["other-commands"],
+  "dbase-config": ["management-api"],
+  "dbase-db": ["local-dev"],
+  "dbase-domains": ["management-api"],
+  "dbase-encryption": ["management-api"],
+  "dbase-feedback": ["other-commands"],
+  "dbase-functions": ["management-api"],
+  "dbase-gen": ["local-dev"],
+  "dbase-init": ["local-dev"],
+  "dbase-inspect": ["local-dev"],
+  "dbase-issue": ["other-commands"],
+  "dbase-link": ["local-dev"],
+  "dbase-login": ["local-dev"],
+  "dbase-logout": ["local-dev"],
+  "dbase-logs": ["management-api", "local-dev"],
+  "dbase-migration": ["local-dev"],
+  "dbase-network-bans": ["management-api"],
+  "dbase-network-restrictions": ["management-api"],
+  "dbase-notebooks": ["management-api"],
+  "dbase-orgs": ["management-api"],
+  "dbase-postgres-config": ["management-api"],
+  "dbase-projects": ["management-api"],
+  "dbase-pull": ["other-commands"],
+  "dbase-secrets": ["management-api"],
+  "dbase-seed": ["local-dev"],
+  "dbase-services": ["local-dev"],
+  "dbase-snippets": ["management-api"],
+  "dbase-ssl-enforcement": ["management-api"],
+  "dbase-sso": ["management-api"],
+  "dbase-start": ["local-dev"],
+  "dbase-status": ["local-dev"],
+  "dbase-stop": ["local-dev"],
+  "dbase-storage": ["management-api"],
+  "dbase-telemetry": ["local-dev"],
+  "dbase-test": ["local-dev"],
+  "dbase-unlink": ["local-dev"],
+  "dbase-vanity-subdomains": ["management-api"],
+  "dbase-whoami": ["management-api"],
 };
 
 /** Leaves that require `--experimental`. */
 export const DOCS_EXPERIMENTAL: ReadonlySet<string> = new Set([
-  "supabase-network-bans-get",
-  "supabase-network-bans-remove",
-  "supabase-network-restrictions-get",
-  "supabase-network-restrictions-update",
-  "supabase-postgres-config-delete",
-  "supabase-postgres-config-get",
-  "supabase-postgres-config-update",
-  "supabase-ssl-enforcement-get",
-  "supabase-ssl-enforcement-update",
-  "supabase-storage-cp",
-  "supabase-storage-ls",
-  "supabase-storage-mv",
-  "supabase-storage-rm",
-  "supabase-vanity-subdomains-activate",
-  "supabase-vanity-subdomains-check-availability",
-  "supabase-vanity-subdomains-delete",
-  "supabase-vanity-subdomains-get",
+  "dbase-network-bans-get",
+  "dbase-network-bans-remove",
+  "dbase-network-restrictions-get",
+  "dbase-network-restrictions-update",
+  "dbase-postgres-config-delete",
+  "dbase-postgres-config-get",
+  "dbase-postgres-config-update",
+  "dbase-ssl-enforcement-get",
+  "dbase-ssl-enforcement-update",
+  "dbase-storage-cp",
+  "dbase-storage-ls",
+  "dbase-storage-mv",
+  "dbase-storage-rm",
+  "dbase-vanity-subdomains-activate",
+  "dbase-vanity-subdomains-check-availability",
+  "dbase-vanity-subdomains-delete",
+  "dbase-vanity-subdomains-get",
 ]);
 
 /**
@@ -91,8 +91,8 @@ export const DOCS_EXPERIMENTAL: ReadonlySet<string> = new Set([
  * is open unless config sets `enabled = false`.
  */
 export const DOCS_EXPERIMENTAL_OPTIONAL: ReadonlySet<string> = new Set([
-  "supabase-db-schema-declarative-generate",
-  "supabase-db-schema-declarative-sync",
+  "dbase-db-schema-declarative-generate",
+  "dbase-db-schema-declarative-sync",
 ]);
 
 /**
@@ -100,51 +100,51 @@ export const DOCS_EXPERIMENTAL_OPTIONAL: ReadonlySet<string> = new Set([
  * suffix) but excluded from the published reference.
  */
 export const DOCS_EXCLUDED: ReadonlySet<string> = new Set([
-  "supabase-inspect-db-cache-hit",
-  "supabase-inspect-db-index-sizes",
-  "supabase-inspect-db-index-usage",
-  "supabase-inspect-db-role-configs",
-  "supabase-inspect-db-role-connections",
-  "supabase-inspect-db-seq-scans",
-  "supabase-inspect-db-table-record-counts",
-  "supabase-inspect-db-table-sizes",
-  "supabase-inspect-db-unused-indexes",
+  "dbase-inspect-db-cache-hit",
+  "dbase-inspect-db-index-sizes",
+  "dbase-inspect-db-index-usage",
+  "dbase-inspect-db-role-configs",
+  "dbase-inspect-db-role-connections",
+  "dbase-inspect-db-seq-scans",
+  "dbase-inspect-db-table-record-counts",
+  "dbase-inspect-db-table-sizes",
+  "dbase-inspect-db-unused-indexes",
 ]);
 
 /**
  * Flag defaults that differ from the primitive type's zero value, keyed
- * `"<doc id> <flag id>"` (root global flags use doc id `supabase`). TS-only
+ * `"<doc id> <flag id>"` (root global flags use doc id `dbase`). TS-only
  * flags add entries by hand.
  */
 export const DOCS_DEFAULT_OVERRIDES: Readonly<Record<string, string>> = {
   ...genTypesLanguageFlagDefaults(),
-  "supabase agent": "auto",
-  "supabase dns-resolver": "native",
-  "supabase output": "pretty",
-  "supabase output-format": "text",
-  "supabase profile": "supabase",
-  "supabase-db-advisors fail-on": "none",
-  "supabase-db-advisors level": "warn",
-  "supabase-db-advisors type": "all",
-  "supabase-db-lint fail-on": "none",
-  "supabase-db-lint level": "warning",
-  "supabase-db-pull diff-engine": "pg-delta",
-  "supabase-db-schema-declarative-sync file": "declarative_sync",
-  "supabase-functions-deploy jobs": "1",
-  "supabase-functions-new auth": "apikey",
-  "supabase-gen-bearer-jwt payload": "{}",
-  "supabase-gen-bearer-jwt sub": "anonymous",
-  "supabase-gen-bearer-jwt valid-for": "30m0s",
-  "supabase-gen-signing-key algorithm": "ES256",
-  "supabase-gen-types lang": "typescript",
-  "supabase-gen-types query-timeout": "15s",
-  "supabase-inspect-report output-dir": ".",
-  "supabase-login name": "built-in token name generator",
-  "supabase-migration-down last": "1",
-  "supabase-storage-cp cache-control": "max-age=3600",
-  "supabase-storage-cp content-type": "auto-detect",
-  "supabase-storage-cp jobs": "1",
-  "supabase-test-new template": "pgtap",
+  "dbase agent": "auto",
+  "dbase dns-resolver": "native",
+  "dbase output": "pretty",
+  "dbase output-format": "text",
+  "dbase profile": "dbase",
+  "dbase-db-advisors fail-on": "none",
+  "dbase-db-advisors level": "warn",
+  "dbase-db-advisors type": "all",
+  "dbase-db-lint fail-on": "none",
+  "dbase-db-lint level": "warning",
+  "dbase-db-pull diff-engine": "pg-delta",
+  "dbase-db-schema-declarative-sync file": "declarative_sync",
+  "dbase-functions-deploy jobs": "1",
+  "dbase-functions-new auth": "apikey",
+  "dbase-gen-bearer-jwt payload": "{}",
+  "dbase-gen-bearer-jwt sub": "anonymous",
+  "dbase-gen-bearer-jwt valid-for": "30m0s",
+  "dbase-gen-signing-key algorithm": "ES256",
+  "dbase-gen-types lang": "typescript",
+  "dbase-gen-types query-timeout": "15s",
+  "dbase-inspect-report output-dir": ".",
+  "dbase-login name": "built-in token name generator",
+  "dbase-migration-down last": "1",
+  "dbase-storage-cp cache-control": "max-age=3600",
+  "dbase-storage-cp content-type": "auto-detect",
+  "dbase-storage-cp jobs": "1",
+  "dbase-test-new template": "pgtap",
 };
 
 /**
@@ -154,7 +154,7 @@ export const DOCS_DEFAULT_OVERRIDES: Readonly<Record<string, string>> = {
  * its own page documents the query-specific formats here.
  */
 export const DOCS_EXTRA_FLAGS: Readonly<Record<string, ReadonlyArray<DocsFlag>>> = {
-  "supabase-db-query": [
+  "dbase-db-query": [
     {
       id: "output",
       name: "-o, --output <[ json | table | csv ]>",
@@ -170,7 +170,7 @@ export const DOCS_EXTRA_FLAGS: Readonly<Record<string, ReadonlyArray<DocsFlag>>>
 };
 
 export const DOCS_CHOICE_OVERRIDES: Readonly<Record<string, ReadonlyArray<string>>> = {
-  "supabase output": ["env", "pretty", "json", "toml", "yaml"],
+  "dbase output": ["env", "pretty", "json", "toml", "yaml"],
 };
 
 /**
@@ -186,8 +186,8 @@ export const DOCS_EXCLUDED_FLAGS: ReadonlySet<string> = new Set([]);
  * the documented shape is required.
  */
 export const DOCS_ARG_OVERRIDES: Readonly<Record<string, string>> = {
-  "supabase-secrets-set": "<NAME=VALUE> ...",
-  "supabase-storage-rm": "<file> ...",
+  "dbase-secrets-set": "<NAME=VALUE> ...",
+  "dbase-storage-rm": "<file> ...",
 };
 
 /**
@@ -197,13 +197,13 @@ export const DOCS_ARG_OVERRIDES: Readonly<Record<string, string>> = {
  * validation-ordering reasons unrelated to required-ness.
  */
 export const DOCS_REQUIRED: ReadonlySet<string> = new Set([
-  "supabase-domains-create custom-hostname",
-  "supabase-gen-bearer-jwt role",
-  "supabase-migration-repair status",
-  "supabase-sso-add type",
-  "supabase-vanity-subdomains-activate desired-subdomain",
-  "supabase-vanity-subdomains-check-availability desired-subdomain",
+  "dbase-domains-create custom-hostname",
+  "dbase-gen-bearer-jwt role",
+  "dbase-migration-repair status",
+  "dbase-sso-add type",
+  "dbase-vanity-subdomains-activate desired-subdomain",
+  "dbase-vanity-subdomains-check-availability desired-subdomain",
 ]);
 
 export const DOCS_INFO_DESCRIPTION =
-  "Supabase CLI provides you with tools to develop your application locally, and deploy your application to the Supabase platform.";
+  "DBase CLI provides you with tools to develop your application locally, and deploy your application to the DBase platform.";

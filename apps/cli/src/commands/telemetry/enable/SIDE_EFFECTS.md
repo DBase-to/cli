@@ -1,4 +1,4 @@
-# `supabase telemetry enable`
+# `dbase telemetry enable`
 
 ## Files Read
 
@@ -6,7 +6,7 @@
 | ---------------------------- | ------ | --------------------------------------------------------------------------- |
 | `~/.supabase/telemetry.json` | JSON   | when the file exists, to preserve prior identity fields before rewriting it |
 
-When `SUPABASE_HOME` is set, the command uses `$SUPABASE_HOME/telemetry.json`
+When `DBASE_HOME` is set, the command uses `$DBASE_HOME/telemetry.json`
 instead of `~/.supabase/telemetry.json`.
 
 ## Files Written
@@ -22,9 +22,9 @@ Telemetry Events Fired below.
 
 ## Environment Variables
 
-| Variable        | Purpose                                    | Required?                      |
-| --------------- | ------------------------------------------ | ------------------------------ |
-| `SUPABASE_HOME` | override the telemetry state-file location | no (defaults to `~/.supabase`) |
+| Variable     | Purpose                                    | Required?                      |
+| ------------ | ------------------------------------------ | ------------------------------ |
+| `DBASE_HOME` | override the telemetry state-file location | no (defaults to `~/.supabase`) |
 
 ## Exit Codes
 

@@ -67,7 +67,7 @@ describe("deprecationMessages", () => {
     ]);
   });
 
-  it("offers the project ref a Supabase database URL already names, without echoing the URL", () => {
+  it("offers the project ref a DBase database URL already names, without echoing the URL", () => {
     const url = `postgresql://postgres:hunter2@db.${REF}.supabase.co:5432/postgres`;
     const [message] = messages([
       { kind: "remote-alias", flags: ["--db-url"], remote: { _tag: "DbUrl", url } },

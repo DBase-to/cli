@@ -14,7 +14,7 @@ describe("pg-delta error actionability", () => {
       new DeclarativeShadowDbError({ message: "redacted" }),
     );
     expect(missingStack.error_category).toBe("invalid_config");
-    expect(missingStack.suggested_command).toBe("supabase start");
+    expect(missingStack.suggested_command).toBe("dbase start");
     expect(missingStack.error_fingerprint).toBe("tag:DeclarativeShadowDbError");
   });
 });

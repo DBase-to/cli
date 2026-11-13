@@ -140,7 +140,7 @@ const routeNotFound = (projectRef: string, route: string) =>
   new ComputeRouteNotFoundError({
     detail: `The Management API does not serve ${route}, so this CLI cannot reach compute for project ${projectRef}.`,
     // Compute is an allow-listed alpha, so neither a newer CLI nor enrolment puts a route back.
-    suggestion: "Report it with `supabase issue`, including the route named above.",
+    suggestion: "Report it with `dbase issue`, including the route named above.",
   });
 
 /**
@@ -243,7 +243,7 @@ export const createComputeUpload = Effect.fnUntraced(function* (
 });
 
 /**
- * Sends the archive straight to the presigned slot (POST or PUT, as the slot says), with no Supabase credentials attached — the
+ * Sends the archive straight to the presigned slot (POST or PUT, as the slot says), with no DBase credentials attached — the
  * signature in the URL is the authorization. That's also why `httpClientLayer` redacts query
  * strings before logging: under `--debug` this URL is a write-capable credential.
  */
@@ -423,7 +423,7 @@ export const awaitComputeBuild = Effect.fn("Compute.awaitBuild")(function* (
   if (settled === undefined) {
     return yield* new ComputeBuildTimeoutError({
       detail: `"${name}" was still building when this command stopped waiting.`,
-      suggestion: `Check on it with \`supabase compute status ${name}${options.refSuffix ?? ""}\`.`,
+      suggestion: `Check on it with \`dbase compute status ${name}${options.refSuffix ?? ""}\`.`,
     });
   }
 

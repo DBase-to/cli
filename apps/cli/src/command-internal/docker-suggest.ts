@@ -6,7 +6,7 @@ export const SUGGEST_DOCKER_INSTALL =
 
 /** Remediation for a daemon that answered earlier in the session and then went away, as opposed to `SUGGEST_DOCKER_INSTALL`'s missing-binary case. */
 export const SUGGEST_DOCKER_START =
-  "Docker is no longer reachable. Start Docker, then rerun `supabase functions serve`.";
+  "Docker is no longer reachable. Start Docker, then rerun `dbase functions serve`.";
 
 /** Remediation hint shown when the OOM killer kills a container. */
 export const SUGGEST_CONTAINER_MEMORY_LIMIT =

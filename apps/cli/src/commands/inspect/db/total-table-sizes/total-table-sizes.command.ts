@@ -12,7 +12,7 @@ export const inspectDbTotalTableSizesCommand = Command.make(
   "total-table-sizes",
   INSPECT_DB_FLAGS,
 ).pipe(
-  Command.withDescription("Removed: use `supabase inspect db table-stats` instead."),
+  Command.withDescription("Removed: use `dbase inspect db table-stats` instead."),
   Command.withShortDescription("Removed: use `inspect db table-stats` instead"),
   // Removed: fails before any Management API call, so no flag changes what it calls.
   withPermissions({
@@ -20,7 +20,7 @@ export const inspectDbTotalTableSizesCommand = Command.make(
     noApiEffectFlags: ["db-url", "linked", "local", "project-ref", "remote"],
   }),
   Command.withHandler(() =>
-    removedCommand("Use `supabase inspect db table-stats` instead.").pipe(
+    removedCommand("Use `dbase inspect db table-stats` instead.").pipe(
       withCommandTelemetry(),
       withJsonErrorHandling,
     ),

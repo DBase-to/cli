@@ -102,12 +102,12 @@ export const confineComputePath = Effect.fnUntraced(function* (options: {
   }
   for (const owned of RESERVED_SUPABASE_DIRS) {
     if (isAtOrUnder(path, path.join(supabaseDir, owned), target)) {
-      return yield* refuse(`is inside supabase/${owned}/, which the Supabase CLI already owns`);
+      return yield* refuse(`is inside supabase/${owned}/, which the DBase CLI already owns`);
     }
   }
   for (const owned of RESERVED_SUPABASE_FILES) {
     if (target === path.join(supabaseDir, owned)) {
-      return yield* refuse(`is supabase/${owned}, which the Supabase CLI already owns`);
+      return yield* refuse(`is supabase/${owned}, which the DBase CLI already owns`);
     }
   }
 

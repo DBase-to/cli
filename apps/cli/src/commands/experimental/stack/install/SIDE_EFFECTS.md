@@ -1,4 +1,4 @@
-# `supabase stack install`
+# `dbase stack install`
 
 The command is available when the experimental stack family is enabled. It resolves the project's
 service versions into `supabase/supabase.lock` and downloads everything the lock pins for the chosen
@@ -7,7 +7,7 @@ it needs no stack selector.
 
 ## Service versions and the lock
 
-The lock is read, resolved and written exactly as `supabase stack start` does it (see "Service
+The lock is read, resolved and written exactly as `dbase stack start` does it (see "Service
 versions and the lock" in [`../start/SIDE_EFFECTS.md`](../start/SIDE_EFFECTS.md)), under the same
 project lease `supabase/.supabase.lock.lease`:
 
@@ -18,7 +18,7 @@ project lease `supabase/.supabase.lock.lease`:
   fails instead of writing: a missing lock fails with `supabase/supabase.lock not found`, a stale one
   with `is stale for: <service> (<reason>)`. Nothing is downloaded after a lock failure. A frozen
   run reads the lock without the lease and writes nothing in the project.
-- A `linked` service follows the hosted version `supabase link` recorded, resolved on the release
+- A `linked` service follows the hosted version `dbase link` recorded, resolved on the release
   host only; install never calls the Management API or needs a login. When the release host cannot
   be reached for it, the service takes the bundled version as `unobserved` and warns instead of
   failing; only an explicit `<upstream>` specifier fails with transient (`network`). A `.link.json`
@@ -30,7 +30,7 @@ project lease `supabase/.supabase.lock.lease`:
   a lock fails with `supabase/supabase.lock not found`. Both fail before anything is downloaded.
   Without a lock `CI` changes nothing.
 
-To move a fresh entry to a newer release, use `supabase stack update`; `supabase stack outdated`
+To move a fresh entry to a newer release, use `dbase stack update`; `dbase stack outdated`
 reports which entries would move (see [`../update/SIDE_EFFECTS.md`](../update/SIDE_EFFECTS.md) and
 [`../outdated/SIDE_EFFECTS.md`](../outdated/SIDE_EFFECTS.md)).
 
@@ -43,7 +43,7 @@ engine is found; an explicit `docker` or `podman` with an unreachable engine fai
 (kind `engine-unavailable`).
 
 - `native` downloads the locked archive of each of the twelve services for the current platform
-  into `$SUPABASE_HOME/cache/stack` (`~/.supabase/cache/stack` by default), verifying the pinned
+  into `$DBASE_HOME/cache/stack` (`~/.supabase/cache/stack` by default), verifying the pinned
   archive and manifest digests. An artifact already in the cache is not downloaded again.
 - `docker` and `podman` pull each locked image by digest through the selected engine; an image the
   engine already holds is not pulled again.
@@ -55,7 +55,7 @@ and keeps the package's failure kind; archives that completed stay cached.
 
 - `<workdir>/supabase/config.toml`, project dotenv files, supported `SUPABASE_*` overrides, and
   `<workdir>/supabase/supabase.lock`.
-- Shared profile and telemetry state under `<SUPABASE_HOME or ~/.supabase>/`.
+- Shared profile and telemetry state under `<DBASE_HOME or ~/.supabase>/`.
 
 ## Files written
 
@@ -63,7 +63,7 @@ and keeps the package's failure kind; archives that completed stay cached.
 - `<workdir>/supabase/.supabase.lock.lease` and `.supabase.lock.*.tmp` while the lock is written;
   `supabase/.gitignore` gains both entries whenever the project lease is taken. A frozen run takes
   no lease and writes neither.
-- Native archives under `$SUPABASE_HOME/cache/stack`, keyed by content digest.
+- Native archives under `$DBASE_HOME/cache/stack`, keyed by content digest.
 - Container images in the selected engine's image store.
 - Telemetry state after success or failure.
 

@@ -730,7 +730,7 @@ describe("experimental stack start native lifecycle", () => {
             expect(message).toContain(
               `auth ${selection.auth.upstreamVersion} is older than v999.0.0`,
             );
-            expect(message).toContain(`supabase stack destroy --stack-id ${stackId}`);
+            expect(message).toContain(`dbase stack destroy --stack-id ${stackId}`);
             expect(yield* fs.readFileString(record)).toContain("v999.0.0");
 
             yield* fs.writeFileString(record, '{"auth":"v0.0.1"}');

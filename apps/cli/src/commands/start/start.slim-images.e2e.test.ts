@@ -294,7 +294,7 @@ const pullLatestImage = Effect.fnUntraced(function* (image: string, deadline: nu
   );
 });
 
-describe("supabase start slim images (e2e)", () => {
+describe("dbase start slim images (e2e)", () => {
   beforeAll(
     () =>
       Effect.runPromise(

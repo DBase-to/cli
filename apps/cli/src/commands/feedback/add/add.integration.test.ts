@@ -42,7 +42,7 @@ import { feedbackAdd } from "./add.handler.ts";
 
 const tempRoot = useTempWorkdir("supabase-feedback-add-int-");
 
-// Seeds `<workdir>/supabase/.temp/project-ref`, the file `supabase link` writes.
+// Seeds `<workdir>/supabase/.temp/project-ref`, the file `dbase link` writes.
 // Passing `asDirectory` creates the path as a directory instead, which makes the
 // read fail with a non-NotFound error (the "broken ref file" degradation path).
 const writeLinkedProjectRef = Effect.fnUntraced(function* (
@@ -146,7 +146,7 @@ function setupFeedback(
     }),
     mockCommandSettings({
       workdir: tempRoot.current,
-      userAgent: "SupabaseCLI/9.9.9",
+      userAgent: "DBaseCLI/9.9.9",
       projectId: opts.projectIdEnv === undefined ? Option.none() : Option.some(opts.projectIdEnv),
     }),
     mockAiTool(opts.agentName),
@@ -191,7 +191,7 @@ describe("feedback add", () => {
           message: "port conflicts when running two stacks",
           context: {
             cliVersion: "9.9.9",
-            userAgent: "SupabaseCLI/9.9.9",
+            userAgent: "DBaseCLI/9.9.9",
             os: "darwin",
             arch: "arm64",
             isAgent: false,
@@ -206,7 +206,7 @@ describe("feedback add", () => {
       expect(out.messages).toContainEqual(
         expect.objectContaining({
           type: "info",
-          message: `To delete this feedback later, run: supabase feedback delete ${MOCK_DELETE_TOKEN}`,
+          message: `To delete this feedback later, run: dbase feedback delete ${MOCK_DELETE_TOKEN}`,
         }),
       );
       // telemetry.json is refreshed on every invocation by the telemetry-state
@@ -259,7 +259,7 @@ describe("feedback add", () => {
     }).pipe(Effect.provide(layer));
   });
 
-  it.effect("attaches the linked project ref written by supabase link", () => {
+  it.effect("attaches the linked project ref written by dbase link", () => {
     const { layer, out, submitter } = setupFeedback();
     return Effect.gen(function* () {
       yield* writeLinkedProjectRef(tempRoot.current, VALID_REF);
@@ -271,7 +271,7 @@ describe("feedback add", () => {
       expect(out.messages).toContainEqual(
         expect.objectContaining({
           type: "info",
-          message: `To delete this feedback later, run: supabase feedback delete ${MOCK_DELETE_TOKEN} --project-ref ${VALID_REF}`,
+          message: `To delete this feedback later, run: dbase feedback delete ${MOCK_DELETE_TOKEN} --project-ref ${VALID_REF}`,
         }),
       );
     }).pipe(Effect.provide(layer));
@@ -301,7 +301,7 @@ describe("feedback add", () => {
       expect(out.messages).toContainEqual(
         expect.objectContaining({
           type: "info",
-          message: `To delete this feedback later, run: supabase feedback delete ${MOCK_DELETE_TOKEN} --project-ref flagflagflagflagflag`,
+          message: `To delete this feedback later, run: dbase feedback delete ${MOCK_DELETE_TOKEN} --project-ref flagflagflagflagflag`,
         }),
       );
     }).pipe(Effect.provide(layer));
@@ -475,7 +475,7 @@ describe("feedback add", () => {
   });
 
   it.effect("does not prompt when piped stdin is exhausted, even with a TTY stdout", () => {
-    // `printf ' ' | supabase feedback add` in a terminal: stdout is a TTY (so
+    // `printf ' ' | dbase feedback add` in a terminal: stdout is a TTY (so
     // `output.interactive` is true) but stdin is a drained pipe the prompt
     // cannot read from. This must fail like the non-interactive case instead
     // of opening a prompt against exhausted stdin.
@@ -496,7 +496,7 @@ describe("feedback add", () => {
   });
 
   it.effect("fails without prompting when stdout is not interactive, even on a TTY stdin", () => {
-    // `supabase feedback add > out.txt` in a terminal: stdin is a TTY but
+    // `dbase feedback add > out.txt` in a terminal: stdin is a TTY but
     // stdout is redirected, so the text layer reports interactive: false and
     // there is nowhere to render a prompt.
     const { layer, submitter } = setupFeedback({ output: { interactive: false } });
@@ -541,7 +541,7 @@ describe("feedback add", () => {
   });
 
   it.effect("rejects piped input past the byte cap without buffering the whole pipe", () => {
-    // `cat huge.log | supabase feedback add`: the capped reader stops at the
+    // `cat huge.log | dbase feedback add`: the capped reader stops at the
     // 64 KB byte cap and fails as over-limit instead of collecting the stream.
     const { layer, submitter } = setupFeedback({
       stdinIsTTY: false,

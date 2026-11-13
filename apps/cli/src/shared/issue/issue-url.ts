@@ -1,9 +1,10 @@
 import { Config, Effect, Option } from "effect";
+import { configOptionBoth } from "../config/env-names.ts";
 
-const ISSUE_NEW_URL = "https://github.com/supabase/cli/issues/new";
+const ISSUE_NEW_URL = "https://github.com/DBase-to/cli/issues/new";
 const MAX_FIELD_LENGTH = 1_500;
 const MAX_URL_LENGTH = 8_000;
-const TRUNCATED_SUFFIX = "\n\n[truncated by Supabase CLI]";
+const TRUNCATED_SUFFIX = "\n\n[truncated by DBase CLI]";
 
 export const searchedExistingIssuesValue = "I have searched the existing issues.";
 export const issueInstallMethodValues = [
@@ -137,7 +138,10 @@ function validInstallMethod(value: string): string {
 export const inferIssueInstallMethod = Effect.fnUntraced(function* (runtimeInfo: {
   readonly execPath: string;
 }) {
-  const explicit = (yield* Config.option(Config.String("SUPABASE_INSTALL_METHOD"))).pipe(
+  const explicit = (yield* configOptionBoth(
+    "DBASE_INSTALL_METHOD",
+    "SUPABASE_INSTALL_METHOD",
+  )).pipe(
     Option.map((value) => value.trim()),
     Option.filter((value) => value.length > 0),
   );

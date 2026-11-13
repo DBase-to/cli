@@ -277,7 +277,7 @@ export const summaryCredentials = (
   read.pipe(
     Effect.catch((error) =>
       warn(
-        `The stack keys could not be read: ${error.message}. Run supabase status --env to retry.`,
+        `The stack keys could not be read: ${error.message}. Run dbase status --env to retry.`,
       ).pipe(Effect.as(undefined)),
     ),
   );

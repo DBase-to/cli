@@ -7,7 +7,7 @@ import { runSupabaseEffect } from "../../../tests/helpers/cli.ts";
 const E2E_TIMEOUT_MS = 30_000;
 const TEST_PROJECT_REF = "abcdefghijklmnopqrst";
 
-describe("supabase unlink", () => {
+describe("dbase unlink", () => {
   // Golden path: with a seeded `supabase/.temp/project-ref`, a real subprocess
   // removes the temp dir and prints the Finished line. No network is involved.
   it.live(
@@ -28,7 +28,7 @@ describe("supabase unlink", () => {
         });
 
         expect(exitCode).toBe(0);
-        expect(stdout).toContain("Finished supabase unlink.");
+        expect(stdout).toContain("Finished dbase unlink.");
         expect(stderr).toContain(`Unlinking project: ${TEST_PROJECT_REF}`);
         const tempDirExists = yield* fs.exists(tempDir);
         expect(tempDirExists).toBe(false);

@@ -13,7 +13,7 @@ import type { MigrationNewFlags } from "./new.command.ts";
 import { MigrationNewWriteError } from "./new.errors.ts";
 
 /**
- * `supabase migration new`:
+ * `dbase migration new`:
  * write `supabase/migrations/<UTC timestamp>_<name>.sql` (mode 0644), seeding it
  * from piped stdin when present, then print the created path. No DB / API / prompt.
  */

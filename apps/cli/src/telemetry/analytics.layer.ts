@@ -1,3 +1,4 @@
+import { configOptionBoth } from "../shared/config/env-names.ts";
 import { legacyProjectStatePaths } from "../shared/config/legacy-project-state.paths.ts";
 import { Config, ConfigProvider, Effect, FileSystem, Layer, Option, Path, Schema } from "effect";
 import type { ProjectStateMode } from "../shared/config/project-state-mode.ts";
@@ -123,9 +124,9 @@ export const collectEnvSignals = Effect.gen(function* () {
     : Option.some(signals);
 });
 
-/** Whether `SUPABASE_EVAL` (`1` or `true`) marks this run as an automated evaluation. */
+/** Whether `DBASE_EVAL` (or legacy `SUPABASE_EVAL`) marks this run as an automated evaluation. */
 export const detectEval = Effect.gen(function* () {
-  const raw = yield* Config.option(Config.String("SUPABASE_EVAL"));
+  const raw = yield* configOptionBoth("DBASE_EVAL", "SUPABASE_EVAL");
   if (Option.isNone(raw)) return false;
   const normalized = raw.value.trim().toLowerCase();
   return normalized === "1" || normalized === "true";
@@ -138,7 +139,7 @@ function makeLoadLinkedProject(
   mode: ProjectStateMode,
 ): Effect.Effect<Option.Option<LinkedProjectCacheValue>> {
   return Effect.gen(function* () {
-    const configuredWorkdir = yield* Config.option(Config.String("SUPABASE_WORKDIR"));
+    const configuredWorkdir = yield* configOptionBoth("DBASE_WORKDIR", "SUPABASE_WORKDIR");
     const workdir = Option.getOrElse(configuredWorkdir, () => runtimeInfo.cwd);
     if (mode === "stack") {
       const link = yield* readProjectLink(workdir).pipe(

@@ -6,13 +6,13 @@ import { InvalidAccessTokenError } from "./errors.ts";
 export const ACCESS_TOKEN_PATTERN = /^sbp_(oauth_|v0_)?[a-f0-9]{40}$/;
 
 /**
- * Message shown when no access token is available, passing `supabase login`
+ * Message shown when no access token is available, passing `dbase login`
  * through the Aqua colour gate. Built lazily because the gate inspects the
  * target stream at call time. Shared by `db advisors` and the sso
  * reconciled-credentials gate.
  */
 export const missingAccessTokenMessage = (): string =>
-  `Access token not provided. Supply an access token by running ${aqua("supabase login")} or setting the SUPABASE_ACCESS_TOKEN environment variable.`;
+  `Access token not provided. Supply an access token by running ${aqua("dbase login")} or setting the SUPABASE_ACCESS_TOKEN environment variable.`;
 
 const INVALID_ACCESS_TOKEN_MESSAGE = "Invalid access token format. Must be like `sbp_0102...1920`.";
 

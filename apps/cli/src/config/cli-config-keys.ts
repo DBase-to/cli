@@ -29,6 +29,7 @@ import {
   type CliConfigKey,
   type CliConfigKeyContext,
   type CliEnvName,
+  dbaseEnvName,
 } from "./cli-config-key.ts";
 
 /** A key with its value types erased, as the registry stores every key. */
@@ -45,6 +46,12 @@ export const deriveCliConfigEnvName = (path: string): string =>
     .split(".")
     .map((segment) => segment.toUpperCase())
     .join("_")}`;
+
+/** The env names every key accepts: `DBASE_*` first, then the legacy `SUPABASE_*` twin. */
+const deriveCliConfigEnvNames = (path: string): ReadonlyArray<string> => {
+  const legacy = deriveCliConfigEnvName(path);
+  return [dbaseEnvName(legacy), legacy];
+};
 
 interface SchemaLeaf {
   readonly segments: ReadonlyArray<string>;
@@ -106,7 +113,7 @@ const codecForLeaf = (segments: ReadonlyArray<string>, node: SchemaAST.AST) => {
 
 const buildKey = (def: CliConfigKeyDef): AnyCliConfigKey => {
   const segments = def.segments ?? def.path.split(".");
-  const env = def.noEnv === true ? [] : (def.env ?? [deriveCliConfigEnvName(def.path)]);
+  const env = def.noEnv === true ? [] : (def.env ?? deriveCliConfigEnvNames(def.path));
   const section = envRequiresSectionFor(segments);
   const normalize = CLI_CONFIG_NORMALIZERS[def.path];
   const optional = def.optional === true && def.defaultFrom === undefined;
@@ -182,7 +189,9 @@ export const cliConfigSchemaKeyDefs = (root: SchemaAST.Objects): ReadonlyArray<C
             : { defaultFrom }),
         ...(annotations?.["x-secret"] === true ? { secret: true as const } : {}),
         ...(noEnv ? { noEnv: true as const } : {}),
-        ...(envNamePaths === undefined ? {} : { env: envNamePaths.map(deriveCliConfigEnvName) }),
+        ...(envNamePaths === undefined
+          ? {}
+          : { env: envNamePaths.flatMap(deriveCliConfigEnvNames) }),
       },
     ];
   });
@@ -211,14 +220,22 @@ export const cliConfigRegistry = {
 
 const familyKeys = new Map<string, AnyCliConfigKey>();
 
-const familyEnvName = (family: CliConfigFamilyDef, name: string, field: string): string =>
-  `${deriveCliConfigEnvName(`${family.prefix}.${name}`)}_${field.toUpperCase()}`;
+const familyEnvNames = (
+  family: CliConfigFamilyDef,
+  name: string,
+  field: string,
+): ReadonlyArray<string> => {
+  const suffix = `_${field.toUpperCase()}`;
+  const legacy = `${deriveCliConfigEnvName(`${family.prefix}.${name}`)}${suffix}`;
+  return [dbaseEnvName(legacy), legacy];
+};
 
 /** The env names that can override the fields of one named entry in a family. */
 export const cliConfigFamilyEnvNames = (
   family: CliConfigFamilyDef,
   name: string,
-): ReadonlyArray<string> => family.fields.map((field) => familyEnvName(family, name, field.name));
+): ReadonlyArray<string> =>
+  family.fields.flatMap((field) => familyEnvNames(family, name, field.name));
 
 /** Paths the schema does not model, so only the raw document and the environment can supply them. */
 export const cliConfigDocumentOnlyPaths: ReadonlySet<string> = new Set(
@@ -244,7 +261,7 @@ export const cliConfigFamilyKey = (
     path,
     segments,
     codec: spec.codec,
-    env: [familyEnvName(family, name, field)],
+    env: familyEnvNames(family, name, field),
     ...(spec.optional === undefined ? { default: spec.default } : { optional: true }),
     ...(spec.secret === undefined ? {} : { secret: spec.secret }),
   });
@@ -350,9 +367,15 @@ if (!isKeyTree(builtTree)) {
 /** Every config key, addressed by camelCased document path, e.g. `CliConfigKeys.db.seed.enabled`. */
 export const CliConfigKeys: CliConfigKeysTree = builtTree;
 
-/** The env name that overrides a `[remotes.<name>]` block's `project_id` for remote selection. */
+/** The legacy env name that overrides a `[remotes.<name>]` block's `project_id`. */
 export const cliRemoteProjectIdEnvName = (remote: string): string =>
   `SUPABASE_REMOTES_${remote.toUpperCase()}_PROJECT_ID`;
+
+/** Both env names for a remote's project id: `DBASE_*` first, then the legacy `SUPABASE_*`. */
+export const cliRemoteProjectIdEnvNames = (remote: string): ReadonlyArray<string> => [
+  dbaseEnvName(cliRemoteProjectIdEnvName(remote)),
+  cliRemoteProjectIdEnvName(remote),
+];
 
 /**
  * Whether `name` is an env override the registry owns, including the names derived for entries of
@@ -361,9 +384,12 @@ export const cliRemoteProjectIdEnvName = (remote: string): string =>
 export const isCliConfigEnvName = (name: string): boolean =>
   keysByEnvName.has(name) ||
   CLI_CONFIG_FAMILIES.some((family) => {
-    const prefix = `${deriveCliConfigEnvName(family.prefix)}_`;
+    const prefixes = [
+      deriveCliConfigEnvName(family.prefix),
+      dbaseEnvName(deriveCliConfigEnvName(family.prefix)),
+    ].map((prefix) => `${prefix}_`);
     return (
-      name.startsWith(prefix) &&
+      prefixes.some((prefix) => name.startsWith(prefix)) &&
       family.fields.some((field) => name.endsWith(`_${field.name.toUpperCase()}`))
     );
   });
@@ -383,12 +409,17 @@ export const staticCliConfigFamilyNames = (family: CliConfigFamilyDef): Readonly
 /** Env-name-only reads: shell-only, so the name lives in the registry but no tier list applies. */
 export const CliEnvNames = {
   projectId: cliEnvName({
+    name: deriveCliConfigEnvNames("project_id")[0]!,
+    codec: stringCodec,
+    configKeyPath: "project_id",
+  }),
+  projectIdLegacy: cliEnvName({
     name: deriveCliConfigEnvName("project_id"),
     codec: stringCodec,
     configKeyPath: "project_id",
   }),
   authServiceRoleKey: cliEnvName({
-    name: deriveCliConfigEnvName("auth.service_role_key"),
+    name: deriveCliConfigEnvNames("auth.service_role_key")[0]!,
     codec: stringCodec,
     configKeyPath: "auth.service_role_key",
   }),

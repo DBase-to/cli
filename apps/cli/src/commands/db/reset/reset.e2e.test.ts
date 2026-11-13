@@ -6,7 +6,7 @@ import { runSupabaseEffect, stripAnsi } from "../../../../tests/helpers/cli.ts";
 
 const E2E_TIMEOUT_MS = 30_000;
 
-describe("supabase db reset", () => {
+describe("dbase db reset", () => {
   // Docker-free: the confirmation fires after config load and before any connection is dialed.
   it.live(
     "refuses a remote reset that cannot prompt, even with a piped answer, and points at --yes",

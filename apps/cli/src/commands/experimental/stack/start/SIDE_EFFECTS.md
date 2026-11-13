@@ -1,6 +1,6 @@
-# `supabase stack start`
+# `dbase stack start`
 
-The experimental stack family and the enabled top-level `supabase start` alias use this handler.
+The experimental stack family and the enabled top-level `dbase start` alias use this handler.
 It creates or resumes the stack for the project and optional `--stack` name, or opens the selected
 `--stack-id`. Those selectors are mutually exclusive. Starting does not create a project config file.
 
@@ -98,7 +98,7 @@ reach the api port <port> on <runtime> (<what the probe saw>); its services stop
 containers reach the api port, or turn off `[api.tls]`, then start the stack again``, and any other
 reply, or none within 5 s, with `api.tls: the api port <port> on <runtime> isn't answering this
 stack's start check (<what the probe saw>); its services stopped: check what else listens on port
-<port>, then start the stack again`; if they don't stop, the error says to run `supabase stack stop`
+<port>, then start the stack again`; if they don't stop, the error says to run `dbase stack stop`
 instead.
 
 Bucket seeding and stack `storage` commands use the saved certificate, never `config.toml`, so
@@ -106,18 +106,18 @@ editing `api.tls` applies at the next start. A saved certificate with a self-sig
 trusted CA; a CA-issued one is verified against Bun's default trust store and `NODE_EXTRA_CA_CERTS`.
 Without TLS every listener, URL and output is unchanged.
 
-`db.orioledb_version` (or `SUPABASE_DB_ORIOLEDB_VERSION`) is a `local.services.database.version`
+`db.orioledb_version` (or `DBASE_DB_ORIOLEDB_VERSION`) is a `local.services.database.version`
 request for that OrioleDB build instead of the stock major, resolved like any other version (see
 "Service versions and the lock"); the two keys must agree when both are set, and `db.major_version`
 must match the build's major. The `experimental.s3_*` OrioleDB settings are not forwarded, so
 loading fails when they are set.
 
 Secrets needed by enabled services are passed to the runtime. State and service data live under
-`$SUPABASE_HOME/stacks/<stack-id>/` (`~/.supabase/stacks/<stack-id>/` by default); native artifacts
-use `$SUPABASE_HOME/cache/stack`, keyed by content digest and retired automatically once unused for
-30 days. Storage files use `<SUPABASE_HOME>/stacks/<stack-id>/uploads/`; the command reads and writes nothing under `supabase/.temp`.
+`$DBASE_HOME/stacks/<stack-id>/` (`~/.supabase/stacks/<stack-id>/` by default); native artifacts
+use `$DBASE_HOME/cache/stack`, keyed by content digest and retired automatically once unused for
+30 days. Storage files use `<DBASE_HOME>/stacks/<stack-id>/uploads/`; the command reads and writes nothing under `supabase/.temp`.
 Functions preparation may build the project's source.
-The owner persists each service's output under `$SUPABASE_HOME/stacks/<stack-id>/logs/`, keeping at
+The owner persists each service's output under `$DBASE_HOME/stacks/<stack-id>/logs/`, keeping at
 most about 10 MiB (plus the segment being written) per service instance. Destroying an instance or
 the stack deletes those logs; stopping the stack and resetting database data keep them.
 PostgREST runs with `PGRST_LOG_LEVEL=info`, so every request line, query string included, is
@@ -137,7 +137,7 @@ secret key (`sb_secret_…`) or a JWT, values that themselves carry such a pair 
 URL with a token), and URL userinfo.
 
 Public ports are reserved in one SQLite registry per OS user at `<passwd home>/.supabase/ports.sqlite`,
-which `$SUPABASE_HOME` does not affect and which has no override. The registry uses SQLite's WAL
+which `$DBASE_HOME` does not affect and which has no override. The registry uses SQLite's WAL
 mode, so `<passwd home>/.supabase` must be on a local filesystem, and `ports.sqlite-wal` and
 `ports.sqlite-shm` sit next to it while a connection is open. A stopped stack's automatic
 ports stay reserved across every other stack's starts, including in a different state root, and
@@ -222,7 +222,7 @@ lock, unless `--frozen` is set, which fails the start.
 
 A specifier is `linked`, `bundled`, `<upstream>` (the highest published revision) or
 `<upstream>-r<N>` (exactly that revision). `linked` and `bundled` pin the version bundled with the
-CLI. `linked` follows the hosted version that `supabase link` recorded in the entry's `linked` field
+CLI. `linked` follows the hosted version that `dbase link` recorded in the entry's `linked` field
 for the project it observed, and takes the bundled pin, recorded as `unlinked`, when the project was
 never linked; a service the platform did not report keeps the bundled pin as `unobserved`, and a
 hosted version slim-services does not publish as `unpublished`. Start never probes the hosted
@@ -245,17 +245,17 @@ unchanged keep their pins, so starting never moves a pinned version on its own. 
 `CI` (see `--frozen` below), reads the lock without the lease and writes nothing in the project:
 lock writes are atomic renames, so a read never sees a partial lock.
 
-`supabase stack install` runs this same resolution under the same lease, then downloads what the lock
+`dbase stack install` runs this same resolution under the same lease, then downloads what the lock
 pins without starting a stack; see [`../install/SIDE_EFFECTS.md`](../install/SIDE_EFFECTS.md).
-`supabase stack update` re-resolves chosen services even when fresh, and `supabase stack outdated`
+`dbase stack update` re-resolves chosen services even when fresh, and `dbase stack outdated`
 reports what it would change; see [`../update/SIDE_EFFECTS.md`](../update/SIDE_EFFECTS.md) and
 [`../outdated/SIDE_EFFECTS.md`](../outdated/SIDE_EFFECTS.md).
 
 When `supabase/.link.json` targets a project or branch other than the one the lock observed, start
 and `stack install` warn `lock observed <project>/<branch>, this checkout targets
-<project>/<branch>; run supabase stack update`; this is a warning, never staleness. They also warn,
+<project>/<branch>; run dbase stack update`; this is a warning, never staleness. They also warn,
 without any network, when this CLI bundles a newer revision of a version the lock holds
-(`supabase stack outdated` and `supabase stack update` review and adopt it), excluding exact
+(`dbase stack outdated` and `dbase stack update` review and adopt it), excluding exact
 `<upstream>-r<N>` specifiers.
 
 Resolving a release specifier needs the network: a first start with an explicit upstream version
@@ -266,26 +266,26 @@ specifiers are all `linked` or `bundled` (the default) needs no network, unless 
 linked, when a `linked` service resolves its observed release from the release host. A `linked`
 service whose observed release cannot be fetched because the host is unreachable does not fail the
 start: it takes the bundled version, recorded as `unobserved` (or keeps its previous entry when
-nothing it depends on changed), and warns, naming `supabase link` and `supabase stack update` as
+nothing it depends on changed), and warns, naming `dbase link` and `dbase stack update` as
 the retries. Any other failed resolution fails the start with reason `lock` and writes nothing; the
 cause is unpublished (`invalid_config`) or transient (`network`) for an explicit `<upstream>` or
 `<upstream>-r<N>` specifier, or an integrity mismatch (`asset_checksum`) for any specifier. A saved
 database whose pin comes from `[local.services]` reports its changes as
 `[local.services.database] version`.
 
-`supabase db reset`, the database shadow of `supabase db diff`, the temporary Functions instance
-`supabase functions serve` creates when the stack excludes Functions, and the local services listing
+`dbase db reset`, the database shadow of `dbase db diff`, the temporary Functions instance
+`dbase functions serve` creates when the stack excludes Functions, and the local services listing
 read the same lock without the lease or any resolution; serving through an existing Functions member
 runs the build its stack already started with. When the project has
 no lock they fall back to the versions bundled with the CLI, honouring `[db] major_version` and
 `orioledb_version` and a `[local.services]` database version the CLI bundles; any other explicit
-upstream-version specifier fails with `supabase/supabase.lock not found; run supabase start to create
+upstream-version specifier fails with `supabase/supabase.lock not found; run dbase start to create
 it`. A stale lock fails with `is stale for: <service> (<reason>)`. The services listing instead lists
 the bundled versions in both cases.
 
 `--frozen` makes the start fail instead of resolving: a missing lock fails with
 `supabase/supabase.lock not found`, and a stale one with `is stale for: <service> (<reason>)`, both
-advising to run `supabase start` locally and commit the lock. When the `CI` environment variable is
+advising to run `dbase start` locally and commit the lock. When the `CI` environment variable is
 set (not empty, `false` or `0`) and a lock exists, the start is frozen without the flag. A frozen
 start, explicit or by `CI`, of a project with a lock but no `supabase/config.toml` fails with
 `supabase/config.toml, config.json or config.jsonc not found`, since the lock cannot be checked, instead of using the bundled
@@ -297,9 +297,9 @@ these advises deleting the file and starting again.
 Initialized database data stays bound to its build. A stopped stack whose database holds no
 initialized data (no readiness marker and no PostgreSQL data directory) adopts a changed
 PostgreSQL major or release line; one with initialized data fails, advising to keep the recorded
-build by pinning it under `[local.services]` or to run `supabase stack destroy` (see below).
-`supabase link` and `supabase stack update` warn when the versions they lock would be refused by
-the data of a saved stack of the project. `supabase stack status` reads the lock without the lease or any resolution; a
+build by pinning it under `[local.services]` or to run `dbase stack destroy` (see below).
+`dbase link` and `dbase stack update` warn when the versions they lock would be refused by
+the data of a saved stack of the project. `dbase stack status` reads the lock without the lease or any resolution; a
 missing or stale lock makes its configuration drift check unavailable.
 
 ## Service selection
@@ -327,7 +327,7 @@ composition selects a different Analytics instance. A failed log read is retried
 position with a backoff. Each event carries an id derived from its instance and position. Before
 posting a request, the owner records it as pending in `cursor.json`; it then reads Analytics'
 Postgres tables (`_analytics.sources` and `_analytics.log_events_<token>` in the stack's
-`_supabase` database) to confirm which events are stored, posts only the missing ones, and
+`_dbase` database) to confirm which events are stored, posts only the missing ones, and
 advances the position once all are stored. While those tables cannot be read, shipping waits and
 logs one warning. Events an Analytics process accepted are not posted to it again while it may
 still store them; events still missing are posted again 5 seconds after the request ended once
@@ -337,7 +337,7 @@ again in halves; one that is still not stored on its own is skipped with a warni
 stored a later request, and kept otherwise. NUL characters and unpaired
 surrogates in shipped lines are replaced with U+FFFD. Shipping never wakes Analytics
 and does not count as idle activity, so a lazy Analytics still stops on its idle timer while other
-services log. Service log streams and `supabase logs` are never blocked by shipping.
+services log. Service log streams and `dbase logs` are never blocked by shipping.
 
 After an explicit stop, start compares the project configuration with the saved composition through
 the stack package's composition plan, ignoring values the composition and stack credentials supply.
@@ -371,17 +371,17 @@ upstream than one that already migrated the database (see below). A database pin
 the release line, such as a different stock build within the same major, is also planned as a
 restart, but a database with initialized data then fails its start (see below).
 A saved OrioleDB build the catalog no longer carries is reported as non-editable, with no revert
-advice. Either way the failure suggests running the stack's exact `supabase stack destroy` command
+advice. Either way the failure suggests running the stack's exact `dbase stack destroy` command
 to recreate it.
 Switching between stock PostgreSQL and OrioleDB is a release-line change, reported as
-`db.orioledb_version` (or `SUPABASE_DB_ORIOLEDB_VERSION`) with `unset` standing for stock.
+`db.orioledb_version` (or `DBASE_DB_ORIOLEDB_VERSION`) with `unset` standing for stock.
 Initialized database data is reused only by a slim-services revision of the build that created
 it: the same release line, PostgreSQL major and upstream version, with any `-rN` revision. Every
 start that finds initialized data checks this before preparing or launching the database. A
 different line, major or upstream version fails the start, naming the recorded and requested builds
 and advising to keep the data by pinning `local.services.database.version` to `"<recorded build>"` in
 your config file, with `db.major_version` set to the recorded major when the major differs and
-any `db.orioledb_version` removed when an OrioleDB build is requested, or to run `supabase stack destroy`, which permanently deletes the
+any `db.orioledb_version` removed when an OrioleDB build is requested, or to run `dbase stack destroy`, which permanently deletes the
 stack's local database data; data with no recorded identity offers only the destroy. A
 first start records its identity in `.supabase-database-identity.json` before initializing data, so
 a first start interrupted before readiness resumes only on that build; initialized data with no
@@ -391,7 +391,7 @@ instance root records the newest upstream version of each in `schema-writers.jso
 per-database lock before a service or its one-shot initialization command migrates. A start whose
 selected upstream is older than the recorded one fails, naming the version and advising to keep the
 data by pinning `local.services.<service>.version` to `"<recorded version>"` in
-your config file, or to run `supabase stack destroy` to recreate the stack. Versions order by their leading dotted number
+your config file, or to run `dbase stack destroy` to recreate the stack. Versions order by their leading dotted number
 (`v2.196.0`, `2026.10.05-sha-...`, `17.6.1.054`); a suffix is ignored and an unparseable version
 sorts oldest. Services without schemas (REST, imgproxy, Functions, Studio, pg-meta, mail) accept any
 version change. A missing record means no schema owner has migrated yet. Saving a snapshot stores
@@ -438,7 +438,7 @@ Text output reports progress and `Stack is ready.`, then prints the connection s
 `stack status` on stdout: API, REST, Functions, Studio, MCP, Mailpit, and database URLs for the
 members that expose them, the publishable and secret keys, the Storage S3 URL, access keys, and
 region when the S3 protocol is enabled, a services table, the runtime, and a
-pointer to `supabase status --env` that repeats an explicit `--workdir` and any `--stack` selector or the resolved full `--stack-id`, shell-quoted. Progress lines
+pointer to `dbase status --env` that repeats an explicit `--workdir` and any `--stack` selector or the resolved full `--stack-id`, shell-quoted. Progress lines
 and warnings written while the spinner is shown appear on their own rows.
 
 JSON output returns the stack `id`, its saved `runtime`, `endpoints` keyed by service and endpoint
@@ -457,8 +457,8 @@ once per API-backed service, unlike the deduplicated text message; a database ve
 moves both `db.major_version` and `db.orioledb_version` has an entry for each), each with `service`, `path` (the
 composition planner's dotted path, e.g. `endpoints.http.port`, not a `config.toml` key), `key`,
 `saved`, `requested`, and `editable`. `recreate_command` is present only when recreating the stack
-is among the suggested remedies; it is the exact `supabase stack destroy --stack-id <id>`
+is among the suggested remedies; it is the exact `dbase stack destroy --stack-id <id>`
 invocation, without `--yes`, since destroy deletes local database data; running it
 non-interactively or with `--output-format json`/`--output-format stream-json` requires passing
-`--yes` explicitly. It is absent when a running idle owner only needs `supabase stack stop` then
-`supabase stack start` to apply endpoint port changes.
+`--yes` explicitly. It is absent when a running idle owner only needs `dbase stack stop` then
+`dbase stack start` to apply endpoint port changes.

@@ -46,10 +46,10 @@ const render = (rows: ReadonlyArray<OutdatedService>) => {
   ]);
   const hints = [
     ...(rows.some(({ update }) => update !== undefined)
-      ? ["Run supabase stack update to adopt the updates."]
+      ? ["Run dbase stack update to adopt the updates."]
       : []),
     ...(rows.some(({ stale }) => stale !== undefined)
-      ? ["Run supabase start or supabase stack update to re-resolve stale entries."]
+      ? ["Run dbase start or dbase stack update to re-resolve stale entries."]
       : []),
   ];
   return `${[table, ...(details.length === 0 ? [] : ["", ...details]), ...(hints.length === 0 ? [] : ["", ...hints])].join("\n")}\n`;
@@ -94,7 +94,7 @@ export const stackOutdated = Effect.fn("experimental.stack.outdated")(function* 
         reason: "invalid-config",
         message:
           "No supabase/config.toml, config.json or config.jsonc in this project, so there is no lock to inspect.",
-        suggestion: "Run supabase init, then supabase start to create supabase/supabase.lock.",
+        suggestion: "Run dbase init, then dbase start to create supabase/supabase.lock.",
       });
 
     const outdated = rows.filter(({ update }) => update !== undefined).length;

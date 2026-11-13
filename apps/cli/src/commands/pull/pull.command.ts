@@ -70,20 +70,20 @@ export const pullHandler = (flags: PullFlags) =>
 
 export const pullCommand = Command.make("pull", config).pipe(
   Command.withDescription(
-    "Refreshes local project state from a linked Supabase project or branch in one step: pulls config into the project config file, optionally fetches the remote migration history table, pulls the database schema into supabase/migrations (also updating that database's migration history), and downloads every Edge Function's source. Asks for confirmation (default No) before writing, because the database step records the migration in the remote migration history table: an interactive terminal is prompted, and --output-format json|stream-json or a non-interactive run needs --yes (or SUPABASE_YES in the shell environment) — use --dry-run to preview first.",
+    "Refreshes local project state from a linked DBase project or branch in one step: pulls config into the project config file, optionally fetches the remote migration history table, pulls the database schema into supabase/migrations (also updating that database's migration history), and downloads every Edge Function's source. Asks for confirmation (default No) before writing, because the database step records the migration in the remote migration history table: an interactive terminal is prompted, and --output-format json|stream-json or a non-interactive run needs --yes (or SUPABASE_YES in the shell environment) — use --dry-run to preview first.",
   ),
   Command.withShortDescription("Pull remote project state into the local checkout"),
   Command.withExamples([
     {
-      command: "supabase pull",
+      command: "dbase pull",
       description: "Pull config, schema, and functions from the linked project",
     },
     {
-      command: "supabase pull --remote=staging",
+      command: "dbase pull --remote=staging",
       description: "Pull from the 'staging' branch of the linked project",
     },
     {
-      command: "supabase pull --dry-run",
+      command: "dbase pull --dry-run",
       description: "Preview what would be pulled without writing anything",
     },
   ]),

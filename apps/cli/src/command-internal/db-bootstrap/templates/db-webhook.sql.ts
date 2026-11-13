@@ -25,7 +25,7 @@ CREATE TABLE supabase_functions.hooks (
 );
 CREATE INDEX supabase_functions_hooks_request_id_idx ON supabase_functions.hooks USING btree (request_id);
 CREATE INDEX supabase_functions_hooks_h_table_id_h_name_idx ON supabase_functions.hooks USING btree (hook_table_id, hook_name);
-COMMENT ON TABLE supabase_functions.hooks IS 'Supabase Functions Hooks: Audit trail for triggered hooks.';
+COMMENT ON TABLE supabase_functions.hooks IS 'DBase Functions Hooks: Audit trail for triggered hooks.';
 
 CREATE FUNCTION supabase_functions.http_request()
   RETURNS trigger
@@ -103,7 +103,7 @@ CREATE FUNCTION supabase_functions.http_request()
   END
 $function$;
 
--- Supabase super admin
+-- DBase super admin
 DO
 $$
 BEGIN

@@ -67,7 +67,7 @@ export const selectTarget = Effect.fnUntraced(function* (
 ) {
   const runtime = yield* Effect.serviceOption(CommandRuntime);
   const commandName = Option.isSome(runtime)
-    ? `\`supabase ${getCommandRuntimeCommand(runtime.value)}\``
+    ? `\`dbase ${getCommandRuntimeCommand(runtime.value)}\``
     : "This command";
   const cliArgs = yield* Effect.serviceOption(CliArgs);
   const remoteConflict = Option.getOrUndefined(cliArgs)?.remoteConflict === true;
@@ -87,8 +87,7 @@ const linkedProjectName = Effect.fnUntraced(function* (ref: string) {
   return cache?.ref === ref ? cache.name : undefined;
 });
 
-const LOGIN_SUGGESTION =
-  "Run `supabase login` with an account that can list this project's branches.";
+const LOGIN_SUGGESTION = "Run `dbase login` with an account that can list this project's branches.";
 const SET_TOKEN_SUGGESTION = "Set SUPABASE_ACCESS_TOKEN to a valid access token.";
 const FORBIDDEN_SUGGESTION = "Use an access token that can read this project's branches.";
 
@@ -157,7 +156,7 @@ const listingFailure = (
 
 const commandUsage = Effect.fnUntraced(function* () {
   const runtime = yield* Effect.serviceOption(CommandRuntime);
-  return `supabase ${Option.isSome(runtime) ? getCommandRuntimeCommand(runtime.value) : "<command>"}`;
+  return `dbase ${Option.isSome(runtime) ? getCommandRuntimeCommand(runtime.value) : "<command>"}`;
 });
 
 const checkRemoteOperand = Effect.fn("Target.checkRemoteOperand")(function* (rawOperand: string) {

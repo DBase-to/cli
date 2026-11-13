@@ -19,7 +19,7 @@ import { stackApiLayer } from "../../../command-internal/stack-api.ts";
 import { stackCatalogSetupLayer } from "../../../command-internal/stack-catalog-setup.ts";
 
 /**
- * Runtime layer for `supabase db reset`: the Postgres connection, the db-config resolver,
+ * Runtime layer for `dbase db reset`: the Postgres connection, the db-config resolver,
  * project-ref resolution, and the linked-project cache, all over the lazy management-API factory
  * so the local/`--db-url` paths never resolve an access token at layer-build time.
  *

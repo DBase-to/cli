@@ -406,15 +406,15 @@ WalgEnabled = true
     }).pipe(Effect.provide(layer));
   });
 
-  it.effect("sends User-Agent SupabaseCLI/<version> and no X-Supabase-Command headers", () => {
+  it.effect("sends User-Agent DBaseCLI/<version> and no X-Supabase-Command headers", () => {
     const { layer, api } = setup({
       response: PITR_RESPONSE,
-      userAgent: "SupabaseCLI/1.42.0",
+      userAgent: "DBaseCLI/1.42.0",
     });
     return Effect.gen(function* () {
       yield* backupsList({ remote: Option.none(), projectRef: Option.none() });
       const headers = api.requests[0]?.headers;
-      expect(headers?.["user-agent"]).toBe("SupabaseCLI/1.42.0");
+      expect(headers?.["user-agent"]).toBe("DBaseCLI/1.42.0");
       expect(headers?.["x-supabase-command"]).toBeUndefined();
       expect(headers?.["x-supabase-command-run-id"]).toBeUndefined();
     }).pipe(Effect.provide(layer));

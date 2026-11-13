@@ -182,7 +182,7 @@ export const computeLogs = Effect.fn("compute.logs")(function* (
         if (Option.isNone(deployed)) {
           return yield* new ComputeNotDeployedError({
             detail: `Nothing is deployed for "${name}" in project ${projectRef}.`,
-            suggestion: `Deploy it with \`supabase compute push ${name}${refSuffix}\`.`,
+            suggestion: `Deploy it with \`dbase compute push ${name}${refSuffix}\`.`,
           });
         }
       }
@@ -211,7 +211,7 @@ export const computeLogs = Effect.fn("compute.logs")(function* (
       if (entries.length === 0 && !flags.follow) {
         yield* output.raw(`No logs for "${name}" in the last 24 hours.\n`);
         yield* emitSuccessTrailer(
-          `Check it is running with ${aqua(`supabase compute status ${name}${refSuffix}`)}.\n`,
+          `Check it is running with ${aqua(`dbase compute status ${name}${refSuffix}`)}.\n`,
         );
         return;
       }

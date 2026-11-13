@@ -208,8 +208,8 @@ describe("config convert integration", () => {
           "    > Moved    supabase/config.toml to supabase/config.toml.bak",
           "",
           "  ⚠ Compatibility",
-          "    Supabase CLI versions before 3.1.0 ignore config.jsonc and run with defaults.",
-          "    Upgrade the Supabase CLI on every machine and CI job that uses this project.",
+          "    DBase CLI versions before 3.1.0 ignore config.jsonc and run with defaults.",
+          "    Upgrade the DBase CLI on every machine and CI job that uses this project.",
           "",
           "  To undo:",
           "    mv -- supabase/config.toml.bak supabase/config.toml && rm -- supabase/config.jsonc",
@@ -291,7 +291,7 @@ describe("config convert integration", () => {
       const error = yield* run().pipe(Effect.provide(layer), Effect.flip);
       expect(error._tag).toBe("ConfigConvertLoadConfigError");
       expect(error.message).toBe(
-        "failed to read supabase/config.toml, config.json or config.jsonc: file not found. Run `supabase init` to create one.",
+        "failed to read supabase/config.toml, config.json or config.jsonc: file not found. Run `dbase init` to create one.",
       );
     }).pipe(Effect.provide(BunServices.layer));
   });

@@ -91,7 +91,7 @@ describe("compute delete", () => {
           CONFIG,
         );
         // The redeploy hint is a success trailer, which lands on stderr.
-        expect(out.stderrText).toContain("supabase compute push api");
+        expect(out.stderrText).toContain("dbase compute push api");
       }).pipe(Effect.provide(layer));
     }).pipe(Effect.scoped, Effect.provide(BunServices.layer)),
   );
@@ -310,7 +310,7 @@ describe("compute delete", () => {
         expect(error).toBeInstanceOf(ComputeNotDeployedError);
         // Not `compute push`: somebody deleting "api" does not want to deploy it.
         const suggestion = error instanceof ComputeNotDeployedError ? error.suggestion : "";
-        expect(suggestion).toContain("supabase compute list");
+        expect(suggestion).toContain("dbase compute list");
         expect(suggestion).not.toContain("compute push");
         expect(warningsOf(out)).toEqual([]);
       }).pipe(Effect.provide(layer));

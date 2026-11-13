@@ -268,7 +268,7 @@ describe("subcommand help doc", () => {
         Command.withSharedFlags({ noCache: Flag.Boolean("no-cache") }),
         Command.withSubcommands([generate]),
       );
-      const root = Command.make("supabase").pipe(Command.withSubcommands([declarative]));
+      const root = Command.make("dbase").pipe(Command.withSubcommands([declarative]));
       const args = ["declarative", "generate", "--help"];
       const { console, calls } = fakeConsole();
 
@@ -313,7 +313,7 @@ describe("nested command parsing", () => {
         ),
       );
       const testCommand = Command.make("test").pipe(Command.withSubcommands([db]));
-      const root = Command.make("supabase").pipe(Command.withSubcommands([testCommand]));
+      const root = Command.make("dbase").pipe(Command.withSubcommands([testCommand]));
       const args = ["test", "db", "--", "-foo.sql", "--literal"];
 
       const exit = yield* Command.runWith(root, { version: "0.0.0-test" })(args).pipe(
@@ -347,7 +347,7 @@ describe("argv rewrite reaches handlers", () => {
         }),
       );
       const gen = Command.make("gen").pipe(Command.withSubcommands([types]));
-      const root = Command.make("supabase").pipe(Command.withSubcommands([gen]));
+      const root = Command.make("dbase").pipe(Command.withSubcommands([gen]));
       const cliArgs = prepareCliArgs(root, ["gen", "types", "--remote", REF]);
 
       const projectHomeDir = `${tempHome.current}/.supabase`;

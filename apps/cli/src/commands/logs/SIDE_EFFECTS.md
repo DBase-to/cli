@@ -1,17 +1,17 @@
-# `supabase logs` and `supabase logs sources`
+# `dbase logs` and `dbase logs sources`
 
 Both commands default to the local stack. `--remote` selects the linked project; `--remote=<ref|branch>` selects another project or a branch. Reads are consent-exempt. SQL requires a hosted target.
 
 ## Files read
 
 - Shared settings and target resolvers read the CLI profile, project config, environment files, and `supabase/.temp/project-ref` with normal CLI precedence.
-- Hosted reads resolve credentials from `SUPABASE_ACCESS_TOKEN`, the native keyring, or `<SUPABASE_HOME or ~/.supabase>/access-token`. Local reads do not resolve hosted credentials.
+- Hosted reads resolve credentials from `DBASE_ACCESS_TOKEN`, the native keyring, or `<DBASE_HOME or ~/.supabase>/access-token`. Local reads do not resolve hosted credentials.
 - `--file <path>` reads one UTF-8 SQL file relative to the resolved workdir. `--file -` reads non-TTY stdin and rejects terminal stdin immediately. These and `--sql` are mutually exclusive SQL inputs. Known SQL/filter/target incompatibilities and hosted time ranges are validated before SQL input or hosted target resolution. Only `--file -` consumes stdin; local and filtered commands leave it untouched. `--file` has no `-f` alias. Empty SQL, missing files, and failed stdin reads produce `LogsInputError` with actionable guidance.
-- Local reads use the stack catalog and retained log files under `<SUPABASE_HOME or ~/.supabase>/stacks/`. Each load captures the selected segment generations and byte lengths before reading. Incomplete lines and later appends wait for another load. Local reads never launch, install, or mutate services.
+- Local reads use the stack catalog and retained log files under `<DBASE_HOME or ~/.supabase>/stacks/`. Each load captures the selected segment generations and byte lengths before reading. Incomplete lines and later appends wait for another load. Local reads never launch, install, or mutate services.
 
 ## Files written
 
-- Shared telemetry flushes `<SUPABASE_HOME or ~/.supabase>/telemetry.json` on success and failure.
+- Shared telemetry flushes `<DBASE_HOME or ~/.supabase>/telemetry.json` on success and failure.
 - Hosted target resolution registers linked-project cache finalization on success and failure. It may write `<workdir>/supabase/.temp/linked-project.json` under shared cache rules.
 
 ## API routes
@@ -32,7 +32,7 @@ No background polling runs. Interactive `L` starts one finite load through a new
 
 ## Environment variables
 
-Shared settings use `SUPABASE_HOME`, `SUPABASE_WORKDIR`, `SUPABASE_PROJECT_ID`, `SUPABASE_PROFILE`, `SUPABASE_ACCESS_TOKEN`, and standard telemetry configuration. Capability discovery follows `SUPABASE_EXPERIMENTAL_STACK` and `SUPABASE_EXPERIMENTAL_COMPUTE` with project config fallback. `CI` and `TERM` also control browser eligibility. No new environment variable is introduced.
+Shared settings use `DBASE_HOME`, `DBASE_WORKDIR`, `DBASE_PROJECT_ID`, `DBASE_PROFILE`, `DBASE_ACCESS_TOKEN`, and standard telemetry configuration. Capability discovery follows `DBASE_EXPERIMENTAL_STACK` and `DBASE_EXPERIMENTAL_COMPUTE` with project config fallback. `CI` and `TERM` also control browser eligibility. No new environment variable is introduced.
 
 ## Exit codes
 
@@ -70,6 +70,6 @@ macOS uses `pbcopy` with a UTF-8 locale. Windows uses a fixed UTF-8 PowerShell `
 
 ## Feature gates and compatibility
 
-Compute filtered reads and discovery require the Compute feature. SQL does not require Compute. Local reads and discovery require the stack backend. Unsupported local level, search, and kind filters fail before log reads. Hosted levels derive from service fields; Compute app severity stays unknown. With `--level` and no service selector, hosted reads select `postgres`, `edge`, `auth`, `functions`, and `function-edge`. Local backend errors name `SUPABASE_EXPERIMENTAL_STACK=1`, `[experimental] stack = true`, and `--remote` as alternatives.
+Compute filtered reads and discovery require the Compute feature. SQL does not require Compute. Local reads and discovery require the stack backend. Unsupported local level, search, and kind filters fail before log reads. Hosted levels derive from service fields; Compute app severity stays unknown. With `--level` and no service selector, hosted reads select `postgres`, `edge`, `auth`, `functions`, and `function-edge`. Local backend errors name `DBASE_EXPERIMENTAL_STACK=1`, `[experimental] stack = true`, and `--remote` as alternatives.
 
-The deprecated `compute logs` and `stack logs` entrypoints keep their original flags, defaults, output modes, feature gates, and follow lifecycle. Their engines remain in their command directories; only shared time parsing, retained-history collection, gateway detection, and request transport have common owners. They warn once on stderr with `supabase logs` as the replacement and v4 as the removal version. The warning contains no interactive keyboard instructions. The legacy `-f` continues to mean `--follow`. Stack stream-json output adds `data` with the retained record; its JSON array keeps its existing shape. Legacy errors and lifecycle suggestions retain their shipping text.
+The deprecated `compute logs` and `stack logs` entrypoints keep their original flags, defaults, output modes, feature gates, and follow lifecycle. Their engines remain in their command directories; only shared time parsing, retained-history collection, gateway detection, and request transport have common owners. They warn once on stderr with `dbase logs` as the replacement and v4 as the removal version. The warning contains no interactive keyboard instructions. The legacy `-f` continues to mean `--follow`. Stack stream-json output adds `data` with the retained record; its JSON array keeps its existing shape. Legacy errors and lifecycle suggestions retain their shipping text.

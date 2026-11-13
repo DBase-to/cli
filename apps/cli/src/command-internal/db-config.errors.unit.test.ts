@@ -5,7 +5,7 @@ import { DbConfigIpv6Error } from "./db-config.errors.ts";
 
 describe("DbConfigIpv6Error", () => {
   it.each([undefined, "link"] as const)(
-    "sends a %s remedy to supabase link and stays a connection failure",
+    "sends a %s remedy to dbase link and stays a connection failure",
     (remedy) => {
       expect(
         classifyCliErrorActionability(new DbConfigIpv6Error({ message: "m", remedy })),
@@ -14,7 +14,7 @@ describe("DbConfigIpv6Error", () => {
         error_category: "db_connection",
         has_suggestion: true,
         suggestion_type: "link_project",
-        suggested_command: "supabase link",
+        suggested_command: "dbase link",
       });
     },
   );

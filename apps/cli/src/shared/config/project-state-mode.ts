@@ -38,7 +38,7 @@ export const projectStateMode = Effect.fn("ProjectStateMode.resolve")(function* 
 
 /**
  * The project state mode chosen once at startup. It is an `Exit` so that an invalid
- * `SUPABASE_EXPERIMENTAL_STACK` fails only the readers that need the mode.
+ * `DBASE_EXPERIMENTAL_STACK` fails only the readers that need the mode.
  */
 export class ProjectStateModeContext extends Context.Service<
   ProjectStateModeContext,

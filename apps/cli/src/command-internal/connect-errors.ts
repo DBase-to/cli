@@ -53,21 +53,21 @@ export function isIPv6ConnectivityError(message: string): boolean {
  * `SUPABASE_DB_PASSWORD` env var.
  */
 export const SUGGEST_ENV_VAR =
-  "Connect to your database by setting the env var correctly: SUPABASE_DB_PASSWORD";
+  "Connect to your database by setting the env var correctly: DBASE_DB_PASSWORD";
 
 /**
  * Hint shown when the server certificate does not verify against the CA the connection trusts,
- * which on a hosted project is the bundled Supabase CA unless the user chose a trust setting.
+ * which on a hosted project is the bundled DBase CA unless the user chose a trust setting.
  */
 export const SUGGEST_CA_VERIFICATION =
-  "The server certificate did not verify against the trusted CA (the bundled Supabase CA on a hosted project). Behind a TLS-inspecting proxy, set PGSSLROOTCERT to a CA bundle that trusts it, or set PGSSLMODE=require to skip certificate verification.";
+  "The server certificate did not verify against the trusted CA (the bundled DBase CA on a hosted project). Behind a TLS-inspecting proxy, set PGSSLROOTCERT to a CA bundle that trusts it, or set PGSSLMODE=require to skip certificate verification.";
 
 /**
  * Shown instead of the remote-only "Network Restrictions" hint when `ctx.isLocal` is true — a
  * refused `--local` connection (Docker/Postgres not running) needs a different fix than an
  * actual network-restricted remote connection. See `connectSuggestion`.
  */
-export const SUGGEST_LOCAL_STACK = "Make sure Docker is running, then run: supabase start";
+export const SUGGEST_LOCAL_STACK = "Make sure Docker is running, then run: dbase start";
 
 export const SUGGEST_LINKED_PROJECT = "To use the linked project instead, pass --remote.";
 

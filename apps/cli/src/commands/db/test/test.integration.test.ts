@@ -367,7 +367,7 @@ describe("db test (alias) integration", () => {
           requireSslForHost: () => Effect.die("PgDeltaSslProbe not needed for `db test` dispatch"),
         }),
       );
-      const root = Command.make("supabase").pipe(
+      const root = Command.make("dbase").pipe(
         Command.withGlobalFlags(GLOBAL_FLAGS),
         Command.withSubcommands([dbCommand]),
       );

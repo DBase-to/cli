@@ -15,7 +15,7 @@ const makeWorkdir = Effect.fnUntraced(function* (prefix: string) {
   return workdir;
 });
 
-describe("supabase migration squash", () => {
+describe("dbase migration squash", () => {
   // Exercises the real migrationSquashRuntimeLayer end to end without touching
   // Docker/Postgres. This is a validation error, not a cancellation, so the usual
   // --debug hint still follows it.
@@ -61,9 +61,9 @@ describe("supabase migration squash", () => {
         expect(stripAnsi(stderr)).toContain(
           "supabase/migrations/20240101000000_init.sql is already the earliest migration.",
         );
-        expect(stripAnsi(stdout)).toContain("Finished supabase migration squash.");
+        expect(stripAnsi(stdout)).toContain("Finished dbase migration squash.");
         expect(stripAnsi(stderr)).toContain(
-          "Run supabase migration repair --status applied --remote to update your remote migration history table.",
+          "Run dbase migration repair --status applied --remote to update your remote migration history table.",
         );
       }).pipe(Effect.scoped, Effect.provide(BunServices.layer)),
     E2E_TIMEOUT_MS,

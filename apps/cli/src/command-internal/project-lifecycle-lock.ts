@@ -99,8 +99,8 @@ export const holdProjectLifecycleLock = Effect.fn("ProjectLifecycleLock.hold")(f
       yield* take(
         holdExclusiveLock,
         gate,
-        "Waiting for another Supabase CLI command to finish with local Supabase projects...\n",
-        "Another Supabase CLI command is still starting or stopping local Supabase projects. Wait for it to finish, then retry.",
+        "Waiting for another DBase CLI command to finish with local DBase projects...\n",
+        "Another DBase CLI command is still starting or stopping local DBase projects. Wait for it to finish, then retry.",
       );
       return;
     }
@@ -113,14 +113,14 @@ export const holdProjectLifecycleLock = Effect.fn("ProjectLifecycleLock.hold")(f
     yield* take(
       holdSharedLock,
       gate,
-      "Waiting for another Supabase CLI command to finish with local Supabase projects...\n",
-      "Another Supabase CLI command is stopping all local Supabase projects. Wait for it to finish, then retry.",
+      "Waiting for another DBase CLI command to finish with local DBase projects...\n",
+      "Another DBase CLI command is stopping all local DBase projects. Wait for it to finish, then retry.",
     );
     yield* take(
       holdLock,
       path.join(dir, `docker-project-${key}.lock`),
-      `Waiting for another Supabase CLI command to finish with project ${projectId}...\n`,
-      `Another Supabase CLI command is still starting or stopping project ${projectId}. Wait for it to finish, then retry.`,
+      `Waiting for another DBase CLI command to finish with project ${projectId}...\n`,
+      `Another DBase CLI command is still starting or stopping project ${projectId}. Wait for it to finish, then retry.`,
     );
   }).pipe(
     Effect.matchEffect({

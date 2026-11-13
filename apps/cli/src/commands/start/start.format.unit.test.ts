@@ -11,7 +11,7 @@ import {
 
 describe("startAlreadyRunningMessage", () => {
   it("emits the exact stderr line, with a single trailing newline", () => {
-    expect(stripAnsi(startAlreadyRunningMessage())).toBe("supabase start is already running.\n");
+    expect(stripAnsi(startAlreadyRunningMessage())).toBe("dbase start is already running.\n");
   });
 });
 
@@ -29,9 +29,7 @@ describe("START_WAITING_FOR_HEALTH_CHECKS_MESSAGE", () => {
 
 describe("startCompletedMessage", () => {
   it("emits the exact stderr line, with two trailing newlines", () => {
-    expect(stripAnsi(startCompletedMessage())).toBe(
-      "Started supabase local development setup.\n\n",
-    );
+    expect(stripAnsi(startCompletedMessage())).toBe("Started dbase local development setup.\n\n");
   });
 });
 

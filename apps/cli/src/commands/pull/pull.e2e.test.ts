@@ -10,7 +10,7 @@ const TEST_TOKEN = "sbp_" + "a".repeat(40);
 
 describe("pull CLI surface", () => {
   it.live(
-    "plain `supabase pull` parses its flags and fails on target resolution, not argument parsing",
+    "plain `dbase pull` parses its flags and fails on target resolution, not argument parsing",
     () =>
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
@@ -31,12 +31,12 @@ describe("pull CLI surface", () => {
         const cleanStderr = stripAnsi(stderr);
         expect(cleanStderr).not.toContain("required flag");
         expect(cleanStderr).not.toContain("Unrecognized flag");
-        expect(cleanStderr).toContain("Cannot find project ref. Have you run supabase link?");
+        expect(cleanStderr).toContain("Cannot find project ref. Have you run dbase link?");
         expect(exitCode).toBe(1);
       }).pipe(Effect.scoped, Effect.provide(BunServices.layer)),
   );
 
-  it.live("`supabase pull -o json` is rejected by the handler, pointing at --output-format", () =>
+  it.live("`dbase pull -o json` is rejected by the handler, pointing at --output-format", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "supabase-pull-e2e-output-" });

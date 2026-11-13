@@ -1532,7 +1532,7 @@ describe("functions download", () => {
         expect(error).toMatchObject({
           message: "error running container: exit 1",
           suggestion:
-            "\nRetry with supabase functions download --use-api hello-world to unbundle server-side. If that also fails and the Function was deployed with a CLI older than 1.120.0, redeploy it with the current CLI.",
+            "\nRetry with dbase functions download --use-api hello-world to unbundle server-side. If that also fails and the Function was deployed with a CLI older than 1.120.0, redeploy it with the current CLI.",
         });
       }).pipe(Effect.provide(layer));
     });
@@ -1585,7 +1585,7 @@ describe("functions download", () => {
             message: "error running container: exit 1",
             suggestion:
               "Please use deno v2 in supabase/config.toml to download this Function:\n\n[edge_runtime]\ndeno_version = 2\n" +
-              "\nRetry with supabase functions download --use-api hello-world to unbundle server-side. If that also fails and the Function was deployed with a CLI older than 1.120.0, redeploy it with the current CLI.",
+              "\nRetry with dbase functions download --use-api hello-world to unbundle server-side. If that also fails and the Function was deployed with a CLI older than 1.120.0, redeploy it with the current CLI.",
           });
         }).pipe(Effect.provide(layer));
       },
@@ -1631,7 +1631,7 @@ describe("functions download", () => {
 
           expect(error).toMatchObject({
             suggestion:
-              "\nRetry with supabase functions download --use-api hello-world to unbundle server-side. If that also fails and the Function was deployed with a CLI older than 1.120.0, redeploy it with the current CLI.",
+              "\nRetry with dbase functions download --use-api hello-world to unbundle server-side. If that also fails and the Function was deployed with a CLI older than 1.120.0, redeploy it with the current CLI.",
           });
         }).pipe(Effect.provide(layer));
       },
@@ -1729,7 +1729,7 @@ describe("functions download", () => {
         expect(error).toMatchObject({
           message: `failed to run the edge-runtime unbundle container: ${containerRuntimeNotFoundMessage}`,
           suggestion:
-            "\nRetry with supabase functions download --use-api hello-world to unbundle server-side. If that also fails and the Function was deployed with a CLI older than 1.120.0, redeploy it with the current CLI.",
+            "\nRetry with dbase functions download --use-api hello-world to unbundle server-side. If that also fails and the Function was deployed with a CLI older than 1.120.0, redeploy it with the current CLI.",
         });
         expect(child.spawned.some((spawned) => spawned.args[0] === "run")).toBe(true);
         expect(

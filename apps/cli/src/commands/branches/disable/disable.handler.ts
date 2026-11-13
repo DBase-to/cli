@@ -28,7 +28,7 @@ export const branchesDisable = Effect.fn("branches.disable")(function* (
   const linkedProjectCache = yield* LinkedProjectCache;
   const telemetryState = yield* TelemetryState;
 
-  // `branches` is PARENT-scoped: after `supabase link <branch>`,
+  // `branches` is PARENT-scoped: after `dbase link <branch>`,
   // `supabase/.temp/project-ref` holds the branch's own ref, and the platform
   // 403s on that ref for every branches-management endpoint.
   const ref = yield* resolveProjectTarget(

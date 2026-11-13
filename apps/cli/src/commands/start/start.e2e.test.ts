@@ -53,7 +53,7 @@ const StartedEnv = Schema.fromJsonString(
 );
 const GeneratedLink = Schema.fromJsonString(Schema.Struct({ redirect_to: Schema.String }));
 
-describe("supabase start", () => {
+describe("dbase start", () => {
   // An unreachable `DOCKER_HOST` forces a fast, deterministic failure regardless of whether a
   // real Docker daemon is reachable in the sandbox.
   it.live(

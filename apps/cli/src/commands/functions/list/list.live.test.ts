@@ -7,7 +7,7 @@ const LIVE_TIMEOUT_MS = 120_000;
 
 // TODO(CLI-1834): add deploy + invoke coverage over :443 / {ref}.supabase.red once the project's
 // gateway is reachable from the host.
-describe("supabase functions list (live)", () => {
+describe("dbase functions list (live)", () => {
   test(
     "lists edge functions for the project",
     { timeout: LIVE_TIMEOUT_MS },

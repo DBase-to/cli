@@ -47,7 +47,7 @@ export class StackRoutingError extends Data.TaggedError("StackRoutingError")<{
   readonly cause?: unknown;
 }> {
   get suggestion(): string {
-    return "Set SUPABASE_EXPERIMENTAL_STACK=1 to enable stack commands, or 0 to use legacy start/stop/status.";
+    return "Set DBASE_EXPERIMENTAL_STACK=1 to enable stack commands, or 0 to use legacy start/stop/status.";
   }
 
   get [ErrorActionabilityId](): CliErrorActionabilityDeclaration {
@@ -82,7 +82,7 @@ export const usesStackState: Effect.Effect<boolean> = Effect.gen(function* () {
 
 /**
  * Resolves the project state mode and, for the commands `experimental.stack` routes, the backend.
- * Routed commands fail on an invalid `SUPABASE_EXPERIMENTAL_STACK`; for the others the failure
+ * Routed commands fail on an invalid `DBASE_EXPERIMENTAL_STACK`; for the others the failure
  * stays in `projectState` for the readers that need it. Both are `undefined` for `--version`.
  */
 export const resolveProjectStateSelection = Effect.fn("ProjectState.resolveSelection")(

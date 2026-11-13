@@ -32,16 +32,16 @@ export const notebooksPullHandler = (flags: NotebooksPullFlags) =>
 
 export const notebooksPullCommand = Command.make("pull", config).pipe(
   Command.withDescription(
-    "Write the linked Supabase project's notebooks into supabase/notebooks. Without a notebook id, existing local files are preserved and only missing notebooks are written.",
+    "Write the linked DBase project's notebooks into supabase/notebooks. Without a notebook id, existing local files are preserved and only missing notebooks are written.",
   ),
-  Command.withShortDescription("Pull notebooks from Supabase"),
+  Command.withShortDescription("Pull notebooks from DBase"),
   Command.withExamples([
     {
-      command: "supabase notebooks pull",
+      command: "dbase notebooks pull",
       description: "Pull every notebook from the linked project",
     },
     {
-      command: "supabase notebooks pull 44444444-4444-4444-8444-444444444444",
+      command: "dbase notebooks pull 44444444-4444-4444-8444-444444444444",
       description: "Replace the local copy of one notebook by id",
     },
   ]),

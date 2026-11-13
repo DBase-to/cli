@@ -46,8 +46,8 @@ export const OutputFormatFlag = GlobalFlag.Setting("output-format")({
 
 export const ProfileFlag = GlobalFlag.Setting("profile")({
   flag: Flag.String("profile").pipe(
-    Flag.withDescription("use a specific profile for connecting to Supabase API"),
-    Flag.withDefault("supabase"),
+    Flag.withDescription("use a specific profile for connecting to DBase API"),
+    Flag.withDefault("dbase"),
   ),
 });
 
@@ -84,7 +84,7 @@ export const NetworkIdFlag = GlobalFlag.Setting("network-id")({
 export const YesFlag = GlobalFlag.Setting("yes")({
   flag: Flag.Boolean("yes").pipe(
     Flag.withDescription(
-      "answer yes to all prompts; hosted changes only accept this flag or SUPABASE_YES exported in your shell, never supabase/.env or another .env file",
+      "answer yes to all prompts; hosted changes only accept this flag or DBASE_YES exported in your shell, never supabase/.env or another .env file",
     ),
     Flag.withDefault(false),
   ),
@@ -101,7 +101,7 @@ export const DnsResolverFlag = GlobalFlag.Setting("dns-resolver")({
 // `withCommandTelemetry` instead of an unknown-flag parse error.
 export const CreateTicketFlag = GlobalFlag.Setting("create-ticket")({
   flag: Flag.Boolean("create-ticket").pipe(
-    Flag.withDescription("Removed: report CLI problems with `supabase issue bug` instead."),
+    Flag.withDescription("Removed: report CLI problems with `dbase issue bug` instead."),
     Flag.withDefault(false),
     Flag.withHidden,
   ),
@@ -223,7 +223,7 @@ export const resolveYesSource = Effect.gen(function* () {
 });
 
 /**
- * `--yes` with a `SUPABASE_YES` fallback; an explicit flag (including `--yes=false`) wins over the
+ * `--yes` with a `DBASE_YES` fallback; an explicit flag (including `--yes=false`) wins over the
  * env. Prefer it to reading {@link YesFlag} directly.
  */
 export const resolveYes = Effect.map(resolveYesSource, Option.isSome);
@@ -258,7 +258,7 @@ const experimentalFlagFromArgs = (args: ReadonlyArray<string>): boolean | undefi
   return result;
 };
 
-/** `--experimental` with a `SUPABASE_EXPERIMENTAL` fallback; an explicit flag, even false, wins. */
+/** `--experimental` with a `DBASE_EXPERIMENTAL` fallback; an explicit flag, even false, wins. */
 export const resolveExperimental = Effect.gen(function* () {
   const flag = yield* ExperimentalFlag;
   const cliArgs = yield* CliArgs;

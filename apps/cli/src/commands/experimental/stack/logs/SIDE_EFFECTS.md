@@ -1,4 +1,4 @@
-# `supabase stack logs`
+# `dbase stack logs`
 
 Prints the retained service logs of the selected saved stack and exits; with
 `-f/--follow` it then streams new lines until interrupted. The experimental
@@ -15,9 +15,9 @@ standalone instances or `gateway`; a value that matches no saved instance, or
 `gateway` without the shared API port, fails with status 1.
 A missing stack fails with status 1.
 
-Reads saved definitions under `<SUPABASE_HOME or ~/.supabase>/stacks/<id>/` and
+Reads saved definitions under `<DBASE_HOME or ~/.supabase>/stacks/<id>/` and
 the persisted segments under
-`<SUPABASE_HOME or ~/.supabase>/stacks/<id>/logs/<service>/<instance-id>/<generation>.log`
+`<DBASE_HOME or ~/.supabase>/stacks/<id>/logs/<service>/<instance-id>/<generation>.log`
 directly, so history is readable while the owner is down. Discovery ensures the
 registry directory exists with mode 0700 and probes local owners. Shared
 routing/settings may read project config and profiles. No project files,
@@ -81,8 +81,8 @@ leaves the owner and services running. History reads and completed follows exit
 
 Standard command telemetry is retained, with `-f` reported as `follow`; log
 contents are not custom telemetry properties. Telemetry flushes on every exit to
-`<SUPABASE_HOME or ~/.supabase>/telemetry.json`.
+`<DBASE_HOME or ~/.supabase>/telemetry.json`.
 
 ## Deprecation
 
-The command prints a warning on stderr before reading logs. It names `supabase logs` as the replacement and v4 as the removal version. Existing flags, history defaults, follow defaults, and JSON array output remain unchanged. Stream JSON adds the `data` field described above.
+The command prints a warning on stderr before reading logs. It names `dbase logs` as the replacement and v4 as the removal version. Existing flags, history defaults, follow defaults, and JSON array output remain unchanged. Stream JSON adds the `data` field described above.

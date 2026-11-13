@@ -39,7 +39,7 @@ const encodeLinkedProjectCache = Schema.encodeEffect(
 /**
  * Writes the project's metadata after a `--project-ref` has been resolved: `<workdir>/supabase/.temp/linked-project.json`
  * in legacy mode, or `$SUPABASE_HOME/project-cache/<ref>.json` in stack mode, so a stack-mode
- * checkout never gains a `.temp`. No write if the cache already exists (`supabase link` is
+ * checkout never gains a `.temp`. No write if the cache already exists (`dbase link` is
  * authoritative in legacy mode), and any API/filesystem/parse error is swallowed.
  *
  * Builds its own typed client per fill rather than consuming `CommandPlatformApi`, which

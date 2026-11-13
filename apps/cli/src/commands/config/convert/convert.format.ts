@@ -29,8 +29,8 @@ export function undoCommand(root: string, backup: string, platform: ShellPlatfor
 }
 
 const COMPATIBILITY_LINES = [
-  `Supabase CLI versions before ${CONFIG_JSONC_MIN_CLI_VERSION} ignore config.jsonc and run with defaults.`,
-  "Upgrade the Supabase CLI on every machine and CI job that uses this project.",
+  `DBase CLI versions before ${CONFIG_JSONC_MIN_CLI_VERSION} ignore config.jsonc and run with defaults.`,
+  "Upgrade the DBase CLI on every machine and CI job that uses this project.",
 ] as const;
 
 export function minVersionWarning(dryRun: boolean, undo: string): string {

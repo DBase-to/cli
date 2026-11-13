@@ -2,11 +2,11 @@
 
 ## Files Read
 
-| Path                                   | Format                    | When                                                                                          |
-| -------------------------------------- | ------------------------- | --------------------------------------------------------------------------------------------- |
-| keyring `"DBase CLI"` / `<profile>`    | OS keychain               | when `SUPABASE_ACCESS_TOKEN` unset and keyring available; account = `CommandSettings.profile` |
-| keyring `"DBase CLI"` / `access-token` | OS keychain               | legacy-key fallback when the profile-keyed lookup misses                                      |
-| `~/.dbase/access-token`                | plain text (token string) | last-resort fallback after env + keyring miss                                                 |
+| Path                                   | Format                    | When                                                                                       |
+| -------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------ |
+| keyring `"DBase CLI"` / `<profile>`    | OS keychain               | when `DBASE_ACCESS_TOKEN` unset and keyring available; account = `CommandSettings.profile` |
+| keyring `"DBase CLI"` / `access-token` | OS keychain               | legacy-key fallback when the profile-keyed lookup misses                                   |
+| `~/.dbase/access-token`                | plain text (token string) | last-resort fallback after env + keyring miss                                              |
 
 ## Files Written
 
@@ -25,10 +25,10 @@ linked-project cache (`~/.dbase/<workdir-hash>/linked-project.json`) is never wr
 
 ## Environment Variables
 
-| Variable                | Purpose                                                                                                                                       | Required?                                            |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| `SUPABASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup)                                                                                          | no (falls back to keyring → `~/.dbase/access-token`) |
-| `SUPABASE_PROFILE`      | selects API base URL (`supabase`, `supabase-staging`, `supabase-local`), or a filesystem path to a YAML profile (used by the cli-e2e harness) | no (defaults to `dbase`)                             |
+| Variable             | Purpose                                                                                                                                       | Required?                                            |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `DBASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup)                                                                                          | no (falls back to keyring → `~/.dbase/access-token`) |
+| `DBASE_PROFILE`      | selects API base URL (`supabase`, `supabase-staging`, `supabase-local`), or a filesystem path to a YAML profile (used by the cli-e2e harness) | no (defaults to `dbase`)                             |
 
 ## Exit Codes
 

@@ -63,7 +63,7 @@ const managedStackFor = Effect.fn("test.db.managedStack")(function* () {
   if (Option.isNone(opened))
     return yield* new LocalDbRunningError({
       message:
-        "The local stack database is unavailable or not running; start it with `supabase start`.",
+        "The local stack database is unavailable or not running; start it with `dbase start`.",
     });
   const { stack, database } = opened.value;
   const status = yield* database.status.pipe(

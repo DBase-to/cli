@@ -246,7 +246,7 @@ describe("respondToComplete", () => {
         candidates: [
           {
             name: "--custom-hostname",
-            description: "The custom hostname to use for your Supabase project.",
+            description: "The custom hostname to use for your DBase project.",
           },
         ],
         directive: CompletionDirective.Default,
@@ -266,7 +266,7 @@ describe("respondToComplete", () => {
         candidates: [
           {
             name: "--desired-subdomain",
-            description: "The desired vanity subdomain to use for your Supabase project.",
+            description: "The desired vanity subdomain to use for your DBase project.",
           },
         ],
         directive: CompletionDirective.Default,
@@ -1306,7 +1306,7 @@ describe("tryComplete", () => {
           'Invalid SUPABASE_EXPERIMENTAL_STACK="yes" (sets experimental.stack): expected true or false.',
         );
         expect(stderrWrites[0]).toContain(
-          "Suggestion: Set SUPABASE_EXPERIMENTAL_STACK=1 to enable stack commands, or 0 to use legacy start/stop/status.",
+          "Suggestion: Set DBASE_EXPERIMENTAL_STACK=1 to enable stack commands, or 0 to use legacy start/stop/status.",
         );
         expect(exits).toEqual([1]);
       }),

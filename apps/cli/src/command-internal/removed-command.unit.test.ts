@@ -10,8 +10,8 @@ describe("RemovedSurfaceError actionability", () => {
   it("classifies a removed command with the :removed_command fingerprint suffix", () => {
     const classified = classifyCliErrorActionability(
       new RemovedSurfaceError({
-        message: "supabase db branch create was removed.",
-        suggestion: "Use `supabase branches --help` instead.",
+        message: "dbase db branch create was removed.",
+        suggestion: "Use `dbase branches --help` instead.",
         kind: "command",
       }),
     );
@@ -56,7 +56,7 @@ describe("RemovedSurfaceError actionability", () => {
 describe("TelemetryState flush", () => {
   it.effect("flushes on a removedCommand failure", () => {
     const telemetry = mockTelemetryStateTracked();
-    return removedCommand("Use `supabase branches --help` instead.").pipe(
+    return removedCommand("Use `dbase branches --help` instead.").pipe(
       Effect.exit,
       Effect.tap((exit) =>
         Effect.sync(() => {
@@ -90,7 +90,7 @@ describe("TelemetryState flush", () => {
   });
 
   it.effect("fails a removedFlag for a command that provides no TelemetryState", () =>
-    removedFlag("--create-ticket", "Report CLI problems with `supabase issue bug`.").pipe(
+    removedFlag("--create-ticket", "Report CLI problems with `dbase issue bug`.").pipe(
       Effect.flip,
       Effect.tap((error) =>
         Effect.sync(() => {

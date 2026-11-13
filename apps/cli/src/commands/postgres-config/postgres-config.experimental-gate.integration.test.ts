@@ -22,7 +22,7 @@ import { postgresConfigCommand } from "./postgres-config.command.ts";
 
 const tempRoot = useTempWorkdir("supabase-postgres-config-experimental-int-");
 
-const testRoot = Command.make("supabase").pipe(
+const testRoot = Command.make("dbase").pipe(
   Command.withSubcommands([postgresConfigCommand]),
   Command.withGlobalFlags(GLOBAL_FLAGS),
 );

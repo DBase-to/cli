@@ -86,9 +86,7 @@ for (const format of ["text", "json"] as const)
 
         expect(failure).toBeInstanceOf(StackCommandDestroyError);
         expect(failure.reason).toBe("runtime");
-        expect(failure.suggestion).toContain(
-          `supabase stack destroy --stack-id ${f.stack.id} --yes`,
-        );
+        expect(failure.suggestion).toContain(`dbase stack destroy --stack-id ${f.stack.id} --yes`);
         expect(f.output.stdoutText).not.toContain("destroyed");
         expect(f.output.messages.filter(({ type }) => type === "success")).toEqual([]);
         expect(yield* f.api.discover(f.locations)).toHaveLength(1);

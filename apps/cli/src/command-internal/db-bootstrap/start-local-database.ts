@@ -1,5 +1,5 @@
 /**
- * Plain local-database start shared by `supabase db start` and the declarative `--local` paths.
+ * Plain local-database start shared by `dbase db start` and the declarative `--local` paths.
  * Self-contained: resolves its own services, reports progress via `output.raw` only, and never
  * flushes telemetry.
  *
@@ -260,7 +260,7 @@ const startLocalDatabaseInScope = Effect.fn("DbBootstrap.startLocalDatabase")(fu
   let isFreshVolume = false;
 
   // Runs the exact start-database sequence (network -> volume probe -> container create+start
-  // -> health wait -> fresh-volume setup -> `_current_branch`) — shared with `supabase start`,
+  // -> health wait -> fresh-volume setup -> `_current_branch`) — shared with `dbase start`,
   // see `startDatabase`'s own header. Any failure rolls back only what `db start` creates.
   yield* startDatabase(spawner, {
     fs,

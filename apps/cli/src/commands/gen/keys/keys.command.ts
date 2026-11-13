@@ -17,7 +17,7 @@ const config = {
 } as const;
 
 export const genKeysCommand = Command.make("keys", config).pipe(
-  Command.withDescription("Removed: use `supabase projects api-keys --remote=<ref>` instead."),
+  Command.withDescription("Removed: use `dbase projects api-keys --remote=<ref>` instead."),
   Command.withShortDescription("Removed: use `projects api-keys` instead"),
   // Removed: fails before any Management API call, so no flag changes what it calls.
   withPermissions({
@@ -26,7 +26,7 @@ export const genKeysCommand = Command.make("keys", config).pipe(
   }),
   Command.withHandler(() =>
     removedCommand(
-      "Use `supabase projects api-keys --remote=<ref>` to read a project's API keys.",
+      "Use `dbase projects api-keys --remote=<ref>` to read a project's API keys.",
     ).pipe(withCommandTelemetry(), withJsonErrorHandling),
   ),
   Command.provide(commandRuntimeLayer(["gen", "keys"])),

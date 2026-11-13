@@ -9,12 +9,12 @@ previous `profile` abstraction forward. The preferred term in the new CLI is **p
 
 ## Overview
 
-Most CLI users should implicitly target Supabase production without needing to learn any extra
+Most CLI users should implicitly target DBase production without needing to learn any extra
 concepts or configure any additional state.
 
 A much smaller group of users needs to point the CLI somewhere else:
 
-- Supabase developers working against staging
+- DBase developers working against staging
 - advanced customer teams pointing at their own platform
 - CI or debugging workflows that temporarily need alternate endpoints
 
@@ -62,7 +62,7 @@ shared abstraction.
 
 The UX should follow these rules:
 
-- Supabase production is the implicit default.
+- DBase production is the implicit default.
 - Most users should never need to learn about platforms.
 - Non-default platforms are a power-user and internal escape hatch.
 - The CLI should not ship a public catalog of built-in staging or customer platforms.
@@ -72,7 +72,7 @@ This keeps the common path simple while still leaving room for advanced routing 
 
 ## Configuration Model
 
-Advanced named platforms should live in `SUPABASE_HOME`.
+Advanced named platforms should live in `DBASE_HOME`.
 
 The format should be JSON, not TOML.
 
@@ -86,15 +86,15 @@ Recommended resolution order:
 
 1. Explicit endpoint environment overrides
 2. Named platform selected by env var, if present
-3. Default named platform from `SUPABASE_HOME`
-4. Built-in Supabase production defaults
+3. Default named platform from `DBASE_HOME`
+4. Built-in DBase production defaults
 
 This gives advanced users persistent configuration without making non-default state part of the
 everyday CLI surface.
 
 ## Config Shape
 
-The exact filename under `SUPABASE_HOME` is still open, but the structure should look like this:
+The exact filename under `DBASE_HOME` is still open, but the structure should look like this:
 
 ```json
 {
@@ -145,7 +145,7 @@ just from a user-chosen label like `staging` or `customer_acme`.
 Why this matters:
 
 - prod and staging tokens must never bleed into each other
-- custom-platform tokens must stay isolated from Supabase production
+- custom-platform tokens must stay isolated from DBase production
 - alias renames should not unexpectedly orphan or duplicate auth state
 
 It is acceptable for two aliases that resolve to the same platform identity to intentionally share
@@ -170,12 +170,12 @@ choosing a platform entry.
 
 The advanced config surface this design assumes:
 
-- `SUPABASE_API_URL`
-- `SUPABASE_DASHBOARD_URL`
-- `SUPABASE_PROJECT_HOST`
+- `DBASE_API_URL`
+- `DBASE_DASHBOARD_URL`
+- `DBASE_PROJECT_HOST`
 - `SUPABASE_POOLER_HOST`
 - optional named selector env var, likely `SUPABASE_PLATFORM`
-- `SUPABASE_HOME` as the storage root for advanced global platform config
+- `DBASE_HOME` as the storage root for advanced global platform config
 
 Platform entry fields:
 
@@ -191,7 +191,7 @@ the main user-facing CLI experience.
 
 This design does not propose:
 
-- a public `supabase platform ...` command group
+- a public `dbase platform ...` command group
 - a built-in first-party staging alias in the public UX
 - customer-specific platform definitions baked into the CLI
 - plugin or product behavior encoded directly inside platform config
@@ -199,7 +199,7 @@ This design does not propose:
 
 ## Open Follow-up Work
 
-- Decide the final JSON filename and exact location under `SUPABASE_HOME`
+- Decide the final JSON filename and exact location under `DBASE_HOME`
 - Decide whether `SUPABASE_PLATFORM` should exist as the named-platform selector env var
 - Update auth design docs to scope stored auth by resolved platform identity
 - Update config docs once implementation starts
@@ -215,7 +215,7 @@ The right model is:
 
 - production-by-default UX
 - `platform` as the advanced routing concept
-- JSON config in `SUPABASE_HOME`
+- JSON config in `DBASE_HOME`
 - strict validation
 - env var overrides for CI and one-off use
 - auth scoped by resolved platform identity

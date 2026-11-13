@@ -272,7 +272,7 @@ export function buildCollationDriftReport(
             body:
               "Refreshing first hides the problem without fixing it: it updates a label and silences the warning while leaving the indexes mis-ordered. The list above covers btree key columns only; also rebuild expression indexes and any other index or constraint that uses these collations before refreshing." +
               (ownerOnly.length > 0
-                ? ` The current role does not own ${ownerOnly.join(", ")}; after the rebuilds, ask its owner (on hosted projects, Supabase support) to refresh the version.`
+                ? ` The current role does not own ${ownerOnly.join(", ")}; after the rebuilds, ask its owner (on hosted projects, DBase support) to refresh the version.`
                 : ""),
             sql: refreshStatements(rows),
           },
@@ -287,7 +287,7 @@ export function buildCollationDriftReport(
  * version no longer matches the version the operating system provides, with
  * the verify → rebuild → refresh workflow rendered as part of the output.
  *
- * Includes `auth`, `storage` and other Supabase schemas, which the table commands filter,
+ * Includes `auth`, `storage` and other DBase schemas, which the table commands filter,
  * because their indexes protect user data too.
  */
 export const collationDriftSpec: InspectReportSpec = {

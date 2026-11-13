@@ -437,13 +437,13 @@ describe("formatHelpDocAsMarkdown", () => {
                 name: "login",
                 alias: undefined,
                 shortDescription: "Log in",
-                description: "Log in to Supabase",
+                description: "Log in to DBase",
               },
               {
                 name: "logout",
                 alias: undefined,
                 shortDescription: "Log out",
-                description: "Log out of Supabase",
+                description: "Log out of DBase",
               },
             ],
           },
@@ -562,7 +562,7 @@ describe("formatHelpDocAsMarkdown", () => {
   describe("minimal doc (usage + flags only)", () => {
     it("renders a minimal doc with just usage and flags", () => {
       const doc = makeDoc({
-        usage: "supabase login [flags]",
+        usage: "dbase login [flags]",
         flags: [
           {
             name: "token",
@@ -584,7 +584,7 @@ describe("formatHelpDocAsMarkdown", () => {
       const result = formatHelpDocAsMarkdown(doc);
 
       expect(result).toContain("## Usage");
-      expect(result).toContain("supabase login [flags]");
+      expect(result).toContain("dbase login [flags]");
       expect(result).toContain("## Flags");
       expect(result).toContain("`--token`");
       expect(result).toContain("`-t`");

@@ -23,7 +23,7 @@ import { commandTargetLayer } from "../../shared/output/command-target.layer.ts"
 
 const tempRoot = useTempWorkdir("supabase-storage-experimental-int-");
 
-const testRoot = Command.make("supabase").pipe(
+const testRoot = Command.make("dbase").pipe(
   Command.withSubcommands([storageCommand]),
   Command.withGlobalFlags(GLOBAL_FLAGS),
 );

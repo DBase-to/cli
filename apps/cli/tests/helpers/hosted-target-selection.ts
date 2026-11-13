@@ -94,7 +94,7 @@ export function describeTargetSelectionMatrix<R>(
   matrix: TargetSelectionMatrix<R>,
 ): void {
   const words = path.split(" ");
-  const commandName = `\`supabase ${path}\``;
+  const commandName = `\`dbase ${path}\``;
   const extraFlags = matrix.activeFlags ?? {};
   const driftVariant = matrix.variant === undefined ? {} : { variant: matrix.variant };
   // A parent-scoped command goes on to touch the branch's project, so only its first ref counts.

@@ -21,7 +21,7 @@ const makeVaultProject = Effect.gen(function* () {
   return projectDir;
 });
 
-describe("supabase db push --skip-vault", () => {
+describe("dbase db push --skip-vault", () => {
   it.live(
     "fails during config loading without the flag",
     () =>

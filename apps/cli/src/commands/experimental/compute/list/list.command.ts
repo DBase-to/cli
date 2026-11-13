@@ -27,7 +27,7 @@ export const computeListCommand = Command.make("list", config).pipe(
   Command.withShortDescription("List this project's compute"),
   Command.withExamples([
     {
-      command: "supabase compute list",
+      command: "dbase compute list",
       description: "See every compute in the linked project",
     },
   ]),

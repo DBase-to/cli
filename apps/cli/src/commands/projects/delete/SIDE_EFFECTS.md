@@ -1,13 +1,13 @@
-# `supabase projects delete`
+# `dbase projects delete`
 
 Target: account, consent default No — see [Command target](../../../../docs/command-target.md)
 
 ## Files Read
 
-| Path                                   | Format                    | When                                                       |
-| -------------------------------------- | ------------------------- | ---------------------------------------------------------- |
-| `~/.supabase/access-token`             | plain text (token string) | when `SUPABASE_ACCESS_TOKEN` unset and keyring unavailable |
-| `<workdir>/supabase/.temp/project-ref` | plain text (ref string)   | after a successful delete, to decide whether to unlink     |
+| Path                                   | Format                    | When                                                    |
+| -------------------------------------- | ------------------------- | ------------------------------------------------------- |
+| `~/.supabase/access-token`             | plain text (token string) | when `DBASE_ACCESS_TOKEN` unset and keyring unavailable |
+| `<workdir>/supabase/.temp/project-ref` | plain text (ref string)   | after a successful delete, to decide whether to unlink  |
 
 ## Files Written / Removed
 
@@ -30,25 +30,25 @@ Target: account, consent default No — see [Command target](../../../../docs/co
 
 ## Environment Variables
 
-| Variable                      | Purpose                                                                                                                                | Required?                                               |
-| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| `SUPABASE_ACCESS_TOKEN`       | auth token (bypasses credential file/keyring lookup)                                                                                   | no (falls back to keyring → `~/.supabase/access-token`) |
-| `SUPABASE_PROFILE`            | built-in profile name or YAML file path                                                                                                | no (falls back to `~/.supabase/profile` -> `supabase`)  |
-| `SUPABASE_EXPERIMENTAL_STACK` | `1` or `0` selects stack project-state mode over `[experimental] stack`; any other non-empty value fails before the project is deleted | no (unset or empty uses `[experimental] stack`)         |
+| Variable                   | Purpose                                                                                                                                | Required?                                               |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| `DBASE_ACCESS_TOKEN`       | auth token (bypasses credential file/keyring lookup)                                                                                   | no (falls back to keyring → `~/.supabase/access-token`) |
+| `DBASE_PROFILE`            | built-in profile name or YAML file path                                                                                                | no (falls back to `~/.supabase/profile` -> `supabase`)  |
+| `DBASE_EXPERIMENTAL_STACK` | `1` or `0` selects stack project-state mode over `[experimental] stack`; any other non-empty value fails before the project is deleted | no (unset or empty uses `[experimental] stack`)         |
 
 ## Exit Codes
 
-| Code | Condition                                                                                                |
-| ---- | -------------------------------------------------------------------------------------------------------- |
-| `0`  | success — project deleted                                                                                |
-| `1`  | authentication error — no valid token found                                                              |
-| `1`  | project not found — 404 response from `/v1/projects/{ref}`                                               |
-| `1`  | API error — non-2xx/404 response from `/v1/projects/{ref}`                                               |
-| `1`  | network / connection failure                                                                             |
-| `1`  | confirmation declined                                                                                    |
-| `1`  | confirmation needed but this run can't prompt, and no `--yes`                                            |
-| `1`  | no ref on a non-TTY                                                                                      |
-| `1`  | `SUPABASE_EXPERIMENTAL_STACK` is set to a non-empty value other than `0` or `1` (before the DELETE call) |
+| Code | Condition                                                                                             |
+| ---- | ----------------------------------------------------------------------------------------------------- |
+| `0`  | success — project deleted                                                                             |
+| `1`  | authentication error — no valid token found                                                           |
+| `1`  | project not found — 404 response from `/v1/projects/{ref}`                                            |
+| `1`  | API error — non-2xx/404 response from `/v1/projects/{ref}`                                            |
+| `1`  | network / connection failure                                                                          |
+| `1`  | confirmation declined                                                                                 |
+| `1`  | confirmation needed but this run can't prompt, and no `--yes`                                         |
+| `1`  | no ref on a non-TTY                                                                                   |
+| `1`  | `DBASE_EXPERIMENTAL_STACK` is set to a non-empty value other than `0` or `1` (before the DELETE call) |
 
 ## Telemetry Events Fired
 
@@ -98,10 +98,10 @@ On failure, an `error` event is emitted instead:
 In stack project-state mode the best-effort cleanup reads `supabase/.link.json` and removes it
 only when its `project.ref` or `active_branch.ref` equals the deleted ref; `supabase/.temp/` is
 not consulted. The mode is resolved before the DELETE call, so an invalid
-`SUPABASE_EXPERIMENTAL_STACK` fails before the project is deleted.
+`DBASE_EXPERIMENTAL_STACK` fails before the project is deleted.
 
 When the link matches, the file is removed under the project lease `supabase/.supabase.lock.lease`
-(the lease `supabase link` publishes `.link.json` under), after reading the link again and
+(the lease `dbase link` publishes `.link.json` under), after reading the link again and
 re-checking the ref, so a concurrent `link` to another project keeps its link. A lease that stays
 busy fails the command with `LockResolutionError` reason `lease-busy` and exit code `1` after the
 project was deleted; the link document is left in place. The lease file is created, and

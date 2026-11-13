@@ -121,12 +121,12 @@ const interactivePicker = withContext(
 export type ProjectsCreateFlags = CliCommand.Command.Config.Infer<typeof config>;
 
 export const projectsCreateCommand = Command.make("create", config).pipe(
-  Command.withDescription("Create a project on Supabase."),
+  Command.withDescription("Create a project on DBase."),
   Command.withShortDescription("Create a project"),
   Command.withExamples([
     {
       command:
-        "supabase projects create my-project --org-id cool-green-pqdr0qc --db-password ******** --region us-east-1",
+        "dbase projects create my-project --org-id cool-green-pqdr0qc --db-password ******** --region us-east-1",
       description: "Create a new project",
     },
   ]),

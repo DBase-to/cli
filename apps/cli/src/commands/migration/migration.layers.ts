@@ -18,7 +18,7 @@ import { stackCatalogSetupLayer } from "../../command-internal/stack-catalog-set
 const cliSettings = commandSettingsLayer.pipe(Layer.provide(debugLoggerLayer));
 
 /**
- * Runtime layer for `supabase migration new`: the resolved CLI config, telemetry
+ * Runtime layer for `dbase migration new`: the resolved CLI config, telemetry
  * flush, and piped stdin, with no DB connection, Management API, or Docker.
  * `Output`, `Analytics`, `FileSystem`, `Path`, `Clock`, and `Tty` come from the root.
  */
@@ -58,7 +58,7 @@ export const migrationDbRuntimeLayer = (commandPath: ReadonlyArray<string>) =>
 const httpClient = httpClientLayer.pipe(Layer.provide(debugLoggerLayer));
 
 /**
- * Runtime layer for `supabase migration squash`: `migrationDbRuntimeLayer`'s bundle
+ * Runtime layer for `dbase migration squash`: `migrationDbRuntimeLayer`'s bundle
  * plus `DockerRun` (pg_dump and the shadow's setup jobs), `HttpClient` (the shadow's
  * health-check wait), and `DebugLogger` (the `loadLocalVersions` fallback).
  */

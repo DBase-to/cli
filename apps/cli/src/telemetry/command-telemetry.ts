@@ -324,7 +324,7 @@ const rejectRemovedGlobalFlags = Effect.gen(function* () {
   const stdio = yield* Stdio.Stdio;
   const args = yield* stdio.args;
   if (!extractChangedFlagNames(args).includes(CreateTicketFlag.id)) return;
-  return yield* removedFlag("--create-ticket", "Report CLI problems with `supabase issue bug`.");
+  return yield* removedFlag("--create-ticket", "Report CLI problems with `dbase issue bug`.");
 });
 
 function normalizeFlagValue(value: unknown): unknown {

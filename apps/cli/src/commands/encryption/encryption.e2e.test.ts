@@ -5,7 +5,7 @@ import { runSupabaseEffect } from "../../../tests/helpers/cli.ts";
 const E2E_TIMEOUT_MS = 30_000;
 const TEST_TOKEN = "sbp_" + "a".repeat(40);
 
-describe("supabase encryption", () => {
+describe("dbase encryption", () => {
   it.live(
     "get-root-key without a resolvable project ref exits non-zero with the not-linked message",
     () =>

@@ -25,7 +25,7 @@ export function describeConfigParseError(
  * Shared "no project here" message for JSON-capable config loads (`config diff/push/pull`,
  * `gen types`, `storage ls|mv|rm|cp`, `seed buckets`).
  *
- * A defaulted workdir suggests `supabase init`, since the ancestor walk-up already searched up to
+ * A defaulted workdir suggests `dbase init`, since the ancestor walk-up already searched up to
  * the filesystem root. An explicit `--workdir`/`SUPABASE_WORKDIR` never climbs, so it names the
  * resolved path instead of suggesting `init`.
  */
@@ -34,7 +34,7 @@ export function missingProjectConfigMessage(input: {
   readonly explicitWorkdir: boolean;
 }): string {
   if (!input.explicitWorkdir) {
-    return "failed to read supabase/config.toml, config.json or config.jsonc: file not found. Run `supabase init` to create one.";
+    return "failed to read supabase/config.toml, config.json or config.jsonc: file not found. Run `dbase init` to create one.";
   }
   return `failed to read supabase/config.toml, config.json or config.jsonc in ${sanitizeInlineName(input.workdir)}: file not found. --workdir/SUPABASE_WORKDIR is used exactly as given and no ancestor directory is searched, so it must name the directory that contains your supabase/ folder.`;
 }

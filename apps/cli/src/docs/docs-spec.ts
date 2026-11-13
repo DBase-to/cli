@@ -94,7 +94,7 @@ export interface DocsSpec {
 export interface DocsSpecInput {
   readonly root: Command.Command.Any;
   readonly version: string;
-  /** Overlay markdown keyed by docs-relative POSIX path, e.g. `supabase/db/push.md`. */
+  /** Overlay markdown keyed by docs-relative POSIX path, e.g. `dbase/db/push.md`. */
   readonly overlays: ReadonlyMap<string, string>;
   /** Examples keyed by doc id, from `docs/templates/examples.yaml`. */
   readonly examples: Readonly<Record<string, ReadonlyArray<DocsExample>>>;
@@ -104,7 +104,7 @@ export interface DocsSpecInput {
  * Overlay file path for a command path — the layout contract of
  * `docs/supabase/`: one directory per word, except paths deeper than three
  * words flatten the tail into one dash-joined filename
- * (`supabase inspect db bloat` → `supabase/inspect/db-bloat.md`).
+ * (`dbase inspect db bloat` → `dbase/inspect/db-bloat.md`).
  */
 export function docsOverlayPath(commandPath: ReadonlyArray<string>): string {
   const names =
@@ -281,7 +281,7 @@ function docsExperimentalFlag(rootFlags: ReadonlyArray<DocsFlag>): DocsFlag {
 }
 
 export function buildDocsSpec(input: DocsSpecInput): DocsSpec {
-  const rootPath = ["supabase"];
+  const rootPath = ["dbase"];
   const rootFlagParams: ReadonlyArray<Param.AnyFlag> = [
     ...userGlobalFlagParams(input.root),
     GlobalFlag.Help.flag,
@@ -297,7 +297,7 @@ export function buildDocsSpec(input: DocsSpecInput): DocsSpec {
   const commands: Array<DocsCommand> = [];
   const emittedIds = new Set<string>();
   const skippedExcludedIds = new Set<string>();
-  const seenFlagKeys = new Set<string>(rootFlags.map((flag) => `supabase ${flag.id}`));
+  const seenFlagKeys = new Set<string>(rootFlags.map((flag) => `dbase ${flag.id}`));
   const consumedExcludedFlagKeys = new Set<string>();
   const consumedArgOverrideIds = new Set<string>();
   const consumedExtraFlagIds = new Set<string>();
@@ -454,7 +454,7 @@ export function buildDocsSpec(input: DocsSpecInput): DocsSpec {
   };
 
   for (const child of docsVisibleChildren(input.root)) {
-    const childPath = ["supabase", child.name];
+    const childPath = ["dbase", child.name];
     const childId = childPath.join("-");
     if (DOCS_EXCLUDED.has(childId)) {
       skippedExcludedIds.add(childId);
@@ -485,10 +485,10 @@ export function buildDocsSpec(input: DocsSpecInput): DocsSpec {
     info: {
       id: "cli",
       version: input.version,
-      title: "Supabase CLI",
+      title: "DBase CLI",
       language: "sh",
-      source: "https://github.com/supabase/cli",
-      bugs: "https://github.com/supabase/cli/issues",
+      source: "https://github.com/DBase-to/cli",
+      bugs: "https://github.com/DBase-to/cli/issues",
       spec: "https://github.com/supabase/spec/cli_v1_commands.yaml",
       description: DOCS_INFO_DESCRIPTION,
       tags: DOCS_INFO_TAGS,

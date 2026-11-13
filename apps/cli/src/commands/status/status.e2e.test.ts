@@ -72,7 +72,7 @@ const overrideStackPortsIn = (projectDir: string) =>
 // the right reuse here: `status` never calls the Management API, only the real
 // Docker daemon the cli-e2e-ci runner provides. See AGENTS.md's "e2e tests"
 // section for the full convention.
-describe("supabase status (e2e)", () => {
+describe("dbase status (e2e)", () => {
   it.live(
     "reports a running local stack in pretty and json modes",
     () =>

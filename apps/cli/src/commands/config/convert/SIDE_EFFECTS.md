@@ -1,4 +1,4 @@
-# `supabase config convert`
+# `dbase config convert`
 
 ## Files Read
 
@@ -26,10 +26,10 @@
 
 ## Environment Variables
 
-| Variable                         | Purpose                            | Required? |
-| -------------------------------- | ---------------------------------- | --------- |
-| `SUPABASE_WORKDIR` / `--workdir` | project root used exactly as given | no        |
-| `SUPABASE_HOME`                  | location of `telemetry.json`       | no        |
+| Variable                      | Purpose                            | Required? |
+| ----------------------------- | ---------------------------------- | --------- |
+| `DBASE_WORKDIR` / `--workdir` | project root used exactly as given | no        |
+| `DBASE_HOME`                  | location of `telemetry.json`       | no        |
 
 ## Exit Codes
 
@@ -72,8 +72,8 @@ stdout is one report, printed after the files are written (colour only on a TTY,
     Add "https://supabase.com/schemas/": true under "json.schemaDownload.trustedDomains" to trust the config schema.
 
   ⚠ Compatibility
-    Supabase CLI versions before 3.1.0 ignore config.jsonc and run with defaults.
-    Upgrade the Supabase CLI on every machine and CI job that uses this project.
+    CLI versions before 3.1.0 ignore config.jsonc and run with defaults.
+    Upgrade the CLI on every machine and CI job that uses this project.
 
   To undo:
     mv -- supabase/config.toml.bak supabase/config.toml && rm -- supabase/config.jsonc

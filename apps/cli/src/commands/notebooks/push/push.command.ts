@@ -30,16 +30,16 @@ export const notebooksPushHandler = (flags: NotebooksPushFlags) =>
 
 export const notebooksPushCommand = Command.make("push", config).pipe(
   Command.withDescription(
-    "Write supabase/notebooks into the linked Supabase project. If no notebook name is provided, pushes all of them and asks what to do about project notebooks the directory does not have.",
+    "Write supabase/notebooks into the linked DBase project. If no notebook name is provided, pushes all of them and asks what to do about project notebooks the directory does not have.",
   ),
-  Command.withShortDescription("Push notebooks to Supabase"),
+  Command.withShortDescription("Push notebooks to DBase"),
   Command.withExamples([
     {
-      command: "supabase notebooks push",
+      command: "dbase notebooks push",
       description: "Push every notebook in supabase/notebooks to the linked project",
     },
     {
-      command: "supabase notebooks push sales-dashboard",
+      command: "dbase notebooks push sales-dashboard",
       description: "Push a single notebook by name",
     },
   ]),

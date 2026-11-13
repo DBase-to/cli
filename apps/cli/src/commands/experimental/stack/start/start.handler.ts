@@ -449,12 +449,12 @@ const settingChangeLines = (
 const dedupe = (values: ReadonlyArray<string>): ReadonlyArray<string> => [...new Set(values)];
 
 /**
- * The exact `supabase stack destroy` invocation that recreates this stack. Always targets
+ * The exact `dbase stack destroy` invocation that recreates this stack. Always targets
  * `--stack-id`: a `--stack <name>` destroy re-resolves the name against the caller's current
  * `--workdir`, which can point at a different project's stack of the same name. Omits `--yes` on
  * purpose, since destroying deletes local database data (details in `SIDE_EFFECTS.md`).
  */
-const destroyCommandFor = (id: string): string => `supabase stack destroy --stack-id ${id}`;
+const destroyCommandFor = (id: string): string => `dbase stack destroy --stack-id ${id}`;
 
 /** The revert clause for the editable keys among a rejection's changes, or `undefined` for none. */
 const revertAdvice = (editableKeys: ReadonlyArray<string>): string | undefined =>
@@ -508,7 +508,7 @@ const incompatibleChange = (
     );
   // A non-editable change blocks start whatever else changed, so destroy is the only way out.
   const suggestion = replannable
-    ? `Run \`supabase stack stop --stack-id ${stackIdentity.id}\`, then \`supabase stack start --stack-id ${stackIdentity.id}\` to apply the new ports.`
+    ? `Run \`dbase stack stop --stack-id ${stackIdentity.id}\`, then \`dbase stack start --stack-id ${stackIdentity.id}\` to apply the new ports.`
     : nonEditable.length > 0 || revert === undefined
       ? `This CLI release starts a different ${nonEditable.join(" and ")} than the saved stack. Run ${destroyClause}`
       : `${revert} to keep the stack and its data, or run ${destroyClause}`;
@@ -721,7 +721,7 @@ export const stackStart = Effect.fn("experimental.stack.start")(function* (flags
               : stack.stop.pipe(
                   Effect.catch((error) =>
                     output.raw(
-                      `Failed to stop stack host ${stack.id}: ${error.message}. Run supabase stack stop --stack-id ${stack.id} to stop it.\n`,
+                      `Failed to stop stack host ${stack.id}: ${error.message}. Run dbase stack stop --stack-id ${stack.id} to stop it.\n`,
                       "stderr",
                     ),
                   ),
@@ -809,7 +809,7 @@ export const stackStart = Effect.fn("experimental.stack.start")(function* (flags
       yield* Ref.set(startupComplete, true);
       yield* reportReady(
         yield* startReport(stack, currentInstances),
-        "Stack is already running with its current services. Run `supabase stack stop`, then `supabase stack start` to apply configuration or service-selection changes.",
+        "Stack is already running with its current services. Run `dbase stack stop`, then `dbase stack start` to apply configuration or service-selection changes.",
       );
       return stack.id;
     }
@@ -826,9 +826,9 @@ export const stackStart = Effect.fn("experimental.stack.start")(function* (flags
         "stack.service_count": currentInstances.length,
       });
       yield* output.info(
-        "Resuming the saved stack services. Run `supabase stack stop`, then `supabase stack start` to apply configuration or service-selection changes.",
+        "Resuming the saved stack services. Run `dbase stack stop`, then `dbase stack start` to apply configuration or service-selection changes.",
       );
-      const starting = yield* output.task("Starting local Supabase stack...");
+      const starting = yield* output.task("Starting local DBase stack...");
       yield* primaryDatabase.ready.pipe(
         Effect.tapError((error) => starting.fail(error.message)),
         Effect.mapError(stackError),
@@ -866,7 +866,7 @@ export const stackStart = Effect.fn("experimental.stack.start")(function* (flags
       return yield* new StackCommandStartError({
         reason: "lifecycle",
         message: "The stack is in a partial lifecycle state",
-        suggestion: "Run supabase stack stop, then supabase stack start to recover the stack.",
+        suggestion: "Run dbase stack stop, then dbase stack start to recover the stack.",
       });
     endpointChanges = yield* stack.startupEndpointChanges.pipe(Effect.mapError(stackError));
     for (const change of endpointChanges)
@@ -1017,7 +1017,7 @@ export const stackStart = Effect.fn("experimental.stack.start")(function* (flags
       "stack.initial_composition": initialComposition,
       "stack.service_kinds_changed": serviceKindsChanged,
     });
-    const starting = yield* output.task("Starting local Supabase stack...");
+    const starting = yield* output.task("Starting local DBase stack...");
     const members = yield* stack.composition
       .supabase(requested, {
         keys,
@@ -1041,7 +1041,7 @@ export const stackStart = Effect.fn("experimental.stack.start")(function* (flags
             instance.destroy.pipe(
               Effect.catch((error) =>
                 output.raw(
-                  `Failed to remove initial ${instance.service} instance ${instance.id}: ${error.message}. Run supabase stack destroy --stack-id ${stack.id} before retrying.\n`,
+                  `Failed to remove initial ${instance.service} instance ${instance.id}: ${error.message}. Run dbase stack destroy --stack-id ${stack.id} before retrying.\n`,
                   "stderr",
                 ),
               ),
@@ -1051,7 +1051,7 @@ export const stackStart = Effect.fn("experimental.stack.start")(function* (flags
       }).pipe(
         Effect.catch((error) =>
           output.raw(
-            `Failed to clean up initial stack ${stack.id}: ${error.message}. Run supabase stack destroy --stack-id ${stack.id} before retrying.\n`,
+            `Failed to clean up initial stack ${stack.id}: ${error.message}. Run dbase stack destroy --stack-id ${stack.id} before retrying.\n`,
             "stderr",
           ),
         ),

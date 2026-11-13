@@ -696,7 +696,7 @@ describe("resolveDbSetupPrelude", () => {
 });
 
 /**
- * On an existing volume, `supabase start` never replays migrations, so this convergence is the
+ * On an existing volume, `dbase start` never replays migrations, so this convergence is the
  * only thing that reconciles the volume's pg_net with the current webhooks setting, without
  * dropping an extension a user's own migration created.
  */

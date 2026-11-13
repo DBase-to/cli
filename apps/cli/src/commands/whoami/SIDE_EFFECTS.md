@@ -1,25 +1,25 @@
-# `supabase whoami`
+# `dbase whoami`
 
 Target: account, no consent — see [Command target](../../../docs/command-target.md)
 
 ## Files Read
 
-| Path                                                    | Format                    | When                                                                                       |
-| ------------------------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------ |
-| `<SUPABASE_HOME or ~/.supabase>/profile`                | plain text (profile name) | when `--profile` and `SUPABASE_PROFILE` are both unset                                     |
-| profile path selected by `--profile`/`SUPABASE_PROFILE` | YAML                      | when the selected profile is a filesystem path                                             |
-| keyring `"Supabase CLI"` / `<profile>`                  | OS keychain               | when `SUPABASE_ACCESS_TOKEN` is unset and keyring is available                             |
-| keyring `"Supabase CLI"` / `access-token`               | OS keychain               | legacy-key fallback when the profile-keyed lookup misses                                   |
-| `<SUPABASE_HOME or ~/.supabase>/access-token`           | plain text (token string) | last-resort fallback after environment and keyring lookup                                  |
-| `<SUPABASE_HOME or ~/.supabase>/telemetry.json`         | JSON                      | when present, before post-run telemetry state is refreshed                                 |
-| `<ancestor>/supabase/config.toml` or `config.json`      | existence probe           | while resolving the default workdir; skipped when `--workdir` or `SUPABASE_WORKDIR` is set |
-| `/proc/sys/kernel/osrelease`                            | existence probe and text  | during credential initialization to detect WSL; read only when the path exists             |
+| Path                                                 | Format                    | When                                                                                    |
+| ---------------------------------------------------- | ------------------------- | --------------------------------------------------------------------------------------- |
+| `<DBASE_HOME or ~/.supabase>/profile`                | plain text (profile name) | when `--profile` and `DBASE_PROFILE` are both unset                                     |
+| profile path selected by `--profile`/`DBASE_PROFILE` | YAML                      | when the selected profile is a filesystem path                                          |
+| keyring `"DBase CLI"` / `<profile>`                  | OS keychain               | when `DBASE_ACCESS_TOKEN` is unset and keyring is available                             |
+| keyring `"DBase CLI"` / `access-token`               | OS keychain               | legacy-key fallback when the profile-keyed lookup misses                                |
+| `<DBASE_HOME or ~/.supabase>/access-token`           | plain text (token string) | last-resort fallback after environment and keyring lookup                               |
+| `<DBASE_HOME or ~/.supabase>/telemetry.json`         | JSON                      | when present, before post-run telemetry state is refreshed                              |
+| `<ancestor>/supabase/config.toml` or `config.json`   | existence probe           | while resolving the default workdir; skipped when `--workdir` or `DBASE_WORKDIR` is set |
+| `/proc/sys/kernel/osrelease`                         | existence probe and text  | during credential initialization to detect WSL; read only when the path exists          |
 
 ## Files Written
 
-| Path                                            | Format | When                                                                                                                                                                            |
-| ----------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `<SUPABASE_HOME or ~/.supabase>/telemetry.json` | JSON   | during startup identity initialization when telemetry consent is granted, during a first persistent identity stitch when applicable, and after completion on success or failure |
+| Path                                         | Format | When                                                                                                                                                                            |
+| -------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `<DBASE_HOME or ~/.supabase>/telemetry.json` | JSON   | during startup identity initialization when telemetry consent is granted, during a first persistent identity stitch when applicable, and after completion on success or failure |
 
 `whoami` is a user-level command. It does not resolve a project ref or write the linked-project
 cache.
@@ -32,16 +32,16 @@ cache.
 
 ## Environment Variables
 
-| Variable                      | Purpose                                                           | Required?                                                                     |
-| ----------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| `SUPABASE_ACCESS_TOKEN`       | auth token (bypasses credential file/keyring lookup)              | no (falls back to keyring then `<SUPABASE_HOME or ~/.supabase>/access-token`) |
-| `SUPABASE_HOME`               | overrides the CLI state directory                                 | no (defaults to `~/.supabase`)                                                |
-| `SUPABASE_NO_KEYRING`         | disables the OS keyring, forcing the access-token file fallback   | no                                                                            |
-| `SUPABASE_PROFILE`            | selects a built-in profile or a filesystem path to a YAML profile | no (falls back to the persisted profile, then `supabase`)                     |
-| `SUPABASE_PROJECT_ID`         | loaded by shared command settings; unused by `whoami`             | no                                                                            |
-| `SUPABASE_WORKDIR`            | sets the shared command workdir and skips ancestor config probing | no (falls back to searching upward from the current directory)                |
-| `DO_NOT_TRACK`                | disables telemetry delivery when set to `1`                       | no                                                                            |
-| `SUPABASE_TELEMETRY_DISABLED` | disables telemetry delivery when set to `1`                       | no                                                                            |
+| Variable                   | Purpose                                                           | Required?                                                                  |
+| -------------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `DBASE_ACCESS_TOKEN`       | auth token (bypasses credential file/keyring lookup)              | no (falls back to keyring then `<DBASE_HOME or ~/.supabase>/access-token`) |
+| `DBASE_HOME`               | overrides the CLI state directory                                 | no (defaults to `~/.supabase`)                                             |
+| `DBASE_NO_KEYRING`         | disables the OS keyring, forcing the access-token file fallback   | no                                                                         |
+| `DBASE_PROFILE`            | selects a built-in profile or a filesystem path to a YAML profile | no (falls back to the persisted profile, then `supabase`)                  |
+| `DBASE_PROJECT_ID`         | loaded by shared command settings; unused by `whoami`             | no                                                                         |
+| `DBASE_WORKDIR`            | sets the shared command workdir and skips ancestor config probing | no (falls back to searching upward from the current directory)             |
+| `DO_NOT_TRACK`             | disables telemetry delivery when set to `1`                       | no                                                                         |
+| `DBASE_TELEMETRY_DISABLED` | disables telemetry delivery when set to `1`                       | no                                                                         |
 
 ## Exit Codes
 
@@ -66,7 +66,7 @@ cache.
 Prints a single-row table with `USER ID`, `USERNAME`, and `EMAIL` columns.
 
 If the Management API rejects the access token with HTTP 401, the command reports that the token
-is invalid or expired and directs the user to run `supabase login`.
+is invalid or expired and directs the user to run `dbase login`.
 
 ### `--output-format json`
 
@@ -101,4 +101,4 @@ the -o/--output flag is not supported by whoami; use --output-format json|stream
 
 - The command is read-only and uses the active profile's Management API base URL and access token.
 - A successful Management API response participates in the shared telemetry identity stitch.
-- Sends `User-Agent: SupabaseCLI/<version>` and Bearer authentication.
+- Sends `User-Agent: DBaseCLI/<version>` and Bearer authentication.

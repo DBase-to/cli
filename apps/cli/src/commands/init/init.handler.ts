@@ -48,9 +48,9 @@ export const init = Effect.fn("init")(function* (flags: InitFlags) {
         : `failed to create config file: open supabase/${configFile}: file exists`;
     return yield* new InitConfigExistsError({
       message,
-      suggestion: "Run supabase init --force to overwrite existing config file.",
+      suggestion: "Run dbase init --force to overwrite existing config file.",
     });
   }
 
-  yield* output.raw("Finished supabase init.\n");
+  yield* output.raw("Finished dbase init.\n");
 });

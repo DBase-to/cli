@@ -26,7 +26,7 @@ export const snippetsDownloadCommand = Command.make("download", config).pipe(
   Command.withShortDescription("Download contents of a SQL snippet"),
   Command.withExamples([
     {
-      command: "supabase snippets download <snippet-id>",
+      command: "dbase snippets download <snippet-id>",
       description: "Download the SQL contents of the given snippet",
     },
   ]),

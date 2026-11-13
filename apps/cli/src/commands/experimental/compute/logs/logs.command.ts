@@ -55,7 +55,7 @@ export type ComputeLogsFlags = CliCommand.Command.Config.Infer<typeof config>;
 
 export const computeLogsCommand = Command.make("logs", config).pipe(
   Command.withDescription(
-    "Deprecated; removed in v4. Use supabase logs instead. Print a compute's recent logs: its own output, the HTTP requests it served, and its " +
+    "Deprecated; removed in v4. Use dbase logs instead. Print a compute's recent logs: its own output, the HTTP requests it served, and its " +
       "deploy lifecycle events.\n\n" +
       "Covers the last 24 hours, which is the longest window the logs API will answer in one " +
       "query. Lines are printed oldest first.\n\n" +
@@ -66,19 +66,19 @@ export const computeLogsCommand = Command.make("logs", config).pipe(
   Command.withShortDescription("Show a compute's logs"),
   Command.withExamples([
     {
-      command: "supabase compute logs api",
+      command: "dbase compute logs api",
       description: "Print the last 100 log lines across all streams",
     },
     {
-      command: "supabase compute logs api --kind requests --tail 20",
+      command: "dbase compute logs api --kind requests --tail 20",
       description: "Print the 20 most recent HTTP requests the compute served",
     },
     {
-      command: "supabase compute logs api --follow",
+      command: "dbase compute logs api --follow",
       description: "Print recent logs, then keep printing new lines until interrupted",
     },
     {
-      command: "supabase compute logs api --tail 0 --follow",
+      command: "dbase compute logs api --tail 0 --follow",
       description: "Skip the backlog and print only lines that arrive from now on",
     },
   ]),
@@ -108,7 +108,7 @@ export const computeLogsCommand = Command.make("logs", config).pipe(
   Command.withHandler((flags) =>
     Effect.gen(function* () {
       yield* (yield* Output).raw(
-        "Warning: compute logs is deprecated and will be removed in v4. Use supabase logs --remote --service compute --resource <name> instead.\n",
+        "Warning: compute logs is deprecated and will be removed in v4. Use dbase logs --remote --service compute --resource <name> instead.\n",
         "stderr",
       );
       yield* computeLogs(flags);

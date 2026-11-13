@@ -1043,7 +1043,7 @@ describe("db schema declarative sync integration", () => {
       });
       expect(error).toMatchObject({
         message: expect.stringContaining("uuid-ossp"),
-        suggestion: expect.stringContaining("supabase db schema declarative generate --overwrite"),
+        suggestion: expect.stringContaining("dbase db schema declarative generate --overwrite"),
       });
       expect(
         yield* Schema.encodeUnknownEffect(Schema.fromJsonString(Schema.Unknown))(error),
@@ -1150,7 +1150,7 @@ describe("db schema declarative sync integration", () => {
         "rm -rf supabase/custom-declarative && mv supabase/custom-declarative-next supabase/custom-declarative",
       );
       expect(stripAnsi(s.out.stderrText)).toContain(
-        "supabase db schema declarative sync --no-apply --schema app --experimental",
+        "dbase db schema declarative sync --no-apply --schema app --experimental",
       );
     }).pipe(Effect.provide(s.layer));
   });
@@ -1454,11 +1454,11 @@ describe("db schema declarative sync integration", () => {
         dbSchemaDeclarativeSync(flags({ apply: Option.some(true) })),
       );
       expect(error).toMatchObject({
-        message: "supabase start is not running.",
+        message: "dbase start is not running.",
       });
       expect(
         s.out.rawChunks.some((c) =>
-          c.text.includes("Database reset also failed: supabase start is not running."),
+          c.text.includes("Database reset also failed: dbase start is not running."),
         ),
       ).toBe(true);
       expect(localResetRemovedContainers(s.child.spawned)).toEqual([]);

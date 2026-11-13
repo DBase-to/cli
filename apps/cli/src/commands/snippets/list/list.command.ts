@@ -23,11 +23,11 @@ export const snippetsListCommand = Command.make("list", config).pipe(
   Command.withShortDescription("List all SQL snippets"),
   Command.withExamples([
     {
-      command: "supabase snippets list",
+      command: "dbase snippets list",
       description: "List all SQL snippets",
     },
     {
-      command: "supabase snippets list --remote=<ref>",
+      command: "dbase snippets list --remote=<ref>",
       description: "List snippets for a specific project",
     },
   ]),

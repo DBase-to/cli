@@ -3,10 +3,10 @@ import { Command } from "effect/cli";
 import { collectCommands, findCommand } from "./command-docs.ts";
 
 function makeTree() {
-  const login = Command.make("login").pipe(Command.withDescription("Log in to Supabase"));
-  const logout = Command.make("logout").pipe(Command.withDescription("Log out of Supabase"));
-  const root = Command.make("supabase").pipe(
-    Command.withDescription("Supabase CLI"),
+  const login = Command.make("login").pipe(Command.withDescription("Log in to DBase"));
+  const logout = Command.make("logout").pipe(Command.withDescription("Log out of DBase"));
+  const root = Command.make("dbase").pipe(
+    Command.withDescription("DBase CLI"),
     Command.withSubcommands([login, logout]),
   );
   return { root, login, logout };
@@ -18,8 +18,8 @@ function makeDeepTree() {
     Command.withDescription("Database commands"),
     Command.withSubcommands([child]),
   );
-  const root = Command.make("supabase").pipe(
-    Command.withDescription("Supabase CLI"),
+  const root = Command.make("dbase").pipe(
+    Command.withDescription("DBase CLI"),
     Command.withSubcommands([mid]),
   );
   return { root, mid, child };
@@ -62,34 +62,34 @@ describe("findCommand", () => {
 describe("collectCommands", () => {
   it("includes the root command itself", () => {
     const { root } = makeTree();
-    const results = collectCommands(root, ["supabase"]);
-    expect(results[0]).toMatchObject({ commandPath: ["supabase"] });
-    expect(results[0]?.command.name).toBe("supabase");
+    const results = collectCommands(root, ["dbase"]);
+    expect(results[0]).toMatchObject({ commandPath: ["dbase"] });
+    expect(results[0]?.command.name).toBe("dbase");
   });
 
   it("returns all commands in a flat list", () => {
     const { root } = makeTree();
-    const results = collectCommands(root, ["supabase"]);
+    const results = collectCommands(root, ["dbase"]);
     expect(results).toHaveLength(3);
     const names = results.map((r) => r.command.name);
-    expect(names).toContain("supabase");
+    expect(names).toContain("dbase");
     expect(names).toContain("login");
     expect(names).toContain("logout");
   });
 
   it("builds correct commandPath for each entry", () => {
     const { root } = makeTree();
-    const results = collectCommands(root, ["supabase"]);
+    const results = collectCommands(root, ["dbase"]);
     const loginEntry = results.find((r) => r.command.name === "login");
-    expect(loginEntry?.commandPath).toEqual(["supabase", "login"]);
+    expect(loginEntry?.commandPath).toEqual(["dbase", "login"]);
   });
 
   it("collects deeply nested commands with correct paths", () => {
     const { root } = makeDeepTree();
-    const results = collectCommands(root, ["supabase"]);
+    const results = collectCommands(root, ["dbase"]);
     expect(results).toHaveLength(3);
     const branchEntry = results.find((r) => r.command.name === "branch");
-    expect(branchEntry?.commandPath).toEqual(["supabase", "db", "branch"]);
+    expect(branchEntry?.commandPath).toEqual(["dbase", "db", "branch"]);
   });
 
   it("returns only the root when there are no subcommands", () => {

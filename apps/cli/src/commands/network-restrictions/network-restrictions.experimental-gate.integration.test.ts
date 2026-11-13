@@ -23,7 +23,7 @@ import { networkRestrictionsCommand } from "./network-restrictions.command.ts";
 
 const tempRoot = useTempWorkdir("supabase-network-restrictions-experimental-int-");
 
-const testRoot = Command.make("supabase").pipe(
+const testRoot = Command.make("dbase").pipe(
   Command.withSubcommands([networkRestrictionsCommand]),
   Command.withGlobalFlags(GLOBAL_FLAGS),
 );

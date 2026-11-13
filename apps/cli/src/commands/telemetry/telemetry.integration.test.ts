@@ -98,7 +98,7 @@ function setupWithRealAnalytics(dir: string) {
 }
 
 function testRoot() {
-  return Command.make("supabase").pipe(Command.withSubcommands([telemetryCommand]));
+  return Command.make("dbase").pipe(Command.withSubcommands([telemetryCommand]));
 }
 
 function runTelemetry(args: Array<string>) {

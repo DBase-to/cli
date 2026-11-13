@@ -2,7 +2,7 @@ import { Option } from "effect";
 
 import { PROJECT_REF_PATTERN } from "./project-ref.service.ts";
 import { isDocumentRecord } from "./cli-config-document.ts";
-import { cliRemoteProjectIdEnvName } from "./cli-config-keys.ts";
+import { cliRemoteProjectIdEnvNames } from "./cli-config-keys.ts";
 import { expandCliConfigEnvReference } from "./cli-config-key.ts";
 
 type EnvLookup = (name: string) => string | undefined;
@@ -23,7 +23,10 @@ const matchProjectId = (
   name: string,
   block: Readonly<Record<string, unknown>> | undefined,
   lookup: EnvLookup,
-) => lookup(cliRemoteProjectIdEnvName(name)) ?? literalProjectId(block);
+) =>
+  cliRemoteProjectIdEnvNames(name)
+    .map((envName) => lookup(envName))
+    .find((value) => value !== undefined) ?? literalProjectId(block);
 
 /** The first `[remotes.<name>]` whose effective `project_id` equals the target ref. */
 export const selectCliConfigRemote = (
@@ -57,7 +60,9 @@ export const cliConfigRemoteFailure = (
     seen.set(projectId, name);
   }
   for (const { name, block } of remoteBlocks(remotes)) {
-    const override = lookup(cliRemoteProjectIdEnvName(name));
+    const override = cliRemoteProjectIdEnvNames(name)
+      .map((envName) => lookup(envName))
+      .find((value) => value !== undefined);
     const literal = literalProjectId(block);
     const projectId =
       override ??

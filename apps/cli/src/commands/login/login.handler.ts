@@ -37,8 +37,8 @@ export const login = Effect.fn("login")(function* (flags: LoginFlags) {
 
   // Persists the chosen profile to `<SUPABASE_HOME or ~/.supabase>/profile` on success — the
   // raw token, so a YAML-path profile round-trips; a write failure is fatal. An explicit flag
-  // counts even at its default value and the last occurrence wins, so `login --profile supabase`
-  // persists "supabase", shadowing SUPABASE_PROFILE without re-persisting it.
+  // counts even at its default value and the last occurrence wins, so `login --profile dbase`
+  // persists "dbase", shadowing SUPABASE_PROFILE without re-persisting it.
   const cliArgs = yield* Effect.serviceOption(CliArgs);
   const explicitProfileFlag = Option.match(cliArgs, {
     onNone: () => undefined,
@@ -47,7 +47,7 @@ export const login = Effect.fn("login")(function* (flags: LoginFlags) {
   const profileToken =
     explicitProfileFlag !== undefined
       ? explicitProfileFlag
-      : profileFlag !== "supabase"
+      : profileFlag !== "dbase"
         ? profileFlag
         : Option.isSome(commandSettings.profileEnvValue) &&
             commandSettings.profileEnvValue.value.length > 0

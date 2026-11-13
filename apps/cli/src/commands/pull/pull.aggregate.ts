@@ -10,7 +10,7 @@ import type {
 } from "./pull.types.ts";
 
 /**
- * Pure result-shaping helpers for `supabase pull`. Each `pull<Step>StepResult` maps one
+ * Pure result-shaping helpers for `dbase pull`. Each `pull<Step>StepResult` maps one
  * sub-step's outcome into the shared `PullStepResult` shape that `pull.handler.ts` aggregates
  * across all four steps.
  */
@@ -264,18 +264,18 @@ export function pullRetryHint(
 ): string {
   const remoteLabelFlag = pullRemoteLabelFlag(remoteLabel);
   const commandByStep: Record<PullStepId, string> = {
-    config: `supabase config pull${remoteLabelFlag} --remote=${ref}`,
-    migration_history: `supabase migration fetch --remote=${ref}`,
+    config: `dbase config pull${remoteLabelFlag} --remote=${ref}`,
+    migration_history: `dbase migration fetch --remote=${ref}`,
     // `db pull` rejects an ambient `--experimental`/`SUPABASE_EXPERIMENTAL` without `--declarative`;
     // `--experimental=false` keeps this suggested command from failing on it.
-    db: `supabase db pull --experimental=false --remote=${ref}`,
-    functions: `supabase functions download --remote=${ref}`,
+    db: `dbase db pull --experimental=false --remote=${ref}`,
+    functions: `dbase functions download --remote=${ref}`,
   };
   return `To retry just this step, run: ${commandByStep[step]}`;
 }
 
 /**
- * The `supabase pull --with-migration-history ...` command suggested by the db step's
+ * The `dbase pull --with-migration-history ...` command suggested by the db step's
  * migration-conflict remedy, using the same resolved `ref`/`remoteLabel` this run targeted so a
  * bare rerun can't silently retarget a different project.
  */
@@ -283,7 +283,7 @@ export function pullWithMigrationHistoryCommand(
   ref: string,
   remoteLabel: string | undefined,
 ): string {
-  return `supabase pull --with-migration-history${pullRemoteLabelFlag(remoteLabel)} --remote=${ref}`;
+  return `dbase pull --with-migration-history${pullRemoteLabelFlag(remoteLabel)} --remote=${ref}`;
 }
 
 /**

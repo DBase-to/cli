@@ -302,7 +302,7 @@ export class BranchesBranchingDisabledError extends Data.TaggedError(
 )<{
   readonly message: string;
   /**
-   * Suggestion text ("Create your first branch with: supabase branches create") picked up by
+   * Suggestion text ("Create your first branch with: dbase branches create") picked up by
    * `normalizeCliError` and printed after the error message in text mode.
    */
   readonly suggestion: string;
@@ -312,7 +312,7 @@ export class BranchesBranchingDisabledError extends Data.TaggedError(
       ...actionability.invalidInput,
       has_suggestion: true,
       suggestion_type: CliSuggestionType.RunCommand,
-      suggested_command: "supabase branches create",
+      suggested_command: "dbase branches create",
     };
   }
 }

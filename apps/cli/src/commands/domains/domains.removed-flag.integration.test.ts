@@ -22,7 +22,7 @@ import { domainsCommand } from "./domains.command.ts";
 
 const tempRoot = useTempWorkdir("supabase-domains-removed-flag-");
 
-const testRoot = Command.make("supabase").pipe(
+const testRoot = Command.make("dbase").pipe(
   Command.withSubcommands([domainsCommand]),
   Command.withGlobalFlags(GLOBAL_FLAGS),
 );

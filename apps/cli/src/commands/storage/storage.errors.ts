@@ -9,7 +9,7 @@ import { aqua } from "../../command-internal/colors.ts";
 import { quoteBytes } from "../../command-internal/byte-quote.ts";
 
 /**
- * Domain errors for `supabase storage ls/cp/mv/rm`. Each `message` is an
+ * Domain errors for `dbase storage ls/cp/mv/rm`. Each `message` is an
  * established stderr text.
  *
  * Storage gateway errors and credential-derivation errors live in

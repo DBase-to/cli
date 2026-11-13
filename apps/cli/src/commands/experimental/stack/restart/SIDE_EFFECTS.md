@@ -1,4 +1,4 @@
-# `supabase stack restart`
+# `dbase stack restart`
 
 Restarts the selected saved application composition. It preserves member IDs,
 data, ports, dependency bindings, and activation settings. Standalone instances
@@ -18,11 +18,11 @@ with the desired selection. Configuration replacement is not implied by restart.
 
 ## Files and network
 
-Reads the selected state under `<SUPABASE_HOME or ~/.supabase>/stacks/<id>/`.
+Reads the selected state under `<DBASE_HOME or ~/.supabase>/stacks/<id>/`.
 Discovery ensures the registry directory exists with mode 0700 and probes local
 owners. An owner may be launched by restart when none exists. Existing runtime
 resources are stopped/recreated for composition members only. Artifacts are
-resolved from `<SUPABASE_HOME or ~/.supabase>/cache/stack`; missing artifacts may
+resolved from `<DBASE_HOME or ~/.supabase>/cache/stack`; missing artifacts may
 be downloaded. Shared routing/settings may read project config and profiles.
 No hosted project API calls or caller-owned data deletion occur. While the API
 port serves TLS on Docker or Podman, the database container then sends the start
@@ -31,7 +31,7 @@ services and fails with the same `api.tls: unsupported networking on <runtime>:
 ...`, `api.tls: containers can't reach the api port <port> on <runtime> ...` or
 `api.tls: the api port <port> on <runtime> isn't answering this stack's start
 check ...` error as `stack start`; if they don't stop, the error says to run
-`supabase stack stop` instead.
+`dbase stack stop` instead.
 
 ## Output, exit codes and telemetry
 
@@ -43,4 +43,4 @@ lifecycle and health separately. JSON/stream-json results contain stack `id` and
 Exit 0 on success, 1 on selection/configuration/runtime failure, 130 on
 interruption. Standard command telemetry is retained, with no custom events.
 Telemetry flushes on every exit to
-`<SUPABASE_HOME or ~/.supabase>/telemetry.json`.
+`<DBASE_HOME or ~/.supabase>/telemetry.json`.

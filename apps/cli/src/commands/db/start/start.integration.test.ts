@@ -681,7 +681,7 @@ describe("db start", () => {
     );
 
     it.effect.each(["Engine API", "container CLI"] as const)(
-      "inside Bitbucket Pipelines the %s-reported stopped container fails with a supabase stop suggestion and is left in place",
+      "inside Bitbucket Pipelines the %s-reported stopped container fails with a dbase stop suggestion and is left in place",
       (probe) => {
         const { route, engine } = leftBehindDbProbe(probe, "exited");
         const { layer, out, child } = setup({
@@ -697,7 +697,7 @@ describe("db start", () => {
           expect(error).toMatchObject({
             _tag: "StatusDbNotRunningError",
             message: `${DB_CONTAINER} container is not running: exited`,
-            suggestion: expect.stringContaining("supabase stop"),
+            suggestion: expect.stringContaining("dbase stop"),
           });
           expect(out.stderrText).not.toContain("already running");
           expect(containerRemovals(child.spawned)).toEqual([]);
@@ -721,7 +721,7 @@ describe("db start", () => {
           expect(error).toMatchObject({
             _tag: "StartBackupVolumeExistsError",
             message: "backup volume already exists",
-            suggestion: expect.stringContaining("supabase stop --no-backup"),
+            suggestion: expect.stringContaining("dbase stop --no-backup"),
           });
           expect(teardownCommands(child.spawned)).toEqual([]);
           expect(createArgs(child.spawned)).toBeUndefined();
@@ -1002,7 +1002,7 @@ describe("db start", () => {
         expect(error).toMatchObject({
           _tag: "StartBackupVolumeExistsError",
           message: "backup volume already exists",
-          suggestion: expect.stringContaining("supabase stop --no-backup"),
+          suggestion: expect.stringContaining("dbase stop --no-backup"),
         });
         expect(child.spawned.some((s) => s.args[0] === "create")).toBe(false);
         // The rollback must never remove the volume this guard detected.

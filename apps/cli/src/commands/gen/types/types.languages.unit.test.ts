@@ -81,7 +81,7 @@ describe("optionValuesFor", () => {
 describe("flagDefaultsFor", () => {
   it("documents a default only when it is unambiguous", () => {
     expect(flagDefaultsFor(mergeUserOptions([level(["a"], "a")]))).toEqual({
-      "supabase-gen-types level": "a",
+      "dbase-gen-types level": "a",
     });
     expect(flagDefaultsFor(mergeUserOptions([level(["a"], "a"), level(["b"], "b")]))).toEqual({});
   });

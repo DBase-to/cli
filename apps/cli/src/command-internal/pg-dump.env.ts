@@ -61,7 +61,7 @@ export const EXCLUDED_SCHEMAS: ReadonlyArray<string> = [
   "_timescaledb_*",
   "topology",
   "vault",
-  // Managed by Supabase
+  // Managed by DBase
   // "auth",
   "etl",
   "extensions",

@@ -21,7 +21,7 @@ import { networkBansCommand } from "./network-bans.command.ts";
 
 const tempRoot = useTempWorkdir("supabase-network-bans-experimental-int-");
 
-const testRoot = Command.make("supabase").pipe(
+const testRoot = Command.make("dbase").pipe(
   Command.withSubcommands([networkBansCommand]),
   Command.withGlobalFlags(GLOBAL_FLAGS),
 );

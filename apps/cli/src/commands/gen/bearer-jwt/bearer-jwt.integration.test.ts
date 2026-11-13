@@ -139,7 +139,7 @@ function tokenFrom(out: { stdoutText: string }): string {
   return out.stdoutText.trimEnd();
 }
 
-const testRoot = Command.make("supabase").pipe(
+const testRoot = Command.make("dbase").pipe(
   Command.withSubcommands([
     Command.make("gen").pipe(Command.withSubcommands([genBearerJwtCommand])),
   ]),

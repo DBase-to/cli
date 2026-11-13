@@ -94,7 +94,7 @@ describe("pg-delta next diagnostic coverage policy", () => {
           "pg-delta does not manage these PostgreSQL object kinds: text search configuration. Strict coverage is enabled, so the operation will stop.",
       });
       expect(debugMessages).toEqual([]);
-      expect(out.messages.some(({ message }) => message.includes("supabase issue feature"))).toBe(
+      expect(out.messages.some(({ message }) => message.includes("dbase issue feature"))).toBe(
         true,
       );
     }).pipe(Effect.provide(Layer.mergeAll(out.layer, debugLayer(debugMessages))));

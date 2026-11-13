@@ -1,11 +1,11 @@
-# `supabase link`
+# `dbase link`
 
 Target: hosted, no consent — see [Command target](../../../docs/command-target.md)
 
 Writes flat state files under `<workdir>/supabase/.temp/`.
 
 `link` accepts an optional `[ref-or-branch]` positional
-argument (`supabase link <ref>`), and `--project-ref` still works and also accepts a branch name
+argument (`dbase link <ref>`), and `--project-ref` still works and also accepts a branch name
 instead of a project ref. A value is treated as a ref when it matches `PROJECT_REF_PATTERN` (20
 lowercase letters); any other non-empty value is looked up as a branch name of the
 currently-linked parent project. `link` takes no `--remote`: the argument is its target.
@@ -14,15 +14,15 @@ currently-linked parent project. `link` takes no `--remote`: the argument is its
 
 | Path                                 | Format              | When                                                                                                                                                                                                                                                         |
 | ------------------------------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `supabase/config.toml`               | TOML (`project_id`) | NOT read for ref resolution itself — read by `CommandSettings` for workdir/project-id discovery generally (`--workdir` resolution, `SUPABASE_PROJECT_ID` passthrough)                                                                                        |
+| `supabase/config.toml`               | TOML (`project_id`) | NOT read for ref resolution itself — read by `CommandSettings` for workdir/project-id discovery generally (`--workdir` resolution, `DBASE_PROJECT_ID` passthrough)                                                                                           |
 | `supabase/.temp/linked-project.json` | JSON (`ref` field)  | only when the given `[ref-or-branch]`/`--project-ref` value is not ref-shaped, as the 2nd parent-project candidate for branch-name resolution (CLI-2167)                                                                                                     |
 | `supabase/.temp/project-ref`         | plain text          | outside stack mode, at services link, to tell whether it names the target; also when the given `[ref-or-branch]`/`--project-ref` value is not ref-shaped, as the 3rd (last) parent-project candidate for branch-name resolution (CLI-2167)                   |
-| `~/.supabase/access-token`           | plain text          | when `SUPABASE_ACCESS_TOKEN` is unset and the keyring is unavailable                                                                                                                                                                                         |
-| `$SUPABASE_HOME/stacks/<id>/`        | JSON                | stack mode only, when the lock is written and the lease is released: saved stack state and database data records, to warn about data a new pin would be refused by; nothing is created, locked or probed (see "Hosted versions in `supabase/supabase.lock`") |
+| `~/.supabase/access-token`           | plain text          | when `DBASE_ACCESS_TOKEN` is unset and the keyring is unavailable                                                                                                                                                                                            |
+| `$DBASE_HOME/stacks/<id>/`           | JSON                | stack mode only, when the lock is written and the lease is released: saved stack state and database data records, to warn about data a new pin would be refused by; nothing is created, locked or probed (see "Hosted versions in `supabase/supabase.lock`") |
 
 > For resolving the final linked ref, the on-disk `supabase/.temp/project-ref` file is **not**
 > read — `link` never falls back to it there. It **is** read for the branch-name lookup above, which resolves
-> the currently-linked _parent_ project (env `SUPABASE_PROJECT_ID` → `linked-project.json` →
+> the currently-linked _parent_ project (env `DBASE_PROJECT_ID` → `linked-project.json` →
 > `project-ref` file, first ref-shaped candidate wins) before searching its branches. This
 > deliberately does NOT reuse `ProjectRefResolver.resolveOptional` — that resolves the
 > FINAL linked ref, which right after linking a branch would be the branch's own ref, breaking a
@@ -103,31 +103,31 @@ a redirect is never followed and counts as a failed probe):
 
 ## Environment Variables
 
-| Variable                      | Purpose                                                                                                                                                                                                                |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `SUPABASE_PROJECT_ID`         | link-target resolution: `[ref-or-branch]` positional → `--project-ref` → env → TTY prompt (CLI-2167 adds the positional ahead of the flag). Also the 1st parent-project candidate for a branch-name lookup (CLI-2167). |
-| `SUPABASE_ACCESS_TOKEN`       | Management API bearer auth (env → keyring → `~/.supabase/access-token`)                                                                                                                                                |
-| `SUPABASE_DB_PASSWORD`        | bound to the hidden `--password`; **accepted but ignored**: `link` never connects to the database, and an explicit `--password` prints a deprecation warning                                                           |
-| `SUPABASE_EXPERIMENTAL_STACK` | `1` or `0` selects stack project-state mode over `[experimental] stack`; unset or empty uses the config. Any other value fails the command (see Exit Codes)                                                            |
+| Variable                   | Purpose                                                                                                                                                                                                                |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DBASE_PROJECT_ID`         | link-target resolution: `[ref-or-branch]` positional → `--project-ref` → env → TTY prompt (CLI-2167 adds the positional ahead of the flag). Also the 1st parent-project candidate for a branch-name lookup (CLI-2167). |
+| `DBASE_ACCESS_TOKEN`       | Management API bearer auth (env → keyring → `~/.supabase/access-token`)                                                                                                                                                |
+| `DBASE_DB_PASSWORD`        | bound to the hidden `--password`; **accepted but ignored**: `link` never connects to the database, and an explicit `--password` prints a deprecation warning                                                           |
+| `DBASE_EXPERIMENTAL_STACK` | `1` or `0` selects stack project-state mode over `[experimental] stack`; unset or empty uses the config. Any other value fails the command (see Exit Codes)                                                            |
 
 ## Exit Codes
 
-| Code | Condition                                                                                                                                                                                |
-| ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `0`  | success — project linked (incl. the 404 branch path); prints `Finished supabase link.`                                                                                                   |
-| `1`  | non-TTY with no `--project-ref` / `SUPABASE_PROJECT_ID` (`required flag(s) "project-ref" not set`)                                                                                       |
-| `1`  | malformed project ref — only reachable via `SUPABASE_PROJECT_ID`/TTY prompt now; a malformed `[ref-or-branch]`/`--project-ref` value takes the CLI-2167 branch-lookup path below instead |
-| `1`  | project paused (`INACTIVE`)                                                                                                                                                              |
-| `1`  | project status non-200/404                                                                                                                                                               |
-| `1`  | api-keys auth failure other than 403 / missing key                                                                                                                                       |
-| `1`  | `project-ref` file write failure                                                                                                                                                         |
-| `1`  | both `[ref-or-branch]` and `--project-ref` given (CLI-2167)                                                                                                                              |
-| `1`  | non-ref-shaped `[ref-or-branch]`/`--project-ref` value with no linked parent project at all (CLI-2167)                                                                                   |
-| `1`  | a parent-project candidate exists but none is ref-shaped — corrupt/stale linked state (CLI-2167)                                                                                         |
-| `1`  | branch name/UUID not found on the linked parent project (CLI-2167)                                                                                                                       |
-| `1`  | branch resolved but has no `project_ref` yet (still provisioning) (CLI-2167)                                                                                                             |
-| `1`  | branch listing failure (network/status) during branch-name resolution (CLI-2167)                                                                                                         |
-| `1`  | `SUPABASE_EXPERIMENTAL_STACK` is set to a non-empty value other than `0` or `1`; nothing is written                                                                                      |
+| Code | Condition                                                                                                                                                                             |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `0`  | success — project linked (incl. the 404 branch path); prints `Finished dbase link.`                                                                                                   |
+| `1`  | non-TTY with no `--project-ref` / `DBASE_PROJECT_ID` (`required flag(s) "project-ref" not set`)                                                                                       |
+| `1`  | malformed project ref — only reachable via `DBASE_PROJECT_ID`/TTY prompt now; a malformed `[ref-or-branch]`/`--project-ref` value takes the CLI-2167 branch-lookup path below instead |
+| `1`  | project paused (`INACTIVE`)                                                                                                                                                           |
+| `1`  | project status non-200/404                                                                                                                                                            |
+| `1`  | api-keys auth failure other than 403 / missing key                                                                                                                                    |
+| `1`  | `project-ref` file write failure                                                                                                                                                      |
+| `1`  | both `[ref-or-branch]` and `--project-ref` given (CLI-2167)                                                                                                                           |
+| `1`  | non-ref-shaped `[ref-or-branch]`/`--project-ref` value with no linked parent project at all (CLI-2167)                                                                                |
+| `1`  | a parent-project candidate exists but none is ref-shaped — corrupt/stale linked state (CLI-2167)                                                                                      |
+| `1`  | branch name/UUID not found on the linked parent project (CLI-2167)                                                                                                                    |
+| `1`  | branch resolved but has no `project_ref` yet (still provisioning) (CLI-2167)                                                                                                          |
+| `1`  | branch listing failure (network/status) during branch-name resolution (CLI-2167)                                                                                                      |
+| `1`  | `DBASE_EXPERIMENTAL_STACK` is set to a non-empty value other than `0` or `1`; nothing is written                                                                                      |
 
 > Best-effort service-link and telemetry errors never affect the exit code.
 
@@ -146,7 +146,7 @@ a redirect is never followed and counts as a failed probe):
   resolved to a branch (CLI-2167).
 - spinner: `Resolving branch...` while listing branches for a branch-name lookup (CLI-2167;
   suppressed in `json`/`stream-json` mode like every other `output.task`).
-- stdout: `Finished supabase link.`
+- stdout: `Finished dbase link.`
 
 ### `--output-format json` / `stream-json`
 
@@ -159,7 +159,7 @@ in these modes (stderr in `json`; a structured `log` event in `stream-json`) rat
 
 ## Stack mode
 
-When stack project-state mode is active (`SUPABASE_EXPERIMENTAL_STACK=1`, or `[experimental] stack`
+When stack project-state mode is active (`DBASE_EXPERIMENTAL_STACK=1`, or `[experimental] stack`
 in `config.toml` with the variable unset), the link target is one gitignored document,
 `<workdir>/supabase/.link.json`, and nothing is written under `supabase/.temp/`:
 
@@ -182,11 +182,11 @@ in `config.toml` with the variable unset), the link target is one gitignored doc
   `..link.json.*.tmp` (the staged write), `.supabase.lock.lease`, and `.supabase.lock.*.tmp` (the
   staged lock write). The Postgres version and `linked-project.json` are not written.
 - A document that does not decode fails reads with `ProjectLinkMalformedError`, which suggests
-  running `supabase link` again; a read or write failure other than absence is
+  running `dbase link` again; a read or write failure other than absence is
   `ProjectLinkIoError`.
 - The organization and project `groupIdentify` calls fire from `link` itself, since the post-run
   linked-project cache fill is a no-op in this mode. For other commands the fill writes
-  `$SUPABASE_HOME/project-cache/<ref>.json` (atomic, once per ref; see `docs/supabase-home.md`)
+  `$DBASE_HOME/project-cache/<ref>.json` (atomic, once per ref; see `docs/supabase-home.md`)
   instead of `.temp/linked-project.json`.
 
 ### Hosted versions in `supabase/supabase.lock`
@@ -196,7 +196,7 @@ project or branch runs in `supabase/supabase.lock`. The config is validated firs
 `supabase/config.toml` fails the link before any probe or write. Without a `config.toml` there is no
 lock, only `.link.json` is written, under the same project lease, and nothing below runs. A lease that
 stays busy fails the link with `LockResolutionError` reason `lease-busy` before anything is written.
-`supabase link` always needs a login. Under the project lease `supabase/.supabase.lock.lease` it:
+`dbase link` always needs a login. Under the project lease `supabase/.supabase.lock.lease` it:
 
 - Probes the target (the `link.probe` span; `stack update` runs the same probe under `update.probe`):
   the database version from `getProject` (`database.version`), or from `getABranchConfig`
@@ -231,7 +231,7 @@ stays busy fails the link with `LockResolutionError` reason `lease-busy` before 
   writes neither. The link goes first so a lock never observes a remote the checkout does not
   target: if the lock write fails, `.link.json` already targets the new remote while the lock still
   observes the previous one, the next `start` warns that the lock observed another remote, and
-  `supabase stack update` or running `supabase link` again repairs it. The command then prints the
+  `dbase stack update` or running `dbase link` again repairs it. The command then prints the
   hosted and locked version of each service and, when the lock changed,
   `Updated supabase/supabase.lock[: now observing <remote>] (<n> version changes). Review and commit it.`,
   else `supabase/supabase.lock is already up to date.`; the report is printed after both writes,
@@ -239,30 +239,30 @@ stays busy fails the link with `LockResolutionError` reason `lease-busy` before 
   `service`, `hosted`, `locked`, `resolution`). When the lock was written, the lease is then
   released and the new pins are checked against the database data of every saved stack of this
   project (the `StackLock.dataConflicts` span, which records `lock.data_conflict_count`), by the
-  rules the next `supabase stack start` of that stack applies. Each refusal gets one
-  warning, `stack <id>: the next supabase start refuses these pins:` followed by
+  rules the next `dbase stack start` of that stack applies. Each refusal gets one
+  warning, `stack <id>: the next dbase start refuses these pins:` followed by
   the failure that start reports: a database build other than a new `-rN` revision of the one that
   initialized the data (on Docker and Podman, also the one an interrupted first start recorded), or a schema-owning service the stack runs against that database that is
   older than one that already migrated it. The failure names the recorded and refused versions and
   the remedies: pinning the recorded version in your config file
   (`local.services.<service>.version`, with `db.major_version` set back when the database major
   differs and any `db.orioledb_version` removed when an OrioleDB build is requested), or
-  `supabase stack destroy --stack-id <id>`, which permanently deletes the stack's local database
+  `dbase stack destroy --stack-id <id>`, which permanently deletes the stack's local database
   data (data with no recorded identity offers only the destroy). The lock stays written, the link
   never fails on this check, and saved state that cannot be read is logged at debug level and
   warns of nothing.
 
 `--frozen`, or `CI` set (not empty, `false` or `0`) with an existing lock, makes `link` write only
 `.link.json`: the lock is untouched, no data check runs, and a warning lists the services whose
-hosted versions differ from it, advising `supabase stack update`. A missing lock is created even under `CI`. The probes
-still run. In legacy mode the flag is accepted and does nothing. `supabase unlink` never touches the
+hosted versions differ from it, advising `dbase stack update`. A missing lock is created even under `CI`. The probes
+still run. In legacy mode the flag is accepted and does nothing. `dbase unlink` never touches the
 lock.
 
-Network by command: `supabase link` reaches the Management API, the target's tenant host and the
-release host. `supabase start` and `supabase stack install` reach only the release host, only when
-they resolve a release, and never need a login or the Management API; `supabase stack update`
+Network by command: `dbase link` reaches the Management API, the target's tenant host and the
+release host. `dbase start` and `dbase stack install` reach only the release host, only when
+they resolve a release, and never need a login or the Management API; `dbase stack update`
 reaches the Management API and tenant host only when a `linked` entry is re-resolved and
-`supabase/.link.json` exists (it then needs a login), plus the release host; `supabase stack
+`supabase/.link.json` exists (it then needs a login), plus the release host; `dbase stack
 outdated` reaches only the release host.
 
 ## Notes
@@ -271,5 +271,5 @@ outdated` reaches only the release host.
   **not** emitted: it requires loading the local `config.toml` `[db].major_version` with CLI
   defaults, which the CLI does not surface. The `postgres-version` file (the meaningful
   side effect) is still written.
-- The `Finished supabase link.` line is emitted as **plain text**, with no ANSI color
-  on `supabase link`.
+- The `Finished dbase link.` line is emitted as **plain text**, with no ANSI color
+  on `dbase link`.

@@ -78,7 +78,7 @@ const decodeServiceRows = Schema.decodeEffect(Schema.fromJsonString(ServiceRows)
 
 // Isolated default workdir: `process.cwd()` would read the developer's real
 // `apps/cli/supabase/.temp/` state (e.g. the pinned `postgres-version` written
-// by a local `supabase start`), making these tests machine-dependent.
+// by a local `dbase start`), making these tests machine-dependent.
 const defaultWorkdir = useTempWorkdir("supabase-services-");
 
 function setup(
@@ -130,7 +130,7 @@ function setup(
           projectId: Option.none(),
           workdir: opts.workdir ?? defaultWorkdir.current,
           explicitWorkdir: false,
-          userAgent: "SupabaseCLI/test",
+          userAgent: "DBaseCLI/test",
           apiMaxRetries: Option.none(),
         }),
       ),
@@ -171,7 +171,7 @@ function commandCredentialsMock(
   };
 }
 
-const testRoot = Command.make("supabase").pipe(
+const testRoot = Command.make("dbase").pipe(
   Command.withSubcommands([servicesCommand]),
   Command.withGlobalFlags(GLOBAL_FLAGS),
 );
@@ -699,7 +699,7 @@ major_version = 15
         }),
       );
       expect(stack.out.stderrText).toContain(
-        "Run supabase link to update services set to linked (the default) in supabase/supabase.lock",
+        "Run dbase link to update services set to linked (the default) in supabase/supabase.lock",
       );
       expect(stack.out.stderrText).not.toContain("You are running different service versions");
     }).pipe(Effect.scoped, Effect.provide(BunServices.layer)),

@@ -114,7 +114,7 @@ describe("compute logs", () => {
       const out = mockOutput({ format: "text" });
       const analytics = mockContextualAnalytics();
       const args = ["compute", "logs", "api", "-f", "--kind", "requests", "-o", "json"];
-      const root = Command.make("supabase").pipe(
+      const root = Command.make("dbase").pipe(
         Command.withSubcommands([computeCommand]),
         Command.withGlobalFlags(GLOBAL_FLAGS),
       );
@@ -165,7 +165,7 @@ describe("compute logs", () => {
         const repo = yield* project();
         const out = mockOutput({ format: "text" });
         const args = ["compute", "logs", "api", "--tail", "0", "-o", format];
-        const root = Command.make("supabase").pipe(
+        const root = Command.make("dbase").pipe(
           Command.withSubcommands([computeCommand]),
           Command.withGlobalFlags(GLOBAL_FLAGS),
         );
@@ -560,7 +560,7 @@ describe("compute logs", () => {
 
         expect(error).toBeInstanceOf(ComputeNotDeployedError);
         const suggestion = error instanceof ComputeNotDeployedError ? error.suggestion : "";
-        expect(suggestion).toContain("supabase compute push api");
+        expect(suggestion).toContain("dbase compute push api");
       }).pipe(Effect.provide(layer));
     }).pipe(Effect.scoped, Effect.provide(BunServices.layer)),
   );
@@ -698,7 +698,7 @@ describe("compute logs", () => {
         const error = yield* computeLogs(flags()).pipe(Effect.flip);
 
         expect(error).toBeInstanceOf(ComputeProjectNotFoundError);
-        expect(error).toMatchObject({ suggestion: expect.stringContaining("supabase link") });
+        expect(error).toMatchObject({ suggestion: expect.stringContaining("dbase link") });
       }).pipe(Effect.provide(layer));
     }).pipe(Effect.scoped, Effect.provide(BunServices.layer)),
   );

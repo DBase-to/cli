@@ -51,15 +51,15 @@ export const genSigningKeyCommand = Command.make("signing-key", config).pipe(
   Command.withShortDescription("Generate a JWT signing key"),
   Command.withExamples([
     {
-      command: "supabase gen signing-key",
+      command: "dbase gen signing-key",
       description: "Generate an ES256 signing key and print it to stdout",
     },
     {
-      command: "supabase gen signing-key --algorithm RS256",
+      command: "dbase gen signing-key --algorithm RS256",
       description: "Generate an RSA signing key",
     },
     {
-      command: "supabase gen signing-key --append",
+      command: "dbase gen signing-key --append",
       description: "Append a new key to the configured signing key file",
     },
   ]),

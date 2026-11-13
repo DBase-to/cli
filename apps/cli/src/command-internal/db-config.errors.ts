@@ -153,13 +153,13 @@ export class DbConfigIpv6Error extends Data.TaggedError("DbConfigIpv6Error")<{
     if (this.remedy === "pooler-url") {
       return { ...actionability.dbConnection, suggestion_type: CliSuggestionType.ProvideFlags };
     }
-    // The rendered remediation is "Run supabase link --project-ref <ref> to
+    // The rendered remediation is "Run dbase link --project-ref <ref> to
     // setup IPv4 connection", so the suggestion is link-shaped even though the
     // category stays db_connection.
     return {
       ...actionability.dbConnection,
       suggestion_type: CliSuggestionType.LinkProject,
-      suggested_command: "supabase link",
+      suggested_command: "dbase link",
     };
   }
 }
@@ -186,7 +186,7 @@ export class LinkedDbNetworkBannedError extends Data.TaggedError("LinkedDbNetwor
     return {
       ...actionability.dbConnection,
       suggestion_type: CliSuggestionType.RunCommand,
-      suggested_command: "supabase network-bans remove",
+      suggested_command: "dbase network-bans remove",
     };
   }
 }

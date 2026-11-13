@@ -26,9 +26,9 @@ describe("failed command telemetry", () => {
         error_fingerprint: "tag:ProjectRefNotLinkedError",
         has_suggestion: true,
         suggestion_type: "link_project",
-        suggested_command: "supabase link",
+        suggested_command: "dbase link",
       },
-      rawErrors: ["Cannot find project ref. Have you run supabase link?"],
+      rawErrors: ["Cannot find project ref. Have you run dbase link?"],
     },
     {
       args: [

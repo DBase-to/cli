@@ -1,8 +1,8 @@
-# `supabase db test [path...]`
+# `dbase db test [path...]`
 
 Target: selectable, consent default No — see [Command target](../../../../docs/command-target.md)
 
-`db test` is a **hidden alias** for `supabase test db`. It
+`db test` is a **hidden alias** for `dbase test db`. It
 shares the same flag config and handler: `test.command.ts` reuses `test db`'s
 flag config and assembled handler verbatim
 (`../../../shared/test-db.command-handler.ts`'s
@@ -10,7 +10,7 @@ flag config and assembled handler verbatim
 pgTAP enable/disable and the `pg_prove` docker invocation a second time
 (CLI-1962).
 
-**Every side effect below is identical to `supabase test db`** — see
+**Every side effect below is identical to `dbase test db`** — see
 [`../../test/db/SIDE_EFFECTS.md`](../../test/db/SIDE_EFFECTS.md) for the full
 inventory (docker bind-mount rules, network selection, TLS/DNS resolver
 behavior, pooler-URL handling, etc.). This file exists per the "every

@@ -180,7 +180,7 @@ export const stackRejectNativeDockerDiffEngine = (
   Effect.gen(function* () {
     if ((yield* currentStackBackend).kind === "stack")
       return yield* new StackNativeEngineError({
-        message: `The stack backend only supports the pg-delta engine. Do not pass ${flag}; set SUPABASE_EXPERIMENTAL_STACK=0.`,
+        message: `The stack backend only supports the pg-delta engine. Do not pass ${flag}; set DBASE_EXPERIMENTAL_STACK=0.`,
       });
   });
 
@@ -289,7 +289,7 @@ export const stackEnsurePostgresOnlyStarted = Effect.fn(
       )
     )
       return yield* startFailed({
-        message: `The requested database version does not match the saved stack binding. Recreate the local database: supabase stack destroy --stack-id ${stack.id}`,
+        message: `The requested database version does not match the saved stack binding. Recreate the local database: dbase stack destroy --stack-id ${stack.id}`,
       });
     const savedCredentials = yield* stack.credentials.get.pipe(Effect.mapError(startFailed));
     if (
@@ -368,7 +368,7 @@ export const stackEnsurePostgresOnlyStarted = Effect.fn(
       database.destroy.pipe(
         Effect.tapError((cause) =>
           output.raw(
-            `Failed to destroy newly created database ${database.id}: ${cause.message}. Run supabase stack destroy to remove the incomplete stack before retrying.\n`,
+            `Failed to destroy newly created database ${database.id}: ${cause.message}. Run dbase stack destroy to remove the incomplete stack before retrying.\n`,
             "stderr",
           ),
         ),

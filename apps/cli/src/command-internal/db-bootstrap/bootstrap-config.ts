@@ -1,6 +1,6 @@
 /**
  * Resolves the config fields `startDatabase` needs from the effective `config`. Shared by
- * `db start` and `supabase start` so each field's derivation has one home.
+ * `db start` and `dbase start` so each field's derivation has one home.
  *
  * Excludes `--exclude` gate evaluation, JWKS resolution, and the Postgres registry-image resolve:
  * their timing differs between the two callers, so `startDatabase` takes them as a
@@ -95,7 +95,7 @@ export const resolveDbBootstrapConfig = <E>(
       catch: (cause) => mapConfigError(configOverrideMessage("storage.file_size_limit", cause)),
     });
 
-    // Reads a `supabase/.temp/postgres-version` pin written by `supabase link`; a missing or
+    // Reads a `supabase/.temp/postgres-version` pin written by `dbase link`; a missing or
     // unreadable pin falls back to the embedded default, so this never fails.
     const { image: postgresImage, configImage: postgresConfigImage } = yield* resolveDbImage(
       fs,

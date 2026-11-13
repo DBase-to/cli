@@ -15,7 +15,7 @@ import { migrationCommand } from "./migration.command.ts";
 
 // `withGlobalFlags` must come after `withSubcommands` — see
 // `start.string-slice-flags.integration.test.ts`'s identical comment.
-const testRoot = Command.make("supabase").pipe(
+const testRoot = Command.make("dbase").pipe(
   Command.withSubcommands([migrationCommand]),
   Command.withGlobalFlags(GLOBAL_FLAGS),
 );

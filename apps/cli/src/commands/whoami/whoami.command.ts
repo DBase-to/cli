@@ -26,11 +26,11 @@ export const whoamiCommand = Command.make("whoami", config).pipe(
   Command.withShortDescription("Show the current user"),
   Command.withExamples([
     {
-      command: "supabase whoami",
+      command: "dbase whoami",
       description: "Show the current user",
     },
     {
-      command: "supabase whoami --output-format json",
+      command: "dbase whoami --output-format json",
       description: "Show the current user as JSON",
     },
   ]),

@@ -24,11 +24,11 @@ export const backupsListCommand = Command.make("list", config).pipe(
   Command.withShortDescription("Lists available physical backups"),
   Command.withExamples([
     {
-      command: "supabase backups list",
+      command: "dbase backups list",
       description: "List all physical backups",
     },
     {
-      command: "supabase backups list --remote=<ref>",
+      command: "dbase backups list --remote=<ref>",
       description: "List backups for a specific project",
     },
   ]),

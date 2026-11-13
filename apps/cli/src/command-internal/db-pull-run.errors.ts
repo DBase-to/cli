@@ -8,7 +8,7 @@ import {
 
 /**
  * The remote migration history does not match local files; message text is
- * an established output contract. The actionable `supabase migration repair`
+ * an established output contract. The actionable `dbase migration repair`
  * suggestion is attached separately.
  */
 export class DbPullMigrationConflictError extends Data.TaggedError("DbPullMigrationConflictError")<{

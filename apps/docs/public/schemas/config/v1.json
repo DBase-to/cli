@@ -8,7 +8,7 @@
   "properties": {
     "project_id": {
       "type": "string",
-      "description": "A string used to distinguish different Supabase projects on the same host. Defaults to the working directory name when running `supabase init`."
+      "description": "A string used to distinguish different DBase projects on the same host. Defaults to the working directory name when running `dbase init`."
     },
     "analytics": {
       "type": "object",
@@ -4182,7 +4182,7 @@
       "type": "object",
       "properties": {
         "enabled": {
-          "description": "Enable the local Supabase Studio dashboard.",
+          "description": "Enable the local DBase Studio dashboard.",
           "default": true,
           "anyOf": [
             {
@@ -4195,7 +4195,7 @@
           ]
         },
         "port": {
-          "description": "Port to use for Supabase Studio.",
+          "description": "Port to use for DBase Studio.",
           "default": 54323,
           "anyOf": [
             {
@@ -4214,7 +4214,7 @@
         },
         "openai_api_key": {
           "type": "string",
-          "description": "OpenAI API key to use for Supabase AI in the Supabase Studio.",
+          "description": "OpenAI API key to use for DBase AI in the DBase Studio.",
           "examples": ["env(OPENAI_API_KEY)"],
           "x-secret": true
         }
@@ -8807,7 +8807,7 @@
                     "type": "object",
                     "properties": {
                       "enabled": {
-                        "description": "Enable the local Supabase Studio dashboard.",
+                        "description": "Enable the local DBase Studio dashboard.",
                         "default": true,
                         "anyOf": [
                           {
@@ -8820,7 +8820,7 @@
                         ]
                       },
                       "port": {
-                        "description": "Port to use for Supabase Studio.",
+                        "description": "Port to use for DBase Studio.",
                         "default": 54323,
                         "anyOf": [
                           {
@@ -8839,7 +8839,7 @@
                       },
                       "openai_api_key": {
                         "type": "string",
-                        "description": "OpenAI API key to use for Supabase AI in the Supabase Studio.",
+                        "description": "OpenAI API key to use for DBase AI in the DBase Studio.",
                         "examples": ["env(OPENAI_API_KEY)"],
                         "x-secret": true
                       }

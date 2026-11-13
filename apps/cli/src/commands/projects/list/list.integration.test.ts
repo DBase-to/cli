@@ -182,7 +182,7 @@ describe("projects list integration", () => {
     const { layer, out } = setup({ response: [SAMPLE_PROJECT], linked: false });
     return Effect.gen(function* () {
       yield* projectsList({});
-      expect(out.stderrText).toContain("Cannot find project ref. Have you run supabase link?");
+      expect(out.stderrText).toContain("Cannot find project ref. Have you run dbase link?");
     }).pipe(Effect.provide(layer));
   });
 

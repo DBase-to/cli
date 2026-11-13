@@ -112,7 +112,7 @@ export const fetchComputeLogs = Effect.fnUntraced(function* (
     if (Option.isSome(route)) {
       return yield* new ComputeRouteNotFoundError({
         detail: `The Management API does not serve ${route.value}, so this CLI cannot read logs for project ${projectRef}.`,
-        suggestion: "Report it with `supabase issue`, including the route named above.",
+        suggestion: "Report it with `dbase issue`, including the route named above.",
       });
     }
     if (hasErrorCode(parsed, "not_found")) {
@@ -133,7 +133,7 @@ export const fetchComputeLogs = Effect.fnUntraced(function* (
     const described = yield* describeLogError(decoded.error);
     return yield* new ComputeLogsQueryFailedError({
       detail: `The logs API could not run this query: ${described}.`,
-      suggestion: "Retry shortly; if it persists, report it with `supabase issue`.",
+      suggestion: "Retry shortly; if it persists, report it with `dbase issue`.",
     });
   }
 

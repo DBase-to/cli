@@ -28,19 +28,19 @@ const config = {
 export type StackStatusFlags = CliCommand.Command.Config.Infer<typeof config>;
 
 export const stackStatusCommand = Command.make("status", config).pipe(
-  Command.withDescription("Show the state of a managed local Supabase stack."),
+  Command.withDescription("Show the state of a managed local DBase stack."),
   Command.withShortDescription("Show stack status"),
   Command.withExamples([
     {
-      command: "supabase stack status",
+      command: "dbase stack status",
       description: "Show the current project stack",
     },
     {
-      command: "supabase stack status --stack feature-a",
+      command: "dbase stack status --stack feature-a",
       description: "Show a named stack",
     },
     {
-      command: "supabase stack status --env --output-format text > .env.local",
+      command: "dbase stack status --env --output-format text > .env.local",
       description: "Export connection variables as dotenv",
     },
   ]),

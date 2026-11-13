@@ -1026,7 +1026,7 @@ max_rows = 1000
           const causeText = Cause.pretty(exit.cause);
           expect(causeText).toContain("ConfigPushLoadConfigError");
           expect(causeText).toContain("file not found");
-          expect(causeText).not.toContain("supabase init");
+          expect(causeText).not.toContain("dbase init");
           expect(causeText).toContain("--workdir/SUPABASE_WORKDIR");
           expect(causeText).toContain(sub);
         }
@@ -1036,7 +1036,7 @@ max_rows = 1000
       }).pipe(Effect.provide(BunServices.layer)),
   );
 
-  it.effect("a defaulted workdir with no project still points at supabase init", () => {
+  it.effect("a defaulted workdir with no project still points at dbase init", () => {
     const out = mockOutput({ format: "text" });
     const api = mockCommandPlatformApi({
       handler: (request) => Effect.succeed(jsonResponse(request, 200, { available_addons: [] })),
@@ -1061,7 +1061,7 @@ max_rows = 1000
       if (Exit.isFailure(exit)) {
         const causeText = Cause.pretty(exit.cause);
         expect(causeText).toContain("ConfigPushLoadConfigError");
-        expect(causeText).toContain("supabase init");
+        expect(causeText).toContain("dbase init");
       }
       expect(api.requests).toHaveLength(0);
     }).pipe(Effect.provide(layer));
@@ -1173,7 +1173,7 @@ max_rows = 1000
     }).pipe(Effect.provide(layer));
   });
 
-  it.effect("directs a missing config file to supabase init, with exit 1", () => {
+  it.effect("directs a missing config file to dbase init, with exit 1", () => {
     const out = mockOutput({ format: "text" });
     const api = mockCommandPlatformApi({
       handler: (request) => Effect.succeed(jsonResponse(request, 200, { available_addons: [] })),
@@ -1199,7 +1199,7 @@ max_rows = 1000
         Effect.catchTag("ConfigPushLoadConfigError", (error) => Effect.succeed(error.message)),
       );
       expect(message).toBe(
-        "failed to read supabase/config.toml, config.json or config.jsonc: file not found. Run `supabase init` to create one.",
+        "failed to read supabase/config.toml, config.json or config.jsonc: file not found. Run `dbase init` to create one.",
       );
     }).pipe(Effect.provide(layer));
   });
@@ -1353,13 +1353,13 @@ otp_expiry = 120
     "401 / 403 / 404 on the config read get purpose-written messages; other statuses stay generic",
     () => {
       const cases: ReadonlyArray<{ status: number; expect: ReadonlyArray<string> }> = [
-        { status: 401, expect: ["Authentication failed", "supabase login"] },
+        { status: 401, expect: ["Authentication failed", "dbase login"] },
         { status: 403, expect: ["Access denied for project", REF] },
         {
           status: 404,
           expect: [
             `Could not read configuration for project ${REF} (404)`,
-            "supabase projects list",
+            "dbase projects list",
             DEFAULT_API_URL,
           ],
         },
@@ -1500,7 +1500,7 @@ otp_expiry = 120
       return Effect.gen(function* () {
         yield* configPush({ remote: Option.none(), projectRef: Option.none() });
         expect(out.stderrText).toContain(
-          "Note: 1 declared property is not managed by config push and was not compared; run `supabase config diff` to list them.",
+          "Note: 1 declared property is not managed by config push and was not compared; run `dbase config diff` to list them.",
         );
         expect(
           api.requests.some((r) => r.method === "PATCH" && r.url.includes("/config/storage")),
@@ -1794,7 +1794,7 @@ otp_expiry = 120
     return Effect.gen(function* () {
       yield* configPush({ remote: Option.none(), projectRef: Option.none() });
       expect(out.stderrText).toContain(
-        "Note: 1 remote property is not declared in supabase/config.toml and was left unchanged (config push no longer resets undeclared properties to their defaults; run `supabase config diff` to inspect).",
+        "Note: 1 remote property is not declared in supabase/config.toml and was left unchanged (config push no longer resets undeclared properties to their defaults; run `dbase config diff` to inspect).",
       );
       expect(
         api.requests.some((r) => r.method === "PATCH" || r.method === "PUT" || r.method === "POST"),
@@ -3390,7 +3390,7 @@ secrets = "v1,whsec_abc"
 // the branch/project target-detection scenarios below to prove a push actually proceeded.
 const BRANCH_PUSH_TOML = `project_id = "test"\n[api]\nmax_rows = 2000\n`;
 
-/** Mirrors `supabase link <branch>`: `project-ref` holds the branch, the cache its parent. */
+/** Mirrors `dbase link <branch>`: `project-ref` holds the branch, the cache its parent. */
 function setupLinkedBranchPush(
   opts: {
     readonly format?: "text" | "json" | "stream-json";

@@ -143,20 +143,19 @@ export const logsCommandFor = () =>
     ),
     Command.withExamples([
       {
-        command: "supabase logs --remote --service postgres --level error --since 30m",
+        command: "dbase logs --remote --service postgres --level error --since 30m",
         description: "Browse hosted Postgres errors",
       },
       {
-        command:
-          'supabase logs --remote --service auth --search "invalid token" --output-format text',
+        command: 'dbase logs --remote --service auth --search "invalid token" --output-format text',
         description: "Read plain text once",
       },
       {
-        command: "supabase logs --remote --service postgres --output-format json",
+        command: "dbase logs --remote --service postgres --output-format json",
         description: "Export full records as JSON",
       },
       {
-        command: "cat errors.sql | supabase logs --remote --file - --output-format json",
+        command: "cat errors.sql | dbase logs --remote --file - --output-format json",
         description: "Query hosted logs with SQL from stdin",
       },
     ]),

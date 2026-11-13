@@ -20,7 +20,7 @@ import { ACCESS_TOKEN_PATTERN, validateAccessToken } from "./access-token.ts";
 import { CommandCredentials } from "./command-credentials.service.ts";
 import { CredentialDeleteError, DeleteTokenError, NotLoggedInError } from "./errors.ts";
 
-const KEYRING_SERVICE = "Supabase CLI";
+const KEYRING_SERVICE = "DBase CLI";
 const LEGACY_KEYRING_ACCOUNT = "access-token";
 const WSL_OSRELEASE_PATH = "/proc/sys/kernel/osrelease";
 
@@ -288,7 +288,7 @@ const deleteProfileKeyringEntry = (
     return found ? "deleted" : "notFound";
   });
 
-// Best-effort wipe of the "Supabase CLI" keyring namespace; errors are swallowed so one stuck
+// Best-effort wipe of the "DBase CLI" keyring namespace; errors are swallowed so one stuck
 // credential can't abort logout. Windows credentials are also written under a separate
 // target-shaped form, invisible to the plain enumeration, so they're swept separately.
 const deleteAllKeyringEntries = (

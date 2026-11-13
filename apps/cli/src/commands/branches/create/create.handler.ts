@@ -63,7 +63,7 @@ export const branchesCreate = Effect.fn("branches.create")(function* (flags: Bra
     });
   }
 
-  // `branches` is parent-scoped: after `supabase link <branch>`, `supabase/.temp/project-ref`
+  // `branches` is parent-scoped: after `dbase link <branch>`, `supabase/.temp/project-ref`
   // holds the branch's own ref, and the platform 403s on that ref for every branches-management
   // endpoint.
   const ref = yield* resolveProjectTarget(

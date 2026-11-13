@@ -158,7 +158,7 @@ function makeExecFormatScanner() {
  * Recovery advice for a timeout whose logs showed {@link EXEC_FORMAT_ERROR}, or `undefined` when
  * no affected image can be named.
  *
- * `supabase stop` leads the sequence because a bare restart is a no-op on the
+ * `dbase stop` leads the sequence because a bare restart is a no-op on the
  * `--ignore-health-check` path, which leaves the stack up by design. `runtime` (not a hardcoded
  * `docker`) accounts for a Podman-only host. The closing line covers what re-pulling cannot fix:
  * a pinned image with no build for this host's architecture.
@@ -180,7 +180,7 @@ function execFormatRecoveryHint(
     `${affected.map((entry) => `${entry.containerId}'s image ${entry.image}`).join(", ")} could not be executed ("${EXEC_FORMAT_ERROR}").`,
     "Either the cached copy is corrupt, or it was built for a different architecture.",
     "Remove the cached copy and start again, from this project directory or with the same --workdir:",
-    `\n  supabase stop\n  ${runtime} image rm -f ${uniqueImages.join(" ")}\n  supabase start\n`,
+    `\n  dbase stop\n  ${runtime} image rm -f ${uniqueImages.join(" ")}\n  dbase start\n`,
     "If it fails the same way, that image has no build for this machine's architecture.",
   ].join("\n");
 }

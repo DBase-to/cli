@@ -117,7 +117,7 @@ export const secretsUnset = Effect.fn("secrets.unset")(function* (flags: Secrets
     yield* unsetting?.clear ?? Effect.void;
 
     if (output.format === "json" || output.format === "stream-json") {
-      yield* output.success("Finished supabase secrets unset.", {
+      yield* output.success("Finished dbase secrets unset.", {
         project_ref: ref,
         count: names.length,
         names,
@@ -126,6 +126,6 @@ export const secretsUnset = Effect.fn("secrets.unset")(function* (flags: Secrets
       return;
     }
 
-    yield* output.raw("Finished supabase secrets unset.\n");
+    yield* output.raw("Finished dbase secrets unset.\n");
   }).pipe(Effect.ensuring(linkedProjectCache.cache(ref)), Effect.ensuring(telemetryState.flush));
 });

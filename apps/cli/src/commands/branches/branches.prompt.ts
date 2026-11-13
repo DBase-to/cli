@@ -79,7 +79,7 @@ export const promptBranchId = Effect.fnUntraced(function* (
     return yield* new BranchesBranchingDisabledError({
       message: "branching is disabled",
       // Cyan matches the established color for the suggested command.
-      suggestion: `Create your first branch with: ${styleText("cyan", "supabase branches create")}`,
+      suggestion: `Create your first branch with: ${styleText("cyan", "dbase branches create")}`,
     });
   }
 

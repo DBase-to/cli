@@ -26,7 +26,7 @@ it.live("preserves bounded legacy compute defaults through the parser", () =>
       ),
     );
     const args = ["logs", "api"];
-    const root = Command.make("supabase").pipe(Command.withSubcommands([command]));
+    const root = Command.make("dbase").pipe(Command.withSubcommands([command]));
     yield* Command.runWith(root, { version: "test" })(args).pipe(
       Effect.provide(
         Layer.mergeAll(

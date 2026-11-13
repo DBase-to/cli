@@ -58,7 +58,7 @@ import {
   cliConfigDocumentOnlyPaths,
   cliConfigFamilyKey,
   cliConfigRegistry,
-  cliRemoteProjectIdEnvName,
+  cliRemoteProjectIdEnvNames,
   staticCliConfigFamilyNames,
   type AnyCliConfigKey,
 } from "./cli-config-keys.ts";
@@ -117,10 +117,10 @@ const isCustomAuthProvider = (rawDocument: unknown, key: ReadonlyArray<string>):
 };
 
 const unrecognizedSchemaLine = (file: string, ref: string): string =>
-  `WARN: ${file} declares schema ${escapeControlCharacters(ref)}, which is not the Supabase CLI config schema, so it is read as v1. Set it to ${CLI_CONFIG_SCHEMA_URL} to remove this warning.\n`;
+  `WARN: ${file} declares schema ${escapeControlCharacters(ref)}, which is not the DBase CLI config schema, so it is read as v1. Set it to ${CLI_CONFIG_SCHEMA_URL} to remove this warning.\n`;
 
 const unknownKeysLine = (file: string, keys: ReadonlyArray<string>): string =>
-  `WARN: ${file} has keys this version of the Supabase CLI does not recognize and ignores: ${keys.map(escapeControlCharacters).join(", ")}. Check them for typos, remove keys older CLI versions used, or upgrade the CLI if they come from a newer version.\n`;
+  `WARN: ${file} has keys this version of the DBase CLI does not recognize and ignores: ${keys.map(escapeControlCharacters).join(", ")}. Check them for typos, remove keys older CLI versions used, or upgrade the CLI if they come from a newer version.\n`;
 
 const registryEnvNames = cliConfigRegistry.keys.flatMap((key) => key.env);
 
@@ -129,7 +129,9 @@ const documentEnvNames = (rawDocument: Record<string, unknown>): ReadonlySet<str
   const names = new Set<string>();
   collectEnvReferences(rawDocument, names);
   const remotes = isDocumentRecord(rawDocument["remotes"]) ? rawDocument["remotes"] : {};
-  for (const remote of Object.keys(remotes)) names.add(cliRemoteProjectIdEnvName(remote));
+  for (const remote of Object.keys(remotes)) {
+    for (const name of cliRemoteProjectIdEnvNames(remote)) names.add(name);
+  }
   for (const scope of [rawDocument, ...Object.values(remotes)]) {
     for (const family of CLI_CONFIG_FAMILIES) {
       const table = getDocumentValue(scope, family.prefix.split("."));

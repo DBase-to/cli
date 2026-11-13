@@ -8,9 +8,9 @@ import { computeStatusCommand } from "./status/status.command.ts";
 
 export const computeCommand = Command.make("compute").pipe(
   Command.withDescription(
-    "Manage Supabase Compute (experimental): deploy and run any code. Source code and config are read from supabase/compute/<name>/. This command is unstable and may change without notice.",
+    "Manage DBase Compute (experimental): deploy and run any code. Source code and config are read from supabase/compute/<name>/. This command is unstable and may change without notice.",
   ),
-  Command.withShortDescription("Manage Supabase Compute (experimental)"),
+  Command.withShortDescription("Manage DBase Compute (experimental)"),
   Command.withSubcommands([
     computeNewCommand,
     computePushCommand,

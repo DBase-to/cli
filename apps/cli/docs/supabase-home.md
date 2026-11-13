@@ -1,15 +1,15 @@
-# Supabase CLI State Layout
+# DBase CLI State Layout
 
 The CLI keeps authored project configuration in `supabase/`, checkout-local link and version
-caches in `.supabase/`, and managed runtime state in the global `SUPABASE_HOME` directory.
+caches in `.supabase/`, and managed runtime state in the global `DBASE_HOME` directory.
 
 By default:
 
 ```text
-SUPABASE_HOME = ~/.supabase
+DBASE_HOME = ~/.supabase
 ```
 
-The path can be overridden with the `SUPABASE_HOME` environment variable.
+The path can be overridden with the `DBASE_HOME` environment variable.
 
 ## State roots
 
@@ -29,7 +29,7 @@ The CLI discovers the active project from the nearest ancestor containing `supab
 (or the legacy config filename where supported), then passes that canonical project root to the
 managed stack identity. A stack ID is derived from the canonical project root, the current Git
 branch context (or `ordinary-workspace` outside Git), and the stack name. This identity is local
-runtime state and is unrelated to the remote Supabase project ID in `config.toml` or link state.
+runtime state and is unrelated to the remote DBase project ID in `config.toml` or link state.
 
 ### Checkout-local caches
 
@@ -50,7 +50,7 @@ Stack identity does not write repository or Git markers.
 Managed stack documents and runtime artifacts are shared through the global CLI home:
 
 ```text
-<SUPABASE_HOME>/
+<DBASE_HOME>/
   access-token
   cli-latest
   telemetry.json
@@ -81,12 +81,12 @@ There is no project-local `stacks/<name>` directory or second state format.
 The candidate baseline is computed from linked versions in `.supabase/project.json` and the CLI's
 `DEFAULT_VERSIONS` catalog. Runtime precedence is:
 
-1. `supabase start --service-version service=version` for one invocation;
+1. `dbase start --service-version service=version` for one invocation;
 2. checkout-local values in `.supabase/local-versions.json`;
 3. the capability version pins in the managed document's materialized definition;
 4. catalog defaults for values not supplied by the preceding sources.
 
-The materialized definition is recorded by `supabase start` through the managed lifecycle; there is
+The materialized definition is recorded by `dbase start` through the managed lifecycle; there is
 no separate command that rewrites it, and no second project-level pinned-version file is written.
 
 ## Port intents
@@ -106,26 +106,26 @@ selected by the managed supervisor and are not written to the document.
 
 ## Command behavior
 
-- `supabase start` resolves launch metadata and port intents, acquires managed control, and records
+- `dbase start` resolves launch metadata and port intents, acquires managed control, and records
   the document before starting services.
-- `supabase status`, `logs`, and `services` attach through the deterministic control endpoint and
+- `dbase status`, `logs`, and `services` attach through the deterministic control endpoint and
   report only a live owner as running.
-- `supabase stop` asks the owner to stop, waits for `stopped` and control release, and keeps the
+- `dbase stop` asks the owner to stop, waits for `stopped` and control release, and keeps the
   document by default. `--no-backup` removes it after deterministic cleanup.
-- `supabase stack list` enumerates the global persisted managed-stack inventory, including stopped
+- `dbase stack list` enumerates the global persisted managed-stack inventory, including stopped
   and unconfigured stacks, and includes corrupt or unsupported registry entries with their IDs and
   error reasons. Missing state remnants are ignored during enumeration. It reads registry state
   without contacting live owners and has no checkout-scoping option; use
-  [`supabase stack status`](./stack-commands.md) to inspect live owner state. See [local stack
+  [`dbase stack status`](./stack-commands.md) to inspect live owner state. See [local stack
   commands](./stack-commands.md).
 
 ## Auth, telemetry, and binaries
 
-Auth, telemetry, traces, and downloaded binaries remain machine-global under `SUPABASE_HOME`.
+Auth, telemetry, traces, and downloaded binaries remain machine-global under `DBASE_HOME`.
 Legacy installer artifacts may coexist under that root, but they are not part of managed stack
 coordination.
 
-In stack mode the post-run linked-project fill writes `<SUPABASE_HOME>/project-cache/<ref>.json`
+In stack mode the post-run linked-project fill writes `<DBASE_HOME>/project-cache/<ref>.json`
 atomically after the first successful `GET /v1/projects/{ref}`. It is only a marker that the
 project's analytics groups were identified once per ref on this machine; nothing else reads it.
 Legacy mode keeps `supabase/.temp/linked-project.json`, which `RemoteTarget.parent` also reads.
@@ -135,10 +135,10 @@ Legacy mode keeps `supabase/.temp/linked-project.json`, which `RemoteTarget.pare
 After a successful command, the upgrade notice compares the running version with the latest
 GitHub release. The release tag is cached for ten hours in `supabase/.temp/cli-latest` when the
 project directory has a real `supabase/` directory and uses legacy project state, and in
-`<SUPABASE_HOME>/cli-latest` otherwise, including every stack-mode project. `--version` and `--help` check only the current directory, so from a project
-subdirectory they use `<SUPABASE_HOME>/cli-latest`. A failed fetch writes an empty file, which
+`<DBASE_HOME>/cli-latest` otherwise, including every stack-mode project. `--version` and `--help` check only the current directory, so from a project
+subdirectory they use `<DBASE_HOME>/cli-latest`. A failed fetch writes an empty file, which
 suppresses the notice and further fetches until it expires. The cache is skipped when the file,
-`supabase/.temp`, or `SUPABASE_HOME` is a symlink. `SUPABASE_NO_UPDATE_NOTIFIER=1` disables the check.
+`supabase/.temp`, or `DBASE_HOME` is a symlink. `DBASE_NO_UPDATE_NOTIFIER=1` disables the check.
 
 ## Related docs
 

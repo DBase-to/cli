@@ -225,7 +225,7 @@ export const services = Effect.fn("services")(function* (_flags: ServicesFlags) 
         ? {
             heading: "The stack service versions differ from your linked project:",
             recommendation:
-              "Run supabase link to update services set to linked (the default) in supabase/supabase.lock; services pinned in [local.services] keep their version.",
+              "Run dbase link to update services set to linked (the default) in supabase/supabase.lock; services pinned in [local.services] keep their version.",
           }
         : {},
     );

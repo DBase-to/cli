@@ -399,7 +399,7 @@ describe("resolveArgvProfile", () => {
     }).pipe(Effect.provide(BunServices.layer)),
   );
 
-  it.effect("fails to load an untrimmed token persisted in the Supabase home", () =>
+  it.effect("fails to load an untrimmed token persisted in the DBase home", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;

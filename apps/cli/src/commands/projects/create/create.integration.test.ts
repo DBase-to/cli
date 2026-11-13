@@ -729,7 +729,7 @@ describe("projects create integration", () => {
   });
 
   it.effect("rejects --size nano at flag-parse time", () => {
-    const root = Command.make("supabase").pipe(
+    const root = Command.make("dbase").pipe(
       Command.withSubcommands([projectsCreateCommand]),
       Command.withGlobalFlags(GLOBAL_FLAGS),
     );

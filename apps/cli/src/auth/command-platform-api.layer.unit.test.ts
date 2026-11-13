@@ -55,7 +55,7 @@ function mockCliSettings(opts: {
     projectId: Option.none(),
     workdir: "/tmp",
     explicitWorkdir: false,
-    userAgent: opts.userAgent ?? "SupabaseCLI/0.0.0-dev",
+    userAgent: opts.userAgent ?? "DBaseCLI/0.0.0-dev",
     apiMaxRetries: Option.fromUndefinedOr(opts.apiMaxRetries),
   });
 }
@@ -292,9 +292,7 @@ describe("commandPlatformApiLayer", () => {
   it.effect("sends the CLI User-Agent and no X-Supabase-Command headers", () => {
     const http = captureRequests();
     const layer = commandPlatformApiLayer.pipe(
-      Layer.provide(
-        mockCliSettings({ accessToken: VALID_TOKEN, userAgent: "SupabaseCLI/1.123.4" }),
-      ),
+      Layer.provide(mockCliSettings({ accessToken: VALID_TOKEN, userAgent: "DBaseCLI/1.123.4" })),
       Layer.provide(mockCredentials(Option.none())),
       Layer.provide(http.layer),
       withBaseDeps(),
@@ -302,7 +300,7 @@ describe("commandPlatformApiLayer", () => {
     return Effect.gen(function* () {
       const api = yield* CommandPlatformApi;
       yield* api.v1.listAllProjects();
-      expect(http.requests[0]?.headers["user-agent"]).toBe("SupabaseCLI/1.123.4");
+      expect(http.requests[0]?.headers["user-agent"]).toBe("DBaseCLI/1.123.4");
       expect(http.requests[0]?.headers["x-supabase-command"]).toBeUndefined();
       expect(http.requests[0]?.headers["x-supabase-command-run-id"]).toBeUndefined();
     }).pipe(Effect.provide(layer));
@@ -378,7 +376,7 @@ describe("commandPlatformApiLayer", () => {
       const api = yield* CommandPlatformApi;
       yield* api.v1.listAllProjects();
       const output = stderr.mock.calls.map(([chunk]) => String(chunk)).join("");
-      expect(output).toContain("Supabase CLI ");
+      expect(output).toContain("DBase CLI ");
       expect(output).toContain("Using profile: supabase-staging (supabase.red)\n");
       expect(output.match(/Using access token from env var\.\.\.\n/g)).toHaveLength(2);
       expect(output).toMatch(

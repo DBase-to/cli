@@ -94,7 +94,7 @@ export const filesForDeclarativeShadowLoad = (
 
 /** User cannot edit this SQL; a persistent miss is a CLI bug. */
 const DECLARATIVE_SHADOW_PREP_FAILURE_SUGGESTION =
-  "This statement is CLI-owned shadow prep, not a project migration or schema file. If it persists, report it with supabase issue bug.";
+  "This statement is CLI-owned shadow prep, not a project migration or schema file. If it persists, report it with dbase issue bug.";
 
 const queryError = (sql: string, cause: unknown) =>
   new PgDeltaEngineError({

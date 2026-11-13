@@ -1,5 +1,5 @@
 /**
- * Resolves and pulls every image `supabase start` needs into the local Docker cache before any
+ * Resolves and pulls every image `dbase start` needs into the local Docker cache before any
  * container is created, using the same multi-registry fallback as the per-container start path.
  * This is the only pre-pull step; every image must resolve through it before a container starts.
  */

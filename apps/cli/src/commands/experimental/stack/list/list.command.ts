@@ -6,7 +6,7 @@ import { stackList } from "./list.handler.ts";
 import { withTargetPolicy } from "../../../../command-internal/target/target-policy.ts";
 
 export const stackListCommand = Command.make("list").pipe(
-  Command.withDescription("List persisted managed local Supabase stacks."),
+  Command.withDescription("List persisted managed local DBase stacks."),
   Command.withShortDescription("List managed local stacks"),
   withPermissions({ operations: [] }),
   Command.withHandler(() =>

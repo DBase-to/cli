@@ -432,10 +432,10 @@ describe("pushNotes", () => {
 
   test("unmanagedCount: singular and plural, count only (no path list)", () => {
     expect(pushNotes({ ...EMPTY_NOTES, unmanagedCount: 1 })).toBe(
-      "Note: 1 declared property is not managed by config push and was not compared; run `supabase config diff` to list them.\n",
+      "Note: 1 declared property is not managed by config push and was not compared; run `dbase config diff` to list them.\n",
     );
     expect(pushNotes({ ...EMPTY_NOTES, unmanagedCount: 3 })).toBe(
-      "Note: 3 declared properties are not managed by config push and were not compared; run `supabase config diff` to list them.\n",
+      "Note: 3 declared properties are not managed by config push and were not compared; run `dbase config diff` to list them.\n",
     );
   });
 
@@ -519,10 +519,10 @@ describe("pushNotes", () => {
 
   test("remoteOnly: singular and plural, config-push-specific wording", () => {
     expect(pushNotes({ ...EMPTY_NOTES, remoteOnly: 1 })).toBe(
-      "Note: 1 remote property is not declared in supabase/config.toml and was left unchanged (config push no longer resets undeclared properties to their defaults; run `supabase config diff` to inspect).\n",
+      "Note: 1 remote property is not declared in supabase/config.toml and was left unchanged (config push no longer resets undeclared properties to their defaults; run `dbase config diff` to inspect).\n",
     );
     expect(pushNotes({ ...EMPTY_NOTES, remoteOnly: 12 })).toBe(
-      "Note: 12 remote properties are not declared in supabase/config.toml and were left unchanged (config push no longer resets undeclared properties to their defaults; run `supabase config diff` to inspect).\n",
+      "Note: 12 remote properties are not declared in supabase/config.toml and were left unchanged (config push no longer resets undeclared properties to their defaults; run `dbase config diff` to inspect).\n",
     );
   });
 
@@ -544,10 +544,10 @@ describe("pushNotes", () => {
     ).toBe(
       "Note: 1 declared property has no Management API field and was not pushed: db.major_version (change it from the dashboard).\n" +
         "Note: 1 declared property could not be encoded and was not pushed: api.enabled (enabling the Data API needs at least one schema in api.schemas)\n" +
-        "Note: 1 declared property is not managed by config push and was not compared; run `supabase config diff` to list them.\n" +
+        "Note: 1 declared property is not managed by config push and was not compared; run `dbase config diff` to list them.\n" +
         "Note: 1 undeclared property had to be sent alongside a declared change and was written at its config default: db.network_restrictions.allowed_cidrs_v6 (the values shown in the confirmation block were applied).\n" +
         "Note: 1 credential value was not pushed (empty or unresolved env reference): auth.captcha.secret\n" +
-        "Note: 12 remote properties are not declared in supabase/config.toml and were left unchanged (config push no longer resets undeclared properties to their defaults; run `supabase config diff` to inspect).\n",
+        "Note: 12 remote properties are not declared in supabase/config.toml and were left unchanged (config push no longer resets undeclared properties to their defaults; run `dbase config diff` to inspect).\n",
     );
   });
 

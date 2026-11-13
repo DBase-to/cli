@@ -723,7 +723,7 @@ export function makeSupabaseApiClient(
       Effect.mapError(
         (error) =>
           new SupabaseApiConfigError(
-            error instanceof Error ? error.message : "Failed to resolve Supabase API config.",
+            error instanceof Error ? error.message : "Failed to resolve DBase API config.",
           ),
       ),
     );

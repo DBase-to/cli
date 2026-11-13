@@ -121,7 +121,7 @@ export const projectsList = Effect.fn("projects.list")(function* (_flags: Projec
 
     // Prints the not-linked message to stderr but still renders the table below.
     if (Option.isNone(linkedRef)) {
-      yield* output.raw("Cannot find project ref. Have you run supabase link?\n", "stderr");
+      yield* output.raw("Cannot find project ref. Have you run dbase link?\n", "stderr");
     }
 
     // `markerRef` decides which row shows as linked, since a linked branch's own ref never

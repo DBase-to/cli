@@ -80,11 +80,20 @@ export const resolveStorageCredentials = Effect.fnUntraced(function* (opts: {
 
   if (opts.projectRef !== "") {
     const baseUrl = `https://${opts.projectRef}.${cliSettings.projectHost}`;
+    const dbaseKey = CliEnvNames.authServiceRoleKey.name;
+    const supabaseKey = dbaseKey.replace(/^DBASE_/, "SUPABASE_");
     const shell = yield* readShellEnvironment({
-      names: [CliEnvNames.authServiceRoleKey.name],
+      names: [dbaseKey, supabaseKey],
     }).pipe(Effect.mapError(toStorageConfigError));
+    const selectedKey = shell.get(dbaseKey) !== undefined ? dbaseKey : supabaseKey;
+    const rawKey = shell.get(selectedKey);
     const envKey = yield* Result.match(
-      pickCliEnvName(CliEnvNames.authServiceRoleKey, { shell: shell.get }),
+      pickCliEnvName(
+        { ...CliEnvNames.authServiceRoleKey, name: selectedKey },
+        {
+          shell: () => rawKey,
+        },
+      ),
       {
         onFailure: (error) => Effect.fail(toStorageConfigError(error)),
         onSuccess: Effect.succeed,

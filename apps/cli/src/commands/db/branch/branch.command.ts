@@ -8,7 +8,7 @@ import { withCommandTelemetry } from "../../../telemetry/command-telemetry.ts";
 import { telemetryStateLayer } from "../../../telemetry/telemetry-state.layer.ts";
 
 const REMOVED_SUGGESTION =
-  "Local database branches are no longer supported. For hosted preview branches, see `supabase branches --help`.";
+  "Local database branches are no longer supported. For hosted preview branches, see `dbase branches --help`.";
 
 const withRemovedBranchTargetPolicy = withTargetPolicy({
   group: "removed",

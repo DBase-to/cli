@@ -495,7 +495,7 @@ export function renderServicesWarning(
     options.heading ??
       "You are running different service versions locally than your linked project:",
     ...mismatches.map((row) => `${row.name}:${row.local} => ${row.remote}`),
-    options.recommendation ?? "Run supabase link to update them.",
+    options.recommendation ?? "Run dbase link to update them.",
   ].join("\n");
 }
 

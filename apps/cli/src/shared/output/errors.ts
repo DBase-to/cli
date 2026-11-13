@@ -31,7 +31,7 @@ export class NonInteractiveError extends Data.TaggedError("NonInteractiveError")
 }
 
 /**
- * The process reading stdout closed it, for example `supabase … | head`. It ends the command
+ * The process reading stdout closed it, for example `dbase … | head`. It ends the command
  * through its finalizers and exits 0, the way a Unix tool stops on a broken pipe.
  */
 export class StdoutClosedError extends Data.TaggedError("StdoutClosedError") {

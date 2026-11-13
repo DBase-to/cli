@@ -640,9 +640,9 @@ describe("migration squash", () => {
           expect(s.shadowSpawned).toEqual([]);
           expect(s.dumpCalls).toEqual([]);
           // The Finished/repair-suggestion output still runs on the no-op path.
-          expect(stdout(s.out)).toContain("Finished supabase migration squash.");
+          expect(stdout(s.out)).toContain("Finished dbase migration squash.");
           expect(stderr(s.out)).toContain(
-            "Run supabase migration repair --status applied --remote to update your remote migration history table.",
+            "Run dbase migration repair --status applied --remote to update your remote migration history table.",
           );
         }).pipe(Effect.provide(s.layer));
       },
@@ -690,7 +690,7 @@ describe("migration squash", () => {
             "\n--\n-- Dumped schema changes for auth and storage\n--\n\n" + "new auth object;\n";
           expect(yield* readMigration(tmp.current, "1_target.sql")).toBe(FULL_SQL + expectedTail);
 
-          expect(stdout(s.out)).toContain("Finished supabase migration squash.");
+          expect(stdout(s.out)).toContain("Finished dbase migration squash.");
         }).pipe(Effect.provide(s.layer));
       },
     );
@@ -1059,7 +1059,7 @@ describe("migration squash", () => {
         yield* seedMigration(tmp.current, "0_init.sql");
         yield* seedMigration(tmp.current, "1_target.sql");
         yield* migrationSquash(flags());
-        expect(stdout(s.out)).toContain("Finished supabase migration squash.");
+        expect(stdout(s.out)).toContain("Finished dbase migration squash.");
         expect(stderr(s.out)).toContain("FileSystem.remove (supabase/migrations/0_init.sql)");
         expect(yield* migrationExists(tmp.current, "0_init.sql")).toBe(true);
       }).pipe(Effect.provide(s.layer));
@@ -1106,7 +1106,7 @@ describe("migration squash", () => {
         yield* seedMigration(tmp.current, "0_init.sql");
         yield* seedMigration(tmp.current, "1_target.sql");
         yield* migrationSquash(flags());
-        expect(stdout(s.out)).toContain("Finished supabase migration squash.");
+        expect(stdout(s.out)).toContain("Finished dbase migration squash.");
         expect(stderr(s.out)).toContain(`Failed to remove container: ${FAKE_SHADOW_CONTAINER_ID}`);
       }).pipe(Effect.provide(s.layer));
     });
@@ -1120,9 +1120,9 @@ describe("migration squash", () => {
         return Effect.gen(function* () {
           yield* seedMigration(tmp.current, "0_init.sql");
           yield* migrationSquash(flags());
-          expect(stdout(s.out)).toContain("Finished supabase migration squash.");
+          expect(stdout(s.out)).toContain("Finished dbase migration squash.");
           expect(stderr(s.out)).toContain(
-            "Run supabase migration repair --status applied --remote to update your remote migration history table.",
+            "Run dbase migration repair --status applied --remote to update your remote migration history table.",
           );
           expect(s.out.promptConfirmCalls).toEqual([]);
         }).pipe(Effect.provide(s.layer));
@@ -1138,7 +1138,7 @@ describe("migration squash", () => {
           yield* migrationSquash(
             flags({ remote: Option.some({ _tag: "DbUrl", url: "postgresql://local" }) }),
           );
-          expect(stdout(s.out)).toContain("Finished supabase migration squash.");
+          expect(stdout(s.out)).toContain("Finished dbase migration squash.");
           expect(s.out.promptConfirmCalls).toEqual([]);
         }).pipe(Effect.provide(s.layer));
       },
@@ -1415,7 +1415,7 @@ describe("migration squash", () => {
         yield* stubManagementApi(requests, () => undefined);
         yield* seedMigration(tmp.current, "0_init.sql");
         yield* migrationSquash(flags());
-        expect(stdout(s.out)).toContain("Finished supabase migration squash.");
+        expect(stdout(s.out)).toContain("Finished dbase migration squash.");
         expect(requests).toEqual([]);
         expect(s.http.calls).toEqual([]);
         assertPermissionDrift({
@@ -1471,7 +1471,7 @@ describe("migration squash", () => {
         yield* seedMigration(tmp.current, "0_init.sql");
         yield* migrationSquash(flags());
         expect(stdout(s.out)).not.toContain("Finished");
-        expect(stderr(s.out)).not.toContain("Run supabase migration repair");
+        expect(stderr(s.out)).not.toContain("Run dbase migration repair");
       }).pipe(Effect.provide(s.layer));
     });
 

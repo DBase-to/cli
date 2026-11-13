@@ -1,6 +1,6 @@
 # Local stack commands
 
-`supabase stack` manages local stacks with the new experimental runtime. It is unstable, its
+`dbase stack` manages local stacks with the new experimental runtime. It is unstable, its
 command interface may change, and it is excluded from the CLI compatibility promise. It is
 available when the `experimental.stack` feature flag is enabled and supports Docker, Podman, and
 native runtimes.
@@ -14,18 +14,18 @@ Native pg_cron runs jobs in background workers, so a job body cannot contain its
 default `max_worker_processes` to 17 to leave room for those workers; `postgresql.conf`,
 `ALTER SYSTEM`, and `[db.settings]` values take precedence.
 
-| Command                   | Purpose                                                                           |
-| ------------------------- | --------------------------------------------------------------------------------- |
-| `supabase stack destroy`  | Permanently delete stacks and their data.                                         |
-| `supabase stack list`     | List persisted managed local stacks.                                              |
-| `supabase stack install`  | Resolve and lock service versions, then download artifacts without a stack.       |
-| `supabase stack update`   | Re-resolve locked service versions and rewrite `supabase/supabase.lock`.          |
-| `supabase stack outdated` | Report which locked service versions `stack update` would change.                 |
-| `supabase stack start`    | Create or resume the project's stack.                                             |
-| `supabase stack status`   | Show identity, readiness, and drift, or export connection variables with `--env`. |
-| `supabase stack logs`     | Print retained stack logs; `-f` streams new lines.                                |
-| `supabase stack restart`  | Restart an existing stack using its saved effective configuration.                |
-| `supabase stack stop`     | Stop a stack while retaining its data.                                            |
+| Command                | Purpose                                                                           |
+| ---------------------- | --------------------------------------------------------------------------------- |
+| `dbase stack destroy`  | Permanently delete stacks and their data.                                         |
+| `dbase stack list`     | List persisted managed local stacks.                                              |
+| `dbase stack install`  | Resolve and lock service versions, then download artifacts without a stack.       |
+| `dbase stack update`   | Re-resolve locked service versions and rewrite `supabase/supabase.lock`.          |
+| `dbase stack outdated` | Report which locked service versions `stack update` would change.                 |
+| `dbase stack start`    | Create or resume the project's stack.                                             |
+| `dbase stack status`   | Show identity, readiness, and drift, or export connection variables with `--env`. |
+| `dbase stack logs`     | Print retained stack logs; `-f` streams new lines.                                |
+| `dbase stack restart`  | Restart an existing stack using its saved effective configuration.                |
+| `dbase stack stop`     | Stop a stack while retaining its data.                                            |
 
 Use each command's `--help` for its available targeting and runtime options.
 
@@ -39,7 +39,7 @@ stack, cannot reach its engine, the failure asks you to install or start it, and
 on platforms that support native. Project stacks created by database commands, and shadow stacks
 created without a project stack, use the same selection.
 
-`supabase stack install` resolves the project's service versions into `supabase/supabase.lock`, the
+`dbase stack install` resolves the project's service versions into `supabase/supabase.lock`, the
 same way `stack start` does, then downloads everything the lock pins for the chosen runtime without
 creating or starting a stack. `--runtime native` downloads archives into the artifact cache; `docker`
 and `podman` pull images; `auto` selects as `stack start` does. With `--frozen`, or with `CI` set
@@ -47,27 +47,27 @@ and an existing lock, a missing or out-of-date lock fails instead of being writt
 are already present are skipped, so a second run reports everything as cached.
 
 ```sh
-supabase stack install
-supabase stack install --frozen --runtime native --output-format json
+dbase stack install
+dbase stack install --frozen --runtime native --output-format json
 ```
 
-`supabase stack update [service...]` re-resolves the named services, or all of them, even when the
+`dbase stack update [service...]` re-resolves the named services, or all of them, even when the
 lock is fresh: an upstream version moves to its newest revision, `bundled` moves to the version this
 CLI bundles, `linked` probes the linked project or branch again (this needs a login, like `supabase
 link`), and an exact `-r<N>` pin stays. It prints the diff and rewrites the lock without
-downloading anything; `CI` does not freeze it. `supabase stack outdated` is the read-only
+downloading anything; `CI` does not freeze it. `dbase stack outdated` is the read-only
 counterpart: it reports each service's locked and would-be version without a lease, a write, or a
 download, and reports a failed probe per row without failing. It reads only the lock and the
-release host, so a hosted version that moved since `supabase link` appears after `stack update`.
+release host, so a hosted version that moved since `dbase link` appears after `stack update`.
 
 ```sh
-supabase stack outdated
-supabase stack update auth realtime
+dbase stack outdated
+dbase stack update auth realtime
 ```
 
 ## Connection details after start
 
-When the stack is ready, `supabase stack start` prints the API, REST, Functions,
+When the stack is ready, `dbase stack start` prints the API, REST, Functions,
 database, Studio, MCP, and Mailpit URLs, the local publishable and secret keys, each service's
 state, and the runtime. Ports are assigned per project, so read the MCP URL from this output rather
 than assuming a default port. MCP is served at `<API_URL>/mcp`, present only when the shared API
@@ -104,7 +104,7 @@ With `--output-format json`, start returns:
 
 `endpoints` uses the same `service.endpoint` keys as `stack status`, with no synthetic entries.
 `lazy_services` lists the services that start on their first request. `env` is the same connection
-map `supabase stack status --env` exports, present on every success path; `stack status` (without
+map `dbase stack status --env` exports, present on every success path; `stack status` (without
 `--env`) returns the same `env` key, degrading to whatever is available when credentials or the
 owner are unreachable. Plain `status` JSON `env` comes from saved bindings and can list values for
 stopped or sleeping members, while `--env` requires a reachable owner and a running primary
@@ -117,16 +117,16 @@ entry naming the endpoint, the `endpoints` keys it moved in `keys`, and its `fro
 success payload, present only when a change applied. A requested fixed port that is already taken
 fails the start with the usual port conflict; the new port stays saved and the previous automatic
 port is released, so starting again succeeds once the port is free. A PostgreSQL build, line or major that differs
-from the one that initialized the data still fails, suggesting `supabase stack destroy`; only a new
+from the one that initialized the data still fails, suggesting `dbase stack destroy`; only a new
 revision of the same build reuses it. A changed port met by a stack whose owner is still
-running fails with advice to run `supabase stack stop`, then `supabase stack start`.
+running fails with advice to run `dbase stack stop`, then `dbase stack start`.
 
 ## Exporting environment variables
 
 ```sh
-supabase stack status --env --output-format text > .env.local
-supabase status --env --override-name API_URL=NEXT_PUBLIC_SUPABASE_URL,ANON_KEY=NEXT_PUBLIC_SUPABASE_ANON_KEY
-supabase stack status --env --output-format json
+dbase stack status --env --output-format text > .env.local
+dbase status --env --override-name API_URL=NEXT_PUBLIC_SUPABASE_URL,ANON_KEY=NEXT_PUBLIC_SUPABASE_ANON_KEY
+dbase stack status --env --output-format json
 ```
 
 Each example requires the stack backend flag described below. `--env` exports the connection URLs
@@ -152,7 +152,7 @@ The stack backend rejects every explicit legacy `-o/--output` value: `env`, `pre
 `toml`, `yaml`, `table`, and `csv`. `--output-format text`, `json`, or `stream-json` replace them.
 `-o env` becomes `--env`.
 
-`supabase stack list` reads the global managed-stack registry and reports each readable stack's
+`dbase stack list` reads the global managed-stack registry and reports each readable stack's
 project, branch, runtime, and owner availability. Registry entries that cannot be read or decoded
 are skipped with a warning on stderr identifying each stack; only a failure to read the stacks
 directory itself fails discovery.
@@ -161,13 +161,13 @@ unique prefix of at least 4 characters. Use `--output-format json` or `--output-
 for the complete structured inventory with full IDs.
 
 Listing is global and has no checkout filter. Owner availability is not service lifecycle or health;
-use `supabase stack status` for live state. Registry directories without a state file are ignored
+use `dbase stack status` for live state. Registry directories without a state file are ignored
 as remnants.
 
 ## Selecting the top-level commands
 
-The top-level `supabase start`, `supabase stop`, and `supabase status` commands use the legacy
-backend by default. To make them aliases of the corresponding `supabase stack` commands, add this
+The top-level `dbase start`, `dbase stop`, and `dbase status` commands use the legacy
+backend by default. To make them aliases of the corresponding `dbase stack` commands, add this
 to `supabase/config.toml`:
 
 ```toml
@@ -177,23 +177,23 @@ stack = true
 
 The selected backend determines accepted flags, help, and completion before the command is parsed.
 Set the flag to `false`, or remove it, to restore the legacy top-level commands. The explicit
-`supabase stack` namespace is available only when this flag is enabled. `supabase status` is routed
-the same way as `supabase start` and `supabase stop`.
+`dbase stack` namespace is available only when this flag is enabled. `dbase status` is routed
+the same way as `dbase start` and `dbase stop`.
 
 Root help and root completion resolve the same feature flag from the environment or project
 configuration. Help and completion for `start`, `status`, and `stop` resolve the same backend as the
 command itself. If the project configuration cannot be read or parsed, or if `experimental.stack`
 has an invalid value, routing falls back to the legacy backend and the stack namespace remains
-unavailable. An invalid `SUPABASE_EXPERIMENTAL_STACK` value is still an error.
+unavailable. An invalid `DBASE_EXPERIMENTAL_STACK` value is still an error.
 
-For temporary selection, set `SUPABASE_EXPERIMENTAL_STACK=1` to select the new backend or
-`SUPABASE_EXPERIMENTAL_STACK=0` to select the legacy backend. This environment variable takes
+For temporary selection, set `DBASE_EXPERIMENTAL_STACK=1` to select the new backend or
+`DBASE_EXPERIMENTAL_STACK=0` to select the legacy backend. This environment variable takes
 precedence over `experimental.stack`; an unset or empty value falls back to the file setting.
-Non-boolean values are rejected, including by `supabase link`, `supabase unlink` and `supabase
+Non-boolean values are rejected, including by `dbase link`, `dbase unlink` and `supabase
 projects delete`, which read or write the project link. The override is applied before reading the
 project configuration.
 
-`supabase services` follows the same backend selection. In stack mode it lists image versions and
+`dbase services` follows the same backend selection. In stack mode it lists image versions and
 canonical `ghcr.io/supabase/cli/...` names, including Mailpit. The versions come from
 `supabase/supabase.lock` when the project has a fresh one, else from the installed CLI's artifact
 catalog. PostgreSQL uses the selected major version (15 or 17), or the catalog's OrioleDB build when
@@ -203,19 +203,19 @@ catalog defaults. This inventory describes the lock or catalog, not running cont
 images, or service health. The Docker and native stack runtimes use the same versions, though a
 running stack launched by another CLI version or using mirrored images may differ. Legacy version
 pins and slim-image overrides do not apply in stack mode. Linked versions remain best-effort;
-a mismatch warning recommends `supabase link`, which updates services set to `linked` (the
+a mismatch warning recommends `dbase link`, which updates services set to `linked` (the
 default) in the lock, while services pinned in `[local.services]` keep their version.
 
-`SUPABASE_EXPERIMENTAL_STACK=1 supabase init` writes `[experimental] stack = true` into the new
+`DBASE_EXPERIMENTAL_STACK=1 dbase init` writes `[experimental] stack = true` into the new
 project config and omits the Docker-era default ports so the stack is not pinned to them.
 Without the environment variable, `init` still writes the established template with those ports
-and without the stack flag. Blank `supabase bootstrap` uses the same scaffold.
+and without the stack flag. Blank `dbase bootstrap` uses the same scaffold.
 
 When the flag is on, local targets of the `db`, `migration`, `test db`, `gen types`, and
 `inspect` families use the project stack and provision a throwaway shadow database owned by the
 stack runtime. The shadow runs the project's resolved database version, the OrioleDB build when
 `db.orioledb_version` is set, and its baseline cache is keyed by that version. Top-level
-`supabase pull` uses the same stack shadow as `db pull`. Targets selected with `--remote` stay on the Management API for engine selection.
+`dbase pull` uses the same stack shadow as `db pull`. Targets selected with `--remote` stay on the Management API for engine selection.
 A `--remote=<url>` database URL that matches `config.toml` host and port is still rewritten like a published
 stack target for dump's tool container. Compose names (`supabase_db_*`, `supabase_network_*`,
 `db:5432`) are not used. The stack backend requires the in-process pg-delta engine;
@@ -248,7 +248,7 @@ values in these files are skipped with a warning because the runtime supplies th
 `--output-format stream-json`, readiness emits a result containing the instance ID and URL,
 followed by live log events.
 
-`storage ls`/`cp`/`mv`/`rm` and `seed buckets` (including bucket seeding inside `db reset`) also consult `experimental.stack`, with the same `SUPABASE_EXPERIMENTAL_STACK`
+`storage ls`/`cp`/`mv`/`rm` and `seed buckets` (including bucket seeding inside `db reset`) also consult `experimental.stack`, with the same `DBASE_EXPERIMENTAL_STACK`
 env-precedence rule as `start`/`stop`/`status`. See
 [Storage and bucket seeding](#storage-and-bucket-seeding) below. Explicit `--remote`
 targeting for these commands is unaffected by the flag either way.
@@ -256,7 +256,7 @@ targeting for these commands is unaffected by the flag either way.
 `db start` brings up a postgres-only project stack on first create. An existing stack resumes its
 primary database without changing other services (webhooks setup only, creating a missing
 `supabase_functions` schema; no second overlay or migrate-and-seed).
-`supabase start` while that postgres-only stack is running stops it and starts the full
+`dbase start` while that postgres-only stack is running stops it and starts the full
 configured stack, keeping data. `--from-backup` is not supported on the stack path.
 A local `db reset` and declarative resets rebuild the existing database while retaining stack
 identity, ports, and composition. See
@@ -280,7 +280,7 @@ lint transaction (always rolled back). It does not launch a client binary.
 
 ## Reading stack logs
 
-`supabase logs` reads retained stdout/stderr from composition members and `gateway`
+`dbase logs` reads retained stdout/stderr from composition members and `gateway`
 request lines from the shared API port. Interactive terminals open a browser; press `L`
 to load more records. Pipes and machine output perform one finite read and exit.
 
@@ -300,12 +300,12 @@ Use `--output-format json` for an array of retained records, or `stream-json` fo
 record, including instance IDs, launch IDs, and positions. Missing stacks and
 unmatched services fail with status 1. Browser interruption exits 130.
 
-The deprecated `supabase stack logs` keeps its existing `--tail` and `--follow`
+The deprecated `dbase stack logs` keeps its existing `--tail` and `--follow`
 behavior until removal in v4.
 
 ### Legacy stack logs
 
-`supabase stack logs` prints the retained stdout/stderr of composition members, plus
+`dbase stack logs` prints the retained stdout/stderr of composition members, plus
 the `gateway` request lines of the shared API port, and exits; `-f/--follow` then
 streams new lines until interrupted. Select `--stack <name>` or `--stack-id <id>`; the
 repeatable `--service <kind-or-instance-id>` can include standalone services too, and
@@ -337,7 +337,7 @@ and seed configuration are separate from importing legacy database data.
 
 The flag is local CLI configuration in `supabase/config.toml` or `supabase/config.json` and is
 excluded from hosted project configuration. Routing applies the CLI's working-directory rules,
-including `--workdir` and `SUPABASE_WORKDIR`, and prefers JSON when both files exist.
+including `--workdir` and `DBASE_WORKDIR`, and prefers JSON when both files exist.
 
 Stack mode rejects a `db.major_version` other than 15 or 17, a non-empty `experimental.s3_*` value
 while `db.orioledb_version` is set, an `edge_runtime.deno_version` other than 2 while Edge Runtime
@@ -353,14 +353,14 @@ do; on Linux, rootful Docker, rootful Podman and rootless Podman on pasta don't,
 serves the API over TLS fails there with `api.tls: unsupported networking`. The `stack start` side
 effects list its errors.
 
-Stack mode keeps its state under `SUPABASE_HOME` and never reads or writes `supabase/.temp`: Storage
+Stack mode keeps its state under `DBASE_HOME` and never reads or writes `supabase/.temp`: Storage
 uploads live in `stacks/<stack-id>/uploads`, command scratch output (pgdelta debug bundles, Functions
 bundling) in `tmp`, the release-check cache in `cli-latest`, and service versions come from
-`supabase/supabase.lock`. See [Supabase home](supabase-home.md).
+`supabase/supabase.lock`. See [DBase home](supabase-home.md).
 
 ## Service versions
 
-A stack runs the service versions pinned in `supabase/supabase.lock`, which `supabase start` writes
+A stack runs the service versions pinned in `supabase/supabase.lock`, which `dbase start` writes
 and the project commits so a team and CI run the same builds. Request versions under
 `[local.services]`, per service or for all of them with `default`:
 
@@ -374,11 +374,11 @@ version = "v2.197.0" # an upstream version: the highest published revision
 version = "v1.30.2-r1" # exactly revision 1 of that upstream version
 ```
 
-`linked` follows the hosted project: `supabase link` (in stack mode) probes the linked project or
+`linked` follows the hosted project: `dbase link` (in stack mode) probes the linked project or
 branch and records the version each service runs in the lock, then resolves `linked` entries to
 those releases. A project that was never linked pins the bundled version and records it as
 `unlinked`; a service the platform does not report, or a version slim-services does not publish,
-pins the bundled version as `unobserved` or `unpublished`. `supabase link --frozen`, or `link` under
+pins the bundled version as `unobserved` or `unpublished`. `dbase link --frozen`, or `link` under
 `CI` with an existing lock, records the link without changing the lock and warns when the hosted
 versions differ. `bundled` pins the bundled version explicitly. An upstream version, optionally
 with a `-r<N>` revision suffix, is resolved against the published slim-services releases and pinned
@@ -386,29 +386,29 @@ by content. `[db] orioledb_version` is shorthand for
 the `database` specifier of that OrioleDB build, and a database version must match
 `db.major_version`.
 
-`supabase start` resolves only the services whose specifier changed, under a project lease that
+`dbase start` resolves only the services whose specifier changed, under a project lease that
 serializes concurrent starts (a start waits up to 60 seconds for the lease, then fails), and leaves
 the other pins where they are. Resolving a release specifier needs the network, so a first start
 with an explicit service version or `[db] orioledb_version` cannot run offline, even when the CLI
 bundles that version; a first start that keeps `linked` or `bundled` does not need it. `supabase
 start --frozen` fails instead of resolving when the lock is missing or stale; it is implied when
 `CI` is set and a lock exists. A start never calls the Management API and needs no login: it warns when `supabase/.link.json`
-targets another project or branch than the lock observed (run `supabase stack update`), and when
+targets another project or branch than the lock observed (run `dbase stack update`), and when
 this CLI bundles a newer revision of a locked version. A lock that is malformed, does not match the
 format, or comes from a newer CLI always fails the start. The lock's JSON Schema is published at
 `https://supabase.com/schemas/supabase-lock/v1.json`. A database with initialized data keeps
 its build: any change other than a new `-rN` revision of the same build (a different upstream build,
 release line or major) is refused. The refusal offers to keep the data by pinning the recorded build with
 `local.services.database.version` in your config file, setting `db.major_version` back when the major differs and removing any
-`db.orioledb_version` when an OrioleDB build is requested, or to run `supabase stack destroy` and recreate it. `supabase link`
-and `supabase stack update` warn when the versions they lock would be refused by an existing stack's
+`db.orioledb_version` when an OrioleDB build is requested, or to run `dbase stack destroy` and recreate it. `dbase link`
+and `dbase stack update` warn when the versions they lock would be refused by an existing stack's
 data. A database that never initialized adopts the change. See the [`start` side
 effects](../src/commands/experimental/stack/start/SIDE_EFFECTS.md#service-versions-and-the-lock) for
 details.
 
 ## Port intents
 
-Host listener assignment for `supabase stack` is documented in [Port intents](./supabase-home.md#port-intents).
+Host listener assignment for `dbase stack` is documented in [Port intents](./supabase-home.md#port-intents).
 
 ## Service selection and shutdown
 
@@ -416,45 +416,45 @@ With the current defaults, enabled non-database services with endpoints are lazy
 60 seconds without traffic, Studio after 5 minutes; Functions has no automatic idle stop. A service
 that a running service depends on stays up until that dependent stops. An active HTTP request keeps a
 capability running; an idle HTTP keep-alive socket does not. Open WebSocket or TCP connections
-keep a capability running during idle periods. Use `supabase stack start --eager` to activate all
+keep a capability running during idle periods. Use `dbase stack start --eager` to activate all
 enabled capabilities and disable automatic idle stops. A request arriving while a capability is
 stopping waits for cleanup and then wakes it when the stack still permits activation. Manual
-`supabase stack stop` prevents wake up until the stack is started again. A cleanup failure can
+`dbase stack stop` prevents wake up until the stack is started again. A cleanup failure can
 block new connections until `stop` and `start` complete recovery; a destroy failure can be retried
 with `destroy`.
 
-`supabase stack restart` reuses an existing stack's saved effective configuration. It stops and
+`dbase stack restart` reuses an existing stack's saved effective configuration. It stops and
 starts the same stack identity, preserving its data. Normal startup may still download missing
 artifacts using its current preparation policy. Select a stack with `--stack <name>` or
 `--stack-id <id>`. The restart handler does not reload project configuration. Set
-`SUPABASE_EXPERIMENTAL_STACK=1` when restarting by ID outside the project or with invalid project
+`DBASE_EXPERIMENTAL_STACK=1` when restarting by ID outside the project or with invalid project
 configuration, so feature routing does not depend on that configuration. Start selection and
 activation flags such as `--exclude` and `--eager` remain in the saved stack configuration;
 `--preparation` applies only to that invocation. A later normal `start` reloads the project
 configuration and current flags.
-An unconfigured stack must be initialized with `supabase stack start` before it can be restarted.
+An unconfigured stack must be initialized with `dbase stack start` before it can be restarted.
 
-`supabase stack start --exclude studio,analytics -x mail` disables those services in the effective
+`dbase stack start --exclude studio,analytics -x mail` disables those services in the effective
 start configuration without changing the project file. Valid names are `rest`, `auth`, `realtime`,
 `storage`, `functions`, `studio`, `mail`, `analytics`, and `pooler`; the database is required.
 Excluding `rest` while Studio remains selected is rejected; excluding `analytics` does not affect
 Studio. The effective configuration is
 retained in stack state, so starting without `--exclude` restores the project's configured services.
 
-`supabase stack stop --all` stops every managed stack while preserving data. Registry entries that
+`dbase stack stop --all` stops every managed stack while preserving data. Registry entries that
 cannot be read or decoded are skipped with a warning on stderr; only a failure to read the stacks
 directory itself fails discovery, before any stop is attempted. Individual stop
 failures make the command fail and identify the affected stack IDs with their error details; no
 success or not-running summary is emitted when a stop fails.
 
-`supabase stack destroy --stack feature-a` permanently removes exactly that stack, its data and its Storage
+`dbase stack destroy --stack feature-a` permanently removes exactly that stack, its data and its Storage
 uploads (`stacks/<stack-id>/uploads`) after confirmation. Use `--yes` for unattended execution. Repeat `--stack-id` to destroy several stacks
 after one confirmation; every id must resolve before anything is destroyed, and a stack that fails
 to be destroyed does not stop the rest, though the command still fails.
 
 ## Storage and bucket seeding
 
-The `experimental.stack` flag (with the usual `SUPABASE_EXPERIMENTAL_STACK=1|0` env
+The `experimental.stack` flag (with the usual `DBASE_EXPERIMENTAL_STACK=1|0` env
 precedence) routes several command families at once: the top-level `start`/`stop`/`status`
 aliases, the `stack` namespace itself, `db`/`migration`/`test`'s local targets (above), and
 now `storage ls`/`cp`/`mv`/`rm` and `seed buckets` (including the bucket seeding step inside `db
@@ -465,32 +465,32 @@ Under the stack backend, local Storage operations resolve their endpoint and cre
 the selected composition rather than `[api]`/`[api.tls]`: the endpoint is the Storage member's
 observed HTTP binding plus `/storage/v1/...`, and the service-role JWT is the one the stack saved
 with its credentials. The stack is located by the project root (workdir realpath) through the
-`@supabase/stack` API, which reads stack state under `SUPABASE_HOME`. A stack started with
+`@supabase/stack` API, which reads stack state under `DBASE_HOME`. A stack started with
 `[api.tls]` serves that endpoint over HTTPS, and Storage uses the certificate saved at start,
 not `config.toml`: a saved certificate with a self-signed root is the only trusted CA; a CA-issued
 one is verified against Bun's default trust store and `NODE_EXTRA_CA_CERTS`.
 Neither `storage` nor `seed buckets` ever creates a stack; the legacy `[api]`
 port/external-URL/TLS fields, their `SUPABASE_API_*` overrides, `SUPABASE_AUTH_JWT_SECRET`/
-`SUPABASE_AUTH_SERVICE_ROLE_KEY`, `SUPABASE_SERVICES_HOSTNAME` and the Docker daemon hostname are
+`SUPABASE_AUTH_SERVICE_ROLE_KEY`, `DBASE_SERVICES_HOSTNAME` and the Docker daemon hostname are
 legacy-backend only and are not consulted on this path. The service-role JWT is never printed or
 logged.
 
 Storage's capability state gates these operations:
 
-| Storage capability state                   | Effect                                                                                                                                                                          |
-| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `disabled` (e.g. `stack start -x storage`) | Fails with `StackStorageCapabilityError` ("Storage is disabled for this stack."), guiding the user to enable Storage and run `supabase stack start` without `-x storage`.       |
-| `failed` / `stopped`                       | Fails with the same `StackStorageCapabilityError` ("Storage failed to start for this stack"/"Storage is stopped for this stack"), guiding the user to `supabase stack restart`. |
-| `dormant` / `starting` / `ready`           | Proceeds immediately; the gateway handles lazy activation without client-side waiting.                                                                                          |
-| `stopping` with wake retained (idle stop)  | Proceeds immediately; the gateway waits for cleanup and wakes Storage.                                                                                                          |
-| `stopping` after manual `stack stop`       | Fails like `stopped` because manual stop disables wake-up until the stack starts again.                                                                                         |
+| Storage capability state                   | Effect                                                                                                                                                                       |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `disabled` (e.g. `stack start -x storage`) | Fails with `StackStorageCapabilityError` ("Storage is disabled for this stack."), guiding the user to enable Storage and run `dbase stack start` without `-x storage`.       |
+| `failed` / `stopped`                       | Fails with the same `StackStorageCapabilityError` ("Storage failed to start for this stack"/"Storage is stopped for this stack"), guiding the user to `dbase stack restart`. |
+| `dormant` / `starting` / `ready`           | Proceeds immediately; the gateway handles lazy activation without client-side waiting.                                                                                       |
+| `stopping` with wake retained (idle stop)  | Proceeds immediately; the gateway waits for cleanup and wakes Storage.                                                                                                       |
+| `stopping` after manual `stack stop`       | Fails like `stopped` because manual stop disables wake-up until the stack starts again.                                                                                      |
 
 A stack that is not registered, not running, has no primary database, or whose stack API is
-unavailable fails with `StackStorageUnavailableError`, guiding the user to run `supabase stack
-status`/`supabase stack restart`, or `supabase start` when the stack has never been configured.
+unavailable fails with `StackStorageUnavailableError`, guiding the user to run `dbase stack
+status`/`dbase stack restart`, or `dbase start` when the stack has never been configured.
 Missing Storage HTTP endpoints fail with `StackStorageCapabilityError`, as do other Storage
 capability failures. A stack-gateway 502/503 encountered while Storage activates is reported as
-`StackStorageCapabilityError` guiding the user to `supabase logs --service storage` then `supabase stack
+`StackStorageCapabilityError` guiding the user to `dbase logs --service storage` then `dbase stack
 restart`, not as a raw status body — but only for a local target; a `--remote` failure passes
 through unchanged. All of these failures exit `1` for
 `storage`/`seed buckets`, and no HTTP

@@ -1,4 +1,4 @@
-# `supabase db query`
+# `dbase db query`
 
 Target: selectable, consent default No — see [Command target](../../../../docs/command-target.md)
 
@@ -13,15 +13,15 @@ stack never prompts.
 
 ## Files Read
 
-| Path                                 | Format     | When                                                                                                                                          |
-| ------------------------------------ | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `<path>` (from `--file`)             | SQL        | when `--file` / `-f` is set (rejected together with positional SQL)                                                                           |
-| stdin                                | SQL        | when piped (not a TTY) and no `--file`/positional SQL                                                                                         |
-| `supabase/config.toml`               | TOML       | local / `--remote=<url>` connection resolution and `[api].enabled` / `[api].schemas`                                                          |
-| `~/.supabase/access-token`           | plain text | a remote project or branch when `SUPABASE_ACCESS_TOKEN` unset                                                                                 |
-| `supabase/.temp/project-ref`         | plain text | bare `--remote`, ref resolution — skipped when `SUPABASE_PROJECT_ID` is set; with no selector, only to name the project in the `Target:` hint |
-| `supabase/.temp/linked-project.json` | JSON       | a remote project or branch, existence check before the cache write (see below)                                                                |
-| `PGSSL*` PEM, `pg_service.conf`      | PEM, libpq | remote project, when set; see `db push`                                                                                                       |
+| Path                                 | Format     | When                                                                                                                                       |
+| ------------------------------------ | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `<path>` (from `--file`)             | SQL        | when `--file` / `-f` is set (rejected together with positional SQL)                                                                        |
+| stdin                                | SQL        | when piped (not a TTY) and no `--file`/positional SQL                                                                                      |
+| `supabase/config.toml`               | TOML       | local / `--remote=<url>` connection resolution and `[api].enabled` / `[api].schemas`                                                       |
+| `~/.supabase/access-token`           | plain text | a remote project or branch when `DBASE_ACCESS_TOKEN` unset                                                                                 |
+| `supabase/.temp/project-ref`         | plain text | bare `--remote`, ref resolution — skipped when `DBASE_PROJECT_ID` is set; with no selector, only to name the project in the `Target:` hint |
+| `supabase/.temp/linked-project.json` | JSON       | a remote project or branch, existence check before the cache write (see below)                                                             |
+| `PGSSL*` PEM, `pg_service.conf`      | PEM, libpq | remote project, when set; see `db push`                                                                                                    |
 
 ## Files Written
 
@@ -31,20 +31,20 @@ stack never prompts.
 
 ## API Routes
 
-| Method | Path                                | Auth   | Request body                                                    | Response                                                                                                                                                                                                              |
-| ------ | ----------------------------------- | ------ | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| POST   | `/v1/projects/{ref}/database/query` | Bearer | `{"query":"<sql>"}`, plus `"read_only":true` with `--read-only` | 201, JSON array of row objects (read via `executeRaw`, since the typed operation voids the body).                                                                                                                     |
-| GET    | `/v1/projects/{ref}`                | Bearer | —                                                               | 200 → linked-project cache write; any other status → no write. Fired after the query on a remote project or branch.                                                                                                   |
-| GET    | `/v1/projects/{parent}/branches`    | Bearer | —                                                               | 200 → `[{id, name, project_ref}]`. Branch lookup — only for `--remote=<branch>`, and for a bare `--remote` followed by a word that could name a branch; `{parent}` is `SUPABASE_PROJECT_ID`, else the linked project. |
-| GET    | `/v1/branches/{id}`                 | Bearer | —                                                               | 200 → `{ref, status, …}`. Branch lookup — only for `--remote=<branch UUID>` when no project is linked                                                                                                                 |
+| Method | Path                                | Auth   | Request body                                                    | Response                                                                                                                                                                                                           |
+| ------ | ----------------------------------- | ------ | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| POST   | `/v1/projects/{ref}/database/query` | Bearer | `{"query":"<sql>"}`, plus `"read_only":true` with `--read-only` | 201, JSON array of row objects (read via `executeRaw`, since the typed operation voids the body).                                                                                                                  |
+| GET    | `/v1/projects/{ref}`                | Bearer | —                                                               | 200 → linked-project cache write; any other status → no write. Fired after the query on a remote project or branch.                                                                                                |
+| GET    | `/v1/projects/{parent}/branches`    | Bearer | —                                                               | 200 → `[{id, name, project_ref}]`. Branch lookup — only for `--remote=<branch>`, and for a bare `--remote` followed by a word that could name a branch; `{parent}` is `DBASE_PROJECT_ID`, else the linked project. |
+| GET    | `/v1/branches/{id}`                 | Bearer | —                                                               | 200 → `{ref, status, …}`. Branch lookup — only for `--remote=<branch UUID>` when no project is linked                                                                                                              |
 
 ## Environment Variables
 
 | Variable                | Purpose                                                                                                                  |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `SUPABASE_ACCESS_TOKEN` | auth for a remote project or branch                                                                                      |
-| `SUPABASE_PROJECT_ID`   | linked project ref override and the parent that `--remote=<branch>` is resolved against (superseded by `--remote=<ref>`) |
-| `SUPABASE_YES`          | grants the hosted-target confirmation (shell only; `supabase/.env` is ignored)                                           |
+| `DBASE_ACCESS_TOKEN`    | auth for a remote project or branch                                                                                      |
+| `DBASE_PROJECT_ID`      | linked project ref override and the parent that `--remote=<branch>` is resolved against (superseded by `--remote=<ref>`) |
+| `DBASE_YES`             | grants the hosted-target confirmation (shell only; `supabase/.env` is ignored)                                           |
 | `SUPABASE_API_SCHEMAS`  | overrides `[api].schemas` for the local / `--remote=<url>` agent-mode advisory                                           |
 | `SUPABASE_API_ENABLED`  | overrides `[api].enabled` for the local / `--remote=<url>` agent-mode advisory                                           |
 | agent-detection signals | `--agent=auto` (e.g. `CURSOR_*`, `CLAUDECODE`, …) via `@vercel/detect-agent`                                             |
@@ -57,7 +57,7 @@ stack never prompts.
 | `0`  | success                                                                                                                                                                                                                                                                                          |
 | `1`  | `--file` together with positional SQL (`DbQuerySqlSourceConflictError`: `Pass SQL as an argument or with --file, not both.`, plus the suggestion `To select a branch or project with --remote, write --remote=<value>.` only when `--remote` was passed bare); no API call and no `Target:` line |
 | `1`  | no SQL provided; empty stdin; unreadable `--file`; remote project or branch without login; query exec failure; non-201 remote status                                                                                                                                                             |
-| `1`  | hosted target without `--read-only` in a JSON, piped, agent or non-TTY run without `--yes` or a shell `SUPABASE_YES` (`HostedMutationConsentRequiredError`); nothing is sent                                                                                                                     |
+| `1`  | hosted target without `--read-only` in a JSON, piped, agent or non-TTY run without `--yes` or a shell `DBASE_YES` (`HostedMutationConsentRequiredError`); nothing is sent                                                                                                                        |
 | `1`  | `--read-only` with a statement that does not start with `SELECT`, `WITH`, `VALUES`, `TABLE`, `SHOW`, `EXPLAIN` or `(`, or with input that ends inside a comment, quote or dollar quote (`DbQueryReadOnlyStatementError`); nothing is sent                                                        |
 | `1`  | hosted target confirmation declined (`HostedMutationDeclinedError`, `context canceled`); nothing is sent                                                                                                                                                                                         |
 
@@ -127,7 +127,7 @@ from the environment. Agent mode defaults the format to JSON (table for humans).
 - **Linked-project cache.** On a remote project or branch,
   after the query runs — whether it succeeds or fails — the handler issues
   `GET /v1/projects/{ref}` and writes `supabase/.temp/linked-project.json`. The
-  write is skipped when the file already exists (`supabase link` is authoritative),
+  write is skipped when the file already exists (`dbase link` is authoritative),
   the access token is missing, or the GET is non-200 — so an auth-failing query
   still fires the GET but writes nothing. The local default and `--remote=<url>` never resolve a
   project ref and so never trigger this request or write. Shared with `backups`

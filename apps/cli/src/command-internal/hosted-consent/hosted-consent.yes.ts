@@ -3,14 +3,14 @@ import { Effect, FileSystem, Option, Path } from "effect";
 import { CommandSettings } from "../../config/command-settings.service.ts";
 import { candidateDotenvFilenames } from "../../shared/config/cli-config-env.ts";
 import { parseDotEnv } from "../../shared/config/dotenv.ts";
-import { envValue } from "../../shared/config/env-option.ts";
+import { envValue, envValueBoth } from "../../shared/config/env-option.ts";
 import { RuntimeInfo } from "../../shared/runtime/runtime-info.service.ts";
 import { resolveYesSource } from "../global-flags.ts";
 import { parseEnvBool } from "../supabase-env.ts";
 
-export type HostedYesSource = "--yes" | "SUPABASE_YES";
+export type HostedYesSource = "--yes" | "DBASE_YES" | "SUPABASE_YES";
 
-const YES_VARIABLE = "SUPABASE_YES";
+const YES_VARIABLES = ["DBASE_YES", "SUPABASE_YES"] as const;
 
 interface DotenvDefinition {
   readonly file: string;
@@ -35,9 +35,10 @@ const platform = Effect.gen(function* () {
   );
 });
 
-const envNameFrom = (variable: string) =>
-  Effect.map(envValue(variable), (value) =>
-    value === undefined || value === "" ? "development" : value,
+const envNameFrom = (variable?: string) =>
+  Effect.map(
+    variable === undefined ? envValueBoth("DBASE_ENV", "SUPABASE_ENV") : envValue(variable),
+    (value) => (value === undefined || value === "" ? "development" : value),
   );
 
 const definitionsIn = Effect.fnUntraced(function* (host: Platform, dir: string, env: string) {
@@ -48,9 +49,14 @@ const definitionsIn = Effect.fnUntraced(function* (host: Platform, dir: string, 
     if (Option.isNone(content)) continue;
     const parsed = yield* Effect.try(() => parseDotEnv(content.value)).pipe(Effect.option);
     if (Option.isNone(parsed)) {
-      if (content.value.includes(YES_VARIABLE)) found.push({ file, value: Option.none() });
-    } else if (Object.hasOwn(parsed.value, YES_VARIABLE)) {
-      found.push({ file, value: Option.some(parsed.value[YES_VARIABLE]!) });
+      if (YES_VARIABLES.some((variable) => content.value.includes(variable))) {
+        found.push({ file, value: Option.none() });
+      }
+    } else {
+      const variable = YES_VARIABLES.find((name) => Object.hasOwn(parsed.value, name));
+      if (variable !== undefined) {
+        found.push({ file, value: Option.some(parsed.value[variable]!) });
+      }
     }
   }
   return found;
@@ -63,7 +69,7 @@ const autoloadedDefinitions = (host: Platform) =>
 /**
  * Confirms a hosted change only for `--yes` or a `SUPABASE_YES` the shell exported. Bun copies
  * working-directory dotenv files into the environment and its parsing can differ from ours, so a
- * working-directory dotenv file that defines `SUPABASE_YES` at all, whatever its value, makes the
+ * working-directory dotenv file that defines either variable at all, whatever its value, makes the
  * environment's value the file's and not consent.
  */
 export const resolveHostedYes = Effect.gen(function* () {
@@ -73,10 +79,12 @@ export const resolveHostedYes = Effect.gen(function* () {
   const host = yield* platform;
   if (Option.isNone(host)) return Option.none<HostedYesSource>();
   const fromFile = (yield* autoloadedDefinitions(host.value)).length > 0;
-  return fromFile ? Option.none<HostedYesSource>() : Option.some<HostedYesSource>("SUPABASE_YES");
+  if (fromFile) return Option.none<HostedYesSource>();
+  const preferred = yield* envValue("DBASE_YES");
+  return Option.some<HostedYesSource>(preferred === undefined ? "SUPABASE_YES" : "DBASE_YES");
 });
 
-/** Dotenv files, relative to the cwd, whose `SUPABASE_YES` does not confirm a hosted change. */
+/** Dotenv files, relative to the cwd, whose `DBASE_YES` (or legacy `SUPABASE_YES`) does not confirm a hosted change. */
 export const ignoredYesFiles = Effect.gen(function* () {
   const host = yield* platform;
   if (Option.isNone(host)) return [];
@@ -85,7 +93,7 @@ export const ignoredYesFiles = Effect.gen(function* () {
     onNone: () => cwd,
     onSome: (settings) => settings.workdir,
   });
-  const projectEnv = yield* envNameFrom("SUPABASE_ENV");
+  const projectEnv = yield* envNameFrom();
 
   const projectDefinitions = [
     ...(yield* definitionsIn(host.value, path.join(workdir, "supabase"), projectEnv)),

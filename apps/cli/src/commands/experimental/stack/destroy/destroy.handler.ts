@@ -24,7 +24,7 @@ const destroyError = (id: string) => (cause: StackError) =>
     ? new StackCommandDestroyError({
         reason: "runtime",
         message: cause.message,
-        suggestion: `Start the container engine, then run "supabase stack destroy --stack-id ${id} --yes" again; nothing was removed.`,
+        suggestion: `Start the container engine, then run "dbase stack destroy --stack-id ${id} --yes" again; nothing was removed.`,
         cause,
       })
     : new StackCommandDestroyError({
@@ -119,7 +119,7 @@ export const stackDestroy = Effect.fn("experimental.stack.destroy")(function* (
               `${stackId}: ${error.message}${error.detail === undefined ? "" : `\n  ${error.detail}`}`,
           )
           .join("\n"),
-        suggestion: "Run `supabase stack list` to see managed stacks and their IDs.",
+        suggestion: "Run `dbase stack list` to see managed stacks and their IDs.",
         cause: unresolved,
       });
     }
@@ -204,7 +204,7 @@ export const stackDestroy = Effect.fn("experimental.stack.destroy")(function* (
         });
       const manual =
         leftover.length === 0 ? undefined : leftover.map(({ error }) => error.suggestion).join(" ");
-      const retry = `"supabase stack destroy ${retryable.map(({ id }) => `--stack-id ${id}`).join(" ")} --yes"`;
+      const retry = `"dbase stack destroy ${retryable.map(({ id }) => `--stack-id ${id}`).join(" ")} --yes"`;
       const runtime =
         retryable.length > 0 && retryable.every(({ error }) => error.reason === "runtime");
       const retrySuggestion = runtime

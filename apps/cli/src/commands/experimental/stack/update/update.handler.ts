@@ -38,7 +38,7 @@ const serviceKinds = (names: ReadonlyArray<string>) => {
 const render = (update: LockUpdate) => {
   const skipped = update.stale.map(
     ({ service, reason }) =>
-      `${service} is stale (${reason}); run supabase start or supabase stack update ${service}`,
+      `${service} is stale (${reason}); run dbase start or dbase stack update ${service}`,
   );
   if (!update.written)
     return skipped.length === 0
@@ -91,7 +91,7 @@ export const stackUpdate = Effect.fn("experimental.stack.update")(function* (
           new StackCommandUpdateError({
             reason: "hosted",
             message: `Could not read the hosted versions of the linked project: ${error.message}`,
-            suggestion: "Run supabase login, then supabase link, and retry.",
+            suggestion: "Run dbase login, then dbase link, and retry.",
             cause: error,
           }),
       ),
@@ -123,7 +123,7 @@ export const stackUpdate = Effect.fn("experimental.stack.update")(function* (
         reason: "invalid-config",
         message:
           "No supabase/config.toml, config.json or config.jsonc in this project, so there is no lock to update.",
-        suggestion: "Run supabase init, then supabase start to create supabase/supabase.lock.",
+        suggestion: "Run dbase init, then dbase start to create supabase/supabase.lock.",
       });
 
     yield* Effect.annotateCurrentSpan({

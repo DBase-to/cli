@@ -3,7 +3,7 @@ import { Effect, Option, type Path } from "effect";
 import { envOptionBoth } from "./env-option.ts";
 
 /**
- * Resolves the global Supabase CLI state root.
+ * Resolves the global DBase CLI state root.
  *
  * `DBASE_HOME` (then `SUPABASE_HOME`) overrides the location when set to a non-empty value after trimming
  * surrounding whitespace (an absolute path is expected; the value is used verbatim). Otherwise it

@@ -51,7 +51,7 @@ describe("branch resolution actionability", () => {
     expect(result.error_kind).toBe("user_actionable");
     expect(result.error_category).toBe("invalid_config");
     expect(result.suggestion_type).toBe("link_project");
-    expect(result.suggested_command).toBe("supabase link");
+    expect(result.suggested_command).toBe("dbase link");
   });
 
   it("classifies a not-yet-provisioned branch as an API-status problem with its own fingerprint", () => {

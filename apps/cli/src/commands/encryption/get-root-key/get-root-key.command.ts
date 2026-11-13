@@ -20,7 +20,7 @@ const config = {
 export type EncryptionGetRootKeyFlags = CliCommand.Command.Config.Infer<typeof config>;
 
 export const encryptionGetRootKeyCommand = Command.make("get-root-key", config).pipe(
-  Command.withDescription("Get the root encryption key of a Supabase project"),
+  Command.withDescription("Get the root encryption key of a DBase project"),
   Command.withShortDescription("Get root encryption key"),
   withPermissions(
     compose(

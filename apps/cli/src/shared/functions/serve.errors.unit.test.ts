@@ -202,13 +202,13 @@ describe("EdgeRuntimeLogStreamLostError actionability", () => {
 
 describe("ServeLocalDbNotRunningError actionability", () => {
   it("classifies a missing local DB container as user-actionable with the start-stack remediation", () => {
-    const error = new ServeLocalDbNotRunningError({ message: "supabase start is not running." });
+    const error = new ServeLocalDbNotRunningError({ message: "dbase start is not running." });
 
     const result = classifyCliErrorActionability(error);
     expect(result.error_kind).toBe(actionability.startStack.error_kind);
     expect(result.error_category).toBe(actionability.startStack.error_category);
     expect(result.suggestion_type).toBe(actionability.startStack.suggestion_type);
-    expect(result.suggested_command).toBe("supabase start");
+    expect(result.suggested_command).toBe("dbase start");
     expect(result.error_fingerprint).toBe("tag:ServeLocalDbNotRunningError");
   });
 });

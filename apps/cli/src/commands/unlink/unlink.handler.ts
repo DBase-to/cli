@@ -125,9 +125,9 @@ export const unlink = Effect.fn("unlink")(function* () {
       return yield* failure;
     }
 
-    // 3. Print "Finished supabase unlink." in text mode, or a structured success otherwise.
+    // 3. Print "Finished dbase unlink." in text mode, or a structured success otherwise.
     if (output.format === "text") {
-      yield* output.raw("Finished supabase unlink.\n");
+      yield* output.raw("Finished dbase unlink.\n");
     } else {
       yield* output.success("", { project_ref: projectRef ?? null });
     }

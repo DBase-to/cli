@@ -42,7 +42,7 @@ const CLEANUP_TIMEOUT_MS = 120_000;
 // `start`'s correctness genuinely depends on a real Docker daemon — real label filtering and
 // container lifecycle, not just CLI exit codes. See `stop.e2e.test.ts` and AGENTS.md's "e2e
 // tests" section for the runner-gating convention.
-describe("supabase start health (e2e)", () => {
+describe("dbase start health (e2e)", () => {
   // The health watch inspects and dumps logs by container name against a real daemon and derives
   // recovery advice from real log bytes — not observable through in-process mocks. Reproduces
   // supabase/cli#5952: a locally cached image that cannot be executed.

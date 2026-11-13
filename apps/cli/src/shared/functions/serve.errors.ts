@@ -11,7 +11,7 @@ import {
 } from "../telemetry/error-actionability.ts";
 
 /**
- * Exit codes a supervisor uses to tear a container down (`supabase stop`, CI cancellation), not a
+ * Exit codes a supervisor uses to tear a container down (`dbase stop`, CI cancellation), not a
  * self-raised crash signal; 137 is excluded because it needs `OOMKilled` to tell a memory-limit
  * kill from a kill the CLI cannot attribute.
  */
@@ -105,7 +105,7 @@ export class DockerLogsStreamError extends Data.TaggedError("DockerLogsStreamErr
 /**
  * `streamContainerLogs` re-attached to `docker logs -f` the configured consecutive-cap number of
  * times without forwarding a new line, while the container kept running — a daemon that keeps
- * closing the stream rather than a Supabase bug.
+ * closing the stream rather than a DBase bug.
  */
 export class EdgeRuntimeLogStreamLostError extends Data.TaggedError(
   "EdgeRuntimeLogStreamLostError",
@@ -118,7 +118,7 @@ export class EdgeRuntimeLogStreamLostError extends Data.TaggedError(
   }
 }
 
-/** `assertLocalDbRunning`'s DB container inspect found no such container: `supabase start` hasn't run. */
+/** `assertLocalDbRunning`'s DB container inspect found no such container: `dbase start` hasn't run. */
 export class ServeLocalDbNotRunningError extends Data.TaggedError("ServeLocalDbNotRunningError")<{
   readonly message: string;
 }> {

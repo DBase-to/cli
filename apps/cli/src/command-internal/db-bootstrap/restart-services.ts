@@ -1,6 +1,6 @@
 /**
  * Post-recreate satellite-container restart + Kong reload, shared by both PG14's and PG15's
- * `db reset` paths. Neither `db start` nor `supabase start` calls this: it exists purely to
+ * `db reset` paths. Neither `db start` nor `dbase start` calls this: it exists purely to
  * bring the satellite containers (storage/auth/realtime/pooler) back in sync with a `db`
  * container that was just recreated or force-restarted out from under them, and to reload Kong's
  * nginx so its cached upstream addresses (which may have changed) stop 502ing. PG15's path also

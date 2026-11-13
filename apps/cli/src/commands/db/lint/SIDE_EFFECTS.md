@@ -1,4 +1,4 @@
-# `supabase db lint`
+# `dbase db lint`
 
 Target: selectable, no consent — see [Command target](../../../../docs/command-target.md)
 
@@ -6,12 +6,12 @@ Checks a database for PL/pgSQL typing errors via the `plpgsql_check` extension.
 
 ## Files Read
 
-| Path                                   | Format     | When                                                                                                                                                           |
-| -------------------------------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `<workdir>/supabase/config.toml`       | TOML       | always — to resolve the local / remote DB connection config                                                                                                    |
-| `~/.supabase/access-token`             | plain text | a remote project or branch only, when `SUPABASE_ACCESS_TOKEN` unset (keyring → file)                                                                           |
-| `<workdir>/supabase/.temp/project-ref` | plain text | bare `--remote` only, to resolve the project ref — skipped when `SUPABASE_PROJECT_ID` is set; with no selector, only to name the project in the `Target:` hint |
-| `PGSSL*` PEM, `pg_service.conf`        | PEM, libpq | remote project, when set; see `db push`                                                                                                                        |
+| Path                                   | Format     | When                                                                                                                                                        |
+| -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `<workdir>/supabase/config.toml`       | TOML       | always — to resolve the local / remote DB connection config                                                                                                 |
+| `~/.supabase/access-token`             | plain text | a remote project or branch only, when `DBASE_ACCESS_TOKEN` unset (keyring → file)                                                                           |
+| `<workdir>/supabase/.temp/project-ref` | plain text | bare `--remote` only, to resolve the project ref — skipped when `DBASE_PROJECT_ID` is set; with no selector, only to name the project in the `Target:` hint |
+| `PGSSL*` PEM, `pg_service.conf`        | PEM, libpq | remote project, when set; see `db push`                                                                                                                     |
 
 ## Files Written
 
@@ -35,7 +35,7 @@ resolve credentials); the lint itself issues no advisor/API requests.
 
 `--remote=<branch>`, and a bare `--remote` followed by a word that could name a branch, also call
 `GET /v1/projects/{parent}/branches` (Bearer) to find the branch's project; `{parent}` is
-`SUPABASE_PROJECT_ID`, else the linked project. A branch UUID with no linked project is resolved
+`DBASE_PROJECT_ID`, else the linked project. A branch UUID with no linked project is resolved
 through `GET /v1/branches/{id}` instead.
 
 ## Database
@@ -57,10 +57,10 @@ container stacks can enable it. Compose uses the Compose Postgres image.
 
 | Variable                | Purpose                                                                                                                  | Required?                                 |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------- |
-| `SUPABASE_ACCESS_TOKEN` | auth token for a remote project or branch                                                                                | no (keyring → `~/.supabase/access-token`) |
-| `SUPABASE_PROJECT_ID`   | linked project ref override and the parent that `--remote=<branch>` is resolved against (superseded by `--remote=<ref>`) | no                                        |
-| `SUPABASE_DB_PASSWORD`  | remote direct-DB password                                                                                                | no                                        |
-| `SUPABASE_PROFILE`      | API profile (built-in name or YAML path)                                                                                 | no                                        |
+| `DBASE_ACCESS_TOKEN`    | auth token for a remote project or branch                                                                                | no (keyring → `~/.supabase/access-token`) |
+| `DBASE_PROJECT_ID`      | linked project ref override and the parent that `--remote=<branch>` is resolved against (superseded by `--remote=<ref>`) | no                                        |
+| `DBASE_DB_PASSWORD`     | remote direct-DB password                                                                                                | no                                        |
+| `DBASE_PROFILE`         | API profile (built-in name or YAML path)                                                                                 | no                                        |
 | `PGHOST` / `PGPORT` / … | connection overrides                                                                                                     | no                                        |
 | `PG*` libpq             | remote project; see `db push`                                                                                            | no                                        |
 

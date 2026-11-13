@@ -115,7 +115,7 @@ export function debugBundleMessage(debugDir: string): string {
     "  1. Open an issue at https://github.com/supabase/pg-toolbelt/issues",
     "     Attach the files from the debug folder above.",
     "  2. Open a support ticket at https://supabase.com/dashboard/support",
-    "     (only visible to Supabase employees)",
+    "     (only visible to DBase employees)",
     "",
     yellow("WARNING: The debug folder may contain sensitive information about your"),
     yellow("database schema, including table structures, function definitions, and role"),

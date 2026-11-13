@@ -209,13 +209,11 @@ describe("Output", () => {
         Effect.gen(function* () {
           const out = yield* Output;
           const task = yield* out.task("Loading organizations...");
-          yield* task.succeed("- name: Supabase\n- name: Supabase Dev");
+          yield* task.succeed("- name: Supabase\n- name: DBase Dev");
           yield* TestClock.adjust(200);
 
           expect(mockClack.spinnerFactory).not.toHaveBeenCalled();
-          expect(mockClack.log.success).toHaveBeenCalledWith(
-            "- name: Supabase\n- name: Supabase Dev",
-          );
+          expect(mockClack.log.success).toHaveBeenCalledWith("- name: Supabase\n- name: DBase Dev");
         }).pipe(Effect.provide(layer)),
     );
 
@@ -224,10 +222,10 @@ describe("Output", () => {
         const out = yield* Output;
         const task = yield* out.task("Loading organizations...");
         yield* TestClock.adjust(200);
-        yield* task.succeed("- name: Supabase\n- name: Supabase Dev");
+        yield* task.succeed("- name: Supabase\n- name: DBase Dev");
 
         expect(mockClack.spinnerHandle.stop).toHaveBeenCalledWith(
-          "- name: Supabase\n\x1B[90m│\x1B[39m  - name: Supabase Dev",
+          "- name: Supabase\n\x1B[90m│\x1B[39m  - name: DBase Dev",
         );
       }).pipe(Effect.provide(layer)),
     );
@@ -611,7 +609,7 @@ describe("Output", () => {
         const resumed = handle();
         mockClack.spinnerFactory.mockReturnValueOnce(first).mockReturnValueOnce(resumed);
         const out = yield* Output;
-        const task = yield* out.task("Starting local Supabase stack...");
+        const task = yield* out.task("Starting local DBase stack...");
         yield* TestClock.adjust(200);
 
         yield* out.info("Seeding globals from roles.sql...");
@@ -619,7 +617,7 @@ describe("Output", () => {
 
         expect(first.clear).toHaveBeenCalledTimes(1);
         expect(first.stop).not.toHaveBeenCalled();
-        expect(resumed.start).toHaveBeenCalledWith("Starting local Supabase stack...");
+        expect(resumed.start).toHaveBeenCalledWith("Starting local DBase stack...");
         expect(resumed.stop).toHaveBeenCalledWith("Stack is ready.");
       }).pipe(Effect.provide(layer)),
     );
@@ -628,7 +626,7 @@ describe("Output", () => {
       Effect.gen(function* () {
         const writes = vi.spyOn(process.stderr, "write").mockImplementation(() => true);
         const out = yield* Output;
-        yield* out.task("Starting local Supabase stack...");
+        yield* out.task("Starting local DBase stack...");
         yield* TestClock.adjust(200);
 
         yield* out.fail({ code: "E_TEST", message: "no database", suggestion: "retry" });

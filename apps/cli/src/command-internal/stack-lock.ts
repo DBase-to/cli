@@ -235,7 +235,7 @@ const lockFailure = (
         reason: "invalid-lock",
         message:
           error._tag === "LockInvalidError"
-            ? `${error.message}; fix it, or delete it and run supabase start to resolve the versions again`
+            ? `${error.message}; fix it, or delete it and run dbase start to resolve the versions again`
             : error.message,
       });
 
@@ -436,7 +436,7 @@ const resolveLinked = Effect.fn("StackLock.resolveLinked")(function* (
             pin: bundled,
             resolution: "unobserved",
             linked,
-            notice: `${kind}: ${cause}; using the bundled ${version(bundled)}. supabase link or supabase stack update retries.`,
+            notice: `${kind}: ${cause}; using the bundled ${version(bundled)}. dbase link or dbase stack update retries.`,
             kept: false,
           }
         : keep(safe, `${kind}: ${cause}; kept ${version(safe.resolved)}`);
@@ -589,7 +589,7 @@ const continuousIntegration = Config.option(Config.String("CI")).pipe(
 
 /**
  * A lock that cannot be used as-is. A frozen `start` is told to commit a lock resolved elsewhere;
- * a command that only reads the lock is told to run `supabase start` here, which refreshes it.
+ * a command that only reads the lock is told to run `dbase start` here, which refreshes it.
  */
 const unusableLock = (
   stale: ReadonlyMap<ServiceKind, string>,
@@ -599,11 +599,11 @@ const unusableLock = (
   lock === undefined
     ? new LockResolutionError({
         reason: "frozen-missing",
-        message: `${LOCK_FILE} not found; run supabase start ${audience === "frozen" ? "locally and commit it" : "to create it"}`,
+        message: `${LOCK_FILE} not found; run dbase start ${audience === "frozen" ? "locally and commit it" : "to create it"}`,
       })
     : new LockResolutionError({
         reason: "frozen-stale",
-        message: `${LOCK_FILE} is stale for: ${[...stale].map(([kind, reason]) => `${kind} (${reason})`).join(", ")}; ${audience === "frozen" ? "run supabase start locally and commit the updated lock" : "run supabase start to refresh it"}`,
+        message: `${LOCK_FILE} is stale for: ${[...stale].map(([kind, reason]) => `${kind} (${reason})`).join(", ")}; ${audience === "frozen" ? "run dbase start locally and commit the updated lock" : "run dbase start to refresh it"}`,
       });
 
 const version = (pin: ArtifactPin) => `${pin.upstreamVersion}-r${pin.revision}`;
@@ -742,7 +742,7 @@ const holdLease = Effect.fn("StackLock.lease")(function* (projectRoot: string) {
   });
 });
 
-/** Runs `effect` under the project lease that `supabase link` publishes `.link.json` under. */
+/** Runs `effect` under the project lease that `dbase link` publishes `.link.json` under. */
 export const withProjectLease = <A, E, R>(projectRoot: string, effect: Effect.Effect<A, E, R>) =>
   holdLease(projectRoot).pipe(Effect.andThen(effect), Effect.scoped);
 
@@ -763,7 +763,7 @@ export const rejectFrozenWithoutConfig = Effect.fn("StackLock.rejectFrozenWithou
     if (frozen)
       return yield* new LockResolutionError({
         reason: "frozen-missing",
-        message: `${LOCK_FILE} not found; run supabase start locally and commit it`,
+        message: `${LOCK_FILE} not found; run dbase start locally and commit it`,
       });
   },
 );
@@ -956,7 +956,7 @@ const lockWarnings = Effect.fn("StackLock.warn")(function* (
       observed.branch.ref !== target.ref
     )
       yield* output.warn(
-        `${observed === undefined ? `${LOCK_FILE} has no hosted observations` : `lock observed ${remoteLabel(observed.project, observed.branch.ref)}`}, this checkout targets ${remoteLabel(link.value.project.ref, target.ref)}; run supabase stack update`,
+        `${observed === undefined ? `${LOCK_FILE} has no hosted observations` : `lock observed ${remoteLabel(observed.project, observed.branch.ref)}`}, this checkout targets ${remoteLabel(link.value.project.ref, target.ref)}; run dbase stack update`,
       );
   }
   const newer = yield* Effect.forEach(artifactServiceKinds(), (kind) =>
@@ -980,7 +980,7 @@ const lockWarnings = Effect.fn("StackLock.warn")(function* (
   const outdated = newer.flat();
   if (outdated.length > 0)
     yield* output.warn(
-      `This CLI bundles newer revisions of locked versions: ${outdated.join(", ")}. Run supabase stack outdated to review, supabase stack update to adopt them.`,
+      `This CLI bundles newer revisions of locked versions: ${outdated.join(", ")}. Run dbase stack outdated to review, dbase stack update to adopt them.`,
     );
 });
 
@@ -1192,7 +1192,7 @@ const updateReason = (parsed: Specifier) =>
       ? "follows the linked project"
       : "bundled with this CLI";
 
-/** One service of a hosted probe as `supabase link` reports it. */
+/** One service of a hosted probe as `dbase link` reports it. */
 export interface LinkedService {
   readonly service: ServiceKind;
   /** What the platform reported; absent when it reports nothing or the probe failed. */
@@ -1203,7 +1203,7 @@ export interface LinkedService {
   readonly changed: boolean;
 }
 
-/** What `supabase link` did to `supabase/supabase.lock`. */
+/** What `dbase link` did to `supabase/supabase.lock`. */
 export interface LinkedLock {
   /** Whether the lock was written; false when frozen or when nothing but the observation time changed. */
   readonly written: boolean;
@@ -1303,7 +1303,7 @@ export const linkedLock = <E, R, E2, R2>(options: {
             : differences(previous, probe);
         if (differing.length > 0)
           yield* options.output.warn(
-            `Hosted versions differ from ${LOCK_FILE}, which a frozen link leaves untouched: ${differing.join("; ")}. Run supabase stack update locally to record them.`,
+            `Hosted versions differ from ${LOCK_FILE}, which a frozen link leaves untouched: ${differing.join("; ")}. Run dbase stack update locally to record them.`,
           );
         const result: LinkedLock = {
           written: false,
@@ -1370,7 +1370,7 @@ export interface OutdatedService {
 /**
  * What `stack update` would change, per locked service, without the lease, a write, a download, or
  * a hosted probe: `linked` entries follow the stored observation, so a hosted version that moved
- * since `supabase link` shows only after `stack update` probes it. A stale entry is reported
+ * since `dbase link` shows only after `stack update` probes it. A stale entry is reported
  * without resolving: `start` or `stack update` resolves it against config. A failed resolution is
  * reported on its own row.
  */

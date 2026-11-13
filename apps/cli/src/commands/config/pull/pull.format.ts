@@ -23,7 +23,7 @@ import type { ConfigPullPlan } from "./pull.plan.ts";
 /**
  * Pure formatters, payload builders, and input adapters for `config pull` — no Effect, no
  * services. Classification/rendering shared with `config diff` lives in `../config.format.ts`;
- * the exports below come from `command-internal/config-pull-run.ts`, shared with `supabase pull`.
+ * the exports below come from `command-internal/config-pull-run.ts`, shared with `dbase pull`.
  */
 
 export { CONFIG_PULL_PAYLOAD_VERSION, configPullPayload, renderConfigPullText };

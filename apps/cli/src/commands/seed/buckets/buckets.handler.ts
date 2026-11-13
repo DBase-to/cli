@@ -13,7 +13,7 @@ import type { BucketsFlags } from "./buckets.command.ts";
 import { SeedMissingProjectConfigError, SeedWorkdirError } from "./buckets.errors.ts";
 
 /**
- * `supabase seed buckets` — seeds Storage buckets from
+ * `dbase seed buckets` — seeds Storage buckets from
  * `[storage.buckets]` / `[storage.vector]` in `supabase/config.toml`. The
  * seeding work lives in the hoisted `seedBucketsRun` (shared with `db reset`); this
  * handler owns target resolution, hosted consent and telemetry.

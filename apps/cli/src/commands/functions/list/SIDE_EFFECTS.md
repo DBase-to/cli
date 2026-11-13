@@ -1,43 +1,43 @@
-# `supabase functions list`
+# `dbase functions list`
 
 Target: hosted, no consent — see [Command target](../../../../docs/command-target.md)
 
 ## Files Read
 
-| Path                                            | Format     | When                                                           |
-| ----------------------------------------------- | ---------- | -------------------------------------------------------------- |
-| `~/.supabase/access-token`                      | plain text | when `SUPABASE_ACCESS_TOKEN` unset and keyring unavailable     |
-| `~/.supabase/profile`                           | plain text | when `--profile` and `SUPABASE_PROFILE` are both unset         |
-| `<profile>.yaml`                                | YAML       | when `SUPABASE_PROFILE` or `--profile` points to a file        |
-| `<workdir>/supabase/.temp/project-ref`          | plain text | when neither `--remote=<ref>` nor `SUPABASE_PROJECT_ID` is set |
-| `<SUPABASE_HOME or ~/.supabase>/telemetry.json` | JSON       | when present, before post-run telemetry state is refreshed     |
+| Path                                         | Format     | When                                                        |
+| -------------------------------------------- | ---------- | ----------------------------------------------------------- |
+| `~/.supabase/access-token`                   | plain text | when `DBASE_ACCESS_TOKEN` unset and keyring unavailable     |
+| `~/.supabase/profile`                        | plain text | when `--profile` and `DBASE_PROFILE` are both unset         |
+| `<profile>.yaml`                             | YAML       | when `DBASE_PROFILE` or `--profile` points to a file        |
+| `<workdir>/supabase/.temp/project-ref`       | plain text | when neither `--remote=<ref>` nor `DBASE_PROJECT_ID` is set |
+| `<DBASE_HOME or ~/.supabase>/telemetry.json` | JSON       | when present, before post-run telemetry state is refreshed  |
 
 ## Files Written
 
-| Path                                            | Format | When                                                                                                                                                                                                                            |
-| ----------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `<workdir>/supabase/.temp/linked-project.json`  | JSON   | post-run, once a project ref has resolved (success or failure), only when no such file exists, `<workdir>/supabase/.temp/project-ref` doesn't name another ref, an access token exists and `GET /v1/projects/{ref}` returns 200 |
-| `<SUPABASE_HOME or ~/.supabase>/telemetry.json` | JSON   | after command completion, flushed on both success and failure paths                                                                                                                                                             |
+| Path                                           | Format | When                                                                                                                                                                                                                            |
+| ---------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `<workdir>/supabase/.temp/linked-project.json` | JSON   | post-run, once a project ref has resolved (success or failure), only when no such file exists, `<workdir>/supabase/.temp/project-ref` doesn't name another ref, an access token exists and `GET /v1/projects/{ref}` returns 200 |
+| `<DBASE_HOME or ~/.supabase>/telemetry.json`   | JSON   | after command completion, flushed on both success and failure paths                                                                                                                                                             |
 
 ## API Routes
 
-| Method | Path                             | Auth         | Request body | Response (used fields)                                                                                                                                                                                                                                   |
-| ------ | -------------------------------- | ------------ | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `GET`  | `/v1/projects/{ref}/functions`   | Bearer token | none         | `[{id, name, slug, status, version, updated_at, ...}]`                                                                                                                                                                                                   |
-| `GET`  | `/v1/projects`                   | Bearer token | none         | project picker options when no ref is supplied in TTY                                                                                                                                                                                                    |
-| `GET`  | `/v1/projects/{ref}`             | Bearer token | none         | linked project metadata used by the post-run cache                                                                                                                                                                                                       |
-| `GET`  | `/v1/projects/{parent}/branches` | Bearer token | none         | `[{id, name, project_ref, is_default}]` — only for `--remote=<branch>` (or the deprecated `--project-ref=<branch>`), and for a bare `--remote` followed by a word that could name a branch; `{parent}` is `SUPABASE_PROJECT_ID`, else the linked project |
-| `GET`  | `/v1/branches/{id}`              | Bearer token | none         | `{ref, status, …}` — only for `--remote=<branch UUID>` when no project is linked                                                                                                                                                                         |
+| Method | Path                             | Auth         | Request body | Response (used fields)                                                                                                                                                                                                                                |
+| ------ | -------------------------------- | ------------ | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET`  | `/v1/projects/{ref}/functions`   | Bearer token | none         | `[{id, name, slug, status, version, updated_at, ...}]`                                                                                                                                                                                                |
+| `GET`  | `/v1/projects`                   | Bearer token | none         | project picker options when no ref is supplied in TTY                                                                                                                                                                                                 |
+| `GET`  | `/v1/projects/{ref}`             | Bearer token | none         | linked project metadata used by the post-run cache                                                                                                                                                                                                    |
+| `GET`  | `/v1/projects/{parent}/branches` | Bearer token | none         | `[{id, name, project_ref, is_default}]` — only for `--remote=<branch>` (or the deprecated `--project-ref=<branch>`), and for a bare `--remote` followed by a word that could name a branch; `{parent}` is `DBASE_PROJECT_ID`, else the linked project |
+| `GET`  | `/v1/branches/{id}`              | Bearer token | none         | `{ref, status, …}` — only for `--remote=<branch UUID>` when no project is linked                                                                                                                                                                      |
 
 ## Environment Variables
 
-| Variable                | Purpose                                                        | Required?                                                 |
-| ----------------------- | -------------------------------------------------------------- | --------------------------------------------------------- |
-| `SUPABASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup)           | no (falls back to keyring -> `~/.supabase/access-token`)  |
-| `SUPABASE_HOME`         | overrides where `telemetry.json` is read and written           | no (defaults to `~/.supabase`)                            |
-| `SUPABASE_PROFILE`      | select a built-in profile or YAML profile file with `api_url:` | no (falls back to `~/.supabase/profile` -> `supabase`)    |
-| `SUPABASE_PROJECT_ID`   | provides the project ref when `--remote=<ref>` is not given    | no (falls back to `<workdir>/supabase/.temp/project-ref`) |
-| `SUPABASE_WORKDIR`      | sets `<workdir>` for local Supabase temp files                 | no (falls back to `--workdir` -> current working dir)     |
+| Variable             | Purpose                                                        | Required?                                                 |
+| -------------------- | -------------------------------------------------------------- | --------------------------------------------------------- |
+| `DBASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup)           | no (falls back to keyring -> `~/.supabase/access-token`)  |
+| `DBASE_HOME`         | overrides where `telemetry.json` is read and written           | no (defaults to `~/.supabase`)                            |
+| `DBASE_PROFILE`      | select a built-in profile or YAML profile file with `api_url:` | no (falls back to `~/.supabase/profile` -> `supabase`)    |
+| `DBASE_PROJECT_ID`   | provides the project ref when `--remote=<ref>` is not given    | no (falls back to `<workdir>/supabase/.temp/project-ref`) |
+| `DBASE_WORKDIR`      | sets `<workdir>` for local DBase temp files                    | no (falls back to `--workdir` -> current working dir)     |
 
 ## Exit Codes
 

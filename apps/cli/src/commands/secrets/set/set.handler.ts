@@ -323,13 +323,13 @@ export const secretsSet = Effect.fn("secrets.set")(function* (flags: SecretsSetF
     yield* setting?.clear ?? Effect.void;
 
     if (output.format === "json" || output.format === "stream-json") {
-      yield* output.success("Finished supabase secrets set.", {
+      yield* output.success("Finished dbase secrets set.", {
         project_ref: ref,
         count: body.length,
       });
       return;
     }
 
-    yield* output.raw("Finished supabase secrets set.\n");
+    yield* output.raw("Finished dbase secrets set.\n");
   }).pipe(Effect.ensuring(linkedProjectCache.cache(ref)), Effect.ensuring(telemetryState.flush));
 });

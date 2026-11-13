@@ -32,7 +32,7 @@ export class DockerLifecycleListError extends Data.TaggedError("DockerLifecycleL
 /**
  * Inspecting a single container's state failed. A missing container isn't special-cased — an
  * absent container is just another non-zero `docker container inspect` exit, and by far the most
- * common cause is that `supabase start` hasn't been run yet.
+ * common cause is that `dbase start` hasn't been run yet.
  */
 export class DockerLifecycleInspectError extends Data.TaggedError("DockerLifecycleInspectError")<{
   readonly message: string;

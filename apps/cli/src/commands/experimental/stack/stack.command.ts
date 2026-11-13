@@ -93,7 +93,7 @@ const stackUpdateCommand = stackUpdateCommandBase.pipe(
 
 export const stackCommand = Command.make("stack").pipe(
   Command.withDescription(
-    "Manage an experimental, unstable local Supabase stack with the new backend. This command is excluded from the CLI compatibility promise.",
+    "Manage an experimental, unstable local DBase stack with the new backend. This command is excluded from the CLI compatibility promise.",
   ),
   Command.withShortDescription("Manage experimental local stacks"),
   Command.withSubcommands([

@@ -178,8 +178,8 @@ export const feedbackAdd = Effect.fn("feedback.add")(function* (args: FeedbackAd
     // directory later, the bare token would resolve no ref and report "not
     // found".
     const deleteCommand = Option.match(projectRef, {
-      onNone: () => `supabase feedback delete ${deleteToken}`,
-      onSome: (ref) => `supabase feedback delete ${deleteToken} --project-ref ${ref}`,
+      onNone: () => `dbase feedback delete ${deleteToken}`,
+      onSome: (ref) => `dbase feedback delete ${deleteToken} --project-ref ${ref}`,
     });
     yield* output.info(`To delete this feedback later, run: ${deleteCommand}`);
   }).pipe(Effect.ensuring(telemetryState.flush));

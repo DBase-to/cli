@@ -66,7 +66,7 @@ const runDown = Effect.fnUntraced(function* (flags: MigrationDownFlags) {
         if (total <= flags.last || version === undefined) {
           return yield* new MigrationLastTooLargeError({
             message: `--last must be smaller than total applied migrations: ${total}`,
-            suggestion: `Try ${aqua(withTargetFlags("supabase db reset", flagsForTarget(target)))} if you want to revert all migrations.`,
+            suggestion: `Try ${aqua(withTargetFlags("dbase db reset", flagsForTarget(target)))} if you want to revert all migrations.`,
           });
         }
 

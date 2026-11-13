@@ -1,4 +1,4 @@
-# `supabase login`
+# `dbase login`
 
 Target: account, no consent — see [Command target](../../../docs/command-target.md)
 
@@ -7,19 +7,19 @@ captures `cli_login_completed`.
 
 ## Files Read
 
-| Path                                    | Format                    | When                                                                       |
-| --------------------------------------- | ------------------------- | -------------------------------------------------------------------------- |
-| stdin                                   | plain text (token string) | non-TTY only, when `--token` is unset and `SUPABASE_ACCESS_TOKEN` is unset |
-| OS keyring / `~/.supabase/access-token` | token string              | written, not read, on the login path                                       |
+| Path                                    | Format                    | When                                                                    |
+| --------------------------------------- | ------------------------- | ----------------------------------------------------------------------- |
+| stdin                                   | plain text (token string) | non-TTY only, when `--token` is unset and `DBASE_ACCESS_TOKEN` is unset |
+| OS keyring / `~/.supabase/access-token` | token string              | written, not read, on the login path                                    |
 
 ## Files Written
 
-| Path                                            | Format                    | When                                                                                               |
-| ----------------------------------------------- | ------------------------- | -------------------------------------------------------------------------------------------------- |
-| OS keyring (`Supabase CLI` / profile)           | token string              | always on success when the keyring is available                                                    |
-| `~/.supabase/access-token`                      | plain text (mode `0600`)  | on success when the keyring is unavailable (WSL / `SUPABASE_NO_KEYRING`)                           |
-| `<SUPABASE_HOME or ~/.supabase>/telemetry.json` | JSON                      | always (post-run flush); `distinct_id` set on stitch, removed on clear                             |
-| `~/.supabase/profile`                           | plain text (profile name) | on success only, when a profile is explicitly set (`--profile` ≠ default, else `SUPABASE_PROFILE`) |
+| Path                                         | Format                    | When                                                                                            |
+| -------------------------------------------- | ------------------------- | ----------------------------------------------------------------------------------------------- |
+| OS keyring (`DBase CLI` / profile)           | token string              | always on success when the keyring is available                                                 |
+| `~/.supabase/access-token`                   | plain text (mode `0600`)  | on success when the keyring is unavailable (WSL / `DBASE_NO_KEYRING`)                           |
+| `<DBASE_HOME or ~/.supabase>/telemetry.json` | JSON                      | always (post-run flush); `distinct_id` set on stitch, removed on clear                          |
+| `~/.supabase/profile`                        | plain text (profile name) | on success only, when a profile is explicitly set (`--profile` ≠ default, else `DBASE_PROFILE`) |
 
 ## API Routes
 
@@ -31,13 +31,13 @@ captures `cli_login_completed`.
 
 ## Environment Variables
 
-| Variable                                       | Purpose                                                | Required?                                                 |
-| ---------------------------------------------- | ------------------------------------------------------ | --------------------------------------------------------- |
-| `SUPABASE_ACCESS_TOKEN`                        | non-interactive token source                           | no (falls back to `--token` → piped stdin → browser flow) |
-| `SUPABASE_NO_KEYRING`                          | disables the OS keyring, forcing the file fallback     | no                                                        |
-| `SUPABASE_API_MAX_RETRIES`                     | Management API profile lookup retries (`0` = none)     | no (falls back to 5)                                      |
-| `CLAUDECODE` / `CLAUDE_CODE`                   | enables the Claude Code plugin hint (TTY stdout only)  | no                                                        |
-| `DO_NOT_TRACK` / `SUPABASE_TELEMETRY_DISABLED` | suppress analytics delivery (state file still written) | no                                                        |
+| Variable                                    | Purpose                                                | Required?                                                 |
+| ------------------------------------------- | ------------------------------------------------------ | --------------------------------------------------------- |
+| `DBASE_ACCESS_TOKEN`                        | non-interactive token source                           | no (falls back to `--token` → piped stdin → browser flow) |
+| `DBASE_NO_KEYRING`                          | disables the OS keyring, forcing the file fallback     | no                                                        |
+| `DBASE_API_MAX_RETRIES`                     | Management API profile lookup retries (`0` = none)     | no (falls back to 5)                                      |
+| `CLAUDECODE` / `CLAUDE_CODE`                | enables the Claude Code plugin hint (TTY stdout only)  | no                                                        |
+| `DO_NOT_TRACK` / `DBASE_TELEMETRY_DISABLED` | suppress analytics delivery (state file still written) | no                                                        |
 
 ## Exit Codes
 
@@ -64,7 +64,7 @@ Browser-open failure is non-fatal (logged, ignored).
 
 Token path (stdout): `You are now logged in. Happy coding!`
 
-Browser path (stdout): `Hello from Supabase! Press Enter to open browser and login automatically.`,
+Browser path (stdout): `Hello from DBase! Press Enter to open browser and login automatically.`,
 then (after Enter) `Here is your login link in case browser did not open <url>`; with
 `--no-browser`: `Here is your login link, open it in the browser <url>`. On success:
 `Token <name> created successfully.` then `You are now logged in. Happy coding!`.
@@ -79,7 +79,7 @@ are suppressed. Interactive prompts (browser path) fail with `NonInteractiveErro
 
 ## Notes
 
-- Token resolution priority: `--token` → `SUPABASE_ACCESS_TOKEN` → piped stdin (non-TTY) → browser flow (TTY).
+- Token resolution priority: `--token` → `DBASE_ACCESS_TOKEN` → piped stdin (non-TTY) → browser flow (TTY).
 - The login-session query string is built without URL-encoding.
 - Telemetry stitch always replaces a stale `distinct_id`, independent of the platform-API auto-stitch. The stitch _aliases_ only — it never calls `identify`.
 - On success, an explicitly-set profile is persisted to `~/.supabase/profile`; `CommandSettings` reads it back as the lowest-precedence profile source.

@@ -70,7 +70,7 @@ const SCRATCH_TEMPLATE: StarterTemplate = {
   name: "scratch",
   description: "An empty project from scratch.",
   url: "",
-  start: "supabase start",
+  start: "dbase start",
 };
 
 export const bootstrap = Effect.fn("bootstrap")(function* (
@@ -154,7 +154,7 @@ export const bootstrap = Effect.fn("bootstrap")(function* (
         : false;
 
     const consent = yield* requireHostedMutationConsent({
-      action: `Create a new Supabase project from the "${starter.name}" template`,
+      action: `Create a new DBase project from the "${starter.name}" template`,
       details: ["Push the template's migrations, roles, seed data and vault secrets to it."],
     });
 

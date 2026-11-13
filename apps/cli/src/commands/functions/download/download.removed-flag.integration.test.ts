@@ -22,7 +22,7 @@ import { functionsCommand } from "../functions.command.ts";
 
 const tempRoot = useTempWorkdir("supabase-functions-download-removed-flag-");
 
-const testRoot = Command.make("supabase").pipe(
+const testRoot = Command.make("dbase").pipe(
   Command.withSubcommands([functionsCommand]),
   Command.withGlobalFlags(GLOBAL_FLAGS),
 );
@@ -90,7 +90,7 @@ describe("functions download --legacy-bundle through command dispatch", () => {
         expect(error.kind).toBe("flag");
         expect(error.message).toBe("--legacy-bundle was removed.");
         expect(error.suggestion).toBe(
-          "Retry with `supabase functions download --use-api hello` to unbundle server-side without Docker. If that also fails and the Function was deployed with a CLI older than 1.120.0, redeploy it with the current CLI.",
+          "Retry with `dbase functions download --use-api hello` to unbundle server-side without Docker. If that also fails and the Function was deployed with a CLI older than 1.120.0, redeploy it with the current CLI.",
         );
         expect(fetchSpy).not.toHaveBeenCalled();
 
@@ -114,7 +114,7 @@ describe("functions download --legacy-bundle through command dispatch", () => {
       const error = Cause.squash(exit.cause);
       expect(error).toBeInstanceOf(RemovedSurfaceError);
       if (!(error instanceof RemovedSurfaceError)) return;
-      expect(error.suggestion).toContain("`supabase functions download --use-api <slug>`");
+      expect(error.suggestion).toContain("`dbase functions download --use-api <slug>`");
     }),
   );
 

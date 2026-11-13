@@ -1,23 +1,23 @@
-# `supabase branches list`
+# `dbase branches list`
 
 Target: hosted, no consent — see [Command target](../../../../docs/command-target.md)
 
 ## Files Read
 
-| Path                                           | Format                    | When                                                                                                   |
-| ---------------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------ |
-| keyring `"Supabase CLI"` / `<profile>`         | OS keychain               | when `SUPABASE_ACCESS_TOKEN` unset and keyring available; account = `CommandSettings.profile`          |
-| keyring `"Supabase CLI"` / `access-token`      | OS keychain               | legacy-key fallback when the profile-keyed lookup misses                                               |
-| `<workdir>/supabase/.temp/linked-project.json` | JSON (`ref` field)        | when `--remote=<ref>` is not given, as the 2nd PARENT-ref candidate (CLI-2167 follow-up, see below)    |
-| `<workdir>/supabase/.temp/project-ref`         | plain text                | when neither `--remote=<ref>` nor `SUPABASE_PROJECT_ID` is set, as the 3rd (last) PARENT-ref candidate |
-| `~/.supabase/access-token`                     | plain text (token string) | last-resort fallback after env + keyring miss                                                          |
+| Path                                           | Format                    | When                                                                                                |
+| ---------------------------------------------- | ------------------------- | --------------------------------------------------------------------------------------------------- |
+| keyring `"DBase CLI"` / `<profile>`            | OS keychain               | when `DBASE_ACCESS_TOKEN` unset and keyring available; account = `CommandSettings.profile`          |
+| keyring `"DBase CLI"` / `access-token`         | OS keychain               | legacy-key fallback when the profile-keyed lookup misses                                            |
+| `<workdir>/supabase/.temp/linked-project.json` | JSON (`ref` field)        | when `--remote=<ref>` is not given, as the 2nd PARENT-ref candidate (CLI-2167 follow-up, see below) |
+| `<workdir>/supabase/.temp/project-ref`         | plain text                | when neither `--remote=<ref>` nor `DBASE_PROJECT_ID` is set, as the 3rd (last) PARENT-ref candidate |
+| `~/.supabase/access-token`                     | plain text (token string) | last-resort fallback after env + keyring miss                                                       |
 
-> `branches` is PARENT-scoped: after `supabase link <branch>`, the on-disk `project-ref` file
+> `branches` is PARENT-scoped: after `dbase link <branch>`, the on-disk `project-ref` file
 > holds the BRANCH's own ref, and the Management API returns 403 for a branch ref on every
 > branches-management endpoint. Every `branches` subcommand therefore resolves the project ref
 > via `resolveParentScopedProjectRef` (`command-internal/target/parent-scoped-project-ref.ts`) instead
 > of calling `ProjectRefResolver.resolve` directly: an explicit `--remote=<ref>` still wins
-> outright; otherwise the PARENT is resolved as env `SUPABASE_PROJECT_ID` → `linked-project.json`'s
+> outright; otherwise the PARENT is resolved as env `DBASE_PROJECT_ID` → `linked-project.json`'s
 > `ref` → the `project-ref` file, first ref-shaped candidate wins, falling through to
 > `resolver.resolve(None)`'s ordinary env/prompt/not-linked behavior when no candidate is
 > ref-shaped. A cached parent that differs from the `project-ref` file stands only while its
@@ -41,20 +41,20 @@ Target: hosted, no consent — see [Command target](../../../../docs/command-tar
 
 ## API Routes
 
-| Method | Path                          | Auth         | Request body | Response (used fields)                                                                                                                                                                                      |
-| ------ | ----------------------------- | ------------ | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `GET`  | `/v1/projects/{ref}/branches` | Bearer token | none         | `[{id, name, project_ref, parent_project_ref, is_default, git_branch?, persistent, status, created_at, updated_at, with_data, ...}]`                                                                        |
-| `GET`  | `/v1/projects`                | Bearer token | none         | `[{id, name, organization_slug, region, …}]` — no project ref from `--remote=<ref>`, `SUPABASE_PROJECT_ID` or `.temp/project-ref`, with stdin and stdout TTYs and a non-JSON output format (project picker) |
-| `GET`  | `/v1/projects/{ref}`          | Bearer token | none         | `{ref, name, organization_id, organization_slug}` — linked-project cache miss only (best-effort, after the command)                                                                                         |
+| Method | Path                          | Auth         | Request body | Response (used fields)                                                                                                                                                                                   |
+| ------ | ----------------------------- | ------------ | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET`  | `/v1/projects/{ref}/branches` | Bearer token | none         | `[{id, name, project_ref, parent_project_ref, is_default, git_branch?, persistent, status, created_at, updated_at, with_data, ...}]`                                                                     |
+| `GET`  | `/v1/projects`                | Bearer token | none         | `[{id, name, organization_slug, region, …}]` — no project ref from `--remote=<ref>`, `DBASE_PROJECT_ID` or `.temp/project-ref`, with stdin and stdout TTYs and a non-JSON output format (project picker) |
+| `GET`  | `/v1/projects/{ref}`          | Bearer token | none         | `{ref, name, organization_id, organization_slug}` — linked-project cache miss only (best-effort, after the command)                                                                                      |
 
 ## Environment Variables
 
-| Variable                | Purpose                                                                                                                                                                                                                                                                                  | Required?                                                                                          |
-| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| `SUPABASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup)                                                                                                                                                                                                                                     | no (falls back to keyring → `~/.supabase/access-token`)                                            |
-| `SUPABASE_PROFILE`      | selects API base URL: `supabase` → `api.supabase.com`, `supabase-staging` → `api.supabase.green`, `supabase-local` → `http://localhost:8080`. May alternatively be a filesystem path to a YAML profile with at least `api_url:` and optional `name:` (used by the cli-e2e test harness). | no (defaults to `supabase`)                                                                        |
-| `SUPABASE_PROJECT_ID`   | PARENT project ref fallback (1st candidate) when `--remote=<ref>` is not given (CLI-2167 follow-up)                                                                                                                                                                                      | no (also reads `linked-project.json` → `<workdir>/supabase/.temp/project-ref` then prompts on TTY) |
-| `SUPABASE_WORKDIR`      | base directory for the `.temp/project-ref` lookup                                                                                                                                                                                                                                        | no (walks up from CWD looking for `supabase/config.toml` or `supabase/config.json`)                |
+| Variable             | Purpose                                                                                                                                                                                                                                                                                  | Required?                                                                                          |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `DBASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup)                                                                                                                                                                                                                                     | no (falls back to keyring → `~/.supabase/access-token`)                                            |
+| `DBASE_PROFILE`      | selects API base URL: `supabase` → `api.supabase.com`, `supabase-staging` → `api.supabase.green`, `supabase-local` → `http://localhost:8080`. May alternatively be a filesystem path to a YAML profile with at least `api_url:` and optional `name:` (used by the cli-e2e test harness). | no (defaults to `supabase`)                                                                        |
+| `DBASE_PROJECT_ID`   | PARENT project ref fallback (1st candidate) when `--remote=<ref>` is not given (CLI-2167 follow-up)                                                                                                                                                                                      | no (also reads `linked-project.json` → `<workdir>/supabase/.temp/project-ref` then prompts on TTY) |
+| `DBASE_WORKDIR`      | base directory for the `.temp/project-ref` lookup                                                                                                                                                                                                                                        | no (walks up from CWD looking for `supabase/config.toml` or `supabase/config.json`)                |
 
 ## Exit Codes
 
@@ -112,6 +112,6 @@ One `result` NDJSON event with `{branches: [...]}`.
 
 ## Notes
 
-- `--remote=<ref>` names the parent project; with no selector or a bare `--remote` the parent comes from the chain above. A branch name or UUID is rejected with `` `supabase branches list` acts on a parent project, so --remote takes its project ref, not a branch name. Use --remote=<ref>. `` The branch itself stays a positional argument.
+- `--remote=<ref>` names the parent project; with no selector or a bare `--remote` the parent comes from the chain above. A branch name or UUID is rejected with `` `dbase branches list` acts on a parent project, so --remote takes its project ref, not a branch name. Use --remote=<ref>. `` The branch itself stays a positional argument.
 - Timestamps are formatted as UTC `YYYY-MM-DD HH:MM:SS`.
-- Sends `User-Agent: SupabaseCLI/<version>` and Bearer auth. No `X-Supabase-Command` headers.
+- Sends `User-Agent: DBaseCLI/<version>` and Bearer auth. No `X-Supabase-Command` headers.

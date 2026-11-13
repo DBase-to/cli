@@ -91,7 +91,7 @@ export const EnvSignalPresenceKeys: ReadonlyArray<string> = [
   "GITHUB_TOKEN",
   "GITHUB_HEAD_REF",
   "BITBUCKET_CLONE_DIR",
-  // Supabase environment signals
+  // DBase environment signals
   "SUPABASE_ACCESS_TOKEN",
   "SUPABASE_HOME",
   "SYSTEMROOT",

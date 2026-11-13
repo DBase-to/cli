@@ -70,12 +70,11 @@ const issueBugCommand = Command.make("bug", issueBugConfig).pipe(
   Command.withShortDescription("Open a bug report"),
   Command.withExamples([
     {
-      command:
-        'supabase issue bug --command "supabase start" --actual-output "database failed to start"',
+      command: 'dbase issue bug --command "dbase start" --actual-output "database failed to start"',
       description: "Open a prefilled bug report for a failing command",
     },
     {
-      command: 'supabase issue bug --crash-report-id "abc123" --no-browser',
+      command: 'dbase issue bug --crash-report-id "abc123" --no-browser',
       description: "Print a prefilled issue URL with a crash report ID",
     },
   ]),
@@ -107,7 +106,7 @@ const issueFeatureCommand = Command.make("feature", issueFeatureConfig).pipe(
   Command.withExamples([
     {
       command:
-        'supabase issue feature --existing-issues --problem "I need to rotate local secrets" --proposed-solution "Add a secrets rotate command"',
+        'dbase issue feature --existing-issues --problem "I need to rotate local secrets" --proposed-solution "Add a secrets rotate command"',
       description: "Open a prefilled feature request",
     },
   ]),
@@ -137,7 +136,7 @@ const issueDocsCommand = Command.make("docs", issueDocsConfig).pipe(
   Command.withExamples([
     {
       command:
-        'supabase issue docs --link "https://supabase.com/docs/guides/cli" --problem "The flag description is outdated"',
+        'dbase issue docs --link "https://supabase.com/docs/guides/cli" --problem "The flag description is outdated"',
       description: "Open a prefilled documentation issue",
     },
   ]),
@@ -161,7 +160,7 @@ const issueDocsCommand = Command.make("docs", issueDocsConfig).pipe(
 );
 
 export const issueCommand = Command.make("issue").pipe(
-  Command.withDescription("Open Supabase CLI GitHub issue forms."),
+  Command.withDescription("Open DBase CLI GitHub issue forms."),
   Command.withShortDescription("Open GitHub issue forms"),
   Command.withSubcommands([issueBugCommand, issueFeatureCommand, issueDocsCommand]),
 );

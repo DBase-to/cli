@@ -1,4 +1,4 @@
-# `supabase pull`
+# `dbase pull`
 
 Target: hosted, consent default No — see [Command target](../../../docs/command-target.md)
 
@@ -26,9 +26,9 @@ initial-pull `pg_dump` container). See "Consent", "Database writes" and "Docker"
 | ---------------------------------------------------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `<workdir>/supabase/config.toml` or `config.json`          | TOML/JSON  | always, before any network call — `openConfigPullSource`, the SAME base load `config pull` itself opens (no `[remotes.*]` overlay yet); see `config/pull/SIDE_EFFECTS.md` for the loader's own rules                                         |
 | `<workdir>/supabase/.env`, `.env.local`                    | dotenv     | always, to resolve `env(VAR)` references inside `config.toml` (via the config step's loader)                                                                                                                                                 |
-| `<workdir>/supabase/.temp/project-ref`                     | plain text | project-ref fallback (`--remote=<ref>` → `SUPABASE_PROJECT_ID` → this file) when `--remote` is absent; parent-ref candidate for a branch-name `--remote` (checked eagerly, before any spinner or branch lookup)                              |
+| `<workdir>/supabase/.temp/project-ref`                     | plain text | project-ref fallback (`--remote=<ref>` → `DBASE_PROJECT_ID` → this file) when `--remote` is absent; parent-ref candidate for a branch-name `--remote` (checked eagerly, before any spinner or branch lookup)                                 |
 | `<workdir>/supabase/.temp/linked-project.json`             | JSON       | parent-ref candidate for a branch-name `--remote` (same eager pre-check)                                                                                                                                                                     |
-| `~/.supabase/access-token`                                 | plain text | when `SUPABASE_ACCESS_TOKEN` unset and keyring unavailable                                                                                                                                                                                   |
+| `~/.supabase/access-token`                                 | plain text | when `DBASE_ACCESS_TOKEN` unset and keyring unavailable                                                                                                                                                                                      |
 | `<workdir>/supabase/config.toml` or `config.json` (reload) | TOML/JSON  | re-loaded WITH the `[remotes.*]` overlay applied, only when the resolved target ref matches an existing `[remotes.*]` block — the config step's own conditional reload (`config/pull/SIDE_EFFECTS.md`)                                       |
 | `<workdir>/supabase/migrations` (directory listing)        | filenames  | once, in the preview phase, to decide whether the migration-history step auto-runs — skipped when `--with-migration-history` is already set (see Notes); a read failure other than "directory missing" fails the whole command at this point |
 | same config file, raw on-disk text (TOCTOU re-read)        | TOML/JSON  | immediately before the config step writes, once consent is granted — only reached when the config plan has work; see `config/pull/SIDE_EFFECTS.md`'s TOCTOU row                                                                              |
@@ -84,7 +84,7 @@ A dirty (or untracked) result on ANY of the three changes behavior by output mod
 (naming every dirty path) to the confirmation body before the consent prompt; every other case — a
 non-interactive or machine-format run, or `--yes` passed on any TTY — aborts before the prompt
 (`PullUncommittedChangesError`, exit 1, naming every dirty path in its message).
-`--yes`/`SUPABASE_YES` never bypasses this guard; only `--force` does, for all three locations at
+`--yes`/`DBASE_YES` never bypasses this guard; only `--force` does, for all three locations at
 once.
 
 A non-zero exit, a spawn failure, or the directory not being a git working tree all degrade
@@ -93,11 +93,11 @@ each location's check is independent, so a spawn failure on one does not affect 
 
 ## API Routes
 
-| #   | Purpose                 | Method | Path                             | When                                                                                                                                                                                                           |
-| --- | ----------------------- | ------ | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1a  | branch list             | GET    | `/v1/projects/{parent}/branches` | `--remote` is a branch name or UUID and a project is linked — resolved once, up front (ADR 0024 "resolve once"); `{parent}` is `SUPABASE_PROJECT_ID`, else the linked project, resolved from local state first |
-| 1b  | branch by UUID          | GET    | `/v1/branches/{id}`              | `--remote` is a branch UUID and no usable project is linked; needs no parent project                                                                                                                           |
-| 2   | effective remote config | GET    | `/v2/projects/{ref}/config`      | the config step's own fetch (`planConfigPullRun`) — guaranteed single by the plan/apply split, never repeated for a dry run or a real apply                                                                    |
+| #   | Purpose                 | Method | Path                             | When                                                                                                                                                                                                        |
+| --- | ----------------------- | ------ | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1a  | branch list             | GET    | `/v1/projects/{parent}/branches` | `--remote` is a branch name or UUID and a project is linked — resolved once, up front (ADR 0024 "resolve once"); `{parent}` is `DBASE_PROJECT_ID`, else the linked project, resolved from local state first |
+| 1b  | branch by UUID          | GET    | `/v1/branches/{id}`              | `--remote` is a branch UUID and no usable project is linked; needs no parent project                                                                                                                        |
+| 2   | effective remote config | GET    | `/v2/projects/{ref}/config`      | the config step's own fetch (`planConfigPullRun`) — guaranteed single by the plan/apply split, never repeated for a dry run or a real apply                                                                 |
 
 Every other route belongs to a reused sub-step, called with the already-resolved `ref` (no
 re-resolution): the db step's own routes (temp login role, IPv4 pooler config, linked-project
@@ -142,20 +142,20 @@ Docker-dependent.
 
 ## Environment Variables
 
-| Variable                | Purpose                                                                                                 | Required?                                                                                         |
-| ----------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `SUPABASE_YES`          | grants `pull`'s consent (same as `--yes`); does NOT bypass the dirty guard                              | no — shell environment only (`resolveYes`); a value in the project `supabase/.env` does not count |
-| `SUPABASE_PROJECT_ID`   | project ref (`--remote=<ref>` → this → `.temp/project-ref` → prompt)                                    | no                                                                                                |
-| `SUPABASE_WORKDIR`      | working directory `config.toml`/`.json`/`supabase/migrations`/`supabase/functions` are resolved against | no                                                                                                |
-| `SUPABASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup)                                                    | no (falls back to keyring → `~/.supabase/access-token`)                                           |
-| `SUPABASE_PROFILE`      | API profile selection                                                                                   | no                                                                                                |
-| `env(VAR)` references   | interpolated into `config.toml` values by the config step's loader                                      | no                                                                                                |
-| `PG*` libpq             | db step: remote-project TLS, timeout, service; see `db push`. The `pg_dump` seed also gets them         | no                                                                                                |
+| Variable              | Purpose                                                                                                 | Required?                                                                                         |
+| --------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `DBASE_YES`           | grants `pull`'s consent (same as `--yes`); does NOT bypass the dirty guard                              | no — shell environment only (`resolveYes`); a value in the project `supabase/.env` does not count |
+| `DBASE_PROJECT_ID`    | project ref (`--remote=<ref>` → this → `.temp/project-ref` → prompt)                                    | no                                                                                                |
+| `DBASE_WORKDIR`       | working directory `config.toml`/`.json`/`supabase/migrations`/`supabase/functions` are resolved against | no                                                                                                |
+| `DBASE_ACCESS_TOKEN`  | auth token (bypasses credential file/keyring lookup)                                                    | no (falls back to keyring → `~/.supabase/access-token`)                                           |
+| `DBASE_PROFILE`       | API profile selection                                                                                   | no                                                                                                |
+| `env(VAR)` references | interpolated into `config.toml` values by the config step's loader                                      | no                                                                                                |
+| `PG*` libpq           | db step: remote-project TLS, timeout, service; see `db push`. The `pg_dump` seed also gets them         | no                                                                                                |
 
 Once the db and functions steps run, they consume their own established environment variables
-exactly as documented in their own `SIDE_EFFECTS.md` files (e.g. `SUPABASE_DB_PASSWORD`,
-`SUPABASE_DB_SHADOW_PORT`, `SUPABASE_SHADOW_CACHE`, `SUPABASE_NETWORK_ID`,
-`SUPABASE_USE_SLIM_IMAGES` for db;
+exactly as documented in their own `SIDE_EFFECTS.md` files (e.g. `DBASE_DB_PASSWORD`,
+`SUPABASE_DB_SHADOW_PORT`, `DBASE_SHADOW_CACHE`, `SUPABASE_NETWORK_ID`,
+`DBASE_USE_SLIM_IMAGES` for db;
 `SUPABASE_EDGE_RUNTIME_DENO_VERSION`, `SUPABASE_INTERNAL_IMAGE_REGISTRY`, `BITBUCKET_CLONE_DIR` for
 functions) — `pull` does not read or override any of these itself, it only supplies the resolved
 `ref`.
@@ -168,7 +168,7 @@ functions) — `pull` does not read or override any of these itself, it only sup
 | `0`  | `--dry-run` (every step reports `planned`/`skipped`, nothing written)                                                                                                                                                                      |
 | `1`  | consent declined at the prompt (`HostedMutationDeclinedError`, `context canceled`), or needed in a run that cannot prompt (JSON, stream-json, non-interactive) without `--yes` (`HostedMutationConsentRequiredError`) — nothing is written |
 | `1`  | the `-o`/`--output` global flag passed (any value — not supported by this command, `PullOutputFlagUnsupportedError`)                                                                                                                       |
-| `1`  | resolved `--workdir`/`SUPABASE_WORKDIR` doesn't exist or isn't a directory (`PullWorkdirError`)                                                                                                                                            |
+| `1`  | resolved `--workdir`/`DBASE_WORKDIR` doesn't exist or isn't a directory (`PullWorkdirError`)                                                                                                                                               |
 | `1`  | branch-name `--remote` target-resolution failure (`LinkBranchNotLinkedError` / `LinkParentRefInvalidError` / `LinkBranchNotFoundError` / `LinkBranchNotReadyError` / `LinkBranchListNetworkError` / `LinkBranchListStatusError`)           |
 | `1`  | `supabase/config.toml`/`.json`, `supabase/migrations`, and/or `supabase/functions` has uncommitted or untracked changes and no human will read the warning (`PullUncommittedChangesError`) — see Git above                                 |
 | `1`  | any one step fails (config, migration history, db, or functions) — every OTHER step still runs and is reported, but the process exits non-zero and re-fails with the FIRST original failure's own cause/classification                     |
@@ -312,8 +312,8 @@ the -o/--output flag is not supported by pull; use --output-format json|stream-j
   `planConfigPullRun`'s `remoteLabel` parameter.
 - **A `db`-step failure classified as `DbPullMigrationConflictError`** (the remote migration
   history doesn't match local files) gets one extra line appended to its `suggestion`, pointing at
-  `supabase pull --with-migration-history` as the more direct fix `pull` itself provides — on top
-  of that error's own built-in `supabase migration repair` commands. This is `pull`-only framing;
+  `dbase pull --with-migration-history` as the more direct fix `pull` itself provides — on top
+  of that error's own built-in `dbase migration repair` commands. This is `pull`-only framing;
   the underlying error class (shared with standalone `db pull`) is unchanged.
 - **Storage buckets are deliberately absent from this command in v1.** The Management API's bucket
   list endpoint (`v1ListAllBuckets`) does not return `file_size_limit`/`allowed_mime_types`/

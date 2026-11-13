@@ -200,7 +200,7 @@ export class SsoMetadataUrlNetworkError extends Data.TaggedError("SsoMetadataUrl
 }> {
   get [ErrorActionabilityId](): CliErrorActionabilityDeclaration {
     // Fires only for the user-supplied `--metadata-url` endpoint, never a
-    // Supabase service, so failures here are user input like the sibling errors.
+    // DBase service, so failures here are user input like the sibling errors.
     return actionability.provideFlags;
   }
 }

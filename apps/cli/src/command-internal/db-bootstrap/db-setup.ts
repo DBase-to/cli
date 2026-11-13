@@ -200,7 +200,7 @@ export interface SetupDatabaseInput {
   readonly session: DbSession;
   readonly fs: FileSystem.FileSystem;
   readonly path: Path.Path;
-  /** The Supabase project root (parent of `supabase/`). */
+  /** The DBase project root (parent of `supabase/`). */
   readonly workdir: string;
   /** The caller's already-resolved, effective config (env overrides already applied). */
   readonly config: CliConfig;
@@ -366,7 +366,7 @@ const startInitSchemaPre15 = Effect.fnUntraced(function* (
 /**
  * Runs one PG15+ one-shot service-migration job to completion: foreground, on the same Docker
  * network as `db`, labeled with `opts.projectId` so an interrupted run's orphaned container stays
- * discoverable by `supabase stop`. Stdout is discarded; stderr is teed to the parent's own stderr
+ * discoverable by `dbase stop`. Stdout is discarded; stderr is teed to the parent's own stderr
  * only under `--debug`.
  *
  * Resolves `opts.image` itself via `ensureImagesCached` immediately before running this job — the

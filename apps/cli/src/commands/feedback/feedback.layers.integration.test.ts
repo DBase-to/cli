@@ -20,7 +20,7 @@ const SUBMISSION = {
   message: "port conflicts when running two stacks",
   context: {
     cliVersion: "9.9.9",
-    userAgent: "SupabaseCLI/9.9.9",
+    userAgent: "DBaseCLI/9.9.9",
     os: "darwin",
     arch: "arm64",
     isAgent: false,

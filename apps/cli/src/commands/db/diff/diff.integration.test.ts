@@ -170,7 +170,7 @@ interface SetupOpts {
   // unreachable) or `"pull"` (registry failure).
   readonly pgadminDockerFail?: "spawn" | "pull";
   // Makes the pre-flight `isLocalDbRunning` probe report "container not found",
-  // surfacing as "supabase start is not running.".
+  // surfacing as "dbase start is not running.".
   readonly dbNotRunning?: boolean;
   // Makes the same probe fail with a daemon-unreachable stderr instead (mutually
   // exclusive with `dbNotRunning`).
@@ -728,7 +728,7 @@ describe("db diff", () => {
         expect(stderr(s.out)).toContain("Diffing schemas...");
         // The temp workdir sits outside any git checkout, so the branch is unknown and
         // the "Finished" line omits the clause instead of falsely claiming "main".
-        expect(stderr(s.out)).toContain("Finished supabase db diff.\n");
+        expect(stderr(s.out)).toContain("Finished dbase db diff.\n");
         expect(s.telemetry.flushed).toBe(true);
         const expectedHost = FAKE_SHADOW_CONTAINER_ID.slice(0, 12);
         expect(s.shadowSetupJobCalls.length).toBeGreaterThan(0);
@@ -936,7 +936,7 @@ describe("db diff", () => {
       expect(s.databaseDiffCalls).toHaveLength(1);
       expect(stderr(s.out)).toContain("No schema changes found");
       expect(stderr(s.out)).toContain("declarative schema files in supabase/schemas are not read");
-      expect(stderr(s.out)).toContain("Run supabase db schema declarative sync to generate");
+      expect(stderr(s.out)).toContain("Run dbase db schema declarative sync to generate");
       expect(stderr(s.out)).toContain("or pass --use-migra to diff them with migra");
     }).pipe(Effect.provide(s.layer));
   });
@@ -975,7 +975,7 @@ describe("db diff", () => {
         "supabase/schemas/public.sql",
       );
       expect(err).toContain("declarative schema files in supabase/schemas are not read");
-      expect(err).toContain("Run supabase db schema declarative sync --experimental to generate");
+      expect(err).toContain("Run dbase db schema declarative sync --experimental to generate");
       expect(err).toContain("or pass --use-migra to diff them with migra");
     }),
   );
@@ -986,7 +986,7 @@ describe("db diff", () => {
         '[experimental.pgdelta]\nenabled = "false"\n',
         "supabase/schemas/public.sql",
       );
-      expect(err).toContain("Run supabase db schema declarative sync --experimental to generate");
+      expect(err).toContain("Run dbase db schema declarative sync --experimental to generate");
       expect(err).toContain("or pass --use-migra to diff them with migra");
     }),
   );
@@ -1033,7 +1033,7 @@ describe("db diff", () => {
         "supabase/decl/public.sql",
       );
       expect(err).toContain("declarative schema files in supabase/decl are not read");
-      expect(err).toContain("Run supabase db schema declarative sync --experimental to generate");
+      expect(err).toContain("Run dbase db schema declarative sync --experimental to generate");
       expect(err).not.toContain("or pass --use-migra");
     }),
   );
@@ -1334,7 +1334,7 @@ describe("db diff", () => {
     return Effect.gen(function* () {
       yield* dbDiff(flags({ remote: REMOTE_LINKED, file: Option.some("declared") }));
       expect(stderr(s.out)).toContain(
-        "Run supabase db schema declarative sync --experimental to generate",
+        "Run dbase db schema declarative sync --experimental to generate",
       );
     }).pipe(Effect.provide(s.layer));
   });
@@ -1776,7 +1776,7 @@ describe("db diff", () => {
       );
 
       it.effect("keeps the link suggestion for the linked project", () => {
-        const suggestion = `Run supabase link --project-ref ${VALID_REF} to setup IPv4 connection.`;
+        const suggestion = `Run dbase link --project-ref ${VALID_REF} to setup IPv4 connection.`;
         const s = setup(tmp.current, {
           isLocal: false,
           projectId: Option.some(VALID_REF),
@@ -2170,7 +2170,7 @@ describe("db diff", () => {
       expect(stderr(s.out)).toContain("schema_paths no longer changes the migrations baseline");
       expect(stderr(s.out)).toContain("db diff -f uses supabase/migrations as its baseline");
       expect(stderr(s.out)).toContain("-f names the migration; it does not filter objects");
-      expect(stderr(s.out)).toContain("Run supabase db schema declarative sync to generate");
+      expect(stderr(s.out)).toContain("Run dbase db schema declarative sync to generate");
       expect(stderr(s.out)).toContain("WARNING: The diff tool is not foolproof");
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
@@ -3456,13 +3456,13 @@ describe("db diff", () => {
     });
 
     it.effect(
-      "fails with 'supabase start is not running.' before ever creating a shadow, but after the target resolve",
+      "fails with 'dbase start is not running.' before ever creating a shadow, but after the target resolve",
       () => {
         const s = setup(tmp.current, { dbNotRunning: true });
         return Effect.gen(function* () {
           const error = yield* dbDiff(flags({ usePgAdmin: Option.some(true) })).pipe(Effect.flip);
           expect(error).toMatchObject({ _tag: "DbDiffDbNotRunningError" });
-          expect(stripAnsi(error.message)).toBe("supabase start is not running.");
+          expect(stripAnsi(error.message)).toBe("dbase start is not running.");
           expect(s.shadowSpawned.filter((c) => c.args[0] === "create")).toEqual([]);
           expect(s.differCalls).toEqual([]);
           expect(s.resolverCalls.length).toBeGreaterThan(0);

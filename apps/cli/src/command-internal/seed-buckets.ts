@@ -471,7 +471,7 @@ const upsertVectorBuckets = Effect.fnUntraced(function* (
     if (!prune) {
       if (promptless) {
         yield* output.raw(
-          `Keeping vector bucket ${bold(name)}: not declared in ${bold(configPath)}. Run ${bold("supabase seed buckets")} to prune.\n`,
+          `Keeping vector bucket ${bold(name)}: not declared in ${bold(configPath)}. Run ${bold("dbase seed buckets")} to prune.\n`,
           "stderr",
         );
       }
@@ -521,7 +521,7 @@ const upsertAnalyticsBuckets = Effect.fnUntraced(function* (
     if (!prune) {
       if (promptless) {
         yield* output.raw(
-          `Keeping analytics bucket ${bold(name)}: not declared in ${bold(configPath)}. Run ${bold("supabase seed buckets")} to prune.\n`,
+          `Keeping analytics bucket ${bold(name)}: not declared in ${bold(configPath)}. Run ${bold("dbase seed buckets")} to prune.\n`,
           "stderr",
         );
       }
@@ -618,7 +618,7 @@ const handleVectorError = Effect.fnUntraced(function* (
   }
   if (isLocalVectorBucketsUnavailable(error.message)) {
     yield* output.raw(
-      `${yellow("WARNING:")} Vector buckets are not available in the local storage service. If this project is linked, run \`supabase link\` to update service versions, then restart the local stack. Skipping vector bucket seeding.\n`,
+      `${yellow("WARNING:")} Vector buckets are not available in the local storage service. If this project is linked, run \`dbase link\` to update service versions, then restart the local stack. Skipping vector bucket seeding.\n`,
       "stderr",
     );
     summary.vector_skipped = true;

@@ -6,7 +6,7 @@ import { runSupabaseEffect, stripAnsi } from "../../../../tests/helpers/cli.ts";
 
 const E2E_TIMEOUT_MS = 30_000;
 
-describe("supabase migration new", () => {
+describe("dbase migration new", () => {
   // Primary golden path: a real subprocess creates the migration file under the
   // working directory and prints the workdir-relative path. No infra required.
   it.live(

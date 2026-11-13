@@ -34,23 +34,23 @@ const config = {
 export type SecretsUnsetFlags = CliCommand.Command.Config.Infer<typeof config>;
 
 export const secretsUnsetCommand = Command.make("unset", config).pipe(
-  Command.withDescription("Unset a secret(s) from the linked Supabase project."),
-  Command.withShortDescription("Unset a secret(s) on Supabase"),
+  Command.withDescription("Unset a secret(s) from the linked DBase project."),
+  Command.withShortDescription("Unset a secret(s) on DBase"),
   Command.withExamples([
     {
-      command: "supabase secrets unset MY_SECRET",
+      command: "dbase secrets unset MY_SECRET",
       description: "Unset a secret by name",
     },
     {
-      command: "supabase secrets unset MY_SECRET OTHER_SECRET",
+      command: "dbase secrets unset MY_SECRET OTHER_SECRET",
       description: "Unset multiple secrets",
     },
     {
-      command: "supabase secrets unset --all",
+      command: "dbase secrets unset --all",
       description: "Unset every custom secret after confirming",
     },
     {
-      command: "supabase secrets unset --all --dry-run",
+      command: "dbase secrets unset --all --dry-run",
       description: "Preview which secrets --all would unset",
     },
   ]),

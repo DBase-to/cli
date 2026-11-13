@@ -52,7 +52,7 @@ export const makeLocalLogsSession = Effect.fn("Logs.local.session")(function* (
     .pipe(Effect.mapError(inputError));
   if (target.id === undefined || target.definition === undefined)
     return yield* new LogsInputError({
-      message: "No managed stack exists for the selected project. Run supabase stack start first.",
+      message: "No managed stack exists for the selected project. Run dbase stack start first.",
     });
   const requested = Option.isSome(flags.resource)
     ? [flags.resource.value]

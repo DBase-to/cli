@@ -182,7 +182,7 @@ export const dbSchemaDeclarativeSync = Effect.fn("db.schema.declarative.sync")(f
     // Step 1: declarative files must exist; in a TTY, offer to generate them.
     if (!declarativeFilesExist) {
       const noFiles = new DeclarativeNonInteractiveError({
-        message: "no declarative schema found. Run supabase db schema declarative generate first",
+        message: "no declarative schema found. Run dbase db schema declarative generate first",
       });
       if (!tty.stdinIsTty && !yes) return yield* noFiles;
       // `--yes`/`SUPABASE_YES` auto-confirms, but still echoes the `<label> [Y/n] y` stderr line

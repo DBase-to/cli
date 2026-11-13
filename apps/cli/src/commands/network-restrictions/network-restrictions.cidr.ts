@@ -14,7 +14,7 @@ export interface ParsedCidr {
 }
 
 /**
- * Parses a CIDR string (e.g. `10.0.0.0/8`) for `supabase network-restrictions update`.
+ * Parses a CIDR string (e.g. `10.0.0.0/8`) for `dbase network-restrictions update`.
  *
  * Returns `null` if the input is not a well-formed CIDR; callers translate `null` into
  * `NetworkRestrictionsInvalidCidrError`.

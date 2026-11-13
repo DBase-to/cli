@@ -183,7 +183,7 @@ describe("secrets set integration", () => {
       });
       expect(api.requests).toHaveLength(1);
       expect(api.requests[0]?.body).toEqual([{ name: "FOO", value: "bar" }]);
-      expect(out.stdoutText).toBe("Finished supabase secrets set.\n");
+      expect(out.stdoutText).toBe("Finished dbase secrets set.\n");
       assertPermissionDrift({ command: "secrets set", requests: api.requests, exact: true });
     }).pipe(Effect.provide(layer));
   });
@@ -225,7 +225,7 @@ describe("secrets set integration", () => {
       for (let i = 0; i < 150; i++) {
         expect(names.has(`KEY${i}`)).toBe(true);
       }
-      expect(out.stdoutText).toContain("Finished supabase secrets set.");
+      expect(out.stdoutText).toContain("Finished dbase secrets set.");
       assertPermissionDrift({ command: "secrets set", requests: api.requests, exact: true });
     }).pipe(Effect.provide(layer));
   });
@@ -296,7 +296,7 @@ describe("secrets set integration", () => {
         `GET https://api.supabase.com/v1/projects/${VALID_REF}`,
       ]);
       expect(api.requests[1]?.body).toEqual([{ name: "FOO", value: "bar" }]);
-      expect(out.stdoutText).toBe("Finished supabase secrets set.\n");
+      expect(out.stdoutText).toBe("Finished dbase secrets set.\n");
       expect(yield* decodeJson(yield* fs.readFileString(cachePath))).toMatchObject({
         ref: VALID_REF,
       });
@@ -1146,7 +1146,7 @@ FROM_CONFIG = "config-value"
           "inbucket in supabase/config.toml is no longer supported. Use local_smtp instead.",
         );
         expect(api.requests).toHaveLength(0);
-        expect(out.stdoutText).not.toContain("Finished supabase secrets set.");
+        expect(out.stdoutText).not.toContain("Finished dbase secrets set.");
       }).pipe(Effect.provide(layer));
     },
   );
@@ -1207,7 +1207,7 @@ FROM_CONFIG = "config-value"
   });
 
   it.effect(
-    "text mode prints `Finished supabase secrets set.\\n` regardless of --output value",
+    "text mode prints `Finished dbase secrets set.\\n` regardless of --output value",
     () => {
       const { layer, out } = setup({ outputFlag: "json" });
       return Effect.gen(function* () {
@@ -1218,7 +1218,7 @@ FROM_CONFIG = "config-value"
           secrets: ["FOO=bar"],
         });
         // `--output` doesn't affect `set`; the text-mode message lands regardless.
-        expect(out.stdoutText).toBe("Finished supabase secrets set.\n");
+        expect(out.stdoutText).toBe("Finished dbase secrets set.\n");
       }).pipe(Effect.provide(layer));
     },
   );

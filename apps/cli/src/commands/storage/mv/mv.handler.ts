@@ -24,7 +24,7 @@ import { listStoragePaths } from "../storage.iterate.ts";
 import type { StorageMvFlags } from "./mv.command.ts";
 
 /**
- * `supabase storage mv <src> <dst>` — move objects within a bucket. Both
+ * `dbase storage mv <src> <dst>` — move objects within a bucket. Both
  * paths must be `ss://` and in the same bucket. A direct move that returns
  * `not_found` falls back to a recursive per-object move when `--recursive`
  * is set.

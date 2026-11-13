@@ -1,6 +1,7 @@
 import { CliConfigSchema, findCliProjectPaths } from "@supabase/config/effect";
 import { cliConfigFormatForPath, parseCliConfigDocument } from "@supabase/config/internal";
 import { Config, Data, Effect, FileSystem, Option, Path, Result, Schema } from "effect";
+import { configOptionBoth } from "./env-names.ts";
 import { pickCliConfigKey } from "../../config/cli-config-key.ts";
 import { CliConfigKeys } from "../../config/cli-config-keys.ts";
 import { resolveWorkdir } from "../../config/command-settings.layer.ts";
@@ -54,7 +55,7 @@ export const readExperimentalFeatureConfig = (input: {
     const explicitWorkdir = firstExplicitLongFlagValue(input.args, "workdir");
     const resolvedWorkdir = yield* resolveWorkdir(
       explicitWorkdir === undefined ? Option.none() : Option.some(explicitWorkdir),
-      Option.fromNullishOr(yield* readEnv("SUPABASE_WORKDIR")),
+      yield* configOptionBoth("DBASE_WORKDIR", "SUPABASE_WORKDIR"),
       input.cwd,
       path,
     );
@@ -88,13 +89,17 @@ export const resolveExperimentalFeature = <E, R>(input: {
 }): Effect.Effect<boolean, E | ExperimentalFeatureFlagError, R | Path.Path> =>
   Effect.gen(function* () {
     const key = featureKeys[input.feature];
-    const envName = `SUPABASE_EXPERIMENTAL_${input.feature.toUpperCase()}`;
+    const legacyEnvName = `SUPABASE_EXPERIMENTAL_${input.feature.toUpperCase()}`;
+    const envName = `DBASE_EXPERIMENTAL_${input.feature.toUpperCase()}`;
     const path = yield* Path.Path;
-    const shell = yield* readEnv(envName);
+    const preferred = yield* readEnv(envName);
+    const legacy = preferred === undefined ? yield* readEnv(legacyEnvName) : undefined;
+    const chosenName = preferred === undefined ? legacyEnvName : envName;
+    const shell = preferred ?? legacy;
     const configValue = shell === undefined || shell === "" ? yield* input.configValue : undefined;
     const picked = pickCliConfigKey(key, {
       flags: () => undefined,
-      shell: (name) => (name === envName ? shell : undefined),
+      shell: (name) => (name === chosenName ? shell : undefined),
       projectEnv: () => undefined,
       config: (segments) =>
         segments.join(".") === key.path && configValue !== undefined
@@ -105,7 +110,7 @@ export const resolveExperimentalFeature = <E, R>(input: {
     });
     if (Result.isFailure(picked)) {
       return yield* new ExperimentalFeatureFlagError({
-        envName,
+        envName: chosenName,
         message: picked.failure.message,
       });
     }

@@ -66,7 +66,7 @@ describe("scrubString", () => {
     ],
     ["bearer token", "Authorization: Bearer sbp_0123456789abcdef0123", "sbp_0123456789abcdef0123"],
     ["JWT", `token was ${JWT}`, JWT],
-    ["Supabase secret key", "key sb_secret_abcdefghijklmnop", "sb_secret_abcdefghijklmnop"],
+    ["DBase secret key", "key sb_secret_abcdefghijklmnop", "sb_secret_abcdefghijklmnop"],
     ["password pair", "host=db user=postgres password=hunter2 dbname=x", "hunter2"],
     ["SQL literal password", "ALTER ROLE app WITH LOGIN PASSWORD 'hunter2'", "hunter2"],
     [

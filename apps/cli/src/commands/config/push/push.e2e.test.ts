@@ -20,7 +20,7 @@ const TEST_TOKEN = "sbp_" + "a".repeat(40);
  * layer + `withJsonErrorHandling` surface the parse error with exit code 1.
  * Per-service diff/output parity is covered by the unit + integration suites.
  */
-describe("supabase config push", () => {
+describe("dbase config push", () => {
   it.live(
     "aborts with exit 1 on a malformed config.toml before any network call",
     () =>

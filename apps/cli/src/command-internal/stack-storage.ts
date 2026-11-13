@@ -22,7 +22,7 @@ import { type ConfigFileRef, configSetting } from "./config-advice.ts";
 import { findConfigFileRef } from "./config-file-ref.ts";
 
 const INSPECT_OR_RESTART_SUGGESTION =
-  "Run supabase stack status to inspect the stack, or supabase stack restart.";
+  "Run dbase stack status to inspect the stack, or dbase stack restart.";
 
 /** The instruction to enable Storage; without a known config file it stays format-neutral. */
 export const enableStorageAdvice = (configFile: ConfigFileRef | undefined): string =>
@@ -127,9 +127,9 @@ const notRunningSuggestion = (lifecycle: "starting" | "stopping" | "stopped"): s
     Match.when("starting", () => "The stack is still starting; retry shortly."),
     Match.when(
       "stopping",
-      () => "The stack is shutting down; run supabase start once it has stopped.",
+      () => "The stack is shutting down; run dbase start once it has stopped.",
     ),
-    Match.when("stopped", () => "Run supabase start."),
+    Match.when("stopped", () => "Run dbase start."),
     Match.exhaustive,
   );
 
@@ -191,7 +191,7 @@ export const stackStorageEndpointFor = (
     if (storage === undefined)
       return yield* new StackStorageCapabilityError({
         message: "Storage is disabled for this stack.",
-        suggestion: `${enableStorageAdvice(configFile)}, then run supabase start without --exclude storage.`,
+        suggestion: `${enableStorageAdvice(configFile)}, then run dbase start without --exclude storage.`,
         disabled: true,
       });
     const database = members.find((instance) => instance.service === "database");
@@ -221,7 +221,7 @@ export const stackStorageEndpointFor = (
     if (classifyStorageCapability(storageObservation) !== "proceed")
       return yield* new StackStorageCapabilityError({
         message: describeStorageCapability(storageObservation),
-        suggestion: "Run supabase stack restart, then retry.",
+        suggestion: "Run dbase stack restart, then retry.",
       });
     const identity = yield* stack.credentials.get.pipe(
       Effect.mapError((cause) => new StackStorageUnavailableError({ message: cause.message })),
@@ -249,7 +249,7 @@ export const stackStorageEndpoint: Effect.Effect<
   if (Option.isNone(opened))
     return yield* new StackStorageUnavailableError({
       message: "No stack is registered for this project.",
-      suggestion: "Run supabase start to create it.",
+      suggestion: "Run dbase start to create it.",
     });
   const settings = yield* CommandSettings;
   const configFile = yield* findConfigFileRef(settings.workdir);
@@ -280,7 +280,7 @@ export const withStackStorageGuidance = <A, E, R>(
               body.length === 0 ? "." : `: ${body}`
             }`,
             suggestion:
-              "Run supabase logs --service storage to inspect Storage, then supabase stack restart.",
+              "Run dbase logs --service storage to inspect Storage, then dbase stack restart.",
             cause: error,
           }),
         );

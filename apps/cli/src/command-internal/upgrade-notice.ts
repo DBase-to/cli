@@ -3,7 +3,7 @@
  * running version and prints a notice to stderr, honoring
  * `SUPABASE_NO_UPDATE_NOTIFIER`. The tag is cached in the project's
  * `supabase/.temp/cli-latest` in legacy project-state mode, else
- * `<SUPABASE_HOME>/cli-latest`. A failed fetch writes an empty cache as an
+ * `<DBASE_HOME>/cli-latest`. A failed fetch writes an empty cache as an
  * offline backoff.
  */
 
@@ -31,6 +31,7 @@ import {
 } from "../shared/cli/run.ts";
 import { CLI_UPGRADE_GUIDE_URL, CLI_VERSION, parseSemver } from "../shared/cli/version.ts";
 import { candidateDotenvFilenames } from "../shared/config/cli-config-env.ts";
+import { configOptionBoth } from "../shared/config/env-names.ts";
 import { resolveSupabaseHomeValue } from "../shared/config/supabase-home.ts";
 import { RuntimeInfo } from "../shared/runtime/runtime-info.service.ts";
 import {
@@ -43,7 +44,7 @@ import { legacyProjectStatePaths } from "../shared/config/legacy-project-state.p
 import { parseDotEnv } from "../shared/config/dotenv.ts";
 import { projectStateMode } from "../shared/config/project-state-mode.ts";
 
-const LATEST_RELEASE_URL = "https://api.github.com/repos/supabase/cli/releases/latest";
+const LATEST_RELEASE_URL = "https://api.github.com/repos/DBase-to/cli/releases/latest";
 const CACHE_TTL_MS = 10 * 60 * 60 * 1000;
 /** Bounds this pre-exit hook's latency. */
 const FETCH_TIMEOUT_MS = 800;
@@ -126,7 +127,7 @@ function comparePrerelease(left: string, right: string): number {
  */
 export function formatUpgradeNotice(latestTag: string, currentVersion: string): string {
   return (
-    `A new version of Supabase CLI is available: ${yellow(latestTag)} (currently installed v${currentVersion})\n` +
+    `A new version of DBase CLI is available: ${yellow(latestTag)} (currently installed v${currentVersion})\n` +
     `We recommend updating regularly for new features and bug fixes: ${bold(CLI_UPGRADE_GUIDE_URL)}`
   );
 }
@@ -202,7 +203,8 @@ const resolveNoticeBaseDir = Effect.fnUntraced(function* (
   // A set flag beats the env even when empty; an empty effective value falls
   // through to the ancestor walk.
   const flagValue = lastGlobalFlagValue(args, "--workdir", isValueTakingFlagToken);
-  const explicit = flagValue !== undefined ? flagValue : env["SUPABASE_WORKDIR"];
+  const explicit =
+    flagValue !== undefined ? flagValue : (env["DBASE_WORKDIR"] ?? env["SUPABASE_WORKDIR"]);
   if (explicit !== undefined && explicit !== "") {
     return path.resolve(cwd, explicit);
   }
@@ -230,7 +232,9 @@ const projectDotenvValues = Effect.fnUntraced(function* (
       ? [path.join(base, "supabase")]
       : [path.join(base, "supabase"), base];
   for (const dir of dirs) {
-    for (const filename of candidateDotenvFilenames(env["SUPABASE_ENV"] || "development")) {
+    for (const filename of candidateDotenvFilenames(
+      (env["DBASE_ENV"] ?? env["SUPABASE_ENV"]) || "development",
+    )) {
       // `readFileString` drops a leading byte-order mark, as the main loader's reader does.
       const contents = yield* fs.readFileString(path.join(dir, filename)).pipe(Effect.option);
       if (Option.isNone(contents)) continue;
@@ -258,7 +262,7 @@ export interface UpgradeNoticeDeps {
   readonly currentVersion: string;
   /** The cache directory outside a legacy-mode project. */
   readonly supabaseHome: string;
-  /** Whether the project keeps its state in `supabase/.temp` rather than `$SUPABASE_HOME`. */
+  /** Whether the project keeps its state in `supabase/.temp` rather than `$DBASE_HOME`. */
   readonly usesLegacyProjectState: Effect.Effect<boolean, never, FileSystem.FileSystem | Path.Path>;
   readonly now: () => number;
   readonly fetchLatestTag: Effect.Effect<string, UpgradeNoticeFetchError>;
@@ -402,7 +406,7 @@ const fetchLatestReleaseTag: Effect.Effect<string, UpgradeNoticeFetchError, Http
     const request = HttpClientRequest.get(LATEST_RELEASE_URL).pipe(
       HttpClientRequest.setHeaders({
         accept: "application/vnd.github+json",
-        "user-agent": `SupabaseCLI/${CLI_VERSION}`,
+        "user-agent": `DBaseCLI/${CLI_VERSION}`,
       }),
     );
     const response = yield* HttpClient.execute(
@@ -435,6 +439,10 @@ const fetchLatestReleaseTag: Effect.Effect<string, UpgradeNoticeFetchError, Http
 
 /** The `SUPABASE_*` keys the notice reads, from the ambient `Config` provider. */
 const NOTICE_ENV_KEYS = [
+  "DBASE_NO_UPDATE_NOTIFIER",
+  "DBASE_DEBUG",
+  "DBASE_WORKDIR",
+  "DBASE_ENV",
   "SUPABASE_NO_UPDATE_NOTIFIER",
   "SUPABASE_DEBUG",
   "SUPABASE_WORKDIR",
@@ -466,7 +474,7 @@ export const upgradeNoticeHook = (
     for (const key of NOTICE_ENV_KEYS) {
       env[key] = Option.getOrUndefined(yield* Config.option(Config.String(key)));
     }
-    const supabaseHome = yield* Config.option(Config.String("SUPABASE_HOME"));
+    const supabaseHome = yield* configOptionBoth("DBASE_HOME", "SUPABASE_HOME");
     const outcome = yield* runUpgradeNotice({
       env,
       args,

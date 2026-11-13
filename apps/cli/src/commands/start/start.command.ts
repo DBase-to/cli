@@ -89,8 +89,8 @@ const startRuntimeLayer = Layer.mergeAll(
 );
 
 export const startCommand = Command.make("start", config).pipe(
-  Command.withDescription("Start containers for Supabase local development."),
-  Command.withShortDescription("Start local Supabase stack"),
+  Command.withDescription("Start containers for DBase local development."),
+  Command.withShortDescription("Start local DBase stack"),
   withPermissions({
     operations: [],
     noApiEffectFlags: ["exclude", "ignore-health-check", "preview"],

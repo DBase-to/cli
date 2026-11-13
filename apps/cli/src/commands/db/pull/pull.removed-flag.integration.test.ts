@@ -19,7 +19,7 @@ import { isolatedHomeLayer } from "../../../../tests/helpers/command-mocks.ts";
 import { dbCommand } from "../db.command.ts";
 import { commandTargetLayer } from "../../../shared/output/command-target.layer.ts";
 
-const testRoot = Command.make("supabase").pipe(
+const testRoot = Command.make("dbase").pipe(
   Command.withSubcommands([dbCommand]),
   Command.withGlobalFlags(GLOBAL_FLAGS),
 );

@@ -6,7 +6,7 @@ import {
 } from "../shared/telemetry/error-actionability.ts";
 
 /**
- * Helpers for the persisted profile-name file under the global Supabase home.
+ * Helpers for the persisted profile-name file under the global DBase home.
  *
  * `login` writes this file (on success, when a profile was explicitly set) so a
  * later command run without `--profile` / `SUPABASE_PROFILE` resolves the same

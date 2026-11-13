@@ -53,7 +53,7 @@ describe("resolveTraceSettings", () => {
 
       expect(settings).toEqual({ sink: Option.none() });
       expect(stderr).toBe(
-        "Warning: tracing disabled: SUPABASE_TRACE_FILE and SUPABASE_OTLP_ENDPOINT are both set; choose one trace destination\n",
+        "Warning: tracing disabled: DBASE_TRACE_FILE and DBASE_OTLP_ENDPOINT are both set; choose one trace destination\n",
       );
     }),
   );
@@ -106,17 +106,17 @@ describe("resolveTraceSettings", () => {
     {
       setting: "endpoint",
       env: { SUPABASE_OTLP_ENDPOINT: "localhost:4318" },
-      reason: "SUPABASE_OTLP_ENDPOINT must be an http(s) URL",
+      reason: "DBASE_OTLP_ENDPOINT must be an http(s) URL",
     },
     {
       setting: "headers",
       env: { SUPABASE_OTLP_ENDPOINT: "http://localhost:4318", SUPABASE_OTLP_HEADERS: "no-sep" },
-      reason: "SUPABASE_OTLP_HEADERS must be a comma-separated list",
+      reason: "DBASE_OTLP_HEADERS must be a comma-separated list",
     },
     {
       setting: "header name",
       env: { SUPABASE_OTLP_ENDPOINT: "http://localhost:4318", SUPABASE_OTLP_HEADERS: "x%20y=1" },
-      reason: "SUPABASE_OTLP_HEADERS must be a comma-separated list",
+      reason: "DBASE_OTLP_HEADERS must be a comma-separated list",
     },
     {
       setting: "header value",
@@ -124,7 +124,7 @@ describe("resolveTraceSettings", () => {
         SUPABASE_OTLP_ENDPOINT: "http://localhost:4318",
         SUPABASE_OTLP_HEADERS: "x-a=1%0D%0Ainjected: yes",
       },
-      reason: "SUPABASE_OTLP_HEADERS must be a comma-separated list",
+      reason: "DBASE_OTLP_HEADERS must be a comma-separated list",
     },
   ])("warns and turns tracing off for invalid collector $setting", ({ env, reason }) =>
     Effect.gen(function* () {

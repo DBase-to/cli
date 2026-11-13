@@ -291,7 +291,7 @@ export const link = Effect.fn("link")(function* (flags: LinkFlags) {
       if (status === "INACTIVE") {
         return yield* new ProjectPausedError({
           message: "project is paused",
-          suggestion: `An admin must unpause it from the Supabase dashboard at ${dashboardUrl(
+          suggestion: `An admin must unpause it from the DBase dashboard at ${dashboardUrl(
             cliSettings.profile,
           )}/project/${ref}`,
         });
@@ -494,9 +494,9 @@ export const link = Effect.fn("link")(function* (flags: LinkFlags) {
       }
     }
 
-    // 6. PostRun: `Finished supabase link.` to stdout (text), structured success otherwise.
+    // 6. PostRun: `Finished dbase link.` to stdout (text), structured success otherwise.
     if (output.format === "text") {
-      yield* output.raw("Finished supabase link.\n");
+      yield* output.raw("Finished dbase link.\n");
     } else {
       yield* output.success("", {
         project_ref: ref,

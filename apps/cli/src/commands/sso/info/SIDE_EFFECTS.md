@@ -1,16 +1,16 @@
-# `supabase sso info`
+# `dbase sso info`
 
 Target: hosted, no consent — see [Command target](../../../../docs/command-target.md)
 
 ## Files Read
 
-| Path                                           | Format                    | When                                                                                                            |
-| ---------------------------------------------- | ------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| keyring `"Supabase CLI"` / `<profile>`         | OS keychain               | when `SUPABASE_ACCESS_TOKEN` unset and keyring available; account = `CommandSettings.profile`                   |
-| keyring `"Supabase CLI"` / `access-token`      | OS keychain               | legacy-key fallback when the profile-keyed lookup misses                                                        |
-| `~/.supabase/access-token`                     | plain text (token string) | last-resort fallback after env + keyring miss                                                                   |
-| `<workdir>/supabase/.temp/project-ref`         | plain text                | when `--remote=<ref>` and `SUPABASE_PROJECT_ID` env are unset, and as the linked parent for `--remote=<branch>` |
-| `<workdir>/supabase/.temp/linked-project.json` | JSON                      | always — `linkedProjectCache` reads to decide whether to write                                                  |
+| Path                                           | Format                    | When                                                                                                         |
+| ---------------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| keyring `"DBase CLI"` / `<profile>`            | OS keychain               | when `DBASE_ACCESS_TOKEN` unset and keyring available; account = `CommandSettings.profile`                   |
+| keyring `"DBase CLI"` / `access-token`         | OS keychain               | legacy-key fallback when the profile-keyed lookup misses                                                     |
+| `~/.supabase/access-token`                     | plain text (token string) | last-resort fallback after env + keyring miss                                                                |
+| `<workdir>/supabase/.temp/project-ref`         | plain text                | when `--remote=<ref>` and `DBASE_PROJECT_ID` env are unset, and as the linked parent for `--remote=<branch>` |
+| `<workdir>/supabase/.temp/linked-project.json` | JSON                      | always — `linkedProjectCache` reads to decide whether to write                                               |
 
 `info` makes no Management API call of its own, but the Management API client is built eagerly, so an
 access token is required: a missing one fails before the handler runs.
@@ -27,27 +27,27 @@ access token is required: a missing one fails before the handler runs.
 `info` derives all three URLs locally from the project ref and makes no Management API call of its
 own. The ref resolution and the cache fill still call the API:
 
-| Method | Path                             | Auth         | Request body | Response (used fields)                                                                                                                                                                                                                                   |
-| ------ | -------------------------------- | ------------ | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `GET`  | `/v1/projects`                   | Bearer token | none         | project list for the interactive picker — only when no ref comes from `--remote=<ref>`, `SUPABASE_PROJECT_ID` or `.temp/project-ref` and stdin is a TTY with interactive output                                                                          |
-| `GET`  | `/v1/projects/{parent}/branches` | Bearer token | none         | `[{id, name, project_ref, is_default}]` — only for `--remote=<branch>` (or the deprecated `--project-ref=<branch>`), and for a bare `--remote` followed by a word that could name a branch; `{parent}` is `SUPABASE_PROJECT_ID`, else the linked project |
-| `GET`  | `/v1/branches/{id}`              | Bearer token | none         | `{ref, status, …}` — only for `--remote=<branch UUID>` when no project is linked                                                                                                                                                                         |
-| `GET`  | `/v1/projects/{ref}`             | Bearer token | none         | `{ref, name, organization_id, organization_slug}` — `linkedProjectCache` fill, best-effort, skipped when `.temp/linked-project.json` exists, `.temp/project-ref` names another ref, or no token is available                                             |
+| Method | Path                             | Auth         | Request body | Response (used fields)                                                                                                                                                                                                                                |
+| ------ | -------------------------------- | ------------ | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET`  | `/v1/projects`                   | Bearer token | none         | project list for the interactive picker — only when no ref comes from `--remote=<ref>`, `DBASE_PROJECT_ID` or `.temp/project-ref` and stdin is a TTY with interactive output                                                                          |
+| `GET`  | `/v1/projects/{parent}/branches` | Bearer token | none         | `[{id, name, project_ref, is_default}]` — only for `--remote=<branch>` (or the deprecated `--project-ref=<branch>`), and for a bare `--remote` followed by a word that could name a branch; `{parent}` is `DBASE_PROJECT_ID`, else the linked project |
+| `GET`  | `/v1/branches/{id}`              | Bearer token | none         | `{ref, status, …}` — only for `--remote=<branch UUID>` when no project is linked                                                                                                                                                                      |
+| `GET`  | `/v1/projects/{ref}`             | Bearer token | none         | `{ref, name, organization_id, organization_slug}` — `linkedProjectCache` fill, best-effort, skipped when `.temp/linked-project.json` exists, `.temp/project-ref` names another ref, or no token is available                                          |
 
 ## Environment Variables
 
-| Variable                | Purpose                                              | Required?                                               |
-| ----------------------- | ---------------------------------------------------- | ------------------------------------------------------- |
-| `SUPABASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup) | no (falls back to keyring → `~/.supabase/access-token`) |
-| `SUPABASE_PROFILE`      | profile selector (built-in name or YAML file path)   | no (defaults to `supabase`)                             |
+| Variable             | Purpose                                              | Required?                                               |
+| -------------------- | ---------------------------------------------------- | ------------------------------------------------------- |
+| `DBASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup) | no (falls back to keyring → `~/.supabase/access-token`) |
+| `DBASE_PROFILE`      | profile selector (built-in name or YAML file path)   | no (defaults to `supabase`)                             |
 
 ## Exit Codes
 
-| Code | Condition                                                                                                      |
-| ---- | -------------------------------------------------------------------------------------------------------------- |
-| `0`  | success                                                                                                        |
-| `1`  | `InvalidProjectRefError` — `SUPABASE_PROJECT_ID` or the link file holds a ref that doesn't match `^[a-z]{20}$` |
-| `1`  | `ProjectRefNotLinkedError` — no ref source available                                                           |
+| Code | Condition                                                                                                   |
+| ---- | ----------------------------------------------------------------------------------------------------------- |
+| `0`  | success                                                                                                     |
+| `1`  | `InvalidProjectRefError` — `DBASE_PROJECT_ID` or the link file holds a ref that doesn't match `^[a-z]{20}$` |
+| `1`  | `ProjectRefNotLinkedError` — no ref source available                                                        |
 
 ## Telemetry Events Fired
 

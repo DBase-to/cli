@@ -176,9 +176,9 @@ export const stop = Effect.fn("stop")(function* (flags: StopFlags) {
     if (output.format === "text") {
       // Written to stdout: `aqua` must target stdout's own TTY status, not stderr's; see
       // `colors.ts`'s doc comment.
-      yield* output.raw(`Stopped ${aqua("supabase", process.stdout)} local development setup.\n`);
+      yield* output.raw(`Stopped ${aqua("dbase", process.stdout)} local development setup.\n`);
     } else {
-      yield* output.success("Stopped supabase local development setup.", {
+      yield* output.success("Stopped dbase local development setup.", {
         project_id_filter: searchProjectIdFilter,
         backup: !deleteVolumes,
       });

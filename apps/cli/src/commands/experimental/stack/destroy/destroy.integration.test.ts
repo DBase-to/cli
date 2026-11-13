@@ -307,7 +307,7 @@ describe("stack destroy", () => {
 
       expect(error.reason).toBe("flags");
       expect(error.message).toContain("was not found");
-      expect(error.suggestion).toContain("Run `supabase stack list`");
+      expect(error.suggestion).toContain("Run `dbase stack list`");
       expect(error.detail).toBe(unlisted);
 
       const ids = [id, "e".repeat(64)];
@@ -561,7 +561,7 @@ describe("stack destroy", () => {
           runtime: "native",
         });
         const ids = [f.stack.id, second.id];
-        const retry = `"supabase stack destroy --stack-id ${f.stack.id} --stack-id ${second.id} --yes"`;
+        const retry = `"dbase stack destroy --stack-id ${f.stack.id} --stack-id ${second.id} --yes"`;
         const destroyWith = (unreachable: ReadonlyArray<string>) =>
           stackDestroy({ ...f.flags, stackId: ids }).pipe(
             Effect.provide(Layer.merge(f.layer, refuseDestroy(f.api, ids, unreachable))),
@@ -673,7 +673,7 @@ describe("stack destroy", () => {
             code: "ExperimentalStackDestroyError",
             message: "Failed to destroy 1 managed stack(s).",
             detail: `${f.stack.id}: engine refused`,
-            suggestion: `Resolve each error, then run "supabase stack destroy --stack-id ${f.stack.id} --yes" to retry the stacks that failed.`,
+            suggestion: `Resolve each error, then run "dbase stack destroy --stack-id ${f.stack.id} --yes" to retry the stacks that failed.`,
           },
         });
         expect(processControl.exitCode).toBe(1);

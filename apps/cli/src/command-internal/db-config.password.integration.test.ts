@@ -129,7 +129,7 @@ describe("resolveLinkedPassword", () => {
             Effect.sync(() => {
               expect(result).toEqual(["", ""]);
               expect(warnings).toEqual([
-                `Not sending SUPABASE_DB_PASSWORD to ${TARGET}: this directory is linked to ${LINKED}. Using a temporary login role instead (needs supabase login or SUPABASE_ACCESS_TOKEN). Pass --password to use a password for ${TARGET}.`,
+                `Not sending SUPABASE_DB_PASSWORD to ${TARGET}: this directory is linked to ${LINKED}. Using a temporary login role instead (needs dbase login or SUPABASE_ACCESS_TOKEN). Pass --password to use a password for ${TARGET}.`,
               ]);
               expect(debugLines).toEqual([
                 "No database password found; using a temporary login role...",
@@ -147,7 +147,7 @@ describe("resolveLinkedPassword", () => {
         Effect.tap(({ warnings }) =>
           Effect.sync(() => {
             expect(warnings).toEqual([
-              `Not sending SUPABASE_DB_PASSWORD to ${TARGET}: this directory is linked to ${LINKED}. Using a temporary login role instead (needs supabase login or SUPABASE_ACCESS_TOKEN).`,
+              `Not sending SUPABASE_DB_PASSWORD to ${TARGET}: this directory is linked to ${LINKED}. Using a temporary login role instead (needs dbase login or SUPABASE_ACCESS_TOKEN).`,
             ]);
           }),
         ),

@@ -80,7 +80,7 @@ function branchNotFoundMessage(value: string, parentRef: string, branches: Branc
   const shownSanitized = sanitizeInlineName(shown.join(", "));
   const namesList =
     remaining > 0
-      ? `${shownSanitized}, … (${remaining} more — run supabase branches list)`
+      ? `${shownSanitized}, … (${remaining} more — run dbase branches list)`
       : shownSanitized;
 
   const closest = closestByName(branches, value);
@@ -152,7 +152,7 @@ export const listBranchesFailureCause = (error: LinkBranchListNetworkError): str
 
 /** What to try when the listed project is itself a preview branch, which has no branches. */
 export const previewBranchHint = (ref: string): string =>
-  `If ${ref} is itself a preview branch, link its parent project first: supabase link --project-ref <parent-ref>`;
+  `If ${ref} is itself a preview branch, link its parent project first: dbase link --project-ref <parent-ref>`;
 
 /** `GET /v1/projects/{ref}/branches` for every branch-name lookup; no `label` means no spinner. */
 const listParentBranches = Effect.fnUntraced(function* (parentRef: string, label?: string) {
@@ -247,7 +247,7 @@ export const resolveLinkBranchRef = Effect.fn("Target.resolveBranch")(function* 
 
 const resolveBranchById = Effect.fnUntraced(function* (id: string) {
   const api = yield* acquireApi();
-  const notFoundMessage = `Branch "${sanitizeInlineName(id)}" not found. Run \`supabase branches list\` to see available branches.`;
+  const notFoundMessage = `Branch "${sanitizeInlineName(id)}" not found. Run \`dbase branches list\` to see available branches.`;
   const mapBranchGetError = mapHttpError({
     networkError: LinkBranchListNetworkError,
     statusError: LinkBranchListStatusError,

@@ -846,7 +846,7 @@ describe("start integration", () => {
           });
 
           yield* start(flags()).pipe(Effect.provide(layer));
-          expect(out.stderrText).toContain("supabase start");
+          expect(out.stderrText).toContain("dbase start");
           expect(out.stderrText).toContain("is already running");
           expect(child.spawned.some((s) => s.args[0] === "create")).toBe(false);
         }).pipe(Effect.provide([BunServices.layer, BunCrypto.layer])),
@@ -1260,7 +1260,7 @@ describe("start integration", () => {
     );
 
     it.effect(
-      "fails with the unknown status and a supabase stop suggestion when Docker reports no database state",
+      "fails with the unknown status and a dbase stop suggestion when Docker reports no database state",
       () =>
         Effect.gen(function* () {
           const { layer, out, child } = yield* setup({
@@ -1275,11 +1275,11 @@ describe("start integration", () => {
           expect(error).toMatchObject({
             _tag: "StatusDbNotRunningError",
             message: "supabase_db_demo container is not running: unknown",
-            suggestion: expect.stringContaining("supabase stop"),
+            suggestion: expect.stringContaining("dbase stop"),
           });
           expect(classifyCliErrorActionability(error)).toMatchObject({
             error_kind: "user_actionable",
-            suggested_command: "supabase stop",
+            suggested_command: "dbase stop",
           });
           expect(out.stderrText).not.toContain("is already running");
           expect(createdContainerNames(child.spawned)).toEqual([]);
@@ -1310,7 +1310,7 @@ describe("start integration", () => {
           expect(error).toMatchObject({
             _tag: "StatusDbNotRunningError",
             message: "supabase_db_demo container is not running: exited",
-            suggestion: expect.stringContaining("supabase stop"),
+            suggestion: expect.stringContaining("dbase stop"),
           });
           expect(out.stderrText).not.toContain("is already running");
         }).pipe(Effect.provide([BunServices.layer, BunCrypto.layer])),
@@ -3950,7 +3950,7 @@ content_path = "./supabase/templates/custom_notice.html"
           expect(out.stderrText).toContain("image rm -f public.ecr.aws/supabase/postgres:");
           // `--ignore-health-check` leaves the stack up, so a bare restart would be a
           // no-op — the sequence must stop first.
-          expect(out.stderrText).toContain("supabase stop");
+          expect(out.stderrText).toContain("dbase stop");
           // The database bring-up returns before any other service's bring-up begins.
           expect(createdContainerNames(child.spawned)).toEqual([expect.stringContaining("_db_")]);
           // `cli_stack_started`'s capture sits after the entire bring-up + bulk health check,

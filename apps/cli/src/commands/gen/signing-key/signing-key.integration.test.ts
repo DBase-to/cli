@@ -199,7 +199,7 @@ function expectedRs256FileEntry(key: Readonly<Record<string, unknown>> | undefin
   ].join("\n");
 }
 
-const testRoot = Command.make("supabase").pipe(
+const testRoot = Command.make("dbase").pipe(
   Command.withSubcommands([
     Command.make("gen").pipe(Command.withSubcommands([genSigningKeyCommand])),
   ]),

@@ -33,7 +33,7 @@ const config = {
   // exclusive whenever both were explicitly set, regardless of `--all`'s value. A plain
   // `Flag.Boolean` couldn't distinguish `--project-id x --all=false` from `--project-id x` alone.
   all: Flag.Boolean("all").pipe(
-    Flag.withDescription("Stop all local Supabase instances from all projects across the machine."),
+    Flag.withDescription("Stop all local DBase instances from all projects across the machine."),
     Flag.optional,
   ),
 } as const;
@@ -52,8 +52,8 @@ const stopRuntimeLayer = Layer.mergeAll(
 );
 
 export const stopCommand = Command.make("stop", config).pipe(
-  Command.withDescription("Stop all local Supabase containers."),
-  Command.withShortDescription("Stop all local Supabase containers"),
+  Command.withDescription("Stop all local DBase containers."),
+  Command.withShortDescription("Stop all local DBase containers"),
   withPermissions({
     operations: [],
     noApiEffectFlags: ["project-id", "backup", "no-backup", "all"],

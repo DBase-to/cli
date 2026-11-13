@@ -4,7 +4,7 @@ import { runSupabaseEffect } from "../../../tests/helpers/cli.ts";
 
 const E2E_TIMEOUT_MS = 30_000;
 
-describe("supabase completion", () => {
+describe("dbase completion", () => {
   // Only a real subprocess run proves the argv parser accepts --no-descriptions and the
   // handler selects the no-desc template variant.
   it.live(
@@ -28,7 +28,7 @@ describe("supabase completion", () => {
       Effect.gen(function* () {
         const { exitCode, stdout } = yield* runSupabaseEffect(["completion", "zsh"], {});
         expect(exitCode).toBe(0);
-        expect(stdout).toContain("#compdef supabase");
+        expect(stdout).toContain("#compdef dbase");
         expect(stdout).toContain("__complete");
       }),
     E2E_TIMEOUT_MS,

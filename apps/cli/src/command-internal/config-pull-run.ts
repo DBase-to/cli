@@ -615,7 +615,7 @@ export const planConfigPullRun = Effect.fn("ConfigPull.plan")(function* (
       });
     }
     return yield* new ConfigPullRemoteEnvRefError({
-      message: `[remotes.${sanitizeInlineName(scopeResult.label)}].project_id is spelled as env(${scopeResult.envVariables.map((name) => sanitizeInlineName(name)).join(", ")}), but the config loader matches project_id literally — this block has never applied to any project (supabase start and config push have both been ignoring it). Replace it with the literal ref ${sanitizeInlineName(ref)} to make the block real, or pass --remote-label <name> to write a new block instead.`,
+      message: `[remotes.${sanitizeInlineName(scopeResult.label)}].project_id is spelled as env(${scopeResult.envVariables.map((name) => sanitizeInlineName(name)).join(", ")}), but the config loader matches project_id literally — this block has never applied to any project (dbase start and config push have both been ignoring it). Replace it with the literal ref ${sanitizeInlineName(ref)} to make the block real, or pass --remote-label <name> to write a new block instead.`,
     });
   }
   const destination = scopeResult.destination;
@@ -845,7 +845,7 @@ function warningMessage(warning: ConfigPullWarning, configPath: string): string 
   const path = warning.path === undefined ? undefined : configRenderPath(warning.path);
   switch (warning.kind) {
     case "dual_scope":
-      return `${path} also configures the local stack (\`supabase start\`) — writing it to the config root changes local dev behavior too.`;
+      return `${path} also configures the local stack (\`dbase start\`) — writing it to the config root changes local dev behavior too.`;
     case "duplicates_root":
       return `${path} already matches the config root's value — this remote block now carries a redundant copy.`;
     case "array_drift":

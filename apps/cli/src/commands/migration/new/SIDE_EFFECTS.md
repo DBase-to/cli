@@ -1,4 +1,4 @@
-# `supabase migration new`
+# `dbase migration new`
 
 ## Files Read
 

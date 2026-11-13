@@ -29,7 +29,7 @@ export const computeStatusCommand = Command.make("status", config).pipe(
   Command.withShortDescription("Show a compute in detail"),
   Command.withExamples([
     {
-      command: "supabase compute status api",
+      command: "dbase compute status api",
       description: "Inspect a specific compute",
     },
   ]),

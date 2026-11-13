@@ -71,7 +71,7 @@ describe("db bootstrap error actionability discriminants", () => {
     ).toMatchObject({ error_category: "docker_not_running" });
     expect(classify(new LocalDbRunningError({ message: "ignored" }))).toMatchObject({
       error_category: "invalid_config",
-      suggested_command: "supabase start",
+      suggested_command: "dbase start",
     });
   });
 

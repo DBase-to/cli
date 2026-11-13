@@ -523,9 +523,9 @@ const runSquash = Effect.fnUntraced(function* (flags: MigrationSquashFlags) {
     // Local target: suggest migration repair instead of touching the remote history.
     if (cfg.isLocal) {
       if (output.format === "text") {
-        yield* output.raw(`Finished ${aqua("supabase migration squash")}.\n`);
+        yield* output.raw(`Finished ${aqua("dbase migration squash")}.\n`);
         yield* output.raw(
-          `Run ${aqua("supabase migration repair --status applied --remote")} to update your remote migration history table.\n`,
+          `Run ${aqua("dbase migration repair --status applied --remote")} to update your remote migration history table.\n`,
           "stderr",
         );
       } else {
@@ -551,7 +551,7 @@ const runSquash = Effect.fnUntraced(function* (flags: MigrationSquashFlags) {
     );
 
     if (output.format === "text") {
-      yield* output.raw(`Finished ${aqua("supabase migration squash")}.\n`);
+      yield* output.raw(`Finished ${aqua("dbase migration squash")}.\n`);
     } else {
       yield* output.success("Migrations squashed", {
         squashedInto: squashResult.target,

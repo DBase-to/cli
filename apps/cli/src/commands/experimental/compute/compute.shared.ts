@@ -15,7 +15,7 @@ import { validateComputeNameMessage } from "../../../shared/compute/compute-runt
 import { InvalidComputeNameError } from "../../../shared/compute/compute.errors.ts";
 
 /**
- * What every `supabase compute` command needs before it does
+ * What every `dbase compute` command needs before it does
  * anything: where the project is, what `[compute]` says, and which compute is
  * being acted on.
  *

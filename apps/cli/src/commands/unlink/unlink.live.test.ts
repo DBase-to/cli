@@ -25,7 +25,7 @@ test("unlinks a linked workspace, leaving no local link state", ({
 
       const result = yield* cliEffect(["unlink"]);
       expect(result.exitCode, result.stderr).toBe(0);
-      expect(result.stdout).toContain("Finished supabase unlink.");
+      expect(result.stdout).toContain("Finished dbase unlink.");
       expect(result.stderr).toContain(`Unlinking project: ${project.ref}`);
       const tempDirExists = yield* fs.exists(path.join(workspace.path, "supabase", ".temp"));
       expect(tempDirExists, result.stderr).toBe(false);

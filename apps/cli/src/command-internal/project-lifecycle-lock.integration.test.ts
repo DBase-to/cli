@@ -109,7 +109,7 @@ const makeProcess = Effect.fnUntraced(function* (
             .raw(text, stream)
             .pipe(
               Effect.tap(() =>
-                text.startsWith("Waiting for another Supabase CLI command")
+                text.startsWith("Waiting for another DBase CLI command")
                   ? Deferred.succeed(waiting, undefined)
                   : Effect.void,
               ),
@@ -188,7 +188,7 @@ describe("project lifecycle lock", () => {
 
         expect(yield* waitingOrFinished(stopper, stopping)).toBe("waiting");
         expect(stopper.out.stderrText).toContain(
-          "Waiting for another Supabase CLI command to finish with project demo...",
+          "Waiting for another DBase CLI command to finish with project demo...",
         );
         expect(docker.networkNames()).toEqual([NETWORK]);
 
@@ -220,7 +220,7 @@ describe("project lifecycle lock", () => {
 
         expect(yield* waitingOrFinished(stopper, stopping)).toBe("waiting");
         expect(stopper.out.stderrText).toContain(
-          "Waiting for another Supabase CLI command to finish with local Supabase projects...",
+          "Waiting for another DBase CLI command to finish with local DBase projects...",
         );
         expect(docker.networkNames()).toEqual([NETWORK]);
 
@@ -255,7 +255,7 @@ describe("project lifecycle lock", () => {
 
         expect(yield* waitingOrFinished(starter, starting)).toBe("waiting");
         expect(starter.out.stderrText).toContain(
-          "Waiting for another Supabase CLI command to finish with local Supabase projects...",
+          "Waiting for another DBase CLI command to finish with local DBase projects...",
         );
         expect(docker.networkNames()).toEqual([]);
 
@@ -450,7 +450,7 @@ describe("project lifecycle lock", () => {
         yield* start(startFlags).pipe(Effect.provide(cli.layer));
 
         expect(docker.containerNames()).toContain("supabase_db_demo");
-        expect(cli.out.stderrText).not.toContain("Waiting for another Supabase CLI command");
+        expect(cli.out.stderrText).not.toContain("Waiting for another DBase CLI command");
       }).pipe(Effect.provide([BunServices.layer, BunCrypto.layer])),
     );
 

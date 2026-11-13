@@ -226,7 +226,7 @@ const toBranch = (world: World, overrides: Partial<LinkFlags> = {}) => {
 
 const env = (world: World) => ({ CI: "", ...releaseHostEnv(world.host) });
 
-/** Runs `supabase link` against the world and returns what it printed. */
+/** Runs `dbase link` against the world and returns what it printed. */
 const runLink = (
   world: World,
   linkFlags: LinkFlags = flags(),
@@ -591,7 +591,7 @@ describe("link warns when a saved stack would refuse the versions it locks", () 
     warnings(out).filter((message) => message.startsWith("stack "));
 
   const destroy = (stackId: string) =>
-    `run \`supabase stack destroy --stack-id ${stackId}\` to recreate the stack — this permanently deletes its local database data`;
+    `run \`dbase stack destroy --stack-id ${stackId}\` to recreate the stack — this permanently deletes its local database data`;
 
   it.live(
     "offers pinning the recorded build when linking moves off the build that initialized the data",
@@ -604,7 +604,7 @@ describe("link warns when a saved stack would refuse the versions it locks", () 
         const out = yield* runLink(world);
 
         expect(stackWarnings(out)).toEqual([
-          `stack ${stackId}: the next supabase start refuses these pins: PostgreSQL data was initialized by stock PostgreSQL build ${BUILT}, but stock PostgreSQL build ${HOSTED_DATABASE} was requested; keep this data by pinning \`local.services.database.version\` to \`"${BUILT}"\` in your config file, or ${destroy(stackId)}`,
+          `stack ${stackId}: the next dbase start refuses these pins: PostgreSQL data was initialized by stock PostgreSQL build ${BUILT}, but stock PostgreSQL build ${HOSTED_DATABASE} was requested; keep this data by pinning \`local.services.database.version\` to \`"${BUILT}"\` in your config file, or ${destroy(stackId)}`,
         ]);
         expect((yield* readServices(world.workdir)).database.resolved.upstreamVersion).toBe(
           HOSTED_DATABASE,

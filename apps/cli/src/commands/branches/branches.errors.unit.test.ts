@@ -118,9 +118,9 @@ it("classifies the branching-disabled remediation as running the suggested comma
   const result = classifyCliErrorActionability(
     new BranchesBranchingDisabledError({
       message: "Preview branching is disabled.",
-      suggestion: "Create your first branch with: supabase branches create",
+      suggestion: "Create your first branch with: dbase branches create",
     }),
   );
   expect(result.suggestion_type).toBe("run_command");
-  expect(result.suggested_command).toBe("supabase branches create");
+  expect(result.suggested_command).toBe("dbase branches create");
 });

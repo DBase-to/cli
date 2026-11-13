@@ -15,7 +15,7 @@ const INDEX_AUTH_MODE_NONE = `// Follow this setup guide to integrate the Deno l
 // https://deno.land/manual/getting_started/setup_your_environment
 // This enables autocomplete, go to definition, etc.
 
-// Setup type definitions for built-in Supabase Runtime APIs
+// Setup type definitions for built-in DBase Runtime APIs
 import "@supabase/functions-js/edge-runtime.d.ts";
 import { withSupabase } from "@supabase/server";
 
@@ -35,7 +35,7 @@ export default {
 
 /* To invoke locally:
 
-  1. Run \`supabase start\` (see: https://supabase.com/docs/reference/cli/supabase-start)
+  1. Run \`dbase start\` (see: https://supabase.com/docs/reference/cli/supabase-start)
   2. Make an HTTP request:
 
   curl -i --location --request POST '__URL__' \\
@@ -49,7 +49,7 @@ const INDEX_AUTH_MODE_APIKEY = `// Follow this setup guide to integrate the Deno
 // https://deno.land/manual/getting_started/setup_your_environment
 // This enables autocomplete, go to definition, etc.
 
-// Setup type definitions for built-in Supabase Runtime APIs
+// Setup type definitions for built-in DBase Runtime APIs
 import "@supabase/functions-js/edge-runtime.d.ts";
 import { withSupabase } from "@supabase/server";
 
@@ -83,7 +83,7 @@ export default {
 
 /* To invoke locally:
 
-  1. Run \`supabase start\` (see: https://supabase.com/docs/reference/cli/supabase-start)
+  1. Run \`dbase start\` (see: https://supabase.com/docs/reference/cli/supabase-start)
   2. Make an HTTP request:
 
   curl -i --location --request POST '__URL__' \\
@@ -97,7 +97,7 @@ const INDEX_AUTH_MODE_USER = `// Follow this setup guide to integrate the Deno l
 // https://deno.land/manual/getting_started/setup_your_environment
 // This enables autocomplete, go to definition, etc.
 
-// Setup type definitions for built-in Supabase Runtime APIs
+// Setup type definitions for built-in DBase Runtime APIs
 import "@supabase/functions-js/edge-runtime.d.ts"
 import { withSupabase } from "@supabase/server"
 
@@ -116,7 +116,7 @@ export default {
 
 /* To invoke locally:
 
-  1. Run \`supabase start\` (see: https://supabase.com/docs/reference/cli/supabase-start)
+  1. Run \`dbase start\` (see: https://supabase.com/docs/reference/cli/supabase-start)
   2. Make an HTTP request:
 
   curl -i --location --request POST '__URL__' \\

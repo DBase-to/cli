@@ -6,7 +6,7 @@ import { runSupabaseEffect, stripAnsi } from "../../../../tests/helpers/cli.ts";
 
 const E2E_TIMEOUT_MS = 30_000;
 
-describe("supabase migration fetch", () => {
+describe("dbase migration fetch", () => {
   // Exercises the real Stdin wiring; in-process tests inject a mock Stdin and can't
   // catch a missing real-stdin layer.
   it.live(

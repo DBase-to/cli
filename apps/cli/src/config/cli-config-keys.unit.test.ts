@@ -94,7 +94,10 @@ describe("config key registry", () => {
     expect(deriveCliConfigEnvName("auth.mfa.web_authn.enroll_enabled")).toBe(
       "SUPABASE_AUTH_MFA_WEB_AUTHN_ENROLL_ENABLED",
     );
-    expect(CliConfigKeys.db.seed.enabled.env).toEqual(["SUPABASE_DB_SEED_ENABLED"]);
+    expect(CliConfigKeys.db.seed.enabled.env).toEqual([
+      "DBASE_DB_SEED_ENABLED",
+      "SUPABASE_DB_SEED_ENABLED",
+    ]);
     expect(CliConfigKeys.db.seed.sqlPaths.path).toBe("db.seed.sql_paths");
   });
 
@@ -146,7 +149,9 @@ describe("config key registry", () => {
       const key = CliConfigKeys.auth[section].enableSignup;
 
       expect(key.env).toEqual([
+        `DBASE_AUTH_${upper}_ENABLED`,
         `SUPABASE_AUTH_${upper}_ENABLED`,
+        `DBASE_AUTH_${upper}_ENABLE_SIGNUP`,
         `SUPABASE_AUTH_${upper}_ENABLE_SIGNUP`,
       ]);
       expect(cliConfigRegistry.keyForEnvName(`SUPABASE_AUTH_${upper}_ENABLED`)).toBe(key);
@@ -155,20 +160,29 @@ describe("config key registry", () => {
   );
 
   it("follows the legacy prefixes for hooks, sms providers and the dynamic tables", () => {
-    expect(CliConfigKeys.auth.hook.sendSms.uri.env).toEqual(["SUPABASE_AUTH_HOOK_SEND_SMS_URI"]);
+    expect(CliConfigKeys.auth.hook.sendSms.uri.env).toEqual([
+      "DBASE_AUTH_HOOK_SEND_SMS_URI",
+      "SUPABASE_AUTH_HOOK_SEND_SMS_URI",
+    ]);
     expect(CliConfigKeys.auth.sms.twilioVerify.accountSid.env).toEqual([
+      "DBASE_AUTH_SMS_TWILIO_VERIFY_ACCOUNT_SID",
       "SUPABASE_AUTH_SMS_TWILIO_VERIFY_ACCOUNT_SID",
     ]);
     const [external, template, notification] = CLI_CONFIG_FAMILIES;
     expect(external && cliConfigFamilyKey(external, "custom_oidc", "secret")?.env).toEqual([
+      "DBASE_AUTH_EXTERNAL_CUSTOM_OIDC_SECRET",
       "SUPABASE_AUTH_EXTERNAL_CUSTOM_OIDC_SECRET",
     ]);
     expect(template && cliConfigFamilyKey(template, "invite", "content_path")?.env).toEqual([
+      "DBASE_AUTH_EMAIL_TEMPLATE_INVITE_CONTENT_PATH",
       "SUPABASE_AUTH_EMAIL_TEMPLATE_INVITE_CONTENT_PATH",
     ]);
     expect(
       notification && cliConfigFamilyKey(notification, "email_changed", "enabled")?.env,
-    ).toEqual(["SUPABASE_AUTH_EMAIL_NOTIFICATION_EMAIL_CHANGED_ENABLED"]);
+    ).toEqual([
+      "DBASE_AUTH_EMAIL_NOTIFICATION_EMAIL_CHANGED_ENABLED",
+      "SUPABASE_AUTH_EMAIL_NOTIFICATION_EMAIL_CHANGED_ENABLED",
+    ]);
   });
 
   it("keeps a dotted family name as one segment in the key path and its section gate", () => {

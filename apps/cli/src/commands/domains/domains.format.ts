@@ -46,7 +46,7 @@ export function formatHostnameStatus(response: HostnameResponse): string {
       }
       return `Custom hostname configuration complete, and ready for activation.
 
-Please ensure that your custom domain is set up as a CNAME record to your Supabase subdomain:
+Please ensure that your custom domain is set up as a CNAME record to your DBase subdomain:
 ${customHostname} CNAME -> ${customOriginServer}`;
     }
     case "3_challenge_verified":

@@ -854,7 +854,7 @@ describe("fromApiProjectConfig — schema decode failure message", () => {
     );
     expect(error.detail).toBeDefined();
     expect(error.detail).toContain("major_version");
-    expect(error.suggestion).toContain("upgrading the Supabase CLI");
+    expect(error.suggestion).toContain("upgrading the DBase CLI");
   });
 });
 
@@ -1057,7 +1057,7 @@ describe("fromApiProjectConfig — auth section", () => {
     expect(boolMismatch.message).toBe(
       "Could not read the project config from the Management API response: at data.attributes.auth.disable_signup: expected a boolean, got string",
     );
-    expect(boolMismatch.suggestion).toContain("upgrading the Supabase CLI");
+    expect(boolMismatch.suggestion).toContain("upgrading the DBase CLI");
   });
 
   test("a string-typed GoTrue key with a number throws with the apiPath", () => {

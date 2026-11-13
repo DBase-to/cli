@@ -44,10 +44,10 @@ describe("reconcileMigrations", () => {
     expect(result.kind).toBe("conflict");
     if (result.kind === "conflict") {
       expect(stripAnsi(result.suggestion)).toContain(
-        "supabase migration repair --status reverted 20240101000000 --remote",
+        "dbase migration repair --status reverted 20240101000000 --remote",
       );
       expect(stripAnsi(result.suggestion)).toContain(
-        "supabase migration repair --status applied 20240102000000 --remote",
+        "dbase migration repair --status applied 20240102000000 --remote",
       );
     }
   });
@@ -189,16 +189,16 @@ describe("suggestMigrationRepair", () => {
   it("lists reverted (remote) then applied (local) repair commands for the target", () => {
     const out = stripAnsi(suggestMigrationRepair(["111"], ["222"], "--remote"));
     expect(out).toContain("try repairing the migration history table:");
-    expect(out).toContain("supabase migration repair --status reverted 111 --remote");
-    expect(out).toContain("supabase migration repair --status applied 222 --remote");
+    expect(out).toContain("dbase migration repair --status reverted 111 --remote");
+    expect(out).toContain("dbase migration repair --status applied 222 --remote");
   });
 
   it("puts the target last in every repair command, so --remote cannot swallow a version", () => {
     expect(stripAnsi(suggestMigrationRepair(["111"], [], "--local"))).toContain(
-      "supabase migration repair --status reverted 111 --local",
+      "dbase migration repair --status reverted 111 --local",
     );
     expect(stripAnsi(suggestMigrationRepair([], ["222"], "--remote=<db-url>"))).toContain(
-      "supabase migration repair --status applied 222 --remote=<db-url>",
+      "dbase migration repair --status applied 222 --remote=<db-url>",
     );
   });
 });
@@ -206,8 +206,8 @@ describe("suggestMigrationRepair", () => {
 describe("suggestRevertHistory", () => {
   it("builds the revert-history suggestion with a trailing newline per line", () => {
     const out = stripAnsi(suggestRevertHistory(["0002", "0003"], "--remote"));
-    expect(out).toContain("supabase migration repair --status reverted 0002 0003 --remote");
-    expect(out).toContain("supabase db pull --remote");
+    expect(out).toContain("dbase migration repair --status reverted 0002 0003 --remote");
+    expect(out).toContain("dbase db pull --remote");
     expect(out).toMatch(/\n$/u);
   });
 });

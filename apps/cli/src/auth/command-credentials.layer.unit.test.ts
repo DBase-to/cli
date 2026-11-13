@@ -155,7 +155,7 @@ const VALID_OAUTH_TOKEN = "sbp_oauth_" + "b".repeat(40);
 const VALID_V0_TOKEN = "sbp_v0_" + "c".repeat(40);
 const encodeKeyringBase64 = (token: string) =>
   `go-keyring-base64:${Buffer.from(token).toString("base64")}`;
-const windowsKey = (account: string) => `Supabase CLI:${account}/Supabase CLI/${account}`;
+const windowsKey = (account: string) => `DBase CLI:${account}/DBase CLI/${account}`;
 const encodeWindowsPassword = (token: string) => {
   const bytes = Buffer.from(token, "utf8");
   let encoded = "";
@@ -208,7 +208,7 @@ describe("commandCredentialsLayer.getAccessToken", () => {
   });
 
   it.effect("returns the SUPABASE_ACCESS_TOKEN env value (highest precedence)", () => {
-    passwords.set("Supabase CLI/supabase", "sbp_" + "9".repeat(40));
+    passwords.set("DBase CLI/supabase", "sbp_" + "9".repeat(40));
     return Effect.gen(function* () {
       const { getAccessToken } = yield* CommandCredentials;
       const token = yield* getAccessToken;
@@ -225,7 +225,7 @@ describe("commandCredentialsLayer.getAccessToken", () => {
   );
 
   it.effect("uses the keyring profile account when env is unset", () => {
-    passwords.set("Supabase CLI/supabase", VALID_TOKEN);
+    passwords.set("DBase CLI/supabase", VALID_TOKEN);
     return Effect.gen(function* () {
       const { getAccessToken } = yield* CommandCredentials;
       const token = yield* getAccessToken;
@@ -234,7 +234,7 @@ describe("commandCredentialsLayer.getAccessToken", () => {
   });
 
   it.effect("debug logs the access token source", () => {
-    passwords.set("Supabase CLI/supabase", VALID_TOKEN);
+    passwords.set("DBase CLI/supabase", VALID_TOKEN);
     const stderr = captureStderr();
     return Effect.gen(function* () {
       const { getAccessToken } = yield* CommandCredentials;
@@ -250,7 +250,7 @@ describe("commandCredentialsLayer.getAccessToken", () => {
   });
 
   it.effect("decodes legacy keyring base64 values from the keyring profile account", () => {
-    passwords.set("Supabase CLI/supabase", encodeKeyringBase64(VALID_TOKEN));
+    passwords.set("DBase CLI/supabase", encodeKeyringBase64(VALID_TOKEN));
     return Effect.gen(function* () {
       const { getAccessToken } = yield* CommandCredentials;
       const token = yield* getAccessToken;
@@ -279,7 +279,7 @@ describe("commandCredentialsLayer.getAccessToken", () => {
   });
 
   it.effect("falls through to the legacy access-token keyring entry", () => {
-    passwords.set("Supabase CLI/access-token", VALID_OAUTH_TOKEN);
+    passwords.set("DBase CLI/access-token", VALID_OAUTH_TOKEN);
     return Effect.gen(function* () {
       const { getAccessToken } = yield* CommandCredentials;
       const token = yield* getAccessToken;
@@ -324,7 +324,7 @@ describe("commandCredentialsLayer.getAccessToken", () => {
   );
 
   it.effect("fails with InvalidAccessTokenError when token format is invalid", () => {
-    passwords.set("Supabase CLI/supabase", "not-a-valid-token");
+    passwords.set("DBase CLI/supabase", "not-a-valid-token");
     return Effect.gen(function* () {
       const { getAccessToken } = yield* CommandCredentials;
       const exit = yield* Effect.exit(getAccessToken);
@@ -368,8 +368,8 @@ describe("commandCredentialsLayer.getAccessToken", () => {
   );
 
   it.effect("falls back to the filesystem when keyring throws", () => {
-    throwOnGetPasswordAccounts.add("Supabase CLI/supabase");
-    throwOnGetPasswordAccounts.add("Supabase CLI/access-token");
+    throwOnGetPasswordAccounts.add("DBase CLI/supabase");
+    throwOnGetPasswordAccounts.add("DBase CLI/access-token");
     const supaDir = path.join(tempHome.current, ".supabase");
     return Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
@@ -428,7 +428,7 @@ describe("commandCredentialsLayer.saveAccessToken", () => {
     Effect.gen(function* () {
       const { saveAccessToken } = yield* CommandCredentials;
       yield* saveAccessToken(VALID_TOKEN);
-      expect(passwords.get("Supabase CLI/supabase")).toBe(VALID_TOKEN);
+      expect(passwords.get("DBase CLI/supabase")).toBe(VALID_TOKEN);
     }).pipe(Effect.provide(makeLayer())),
   );
 
@@ -436,7 +436,7 @@ describe("commandCredentialsLayer.saveAccessToken", () => {
     Effect.gen(function* () {
       const { saveAccessToken } = yield* CommandCredentials;
       yield* saveAccessToken(VALID_V0_TOKEN);
-      expect(passwords.get("Supabase CLI/supabase")).toBe(VALID_V0_TOKEN);
+      expect(passwords.get("DBase CLI/supabase")).toBe(VALID_V0_TOKEN);
     }).pipe(Effect.provide(makeLayer())),
   );
 
@@ -445,7 +445,7 @@ describe("commandCredentialsLayer.saveAccessToken", () => {
       const { saveAccessToken } = yield* CommandCredentials;
       yield* saveAccessToken(VALID_TOKEN);
       expect(passwords.get(windowsKey("supabase"))).toBe(VALID_TOKEN);
-      expect(passwords.has("Supabase CLI/supabase")).toBe(false);
+      expect(passwords.has("DBase CLI/supabase")).toBe(false);
     }).pipe(Effect.provide(makeLayer({ platform: "win32" }))),
   );
 
@@ -455,7 +455,7 @@ describe("commandCredentialsLayer.saveAccessToken", () => {
       const { saveAccessToken } = yield* CommandCredentials;
       yield* saveAccessToken(VALID_TOKEN);
       expect(passwords.get(windowsKey("supabase")) ?? "").toBe("");
-      expect(passwords.has("Supabase CLI/supabase")).toBe(false);
+      expect(passwords.has("DBase CLI/supabase")).toBe(false);
       const fs = yield* FileSystem.FileSystem;
       const content = yield* fs.readFileString(
         path.join(tempHome.current, ".supabase", "access-token"),
@@ -513,21 +513,21 @@ describe("commandCredentialsLayer.deleteAccessToken", () => {
   });
 
   it.effect("logged in via keyring profile entry → deletes file + entry, succeeds", () => {
-    passwords.set("Supabase CLI/supabase", VALID_TOKEN);
-    passwords.set("Supabase CLI/access-token", VALID_OAUTH_TOKEN);
+    passwords.set("DBase CLI/supabase", VALID_TOKEN);
+    passwords.set("DBase CLI/access-token", VALID_OAUTH_TOKEN);
     return Effect.gen(function* () {
       yield* seedTokenFile(tempHome.current);
       const { deleteAccessToken } = yield* CommandCredentials;
       yield* deleteAccessToken;
-      expect(passwords.has("Supabase CLI/supabase")).toBe(false);
-      expect(passwords.has("Supabase CLI/access-token")).toBe(false);
+      expect(passwords.has("DBase CLI/supabase")).toBe(false);
+      expect(passwords.has("DBase CLI/access-token")).toBe(false);
       expect(yield* tokenFileExists(tempHome.current)).toBe(false);
     }).pipe(Effect.provide(makeLayer()));
   });
 
   it.effect("logged in via keyring profile entry → deletes the SUPABASE_HOME file", () => {
     const supabaseHome = path.join(tempHome.current, "custom-supabase-home");
-    passwords.set("Supabase CLI/supabase", VALID_TOKEN);
+    passwords.set("DBase CLI/supabase", VALID_TOKEN);
     return Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       yield* fs.makeDirectory(supabaseHome, { recursive: true });
@@ -536,7 +536,7 @@ describe("commandCredentialsLayer.deleteAccessToken", () => {
       });
       const { deleteAccessToken } = yield* CommandCredentials;
       yield* deleteAccessToken;
-      expect(passwords.has("Supabase CLI/supabase")).toBe(false);
+      expect(passwords.has("DBase CLI/supabase")).toBe(false);
       expect(yield* fs.exists(path.join(supabaseHome, "access-token"))).toBe(false);
     }).pipe(Effect.provide(makeLayer({ env: { SUPABASE_HOME: supabaseHome } })));
   });
@@ -604,7 +604,7 @@ describe("commandCredentialsLayer.deleteAccessToken", () => {
     const env = { HOME: home };
     const tokenPath = path.join(home, ".supabase", "access-token");
     // Seeds a profile keyring entry to prove the keyring is never touched once the file removal fails.
-    passwords.set("Supabase CLI/supabase", VALID_TOKEN);
+    passwords.set("DBase CLI/supabase", VALID_TOKEN);
     const runtimeInfoLayer = mockRuntimeInfo({ homeDir: home, cwd: home });
     const fsLayer = Layer.succeed(
       FileSystem.FileSystem,
@@ -648,13 +648,13 @@ describe("commandCredentialsLayer.deleteAccessToken", () => {
         expect(yield* encodeJson(exit.cause)).toContain("DeleteTokenError");
         expect(yield* encodeJson(exit.cause)).toContain("failed to remove access token file");
       }
-      expect(passwords.has("Supabase CLI/supabase")).toBe(true);
+      expect(passwords.has("DBase CLI/supabase")).toBe(true);
     }).pipe(Effect.provide(layer));
   });
 
   it.effect("real profile-keyring delete error → DeleteTokenError", () => {
-    passwords.set("Supabase CLI/supabase", VALID_TOKEN);
-    throwOnDeleteAccounts.add("Supabase CLI/supabase");
+    passwords.set("DBase CLI/supabase", VALID_TOKEN);
+    throwOnDeleteAccounts.add("DBase CLI/supabase");
     return Effect.gen(function* () {
       const { deleteAccessToken } = yield* CommandCredentials;
       const exit = yield* Effect.exit(deleteAccessToken);
@@ -669,12 +669,12 @@ describe("commandCredentialsLayer.deleteAccessToken", () => {
   });
 
   it.effect("win32: deletes both the plain and the legacy Windows target entries", () => {
-    passwords.set("Supabase CLI/supabase", VALID_TOKEN);
+    passwords.set("DBase CLI/supabase", VALID_TOKEN);
     passwords.set(windowsKey("supabase"), VALID_TOKEN);
     return Effect.gen(function* () {
       const { deleteAccessToken } = yield* CommandCredentials;
       yield* deleteAccessToken;
-      expect(passwords.has("Supabase CLI/supabase")).toBe(false);
+      expect(passwords.has("DBase CLI/supabase")).toBe(false);
       expect(passwords.has(windowsKey("supabase"))).toBe(false);
     }).pipe(Effect.provide(makeLayer({ platform: "win32" })));
   });
@@ -735,41 +735,41 @@ describe("commandCredentialsLayer.deleteAccessToken", () => {
   );
 
   it.effect("legacy-keyring delete error is swallowed and does not change the outcome", () => {
-    passwords.set("Supabase CLI/supabase", VALID_TOKEN);
-    passwords.set("Supabase CLI/access-token", VALID_OAUTH_TOKEN);
-    throwOnDeleteAccounts.add("Supabase CLI/access-token");
+    passwords.set("DBase CLI/supabase", VALID_TOKEN);
+    passwords.set("DBase CLI/access-token", VALID_OAUTH_TOKEN);
+    throwOnDeleteAccounts.add("DBase CLI/access-token");
     return Effect.gen(function* () {
       const { deleteAccessToken } = yield* CommandCredentials;
       yield* deleteAccessToken;
-      expect(passwords.has("Supabase CLI/supabase")).toBe(false);
+      expect(passwords.has("DBase CLI/supabase")).toBe(false);
     }).pipe(Effect.provide(makeLayer()));
   });
 });
 
 describe("commandCredentialsLayer.deleteAllProjectCredentials", () => {
-  it.effect("deletes every Supabase CLI keyring entry", () => {
-    passwords.set("Supabase CLI/abcdefghijklmnopqrs1", "secret-1");
-    passwords.set("Supabase CLI/abcdefghijklmnopqrs2", "secret-2");
+  it.effect("deletes every DBase CLI keyring entry", () => {
+    passwords.set("DBase CLI/abcdefghijklmnopqrs1", "secret-1");
+    passwords.set("DBase CLI/abcdefghijklmnopqrs2", "secret-2");
     return Effect.gen(function* () {
       const { deleteAllProjectCredentials } = yield* CommandCredentials;
       yield* deleteAllProjectCredentials;
-      expect(passwords.has("Supabase CLI/abcdefghijklmnopqrs1")).toBe(false);
-      expect(passwords.has("Supabase CLI/abcdefghijklmnopqrs2")).toBe(false);
+      expect(passwords.has("DBase CLI/abcdefghijklmnopqrs1")).toBe(false);
+      expect(passwords.has("DBase CLI/abcdefghijklmnopqrs2")).toBe(false);
     }).pipe(Effect.provide(makeLayer()));
   });
 
   it.effect("no-ops when the keyring is unavailable", () => {
-    passwords.set("Supabase CLI/abcdefghijklmnopqrs1", "secret-1");
+    passwords.set("DBase CLI/abcdefghijklmnopqrs1", "secret-1");
     return Effect.gen(function* () {
       const { deleteAllProjectCredentials } = yield* CommandCredentials;
       yield* deleteAllProjectCredentials;
-      expect(passwords.has("Supabase CLI/abcdefghijklmnopqrs1")).toBe(true);
+      expect(passwords.has("DBase CLI/abcdefghijklmnopqrs1")).toBe(true);
     }).pipe(Effect.provide(makeLayer({ env: { SUPABASE_NO_KEYRING: "1" } })));
   });
 
   it.effect("never fails even when an individual delete throws", () => {
-    passwords.set("Supabase CLI/abcdefghijklmnopqrs1", "secret-1");
-    throwOnDeleteAccounts.add("Supabase CLI/abcdefghijklmnopqrs1");
+    passwords.set("DBase CLI/abcdefghijklmnopqrs1", "secret-1");
+    throwOnDeleteAccounts.add("DBase CLI/abcdefghijklmnopqrs1");
     return Effect.gen(function* () {
       const { deleteAllProjectCredentials } = yield* CommandCredentials;
       const exit = yield* Effect.exit(deleteAllProjectCredentials);

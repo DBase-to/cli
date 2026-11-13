@@ -119,7 +119,7 @@ const validateStackId = (id: string): Effect.Effect<string, StackTargetError> =>
           message:
             "--stack-id must be a lowercase hexadecimal stack id or a prefix of at least 4 characters",
           reason: "flags",
-          suggestion: "Copy the ID column from `supabase stack list`.",
+          suggestion: "Copy the ID column from `dbase stack list`.",
         }),
       );
 
@@ -228,7 +228,7 @@ export const stackTargetResolverLayer = Layer.effect(
         return yield* new StackTargetError({
           message: `Stack ${id} was not found`,
           reason: "flags",
-          suggestion: "Run `supabase stack list` to see managed stacks and their IDs.",
+          suggestion: "Run `dbase stack list` to see managed stacks and their IDs.",
         });
       if (found !== undefined && !runtimeMatches(found.definition.runtime, requestedRuntime))
         return yield* new StackTargetError({

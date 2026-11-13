@@ -27,7 +27,7 @@ import { CommandRuntime } from "../shared/runtime/command-runtime.service.ts";
 import { commandRuntimeLayer } from "../shared/runtime/command-runtime.layer.ts";
 
 /**
- * Composes the runtime layer for a Management-API-style `supabase <command> <subcommand>`
+ * Composes the runtime layer for a Management-API-style `dbase <command> <subcommand>`
  * invocation.
  *
  * `commandSettingsLayer`, `httpClientLayer`, and `CommandCredentials` are exposed at the top

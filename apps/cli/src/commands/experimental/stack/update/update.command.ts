@@ -25,16 +25,16 @@ export const stackUpdateCommand = Command.make("update", config).pipe(
     "Re-resolve the named local service versions (all when none are named) in supabase/supabase.lock, even when their entries are up to date: " +
       "a release specifier moves to its newest published revision, a bundled entry to this CLI's pin, and an exact revision stays. " +
       "A linked entry re-probes the linked project or branch, which needs a login, and observed or published versions are retried. " +
-      "Nothing is downloaded; supabase start and supabase stack install fetch what the lock names.",
+      "Nothing is downloaded; dbase start and dbase stack install fetch what the lock names.",
   ),
   Command.withShortDescription("Update locked local service versions"),
   Command.withExamples([
     {
-      command: "supabase stack update",
+      command: "dbase stack update",
       description: "Move every service to what its specifier now resolves to",
     },
     {
-      command: "supabase stack update auth studio",
+      command: "dbase stack update auth studio",
       description: "Update only auth and studio",
     },
   ]),

@@ -67,7 +67,7 @@ describe("isNewerCliVersion", () => {
 describe("formatUpgradeNotice", () => {
   it("emits the expected message bytes modulo styling", () => {
     expect(stripVTControlCharacters(formatUpgradeNotice("v2.114.0", "2.113.0"))).toBe(
-      "A new version of Supabase CLI is available: v2.114.0 (currently installed v2.113.0)\n" +
+      "A new version of DBase CLI is available: v2.114.0 (currently installed v2.113.0)\n" +
         "We recommend updating regularly for new features and bug fixes: " +
         "https://dbase.to/docs/guides/cli/getting-started",
     );
@@ -176,7 +176,7 @@ layer(BunServices.layer)("runUpgradeNotice", (it) => {
       const ctx = yield* setup({});
       yield* notice(ctx.deps);
       expect(ctx.fetchCalls).toBe(1);
-      expect(ctx.stderr).toContain("A new version of Supabase CLI is available: v2.114.0");
+      expect(ctx.stderr).toContain("A new version of DBase CLI is available: v2.114.0");
       expect(yield* ctx.fs.readFileString(ctx.cachePath)).toBe("v2.114.0");
     }),
   );
@@ -323,7 +323,7 @@ layer(BunServices.layer)("runUpgradeNotice", (it) => {
         });
         yield* notice(ctx.deps);
         expect(ctx.stderr).toContain("Failed to fetch latest release");
-        expect(ctx.stderr).not.toContain("A new version of Supabase CLI is available");
+        expect(ctx.stderr).not.toContain("A new version of DBase CLI is available");
       }),
   );
 
@@ -590,7 +590,7 @@ layer(BunServices.layer)("runUpgradeNotice", (it) => {
           "SUPABASE_NO_UPDATE_NOTIFIER=1\n",
         );
         yield* notice(ctx.deps);
-        expect(ctx.stderr).toContain("A new version of Supabase CLI is available");
+        expect(ctx.stderr).toContain("A new version of DBase CLI is available");
       }),
   );
 
@@ -604,7 +604,7 @@ layer(BunServices.layer)("runUpgradeNotice", (it) => {
           "SUPABASE_NO_UPDATE_NOTIFIER=1\n",
         );
         yield* notice(ctx.deps);
-        expect(ctx.stderr).toContain("A new version of Supabase CLI is available");
+        expect(ctx.stderr).toContain("A new version of DBase CLI is available");
       }),
   );
 
@@ -723,7 +723,7 @@ layer(BunServices.layer)("runUpgradeNotice", (it) => {
           .pipe(Effect.orDie, Effect.as("v2.114.0")),
       });
 
-      expect(ctx.stderr).toContain("A new version of Supabase CLI is available: v2.114.0");
+      expect(ctx.stderr).toContain("A new version of DBase CLI is available: v2.114.0");
       expect(yield* ctx.fs.readFileString(victim)).toBe("v9.9.9");
       expect(Option.isNone(yield* ctx.fs.readLink(ctx.cachePath).pipe(Effect.option))).toBe(true);
       expect(yield* ctx.fs.readFileString(ctx.cachePath)).toBe("v2.114.0");
@@ -893,7 +893,7 @@ layer(hookLayer)("upgradeNoticeHook", (it) => {
   it.effect("prints the notice for a natively handled command", () =>
     Effect.gen(function* () {
       expect((yield* runHook({})).stderr).toContain(
-        "A new version of Supabase CLI is available: v99.99.99",
+        "A new version of DBase CLI is available: v99.99.99",
       );
     }),
   );
@@ -992,13 +992,13 @@ layer(hookLayer)("upgradeNoticeHook release lookup", (it) => {
       const withToken = yield* runLookup({ env: { GITHUB_TOKEN: "tok" }, respond });
       expect(withToken.requests).toHaveLength(1);
       const request = withToken.requests[0]!;
-      expect(request.url).toBe("https://api.github.com/repos/supabase/cli/releases/latest");
+      expect(request.url).toBe("https://api.github.com/repos/DBase-to/cli/releases/latest");
       expect(request.headers.get("accept")).toBe("application/vnd.github+json");
-      expect(request.headers.get("user-agent")).toBe(`SupabaseCLI/${CLI_VERSION}`);
+      expect(request.headers.get("user-agent")).toBe(`DBaseCLI/${CLI_VERSION}`);
       expect(request.headers.get("authorization")).toBe("Bearer tok");
       expect(request.headers.has("traceparent")).toBe(false);
       expect(withToken.cache).toBe("v99.99.99");
-      expect(withToken.stderr).toContain("A new version of Supabase CLI is available: v99.99.99");
+      expect(withToken.stderr).toContain("A new version of DBase CLI is available: v99.99.99");
 
       const empty = yield* runLookup({ env: { GITHUB_TOKEN: "" }, respond });
       expect(empty.requests[0]!.headers.has("authorization")).toBe(false);

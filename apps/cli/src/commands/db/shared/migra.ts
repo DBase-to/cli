@@ -1,4 +1,5 @@
-import { Config, Effect, Option } from "effect";
+import { Effect, Option } from "effect";
+import { configOptionBoth } from "../../../shared/config/env-names.ts";
 import { ChildProcessSpawner } from "effect/process";
 
 import { isBitbucketPipeline } from "../../../command-internal/bitbucket-pipeline.ts";
@@ -35,7 +36,7 @@ const MIGRA_IMAGE = "supabase/migra:3.0.1663481299";
 
 /**
  * Schemas excluded from a no-`--schema` migra diff: local-dev, extension-owned,
- * deprecated-extension, and Supabase-managed schemas. Passed as `EXCLUDED_SCHEMAS` to the
+ * deprecated-extension, and DBase-managed schemas. Passed as `EXCLUDED_SCHEMAS` to the
  * edge-runtime template.
  */
 const MIGRA_MANAGED_SCHEMAS: ReadonlyArray<string> = [
@@ -64,7 +65,7 @@ const MIGRA_MANAGED_SCHEMAS: ReadonlyArray<string> = [
   "_timescaledb_debug",
   "_timescaledb_functions",
   "_timescaledb_internal",
-  // Managed by Supabase
+  // Managed by DBase
   "pgbouncer",
   "supabase_functions",
   "supabase_migrations",
@@ -88,11 +89,11 @@ const LIST_SCHEMAS_EXCLUDE: ReadonlyArray<string> = [
 /**
  * Lists user-defined schemas, excluding extension-created ones (the `pg_depend` anti-join is
  * scoped to `pg_namespace` via `classid` so an oid collision in another catalog can't hide a
- * schema — see supabase/cli#6375), Supabase-managed names, and schemas owned by `supabase_admin`.
+ * schema — see supabase/cli#6375), DBase-managed names, and schemas owned by `supabase_admin`.
  */
 export const listSchemasSql = `-- List user defined schemas, excluding
 --  Extension created schemas
---  Supabase managed schemas
+--  DBase managed schemas
 select pn.nspname
 from pg_catalog.pg_namespace pn
 left join pg_catalog.pg_depend pd on pd.objid = pn.oid and pd.classid = 'pg_catalog.pg_namespace'::regclass
@@ -101,8 +102,8 @@ where pd.deptype is null
   and pn.nspowner::regrole::text != 'supabase_admin'
 order by pn.nspname`;
 
-const isSslDebugEnabled = Config.String("SUPABASE_SSL_DEBUG").pipe(
-  Config.withDefault(""),
+const isSslDebugEnabled = configOptionBoth("DBASE_SSL_DEBUG", "SUPABASE_SSL_DEBUG").pipe(
+  Effect.map(Option.getOrElse(() => "")),
   Effect.map((value) => value.toLowerCase() === "true"),
   Effect.orElseSucceed(() => false),
 );

@@ -104,7 +104,7 @@ export interface LoadCliConfigOptions {
  */
 export interface InternalLoadCliConfigOptions extends LoadCliConfigOptions {
   /**
-   * Opts into the Supabase CLI's decode and validation semantics: duplicate-`project_id` and
+   * Opts into the DBase CLI's decode and validation semantics: duplicate-`project_id` and
    * project-ref-format checks run across every `[remotes.*]` block even without a `projectRef`,
    * `env(...)` matching is case-agnostic, and comma-separated strings coerce into array-typed
    * fields regardless of origin. Defaults to `false`, the strict behaviour of the public

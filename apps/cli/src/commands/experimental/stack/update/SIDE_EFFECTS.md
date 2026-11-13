@@ -1,4 +1,4 @@
-# `supabase stack update [service...]`
+# `dbase stack update [service...]`
 
 The command is available when the experimental stack family is enabled. It re-resolves the named
 services of `supabase/supabase.lock`, or every service when none is named, and writes the lock. It
@@ -8,7 +8,7 @@ reads saved stack state only to warn about database data a new pin would be refu
 
 ## Service versions and the lock
 
-The lock is read and written as `supabase stack start` does it (see "Service versions and the lock"
+The lock is read and written as `dbase stack start` does it (see "Service versions and the lock"
 in [`../start/SIDE_EFFECTS.md`](../start/SIDE_EFFECTS.md)), under the same project lease
 `supabase/.supabase.lock.lease`. Each named service is resolved again even when its entry is fresh:
 
@@ -26,7 +26,7 @@ in [`../start/SIDE_EFFECTS.md`](../start/SIDE_EFFECTS.md)), under the same proje
   unlinked project resolves `linked` to the bundled version as `unlinked`.
 - A named service whose specifier changed since the lock was written is resolved again. A stale
   service that was not named keeps its entry; the command reports it as skipped and leaves it for
-  `supabase start` or `supabase stack update <service>`.
+  `dbase start` or `dbase stack update <service>`.
 - A missing lock is resolved in full.
 
 Services that are not named keep their entries byte for byte. The lock is written only when an
@@ -43,16 +43,16 @@ nothing is resolved or written.
 ## Refused data
 
 When the command writes the lock and releases the project lease, it checks the new pins against
-the database data of every saved stack of this project, by the rules the next `supabase stack
+the database data of every saved stack of this project, by the rules the next `dbase stack
 start` of that stack applies. The lock is written either way. Each refusal gets one
-warning, `stack <id>: the next supabase start refuses these pins:` followed by the
+warning, `stack <id>: the next dbase start refuses these pins:` followed by the
 failure that start reports: a database build other than a new `-rN` revision of the one that
 initialized the data (on Docker and Podman, also the one an interrupted first start recorded), or a schema-owning service the stack runs against that database that is
 older than one that already migrated it. The failure names the recorded and refused versions and
 the remedies: pinning the recorded version in `supabase/config.toml`
 (`[local.services.<service>] version`, with `[db] major_version` set back when the database major
 differs and any `[db] orioledb_version` removed when an OrioleDB build is requested), or
-`supabase stack destroy --stack-id <id>`, which permanently deletes the stack's local database
+`dbase stack destroy --stack-id <id>`, which permanently deletes the stack's local database
 data. Data with no recorded identity offers only the destroy. The check is skipped when nothing was
 written, the span records `lock.data_conflict_count`, and saved state that cannot be read is logged
 at debug level without failing the command.
@@ -61,9 +61,9 @@ at debug level without failing the command.
 
 - `<workdir>/supabase/config.toml`, project dotenv files, supported `SUPABASE_*` overrides,
   `<workdir>/supabase/supabase.lock`, and `<workdir>/supabase/.link.json`.
-- Shared profile and telemetry state under `<SUPABASE_HOME or ~/.supabase>/`.
+- Shared profile and telemetry state under `<DBASE_HOME or ~/.supabase>/`.
 - When the lock is written, after the lease is released: the saved stack definitions under
-  `<SUPABASE_HOME or ~/.supabase>/stacks/` and, in each database's data directory, its readiness
+  `<DBASE_HOME or ~/.supabase>/stacks/` and, in each database's data directory, its readiness
   marker, `data/PG_VERSION`, and build and schema-writer records. No stack lease is taken, no owner
   is probed, and a missing `stacks/` directory is not created.
 
@@ -81,7 +81,7 @@ Resolving a release specifier probes the slim-services GitHub releases and regis
 Only the named services of the `<upstream>` or `linked` form are probed there.
 
 Only when a named service has the `linked` specifier and `supabase/.link.json` exists does the
-command also need a login (the same as `supabase link`; `start` never does) and call the Management
+command also need a login (the same as `dbase link`; `start` never does) and call the Management
 API (`getProject`, or `getABranchConfig` for a branch; `getProjectApiKeys` with `reveal`) and the
 target's tenant host (`/rest/v1/`, `/auth/v1/health`, `/storage/v1/version`, with the service-role
 key, which is never logged). A missing login, or a failed Management API call, fails with reason
@@ -94,8 +94,8 @@ Positional `service` names; the legacy `-o/--output` flag is rejected, use `--ou
 A change that moves only the resolution (for example `unobserved` to `resolved`) shows the
 version with the new resolution in parentheses, and a `linked` entry's reason is `follows the
 linked project`. Text output lists each changed service as `<service> <from> → <to>  (<reason>)`, a summary of
-changed and unchanged entries, and one `<service> is stale (<reason>); run supabase start or
-supabase stack update <service>` line per skipped stale service.
+changed and unchanged entries, and one `<service> is stale (<reason>); run dbase start or
+dbase stack update <service>` line per skipped stale service.
 
 JSON output returns `lock` (`file`, `written`, `added`, `changed`, `unchanged`, `stale` as the
 names of skipped stale services) and an empty

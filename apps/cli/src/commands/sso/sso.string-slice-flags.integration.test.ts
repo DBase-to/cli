@@ -23,7 +23,7 @@ import { ssoCommand } from "./sso.command.ts";
 
 const tempRoot = useTempWorkdir("supabase-sso-string-slice-int-");
 
-const testRoot = Command.make("supabase").pipe(
+const testRoot = Command.make("dbase").pipe(
   Command.withSubcommands([ssoCommand]),
   Command.withGlobalFlags(GLOBAL_FLAGS),
 );

@@ -1203,7 +1203,7 @@ describe("db reset", () => {
           expect(kongReloadCalls(child.spawned)).toHaveLength(1);
           // The temp workdir sits outside any git checkout, so the branch is unknown and
           // the "Finished" line omits the clause instead of falsely claiming "main".
-          expect(out.stderrText).toContain("Finished supabase db reset.\n");
+          expect(out.stderrText).toContain("Finished dbase db reset.\n");
           // Confirms the single `Effect.ensuring` finalizer still fires exactly once.
           expect(telemetry.flushCount).toBe(1);
         }),
@@ -1241,7 +1241,7 @@ describe("db reset", () => {
           yield* dbReset(DEFAULT_FLAGS).pipe(Effect.provide(layer));
 
           expect(dbSetupJobCalls(child.spawned)).toHaveLength(3);
-          expect(out.stderrText).toContain("Finished supabase db reset.\n");
+          expect(out.stderrText).toContain("Finished dbase db reset.\n");
         });
       },
     );
@@ -1493,49 +1493,46 @@ describe("db reset", () => {
       }).pipe(Effect.provide([BunServices.layer, BunCrypto.layer]));
     });
 
-    it.effect(
-      "tells a stale lock to run supabase start and classifies it as user-actionable",
-      () => {
-        const toml = 'project_id = "test"\n';
-        return Effect.gen(function* () {
-          const fs = yield* FileSystem.FileSystem;
-          const path = yield* Path.Path;
-          yield* fs.makeDirectory(path.join(tmp.current, "supabase"), { recursive: true });
-          yield* fs.writeFileString(path.join(tmp.current, "supabase", "config.toml"), toml);
-          yield* seedLock(tmp.current, (services) => ({
-            ...services,
-            rest: { ...services.rest, specifier: "v99.0.0" },
-          })).pipe(
-            Effect.provide(
-              Layer.mergeAll(
-                runtimeInfoLayer,
-                mockCommandSettings({ workdir: tmp.current, supabaseHome: tmp.current }),
-              ),
+    it.effect("tells a stale lock to run dbase start and classifies it as user-actionable", () => {
+      const toml = 'project_id = "test"\n';
+      return Effect.gen(function* () {
+        const fs = yield* FileSystem.FileSystem;
+        const path = yield* Path.Path;
+        yield* fs.makeDirectory(path.join(tmp.current, "supabase"), { recursive: true });
+        yield* fs.writeFileString(path.join(tmp.current, "supabase", "config.toml"), toml);
+        yield* seedLock(tmp.current, (services) => ({
+          ...services,
+          rest: { ...services.rest, specifier: "v99.0.0" },
+        })).pipe(
+          Effect.provide(
+            Layer.mergeAll(
+              runtimeInfoLayer,
+              mockCommandSettings({ workdir: tmp.current, supabaseHome: tmp.current }),
             ),
-          );
-          const { layer } = setup(tmp.current, {
-            toml,
-            args: ["db", "reset"],
-            isLocal: true,
-            stackBackend: true,
-          });
+          ),
+        );
+        const { layer } = setup(tmp.current, {
+          toml,
+          args: ["db", "reset"],
+          isLocal: true,
+          stackBackend: true,
+        });
 
-          const error = yield* dbReset(DEFAULT_FLAGS).pipe(Effect.provide(layer), Effect.flip);
+        const error = yield* dbReset(DEFAULT_FLAGS).pipe(Effect.provide(layer), Effect.flip);
 
-          expect(error).toMatchObject({
-            message: expect.stringContaining(
-              "rest (specifier linked ≠ locked v99.0.0); run supabase start to refresh it",
-            ),
-          });
-          expect(error.message).not.toContain("commit");
-          expect(classifyCliErrorActionability(error)).toMatchObject({
-            error_kind: "user_actionable",
-            suggested_command: "supabase start",
-            error_fingerprint: "tag:ResetLocalDbFailedError:conflict",
-          });
-        }).pipe(Effect.provide([BunServices.layer, BunCrypto.layer]));
-      },
-    );
+        expect(error).toMatchObject({
+          message: expect.stringContaining(
+            "rest (specifier linked ≠ locked v99.0.0); run dbase start to refresh it",
+          ),
+        });
+        expect(error.message).not.toContain("commit");
+        expect(classifyCliErrorActionability(error)).toMatchObject({
+          error_kind: "user_actionable",
+          suggested_command: "dbase start",
+          error_fingerprint: "tag:ResetLocalDbFailedError:conflict",
+        });
+      }).pipe(Effect.provide([BunServices.layer, BunCrypto.layer]));
+    });
 
     it.effect("preserves the existing stack composition while rebuilding the database", () => {
       const { layer, catalogApplied } = setup(tmp.current, {
@@ -1787,12 +1784,10 @@ describe("db reset", () => {
             "WARNING: skipped seeding storage buckets: Storage is disabled for this stack.",
           );
           expect(out.stderrText).toContain(
-            "Set [storage] enabled = true in supabase/config.toml, run supabase stack stop " +
-              "followed by supabase stack start without -x storage, then supabase seed buckets.",
+            "Set [storage] enabled = true in supabase/config.toml, run dbase stack stop " +
+              "followed by dbase stack start without -x storage, then dbase seed buckets.",
           );
-          expect(out.stderrText).not.toContain(
-            "Run supabase seed buckets once Storage is available.",
-          );
+          expect(out.stderrText).not.toContain("Run dbase seed buckets once Storage is available.");
           expect(client.requests).toHaveLength(0);
         });
       },
@@ -1837,7 +1832,7 @@ describe("db reset", () => {
           expect(out.stderrText).toContain(
             "WARNING: skipped seeding storage buckets: Storage is stopped for this stack.",
           );
-          expect(out.stderrText).toContain("Run supabase seed buckets once Storage is available.");
+          expect(out.stderrText).toContain("Run dbase seed buckets once Storage is available.");
           expect(client.requests).toHaveLength(0);
         });
       },
@@ -1915,7 +1910,7 @@ describe("db reset", () => {
           const exit = yield* dbReset(DEFAULT_FLAGS).pipe(Effect.provide(layer), Effect.exit);
           expect(Exit.isSuccess(exit)).toBe(true);
           expect(out.stderrText).toContain("WARNING: skipped seeding storage buckets:");
-          expect(out.stderrText).toContain("Run supabase seed buckets once Storage is available.");
+          expect(out.stderrText).toContain("Run dbase seed buckets once Storage is available.");
           expect(out.stderrText).toContain("Finished ");
         });
       },
@@ -1939,7 +1934,7 @@ describe("db reset", () => {
           const exit = yield* dbReset(DEFAULT_FLAGS).pipe(Effect.provide(layer), Effect.exit);
           expect(Exit.isSuccess(exit)).toBe(true);
           expect(out.stderrText).toContain("WARNING: skipped seeding storage buckets:");
-          expect(out.stderrText).toContain("Run supabase seed buckets once Storage is available.");
+          expect(out.stderrText).toContain("Run dbase seed buckets once Storage is available.");
           expect(out.stderrText).toContain("Finished ");
         });
       },
@@ -1960,7 +1955,7 @@ describe("db reset", () => {
         return Effect.gen(function* () {
           yield* dbReset(DEFAULT_FLAGS).pipe(Effect.provide(layer));
           expect(out.stderrText).toContain(
-            "WARNING: skipped seeding storage buckets: Storage failed to start for this stack: boom. Run supabase seed buckets once Storage is available.",
+            "WARNING: skipped seeding storage buckets: Storage failed to start for this stack: boom. Run dbase seed buckets once Storage is available.",
           );
           expect(out.stderrText).not.toContain("Storage is failed");
         });
@@ -1984,7 +1979,7 @@ describe("db reset", () => {
           expect(out.stderrText).toContain(
             "WARNING: skipped seeding storage buckets: The stack exposes no Storage endpoint.",
           );
-          expect(out.stderrText).toContain("Run supabase seed buckets once Storage is available.");
+          expect(out.stderrText).toContain("Run dbase seed buckets once Storage is available.");
         });
       },
     );
@@ -2404,7 +2399,7 @@ describe("db reset", () => {
             expect.objectContaining({
               type: "warn",
               message:
-                "The local database is not running, so storage, auth, realtime and the pooler were left stopped.\nRun supabase stop && supabase start to bring the local stack back.",
+                "The local database is not running, so storage, auth, realtime and the pooler were left stopped.\nRun dbase stop && dbase start to bring the local stack back.",
             }),
           );
         }),
@@ -2539,7 +2534,7 @@ describe("db reset", () => {
       });
       return Effect.gen(function* () {
         yield* dbReset(DEFAULT_FLAGS).pipe(Effect.provide(layer));
-        expect(out.stderrText).toContain("Finished supabase db reset.\n");
+        expect(out.stderrText).toContain("Finished dbase db reset.\n");
         expect(child.spawned.filter((s) => s.args[0] === "stop").map((s) => s.args[1])).toEqual(
           expect.arrayContaining([
             "supabase_storage_test",
@@ -2652,7 +2647,7 @@ describe("db reset", () => {
           yield* dbReset(DEFAULT_FLAGS).pipe(Effect.provide(layer));
 
           expect(restartedContainers(child.spawned)).toContain(DB_ID);
-          expect(out.stderrText).toContain("Finished supabase db reset.\n");
+          expect(out.stderrText).toContain("Finished dbase db reset.\n");
         });
       },
     );
@@ -2925,7 +2920,7 @@ describe("db reset", () => {
 
     it.effect("drops the PG14 dump's implicit pg_net when Database Webhooks is disabled", () => {
       // Without this drop, a PG14 `db reset` would leave pg_net installed and diverge from
-      // `supabase start`, surfacing as drift in the next engine's shadow baseline.
+      // `dbase start`, surfacing as drift in the next engine's shadow baseline.
       const { layer, conn } = setup(tmp.current, {
         toml: PG14_TOML,
         args: ["db", "reset"],

@@ -21,14 +21,14 @@ export type SecretsListFlags = CliCommand.Command.Config.Infer<typeof config>;
 
 export const secretsListCommand = Command.make("list", config).pipe(
   Command.withDescription("List all secrets in the linked project."),
-  Command.withShortDescription("List all secrets on Supabase"),
+  Command.withShortDescription("List all secrets on DBase"),
   Command.withExamples([
     {
-      command: "supabase secrets list",
+      command: "dbase secrets list",
       description: "List all secrets for the linked project",
     },
     {
-      command: "supabase secrets list --remote=abcdefghijklmnopqrst",
+      command: "dbase secrets list --remote=abcdefghijklmnopqrst",
       description: "List secrets for a specific project",
     },
   ]),

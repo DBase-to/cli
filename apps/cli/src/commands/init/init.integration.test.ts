@@ -147,7 +147,7 @@ describe("init", () => {
       expect(content).toContain("major_version = 17");
       expect(content).toContain("port = 54321");
       expect(content).not.toContain("stack = true");
-      expect(out.stdoutText).toBe("Finished supabase init.\n");
+      expect(out.stdoutText).toBe("Finished dbase init.\n");
     });
   });
 
@@ -173,7 +173,7 @@ describe("init", () => {
       const { db } = yield* decodeOrioleDbConfig(SmolToml.parse(content));
       expect(db.major_version).toBe(17);
       expect(orioledbVersions()).toContain(db.orioledb_version);
-      expect(out.stdoutText).toBe("Finished supabase init.\n");
+      expect(out.stdoutText).toBe("Finished dbase init.\n");
     });
   });
 
@@ -199,12 +199,12 @@ describe("init", () => {
       expect(Predicate.isTagged(error, "InitConfigExistsError")).toBe(true);
       expect(error).toMatchObject({
         message: "failed to create config file: open supabase/config.toml: file exists",
-        suggestion: "Run supabase init --force to overwrite existing config file.",
+        suggestion: "Run dbase init --force to overwrite existing config file.",
       });
 
       expect(yield* renderFailureToStderr(exit)).toEqual([
         "failed to create config file: open supabase/config.toml: file exists\n",
-        "Run supabase init --force to overwrite existing config file.\n",
+        "Run dbase init --force to overwrite existing config file.\n",
       ]);
     });
   });
@@ -320,12 +320,12 @@ describe("init", () => {
       expect(Predicate.isTagged(error, "InitConfigExistsError")).toBe(true);
       expect(error).toMatchObject({
         message: "failed to create config file: open supabase\\config.toml: The file exists.",
-        suggestion: "Run supabase init --force to overwrite existing config file.",
+        suggestion: "Run dbase init --force to overwrite existing config file.",
       });
 
       expect(yield* renderFailureToStderr(exit)).toEqual([
         "failed to create config file: open supabase\\config.toml: The file exists.\n",
-        "Run supabase init --force to overwrite existing config file.\n",
+        "Run dbase init --force to overwrite existing config file.\n",
       ]);
     });
   });
@@ -524,7 +524,7 @@ describe("init", () => {
       expect(content).not.toMatch(/^shadow_port = 54320$/m);
       expect(content).not.toMatch(/^port = 54321$/m);
       expect(content).not.toMatch(/^inspector_port = 8083$/m);
-      expect(out.stdoutText).toBe("Finished supabase init.\n");
+      expect(out.stdoutText).toBe("Finished dbase init.\n");
     });
   });
 

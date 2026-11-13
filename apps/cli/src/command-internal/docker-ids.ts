@@ -21,7 +21,7 @@ export function localNetworkId(projectId: string) {
   return serviceContainerName("network", projectId);
 }
 
-/** The Docker label every container/volume/network created by `supabase start` carries. */
+/** The Docker label every container/volume/network created by `dbase start` carries. */
 export const CLI_PROJECT_LABEL = "com.supabase.cli.project";
 
 /**

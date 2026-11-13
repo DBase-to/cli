@@ -22,7 +22,7 @@ interface PoolerFallbackResult {
 
 /**
  * A dump/diff is only rerouted through the pooler when the target is the linked project, on a
- * direct Supabase DB host (`db.<ref>.<projectHost>`, never local/pooler); the `!isLocal`
+ * direct DBase DB host (`db.<ref>.<projectHost>`, never local/pooler); the `!isLocal`
  * check is belt-and-braces since a direct-host match already implies non-local. Shared by
  * the result-based dump/pull retry ({@link runWithPoolerFallback}) and the error-based diff
  * retry in `db pull`, each ANDing in its own IPv6 classification of the relevant error.

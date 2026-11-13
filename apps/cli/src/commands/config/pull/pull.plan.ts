@@ -245,7 +245,7 @@ export function planConfigPull(input: PlanConfigPullInput): ConfigPullPlan {
   const warnings: Array<ConfigPullWarning> = [];
   for (const write of writes) {
     if (input.destination.kind === "root" && isDualScopePath(write.change.path)) {
-      // Writing a dual-scope path to the config root also reconfigures `supabase start`; the
+      // Writing a dual-scope path to the config root also reconfigures `dbase start`; the
       // local default is a legitimate local-dev value in its own right.
       warnings.push({ kind: "dual_scope", path: write.change.path });
       continue;

@@ -7,7 +7,7 @@ import {
 } from "../shared/telemetry/error-actionability.ts";
 
 /**
- * Errors for the Supabase Storage service gateway (Kong): a transport
+ * Errors for the DBase Storage service gateway (Kong): a transport
  * failure (`StorageGatewayNetworkError`) or non-200 response
  * (`StorageGatewayStatusError`), with `body` kept for error classification.
  */

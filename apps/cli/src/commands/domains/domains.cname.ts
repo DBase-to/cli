@@ -60,7 +60,7 @@ const transportFailure = (cause: unknown): CnameFailure => ({
 
 /**
  * Verify that `customHostname` has a CNAME record pointing at the project's
- * Supabase subdomain before initializing a custom hostname. Queries
+ * DBase subdomain before initializing a custom hostname. Queries
  * `https://1.1.1.1/dns-query` (DNS-over-HTTPS, `accept: application/dns-json`,
  * 10s timeout) and compares the resolved CNAME to `<ref>.<projectHost>.`.
  *

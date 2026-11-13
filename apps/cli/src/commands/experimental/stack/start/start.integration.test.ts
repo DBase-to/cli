@@ -1093,7 +1093,7 @@ describe("experimental stack start", () => {
         expect.objectContaining({
           type: "success",
           message:
-            "Stack is already running with its current services. Run `supabase stack stop`, then `supabase stack start` to apply configuration or service-selection changes.",
+            "Stack is already running with its current services. Run `dbase stack stop`, then `dbase stack start` to apply configuration or service-selection changes.",
         }),
       );
       expect(fixture.composed).toBe(1);
@@ -1163,7 +1163,7 @@ describe("experimental stack start", () => {
       // Windows temp paths contain `\` and `~`, so the PowerShell pointer quotes the workdir.
       const workdir = process.platform === "win32" ? `'${root}'` : root;
       expect(text.stdoutText).toContain(
-        `Runtime: native\nRun supabase status --env --workdir ${workdir} --stack 'feature demo' to export these values as environment variables.\n`,
+        `Runtime: native\nRun dbase status --env --workdir ${workdir} --stack 'feature demo' to export these values as environment variables.\n`,
       );
 
       yield* fixture.stack.composition.stop;
@@ -1173,7 +1173,7 @@ describe("experimental stack start", () => {
         stackId: Option.some(fixture.stack.id.slice(0, 8)),
       }).pipe(Effect.provide(layers(root, fixture, byPrefix, true, true)));
       expect(byPrefix.stdoutText).toContain(
-        `Run supabase status --env --workdir ${workdir} --stack-id ${fixture.stack.id} to export`,
+        `Run dbase status --env --workdir ${workdir} --stack-id ${fixture.stack.id} to export`,
       );
     }).pipe(Effect.provide([BunServices.layer, BunCrypto.layer])),
   );
@@ -1536,7 +1536,7 @@ describe("experimental stack start", () => {
       );
       expect(error).toMatchObject({
         reason: "lifecycle",
-        suggestion: "Run supabase stack stop, then supabase stack start to recover the stack.",
+        suggestion: "Run dbase stack stop, then dbase stack start to recover the stack.",
       });
       expect(fixture.stopped).toBe(0);
       expect(fixture.composed).toBe(1);
@@ -1567,7 +1567,7 @@ describe("experimental stack start", () => {
       expect(error).toMatchObject({
         reason: "lifecycle",
         message: "The stack is in a partial lifecycle state",
-        suggestion: "Run supabase stack stop, then supabase stack start to recover the stack.",
+        suggestion: "Run dbase stack stop, then dbase stack start to recover the stack.",
       });
       expect(fixture.compositionStarts).toBe(1);
       expect(fixture.composed).toBe(1);
@@ -1631,7 +1631,7 @@ describe("experimental stack start", () => {
         expect(output.messages).toContainEqual({
           type: "info",
           message:
-            "Resuming the saved stack services. Run `supabase stack stop`, then `supabase stack start` to apply configuration or service-selection changes.",
+            "Resuming the saved stack services. Run `dbase stack stop`, then `dbase stack start` to apply configuration or service-selection changes.",
         });
         expect(output.messages).toContainEqual({ type: "success", message: "Stack is ready." });
       }).pipe(Effect.provide([BunServices.layer, BunCrypto.layer])),
@@ -1670,7 +1670,7 @@ describe("experimental stack start", () => {
         expect(error).toMatchObject({ message: "auth HTTP readiness timed out" });
         expect(output.messages.map(({ message }) => message)).not.toContain("Stack is ready.");
         expect(output.messages.map(({ message }) => message)).not.toContain(
-          "Stack is already running with its current services. Run `supabase stack stop`, then `supabase stack start` to apply configuration or service-selection changes.",
+          "Stack is already running with its current services. Run `dbase stack stop`, then `dbase stack start` to apply configuration or service-selection changes.",
         );
       }).pipe(Effect.provide([BunServices.layer, BunCrypto.layer])),
   );
@@ -1982,7 +1982,7 @@ describe("experimental stack start", () => {
         expect(error).toMatchObject({
           reason: "invalid-config",
           message: expect.stringContaining("[api] port: saved"),
-          suggestion: `Run \`supabase stack stop --stack-id ${fixture.stack.id}\`, then \`supabase stack start --stack-id ${fixture.stack.id}\` to apply the new ports.`,
+          suggestion: `Run \`dbase stack stop --stack-id ${fixture.stack.id}\`, then \`dbase stack start --stack-id ${fixture.stack.id}\` to apply the new ports.`,
         });
       }).pipe(Effect.provide([BunServices.layer, BunCrypto.layer])),
   );
@@ -2103,12 +2103,10 @@ describe("experimental stack start", () => {
 
         const envelope = yield* machineEnvelope(stdio.stdout[0]);
         expect(envelope.error).toMatchObject({
-          suggestion: expect.stringContaining(
-            `supabase stack destroy --stack-id ${fixture.stack.id}`,
-          ),
+          suggestion: expect.stringContaining(`dbase stack destroy --stack-id ${fixture.stack.id}`),
         });
         expect(envelope.recreate_command).toBe(
-          `supabase stack destroy --stack-id ${fixture.stack.id}`,
+          `dbase stack destroy --stack-id ${fixture.stack.id}`,
         );
       }).pipe(Effect.provide([BunServices.layer, BunCrypto.layer])),
   );
@@ -2378,7 +2376,7 @@ describe("experimental stack start", () => {
           reason: "invalid-config",
           message: expect.stringContaining("[db] major_version: saved 17, requested 15"),
           suggestion: expect.stringContaining(
-            `Revert [db] major_version to its saved value to keep the stack and its data, or run \`supabase stack destroy --stack-id ${fixture.stack.id}\` to recreate the stack`,
+            `Revert [db] major_version to its saved value to keep the stack and its data, or run \`dbase stack destroy --stack-id ${fixture.stack.id}\` to recreate the stack`,
           ),
         });
         expect(error).toMatchObject({ suggestion: expect.stringContaining("database data") });
@@ -2418,7 +2416,7 @@ describe("experimental stack start", () => {
 
   const [orioledb = ""] = orioledbVersions();
 
-  /** `supabase start` of `root` with the release host reachable, so an OrioleDB specifier resolves. */
+  /** `dbase start` of `root` with the release host reachable, so an OrioleDB specifier resolves. */
   const startOnHost = (root: string, fixture: ReturnType<typeof fakeStack>, host: ReleaseFixture) =>
     withConfigEnv(releaseHostEnv(host), stackStart(flags())).pipe(
       Effect.provide(layers(root, fixture)),
@@ -2472,7 +2470,7 @@ describe("experimental stack start", () => {
           reason: "invalid-config",
           message: `The saved stack cannot adopt these changes: ${target.changes}`,
           suggestion: expect.stringContaining(
-            `${target.revert} to keep the stack and its data, or run \`supabase stack destroy --stack-id ${fixture.stack.id}\``,
+            `${target.revert} to keep the stack and its data, or run \`dbase stack destroy --stack-id ${fixture.stack.id}\``,
           ),
         });
       }).pipe(Effect.provide([BunServices.layer, BunCrypto.layer])),
@@ -2551,9 +2549,7 @@ describe("experimental stack start", () => {
           expect(error.suggestion).toContain(
             "This CLI release starts a different [db] orioledb_version than the saved stack.",
           );
-          expect(error.suggestion).toContain(
-            `supabase stack destroy --stack-id ${fixture.stack.id}`,
-          );
+          expect(error.suggestion).toContain(`dbase stack destroy --stack-id ${fixture.stack.id}`);
         }
       }).pipe(Effect.provide([BunServices.layer, BunCrypto.layer])),
   );
@@ -2592,9 +2588,7 @@ describe("experimental stack start", () => {
           editable: true,
         },
       ]);
-      expect(envelope.recreate_command).toBe(
-        `supabase stack destroy --stack-id ${fixture.stack.id}`,
-      );
+      expect(envelope.recreate_command).toBe(`dbase stack destroy --stack-id ${fixture.stack.id}`);
     }).pipe(Effect.provide([BunServices.layer, BunCrypto.layer])),
   );
 
@@ -2631,7 +2625,7 @@ describe("experimental stack start", () => {
           editable: true,
         },
       ]);
-      expect(event.recreate_command).toBe(`supabase stack destroy --stack-id ${fixture.stack.id}`);
+      expect(event.recreate_command).toBe(`dbase stack destroy --stack-id ${fixture.stack.id}`);
     }).pipe(Effect.provide([BunServices.layer, BunCrypto.layer])),
   );
 
@@ -2668,7 +2662,7 @@ describe("experimental stack start", () => {
 
       expect(error).toMatchObject({
         suggestion: expect.stringContaining(
-          `supabase stack destroy --stack-id ${fixture.stack.id}\` (stack feature-a)`,
+          `dbase stack destroy --stack-id ${fixture.stack.id}\` (stack feature-a)`,
         ),
       });
       expect(error).toBeInstanceOf(StackCommandStartError);
@@ -2862,7 +2856,7 @@ const memberPin = (stack: ReturnType<typeof fakeStack>, service: ServiceCreation
     member.service === service ? [Effect.runSync(member.status).config.pin] : [],
   )[0];
 
-/** One `supabase start` of `root`, with `CI` pinned and the release host reachable only when given. */
+/** One `dbase start` of `root`, with `CI` pinned and the release host reachable only when given. */
 const lockedStart = (
   root: string,
   options: {
@@ -3023,7 +3017,7 @@ describe("experimental stack start service lock", () => {
 
       expect(output.messages).toContainEqual({
         type: "warn",
-        message: `lock observed ${LINKED_MAIN.project}, this checkout targets ${LINKED_MAIN.project}/${LINKED_BRANCH_REF}; run supabase stack update`,
+        message: `lock observed ${LINKED_MAIN.project}, this checkout targets ${LINKED_MAIN.project}/${LINKED_BRANCH_REF}; run dbase stack update`,
       });
     }).pipe(Effect.provide([BunServices.layer, BunCrypto.layer])),
   );
@@ -3059,7 +3053,7 @@ describe("experimental stack start service lock", () => {
       const { upstreamVersion, revision } = entry.resolved;
       expect(output.messages).toContainEqual({
         type: "warn",
-        message: `This CLI bundles newer revisions of locked versions: ${kind} ${upstreamVersion}-r0 → ${upstreamVersion}-r${revision}. Run supabase stack outdated to review, supabase stack update to adopt them.`,
+        message: `This CLI bundles newer revisions of locked versions: ${kind} ${upstreamVersion}-r0 → ${upstreamVersion}-r${revision}. Run dbase stack outdated to review, dbase stack update to adopt them.`,
       });
     }).pipe(Effect.provide([BunServices.layer, BunCrypto.layer])),
   );
@@ -3164,7 +3158,7 @@ describe("experimental stack start service lock", () => {
         cause: { _tag: "LockResolutionError", reason: "frozen-missing" },
       });
       expect(notFound.message).toContain(
-        "supabase/supabase.lock not found; run supabase start locally and commit it",
+        "supabase/supabase.lock not found; run dbase start locally and commit it",
       );
       expect(yield* fs.exists(lockPath(root))).toBe(false);
       expect(yield* fs.exists(`${root}/supabase/.gitignore`)).toBe(false);
@@ -3189,7 +3183,7 @@ describe("experimental stack start service lock", () => {
         cause: { _tag: "LockResolutionError", reason: "frozen-stale" },
       });
       expect(stale.message).toContain(
-        "supabase/supabase.lock is stale for: rest (specifier v99.0.0 ≠ locked linked); run supabase start locally and commit the updated lock",
+        "supabase/supabase.lock is stale for: rest (specifier v99.0.0 ≠ locked linked); run dbase start locally and commit the updated lock",
       );
       expect(yield* lockText(root)).toBe(written);
       expect(yield* fs.readFileString(`${root}/supabase/.gitignore`)).toBe(ignored);
@@ -3421,7 +3415,7 @@ describe("experimental stack start service lock", () => {
       const fs = yield* FileSystem.FileSystem;
       const root = yield* lockProject();
       for (const [contents, advice] of [
-        ["{ not json", "delete it and run supabase start to resolve the versions again"],
+        ["{ not json", "delete it and run dbase start to resolve the versions again"],
         ['{"lockfileVersion":2}', "upgrade the CLI"],
       ] as const) {
         yield* fs.writeFileString(lockPath(root), contents);

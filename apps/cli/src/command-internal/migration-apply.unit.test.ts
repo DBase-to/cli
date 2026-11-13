@@ -739,7 +739,7 @@ layer(BunServices.layer)("migration failure rendering", (it) => {
           "Hint: This type may be defined in a schema that's not in your search_path.\n" +
           "      Use schema-qualified type references to avoid this error:\n" +
           "        CREATE TABLE example (col extensions.ltree);\n" +
-          "      Learn more: supabase migration new --help\n" +
+          "      Learn more: dbase migration new --help\n" +
           "At statement: 0\n" +
           "CREATE TABLE test (path ltree NOT NULL)\n" +
           "                        ^",

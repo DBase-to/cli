@@ -36,7 +36,7 @@ function reportDateFolder(epochMillis: number): string {
 }
 
 /**
- * `supabase inspect report` — runs every inspect query and writes one CSV per
+ * `dbase inspect report` — runs every inspect query and writes one CSV per
  * query into `<output-dir>/<YYYY-MM-DD>/`, then prints a Glamour "rules" summary
  * table validating those CSVs.
  *

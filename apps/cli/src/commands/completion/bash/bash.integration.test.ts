@@ -13,7 +13,7 @@ function setupCompletionBash() {
 }
 
 function testRoot() {
-  return Command.make("supabase").pipe(Command.withSubcommands([completionBashCommand]));
+  return Command.make("dbase").pipe(Command.withSubcommands([completionBashCommand]));
 }
 
 describe("completion bash", () => {
@@ -21,7 +21,7 @@ describe("completion bash", () => {
     const out = setupCompletionBash();
     return Effect.gen(function* () {
       yield* completionBash({ noDescriptions: false });
-      expect(out.stdoutText).toContain("# bash completion V2 for supabase");
+      expect(out.stdoutText).toContain("# bash completion V2 for dbase");
       expect(out.stdoutText).not.toContain("__completeNoDesc");
       expect(out.stdoutText).toContain("__complete");
     }).pipe(Effect.provide(out.layer));

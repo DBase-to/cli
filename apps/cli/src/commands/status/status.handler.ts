@@ -252,7 +252,7 @@ export const status = Effect.fn("status")(function* (flags: StatusFlags) {
     // affects the env/json/toml/yaml path, never the pretty table — remapped from the
     // already-resolved `state` so it stays consistent without a second (fallible) resolution.
     const renderPretty = Effect.fnUntraced(function* () {
-      yield* output.raw(`${aqua("supabase")} local development setup is running.\n\n`, "stderr");
+      yield* output.raw(`${aqua("dbase")} local development setup is running.\n\n`, "stderr");
       const pretty = statusValuesFromState(state, new Map());
       yield* output.raw(renderStatusPretty(pretty.values, pretty.names));
     });

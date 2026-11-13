@@ -33,7 +33,7 @@ export const storageLsCommand = Command.make("ls", config).pipe(
   Command.withShortDescription("List objects by path prefix"),
   Command.withExamples([
     {
-      command: "supabase storage ls ss:///bucket/docs",
+      command: "dbase storage ls ss:///bucket/docs",
       description: "List objects at a storage path",
     },
   ]),

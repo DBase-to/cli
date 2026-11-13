@@ -1,7 +1,7 @@
 /**
  * Realtime's environment variables, shared by the long-running Realtime container
  * (`buildRealtimeContainerSpec`) and the fresh-DB one-shot init job run by both
- * `supabase start` and `db start`.
+ * `dbase start` and `db start`.
  */
 
 import type { CliConfig } from "@supabase/config";

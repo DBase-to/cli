@@ -1,9 +1,9 @@
-# `supabase status`
+# `dbase status`
 
-This document describes the legacy backend. With `SUPABASE_EXPERIMENTAL_STACK=1`, or
-`[experimental] stack = true` when the environment override is unset or empty, `supabase status`
-uses the new [`supabase stack status` implementation](../experimental/stack/status/SIDE_EFFECTS.md).
-`SUPABASE_EXPERIMENTAL_STACK=0` forces the legacy backend. See [backend selection](../../../docs/stack-commands.md).
+This document describes the legacy backend. With `DBASE_EXPERIMENTAL_STACK=1`, or
+`[experimental] stack = true` when the environment override is unset or empty, `dbase status`
+uses the new [`dbase stack status` implementation](../experimental/stack/status/SIDE_EFFECTS.md).
+`DBASE_EXPERIMENTAL_STACK=0` forces the legacy backend. See [backend selection](../../../docs/stack-commands.md).
 
 Backend routing reads `supabase/config.json` when present, otherwise `supabase/config.toml`; the
 legacy handler reads TOML only. Backend selection happens before command parsing. When the
@@ -45,7 +45,7 @@ one to succeed. The one route above is part of the shared, best-effort `resolveL
 helper: it fires ONLY when `linked-project.json` names a genuinely different parent than the
 currently linked ref — with no cache at all, the plain project shape renders with zero API calls
 (there is no ref-only env/file fallback query anymore — PR #6168 review). When the linked ref came
-from `SUPABASE_PROJECT_ID` (env) rather than the `project-ref` file, the route still fires the
+from `DBASE_PROJECT_ID` (env) rather than the `project-ref` file, the route still fires the
 same way, but a no-match/failure/timeout result degrades all the way to the plain shape instead of
 keeping the cache's parent claim — see `resolveLinkedState`'s doc comment.
 
@@ -62,15 +62,15 @@ resolves a token at layer-build time and would break every offline/token-less `s
 
 | Variable                         | Purpose                                                                                                                                                                       | Required?                                                                                                       |
 | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `SUPABASE_PROJECT_ID`            | overrides the resolved local project id; ALSO the 1st candidate for the linked-state "currently linked ref" (CLI-2167 follow-up — a shared env var, two independent purposes) | no (falls back to config.toml `project_id` → workdir basename)                                                  |
-| `SUPABASE_WORKDIR`               | overrides the resolved project workdir                                                                                                                                        | no (falls back to `--workdir` → walk-up search for `supabase/config.toml` or `supabase/config.json` → cwd)      |
-| `SUPABASE_SERVICES_HOSTNAME`     | overrides the hostname used to build local service URLs (shell env, then project `.env*`)                                                                                     | no (falls back to the shell `DOCKER_HOST`'s tcp host → `127.0.0.1`; a project `.env*` `DOCKER_HOST` is ignored) |
+| `DBASE_PROJECT_ID`               | overrides the resolved local project id; ALSO the 1st candidate for the linked-state "currently linked ref" (CLI-2167 follow-up — a shared env var, two independent purposes) | no (falls back to config.toml `project_id` → workdir basename)                                                  |
+| `DBASE_WORKDIR`                  | overrides the resolved project workdir                                                                                                                                        | no (falls back to `--workdir` → walk-up search for `supabase/config.toml` or `supabase/config.json` → cwd)      |
+| `DBASE_SERVICES_HOSTNAME`        | overrides the hostname used to build local service URLs (shell env, then project `.env*`)                                                                                     | no (falls back to the shell `DOCKER_HOST`'s tcp host → `127.0.0.1`; a project `.env*` `DOCKER_HOST` is ignored) |
 | `SUPABASE_AUTH_JWT_SECRET`       | overrides `auth.jwt_secret`                                                                                                                                                   | no                                                                                                              |
 | `SUPABASE_AUTH_PUBLISHABLE_KEY`  | overrides `auth.publishable_key`                                                                                                                                              | no                                                                                                              |
 | `SUPABASE_AUTH_SECRET_KEY`       | overrides `auth.secret_key`                                                                                                                                                   | no                                                                                                              |
 | `SUPABASE_AUTH_ANON_KEY`         | overrides `auth.anon_key`                                                                                                                                                     | no                                                                                                              |
 | `SUPABASE_AUTH_SERVICE_ROLE_KEY` | overrides `auth.service_role_key`                                                                                                                                             | no                                                                                                              |
-| `SUPABASE_ACCESS_TOKEN`          | Management API bearer auth for the LAZY branch-name lookup only (CLI-2167 follow-up) — never required for `status` to succeed                                                 | no (falls back to keyring → `~/.supabase/access-token`; absent → the lookup degrades, `status` still runs)      |
+| `DBASE_ACCESS_TOKEN`             | Management API bearer auth for the LAZY branch-name lookup only (CLI-2167 follow-up) — never required for `status` to succeed                                                 | no (falls back to keyring → `~/.supabase/access-token`; absent → the lookup degrades, `status` still runs)      |
 
 The `SUPABASE_AUTH_*` vars follow the same `SUPABASE_`-prefixed, `.`→`_` env-var naming
 convention used elsewhere in config loading, and take precedence over the corresponding
@@ -86,7 +86,7 @@ convention used elsewhere in config loading, and take precedence over the corres
 | `0`  | **`--ignore-health-check` is set** — skips the health assertion below entirely, so an unhealthy/not-running db never fails the command                                                                                                                                                                                                                          |
 | `1`  | `supabase/config.toml` missing or malformed                                                                                                                                                                                                                                                                                                                     |
 | `1`  | malformed CSV in an `--override-name`/`--exclude` value — fails during flag parsing, before the handler and telemetry, with the exact diagnostic text on stderr (e.g. `invalid argument "\"api.url=FOO" for "--override-name" flag: parse error on line 1, column 13: extraneous or missing " in quoted-field`; a blank-only value fails with `EOF`) — CLI-2005 |
-| `1`  | a stack-only flag (e.g. `--stack`) is given while the legacy backend is active — fails during flag parsing with `Unrecognized flag: <flag>` plus a `Hint:` naming the opt-in (`SUPABASE_EXPERIMENTAL_STACK=1`, or `stack = true` under `[experimental]` with that variable unset); other unrecognized flags get no hint                                         |
+| `1`  | a stack-only flag (e.g. `--stack`) is given while the legacy backend is active — fails during flag parsing with `Unrecognized flag: <flag>` plus a `Hint:` naming the opt-in (`DBASE_EXPERIMENTAL_STACK=1`, or `stack = true` under `[experimental]` with that variable unset); other unrecognized flags get no hint                                            |
 | `1`  | a malformed `--override-name` entry, or the removed `inbucket.url` key (the message names `mailpit.url`)                                                                                                                                                                                                                                                        |
 | `1`  | listing running containers failed (Docker daemon unreachable, etc.)                                                                                                                                                                                                                                                                                             |
 | `1`  | the db container inspect call failed (including "not found") — health assertion, skipped by `--ignore-health-check` above                                                                                                                                                                                                                                       |
@@ -153,7 +153,7 @@ best-effort API lookup.
   - When `linked-project.json` is absent entirely, the block always renders the plain
     `Project: <bare linked ref>` line (no `Org:`, no `Branch:`) with ZERO API calls — there is no
     fallback lookup against the env/file chain anymore (PR #6168 review).
-  - When the linked ref came from `SUPABASE_PROJECT_ID` (env) rather than the `project-ref` file,
+  - When the linked ref came from `DBASE_PROJECT_ID` (env) rather than the `project-ref` file,
     and a cache exists but names a DIFFERENT project than the env override, the branch lookup still
     runs, but a `Branch:` line (and the cache's `Org:`/parent name) only appears when that lookup
     POSITIVELY confirms the override is a branch of the cached project — otherwise the block
@@ -165,7 +165,7 @@ stdout. Empty rows (a value with nothing resolved) and entirely empty groups are
 blank line follows every group, rendered or not.
 
 ```
-supabase local development setup is running.
+dbase local development setup is running.
 
 ╭──────────────────────────────────────╮
 │ 🔧 Development Tools                 │
@@ -349,7 +349,7 @@ print nothing but the red stderr message on failure (no payload at all). The add
   review) — this is decoration on an interactive command, and the generated client's own retry
   policy would otherwise let a single blackholed API stall every `status` run for minutes; a
   timeout degrades exactly like any other lookup failure.
-- The linked ref itself (env `SUPABASE_PROJECT_ID` or the `project-ref` file) is VALIDATED
+- The linked ref itself (env `DBASE_PROJECT_ID` or the `project-ref` file) is VALIDATED
   against `PROJECT_REF_PATTERN` before use: malformed or symlinked non-ref content (e.g. a
   `project-ref` symlinked at an access token) is treated as not linked and never reaches ANY
   output channel — machine formats included (PR #6168 review). The cache-sourced display fields

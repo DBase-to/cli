@@ -1,10 +1,10 @@
 /**
  * Static shell completion script templates,
- * which shell back out to `supabase`'s hidden `__complete`/`__completeNoDesc` command for live
+ * which shell back out to `dbase`'s hidden `__complete`/`__completeNoDesc` command for live
  * candidates rather than baking in the command tree.
  */
 
-const PROGRAM_NAME = "supabase";
+const PROGRAM_NAME = "dbase";
 
 const SHELL_COMP_REQUEST_CMD = "__complete";
 const SHELL_COMP_NO_DESC_REQUEST_CMD = "__completeNoDesc";
@@ -19,7 +19,7 @@ const SHELL_COMP_DIRECTIVE_FILTER_DIRS = 16;
 const SHELL_COMP_DIRECTIVE_KEEP_ORDER = 32;
 
 const ACTIVE_HELP_MARKER = "_activeHelp_ ";
-const ACTIVE_HELP_ENV_VAR = "SUPABASE_ACTIVE_HELP";
+const ACTIVE_HELP_ENV_VAR = "DBASE_ACTIVE_HELP";
 
 // Both the descriptions and no-descriptions variants share this template; only the
 // `compCmd` token differs.

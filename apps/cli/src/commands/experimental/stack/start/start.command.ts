@@ -50,7 +50,7 @@ export type StackStartFlags = CliCommand.Command.Config.Infer<typeof config>;
 
 export const stackStartCommand = Command.make("start", config).pipe(
   Command.withDescription(
-    "Create or resume a managed local Supabase stack using the project config file when present. " +
+    "Create or resume a managed local DBase stack using the project config file when present. " +
       "Without a config file, default settings are used and no file is created. " +
       "For a new stack, auto selects Docker when its engine is reachable, then Podman, then native on supported platforms; the choice is persisted for that stack. " +
       "Explicit runtime choices are honored. Values support explicit env(NAME) references and automatic SUPABASE_* overrides.",
@@ -58,11 +58,11 @@ export const stackStartCommand = Command.make("start", config).pipe(
   Command.withShortDescription("Start a managed local stack"),
   Command.withExamples([
     {
-      command: "supabase stack start",
+      command: "dbase stack start",
       description: "Start the current project stack",
     },
     {
-      command: "supabase stack start --stack feature-a --runtime docker",
+      command: "dbase stack start --stack feature-a --runtime docker",
       description: "Start a named Docker stack",
     },
   ]),

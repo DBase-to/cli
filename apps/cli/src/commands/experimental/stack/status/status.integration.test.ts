@@ -503,7 +503,7 @@ it.effect("reports the planned differences of composition members as drift", () 
     const text = yield* drifted("text");
     yield* text.effect;
     expect(text.out.stdoutText).toContain(
-      "1 configured service value differs from the saved stack.\n  services.database.endpoints.sql.port\nRun supabase stack stop, then supabase stack start to apply the changes.\n",
+      "1 configured service value differs from the saved stack.\n  services.database.endpoints.sql.port\nRun dbase stack stop, then dbase stack start to apply the changes.\n",
     );
   }),
 );

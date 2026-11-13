@@ -31,7 +31,7 @@ const updateRuntime = Layer.mergeAll(
 );
 
 export const encryptionUpdateRootKeyCommand = Command.make("update-root-key", config).pipe(
-  Command.withDescription("Update root encryption key of a Supabase project"),
+  Command.withDescription("Update root encryption key of a DBase project"),
   Command.withShortDescription("Update the root encryption key"),
   withPermissions(
     compose(

@@ -142,10 +142,10 @@ describe("issue", () => {
     return Effect.gen(function* () {
       yield* issueBug({
         area: Option.some("Local development"),
-        command: Option.some("supabase start"),
+        command: Option.some("dbase start"),
         actualOutput: Option.some("database failed to start"),
         expectedBehavior: Option.none(),
-        reproduce: Option.some("Run supabase start in a fresh project"),
+        reproduce: Option.some("Run dbase start in a fresh project"),
         crashReportId: Option.some("event-123"),
         dockerServices: Option.none(),
         additionalContext: Option.none(),
@@ -159,9 +159,9 @@ describe("issue", () => {
       expect(params.get("cli-version")).toBe("1.2.3-test");
       expect(params.get("os")).toBe("darwin arm64");
       expect(params.get("install-method")).toBe("brew");
-      expect(params.get("command")).toBe("supabase start");
+      expect(params.get("command")).toBe("dbase start");
       expect(params.get("actual-output")).toBe("database failed to start");
-      expect(params.get("reproduce")).toBe("Run supabase start in a fresh project");
+      expect(params.get("reproduce")).toBe("Run dbase start in a fresh project");
       expect(params.get("ticket-id")).toBe("event-123");
       expect(out.stdoutText).toBe(`${browser.openedUrls[0]}\n`);
       expect(out.messages).toContainEqual(
@@ -205,7 +205,7 @@ describe("issue", () => {
         existingIssues: true,
         area: Option.some("Auth"),
         problem: Option.some("I need to rotate credentials"),
-        proposedSolution: Option.some("Add supabase secrets rotate"),
+        proposedSolution: Option.some("Add dbase secrets rotate"),
         alternatives: Option.some("Manual dashboard workflow"),
         additionalContext: Option.none(),
         noBrowser: false,
@@ -216,7 +216,7 @@ describe("issue", () => {
       expect(params.get("existing-issues")).toBe("I have searched the existing issues.");
       expect(params.get("affected-area")).toBe("Auth");
       expect(params.get("problem")).toBe("I need to rotate credentials");
-      expect(params.get("proposed-solution")).toBe("Add supabase secrets rotate");
+      expect(params.get("proposed-solution")).toBe("Add dbase secrets rotate");
       expect(params.get("alternatives")).toBe("Manual dashboard workflow");
     }).pipe(Effect.provide(layer));
   });
@@ -257,6 +257,6 @@ describe("issue", () => {
 
     const actualOutput = params.get("actual-output");
     expect(actualOutput).toHaveLength(1_500);
-    expect(actualOutput?.endsWith("[truncated by Supabase CLI]")).toBe(true);
+    expect(actualOutput?.endsWith("[truncated by DBase CLI]")).toBe(true);
   });
 });

@@ -301,6 +301,10 @@ export interface CliEnvName<X> {
 
 export const cliEnvName = <X>(entry: CliEnvName<X>): CliEnvName<X> => entry;
 
+/** `DBASE_` twin of a `SUPABASE_` env name; other names are unchanged. */
+export const dbaseEnvName = (name: string): string =>
+  name.startsWith("SUPABASE_") ? `DBASE_${name.slice("SUPABASE_".length)}` : name;
+
 /** The non-empty value of an env name, shell before project `.env*`; a set-but-empty shell name shadows the file. */
 export const lookupCliConfigEnv = (
   sources: Pick<CliConfigSources, "shell" | "projectEnv">,

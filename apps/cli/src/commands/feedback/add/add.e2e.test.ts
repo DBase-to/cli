@@ -7,7 +7,7 @@ import { FEEDBACK_EMPTY_MESSAGE } from "./add.errors.ts";
 
 const E2E_TIMEOUT_MS = 60_000;
 
-describe("supabase feedback", () => {
+describe("dbase feedback", () => {
   // Subcommand routing through the real parser is the only surface handler
   // integration tests can't reach. The empty-message path proves it with zero
   // network: no args, whitespace-only piped stdin, non-TTY — the command exits

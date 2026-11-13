@@ -857,7 +857,7 @@ describe("bootstrap integration", () => {
       expect(successes[0]?.data).toMatchObject({
         project_ref: VALID_REF,
         template: "scratch",
-        start_command: "supabase start",
+        start_command: "dbase start",
         workdir: s.workdir,
       });
       expect(s.out.stdoutText).not.toContain("To start your app:");

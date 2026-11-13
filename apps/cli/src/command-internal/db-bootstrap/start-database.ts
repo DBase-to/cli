@@ -1,12 +1,12 @@
 /**
- * The single bring-up sequence for the local Postgres container, shared by `supabase start` and
+ * The single bring-up sequence for the local Postgres container, shared by `dbase start` and
  * `db start`: volume probe, image resolve and network ensure, create (probing a reused volume's
  * data directory before start) and start, health wait (swallowed only for `fromBackup`), setup
  * when the volume is new or its data directory was never initialised (skipped for `fromBackup`),
  * then `initCurrentBranch`. `--ignore-health-check` and rollback are the caller's concern.
  *
  * `resolvePostgresImage` and `setup.jwks` are caller-supplied `Effect`s because `db start`
- * resolves them lazily while `supabase start` threads values it already resolved.
+ * resolves them lazily while `dbase start` threads values it already resolved.
  */
 
 import { Data, Effect, type FileSystem, type Path, Result } from "effect";
@@ -79,7 +79,7 @@ class StartBackupVolumeExistsError extends Data.TaggedError("StartBackupVolumeEx
 export const backupVolumeExistsError = () =>
   new StartBackupVolumeExistsError({
     message: "backup volume already exists",
-    suggestion: `Run ${aqua("supabase stop --no-backup")} to remove existing docker volumes.`,
+    suggestion: `Run ${aqua("dbase stop --no-backup")} to remove existing docker volumes.`,
   });
 
 /** Every failure {@link startDatabase} itself can produce, independent of the caller's own `E`. */

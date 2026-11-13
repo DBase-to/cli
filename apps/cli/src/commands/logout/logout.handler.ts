@@ -31,7 +31,7 @@ export const logout = Effect.fn("logout")(function* () {
       // `--yes`/`SUPABASE_YES` auto-confirms through the helper, including its `<label> [y/N] y`
       // stderr echo — don't short-circuit before calling it, or that echo line goes missing.
       // Without `--yes` it scans piped stdin before falling back to the default, so
-      // `printf 'y\n' | supabase logout` deletes the token.
+      // `printf 'y\n' | dbase logout` deletes the token.
       return yield* promptYesNo(output, yes, confirmLabel, false);
     });
     if (!confirmed) {

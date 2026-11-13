@@ -3,11 +3,11 @@ import { secret } from "./lib/env.ts";
 
 const links = {
   studio: {
-    name: "Supabase Studio",
+    name: "DBase Studio",
     link: "https://supabase.com/docs/guides/studio",
   },
   config: {
-    name: "Supabase Studio Configuration",
+    name: "DBase Studio Configuration",
     link: "https://supabase.com/docs/guides/self-hosting/studio",
   },
 };
@@ -21,13 +21,13 @@ const defaultApiUrl = "http://127.0.0.1";
 export const studio = Schema.Struct({
   enabled: Schema.Boolean.annotate({
     default: defaultEnabled,
-    description: "Enable the local Supabase Studio dashboard.",
+    description: "Enable the local DBase Studio dashboard.",
     tags,
     links: [links.studio],
   }).pipe(Schema.withDecodingDefaultKey(Effect.succeed(defaultEnabled))),
   port: Schema.Finite.annotate({
     default: defaultPort,
-    description: "Port to use for Supabase Studio.",
+    description: "Port to use for DBase Studio.",
     tags,
   }).pipe(Schema.withDecodingDefaultKey(Effect.succeed(defaultPort))),
   api_url: Schema.String.annotate({
@@ -39,7 +39,7 @@ export const studio = Schema.Struct({
   openai_api_key: Schema.optionalKey(
     secret({
       examples: ["env(OPENAI_API_KEY)"],
-      description: "OpenAI API key to use for Supabase AI in the Supabase Studio.",
+      description: "OpenAI API key to use for DBase AI in the DBase Studio.",
       tags,
       links: [links.config],
     }),

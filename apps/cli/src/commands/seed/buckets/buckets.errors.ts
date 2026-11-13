@@ -6,7 +6,7 @@ import {
 } from "../../../shared/telemetry/error-actionability.ts";
 
 /**
- * Domain errors specific to `supabase seed buckets`. Storage gateway and
+ * Domain errors specific to `dbase seed buckets`. Storage gateway and
  * credential-derivation errors are shared with `storage ls/cp/mv/rm` and live
  * in `command-internal/storage-*.errors.ts`.
  */

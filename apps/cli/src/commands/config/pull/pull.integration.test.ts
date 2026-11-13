@@ -869,9 +869,9 @@ describe("config pull integration", () => {
       if (Exit.isFailure(exit)) {
         const causeText = Cause.pretty(exit.cause);
         expect(causeText).toContain("ConfigPullLoadConfigError");
-        // A defaulted workdir with no project keeps the supabase init suggestion; only an
+        // A defaulted workdir with no project keeps the dbase init suggestion; only an
         // explicit --workdir/SUPABASE_WORKDIR gets the resolved-path wording.
-        expect(causeText).toContain("supabase init");
+        expect(causeText).toContain("dbase init");
       }
       // The load runs before any network call or target resolution, so the linked-project
       // cache never fires.
@@ -906,9 +906,9 @@ describe("config pull integration", () => {
           const causeText = Cause.pretty(exit.cause);
           expect(causeText).toContain("ConfigPullLoadConfigError");
           expect(causeText).toContain("file not found");
-          // An explicit workdir skips the ancestor-search "supabase init" hint; it names the
+          // An explicit workdir skips the ancestor-search "dbase init" hint; it names the
           // resolved directory and the flag/env var to change instead.
-          expect(causeText).not.toContain("supabase init");
+          expect(causeText).not.toContain("dbase init");
           expect(causeText).toContain("--workdir/SUPABASE_WORKDIR");
           expect(causeText).toContain(sub);
         }
@@ -1425,7 +1425,7 @@ describe("config pull integration", () => {
       yield* configPull(noFlags);
       expect(out.stdoutText).toContain("Warnings:");
       expect(out.stdoutText).toContain(
-        "auth.site_url also configures the local stack (`supabase start`) — writing it to the config root changes local dev behavior too.",
+        "auth.site_url also configures the local stack (`dbase start`) — writing it to the config root changes local dev behavior too.",
       );
     }).pipe(Effect.provide(layer));
   });
@@ -2047,7 +2047,7 @@ describe("config pull integration", () => {
       if (Exit.isFailure(exit)) {
         const causeText = Cause.pretty(exit.cause);
         expect(causeText).toContain("ConfigPullReadStatusError");
-        expect(causeText).toContain("supabase login");
+        expect(causeText).toContain("dbase login");
       }
     }).pipe(Effect.provide(layer));
   });
@@ -2081,7 +2081,7 @@ describe("config pull integration", () => {
       if (Exit.isFailure(exit)) {
         const causeText = Cause.pretty(exit.cause);
         expect(causeText).toContain(`Could not read configuration for project ${VALID_REF}`);
-        expect(causeText).toContain("supabase projects list");
+        expect(causeText).toContain("dbase projects list");
         expect(causeText).toContain(DEFAULT_API_URL);
       }
     }).pipe(Effect.provide(layer));

@@ -464,8 +464,8 @@ describe("renderPullSummary", () => {
           message: "remote migration history does not match local files",
           suggestion:
             "Make sure your local git repo is up-to-date.\n" +
-            "Alternatively, rerun `supabase pull --with-migration-history` to fetch and reconcile the remote migration history table automatically.\n" +
-            "To retry just this step, run: supabase db pull --project-ref abcdefghijklmnopqrst --experimental=false",
+            "Alternatively, rerun `dbase pull --with-migration-history` to fetch and reconcile the remote migration history table automatically.\n" +
+            "To retry just this step, run: dbase db pull --project-ref abcdefghijklmnopqrst --experimental=false",
         },
       },
       { step: "functions", status: "unchanged", written: [], detail: {} },
@@ -485,7 +485,7 @@ describe("renderPullSummary", () => {
     expect(lines[dbRowIndex + 1]).toContain("Make sure your local git repo is up-to-date.");
     expect(lines[dbRowIndex + 2]).toContain("Alternatively, rerun");
     expect(lines[dbRowIndex + 3]).toContain(
-      "To retry just this step, run: supabase db pull --project-ref abcdefghijklmnopqrst --experimental=false",
+      "To retry just this step, run: dbase db pull --project-ref abcdefghijklmnopqrst --experimental=false",
     );
     // Continuation lines don't start with the step name, so a naive
     // step-row scanner (e.g. this suite's own `rowFor`/`stepLine` helpers)

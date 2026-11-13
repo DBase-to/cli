@@ -288,11 +288,9 @@ describe("migration down", () => {
       const hosted = yield* migrationDown(
         flags({ last: 1, remote: Option.some({ _tag: "Linked" }) }),
       ).pipe(Effect.flip);
-      expect(suggestionOf(local)).toBe(
-        "Try supabase db reset if you want to revert all migrations.",
-      );
+      expect(suggestionOf(local)).toBe("Try dbase db reset if you want to revert all migrations.");
       expect(suggestionOf(hosted)).toBe(
-        "Try supabase db reset --remote if you want to revert all migrations.",
+        "Try dbase db reset --remote if you want to revert all migrations.",
       );
     }).pipe(Effect.provide(layer));
   });

@@ -275,8 +275,8 @@ export const declarativeSeamLayer = Layer.effect(
               upstreamVersionFromTag(actualTag) === upstreamVersionFromTag(expectedTag);
             const remediation =
               familyMismatch && upstreamMatches
-                ? "The tags match but the image family does not (slim vs docker.io). Run supabase stop, then supabase start with the same SUPABASE_USE_SLIM_IMAGES setting before syncing declarative schemas."
-                : "Run supabase stop --all --no-backup, then supabase start before syncing declarative schemas.";
+                ? "The tags match but the image family does not (slim vs docker.io). Run dbase stop, then dbase start with the same DBASE_USE_SLIM_IMAGES setting before syncing declarative schemas."
+                : "Run dbase stop --all --no-backup, then dbase start before syncing declarative schemas.";
             return yield* new DeclarativeShadowDbError({
               message: `local Postgres container image is stale: running ${actual} but expected ${expected}. ${remediation}`,
             });

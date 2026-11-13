@@ -1,4 +1,4 @@
-# `supabase init`
+# `dbase init`
 
 ## Files Read
 
@@ -14,15 +14,15 @@
 
 ## Files Written
 
-| Path                      | Format | When                                                                                                                    |
-| ------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------- |
-| `supabase/config.json`    | -      | removed (if present) when `--force` is set, so the fresh `config.toml` is the file that loads                           |
-| `supabase/config.jsonc`   | -      | removed (if present) when `--force` is set, so the fresh `config.toml` is the file that loads                           |
-| `supabase/config.toml`    | TOML   | always on success; created from the default template, or the stack-opt-in template when `SUPABASE_EXPERIMENTAL_STACK=1` |
-| `supabase/.gitignore`     | text   | when inside a git repo and the template is not already present                                                          |
-| `.vscode/settings.json`   | JSON   | when interactive VS Code setup is accepted, or when `--with-vscode-settings` / `--with-vscode-workspace` is set         |
-| `.vscode/extensions.json` | JSON   | when interactive VS Code setup is accepted, or when `--with-vscode-settings` / `--with-vscode-workspace` is set         |
-| `.idea/deno.xml`          | XML    | when interactive IntelliJ setup is accepted, or when `--with-intellij-settings` is set                                  |
+| Path                      | Format | When                                                                                                                 |
+| ------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------- |
+| `supabase/config.json`    | -      | removed (if present) when `--force` is set, so the fresh `config.toml` is the file that loads                        |
+| `supabase/config.jsonc`   | -      | removed (if present) when `--force` is set, so the fresh `config.toml` is the file that loads                        |
+| `supabase/config.toml`    | TOML   | always on success; created from the default template, or the stack-opt-in template when `DBASE_EXPERIMENTAL_STACK=1` |
+| `supabase/.gitignore`     | text   | when inside a git repo and the template is not already present                                                       |
+| `.vscode/settings.json`   | JSON   | when interactive VS Code setup is accepted, or when `--with-vscode-settings` / `--with-vscode-workspace` is set      |
+| `.vscode/extensions.json` | JSON   | when interactive VS Code setup is accepted, or when `--with-vscode-settings` / `--with-vscode-workspace` is set      |
+| `.idea/deno.xml`          | XML    | when interactive IntelliJ setup is accepted, or when `--with-intellij-settings` is set                               |
 
 ## API Routes
 
@@ -32,18 +32,18 @@
 
 ## Environment Variables
 
-| Variable                      | Purpose                                                                                                                                                                            | Required? |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| `SUPABASE_YES`                | auto-accepts `-i` IDE prompts with the established stderr echo, same as `--yes`                                                                                                    | no        |
-| `SUPABASE_EXPERIMENTAL_STACK` | when true (`1`, `t`, `T`, `TRUE`, `true`, `True`), persist `[experimental] stack = true` and omit Docker-era default ports; false, unset, or empty writes the established template | no        |
+| Variable                   | Purpose                                                                                                                                                                            | Required? |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| `DBASE_YES`                | auto-accepts `-i` IDE prompts with the established stderr echo, same as `--yes`                                                                                                    | no        |
+| `DBASE_EXPERIMENTAL_STACK` | when true (`1`, `t`, `T`, `TRUE`, `true`, `True`), persist `[experimental] stack = true` and omit Docker-era default ports; false, unset, or empty writes the established template | no        |
 
 ## Exit Codes
 
 | Code | Condition                                                                                     |
 | ---- | --------------------------------------------------------------------------------------------- |
-| `0`  | success - prints "Finished supabase init."                                                    |
+| `0`  | success - prints "Finished dbase init."                                                       |
 | `1`  | `supabase/config.json`, `config.jsonc` or `config.toml` exists and `--force` was not provided |
-| `1`  | `SUPABASE_EXPERIMENTAL_STACK` is a non-empty value that is not a boolean                      |
+| `1`  | `DBASE_EXPERIMENTAL_STACK` is a non-empty value that is not a boolean                         |
 | `1`  | permission denied writing config file                                                         |
 | `1`  | an existing `.vscode/settings.json` / `.vscode/extensions.json` is not valid JSON(C)          |
 
@@ -54,7 +54,7 @@
 On success:
 
 ```
-Finished supabase init.
+Finished dbase init.
 ```
 
 In interactive mode (`-i`/`--interactive`), may prompt for IDE settings preferences.
@@ -67,20 +67,20 @@ On Linux/macOS:
 
 ```
 failed to create config file: open supabase/config.toml: file exists
-Run supabase init --force to overwrite existing config file.
+Run dbase init --force to overwrite existing config file.
 ```
 
 On Windows:
 
 ```
 failed to create config file: open supabase\config.toml: The file exists.
-Run supabase init --force to overwrite existing config file.
+Run dbase init --force to overwrite existing config file.
 ```
 
-When `SUPABASE_EXPERIMENTAL_STACK` is a non-empty value that is not a boolean such as `1`, `0`, `true` or `false` (stderr; the second line is the generic debug hint appended on error):
+When `DBASE_EXPERIMENTAL_STACK` is a non-empty value that is not a boolean such as `1`, `0`, `true` or `false` (stderr; the second line is the generic debug hint appended on error):
 
 ```
-Invalid SUPABASE_EXPERIMENTAL_STACK="yes" (sets experimental.stack): expected true or false.
+Invalid DBASE_EXPERIMENTAL_STACK="yes" (sets experimental.stack): expected true or false.
 Try rerunning the command with --debug to troubleshoot the error.
 ```
 
@@ -90,7 +90,7 @@ Try rerunning the command with --debug to troubleshoot the error.
 - The `--force` flag overwrites an existing `supabase/config.toml` and removes any `supabase/config.json` / `supabase/config.jsonc`, since the project loader reads those before `config.toml`.
 - `supabase/config.toml` starts with a `#:schema https://supabase.com/schemas/config/v1.json` directive so Taplo and Tombi validate it against the hosted schema.
 - The `--use-orioledb` flag writes the OrioleDB version to `db.orioledb_version`; it does not require `--experimental`.
-- `SUPABASE_EXPERIMENTAL_STACK=1` opts the new project into the experimental stack backend: the
+- `DBASE_EXPERIMENTAL_STACK=1` opts the new project into the experimental stack backend: the
   written config includes `[experimental] stack = true` and omits the Docker-era default ports
   (API, database, shadow, pooler, Studio, mail UI, Functions inspector, and Analytics).
   A non-empty value other than `0` or `1` fails closed. `0`, unset, or empty keeps the

@@ -58,22 +58,22 @@ const functionsDownloadLegacyBundleHandler = (flags: FunctionsDownloadFlags) => 
   const slug = Option.getOrElse(flags.functionName, () => "<slug>");
   return removedFlag(
     "--legacy-bundle",
-    `Retry with \`supabase functions download --use-api ${slug}\` to unbundle server-side without Docker. If that also fails and the Function was deployed with a CLI older than 1.120.0, redeploy it with the current CLI.`,
+    `Retry with \`dbase functions download --use-api ${slug}\` to unbundle server-side without Docker. If that also fails and the Function was deployed with a CLI older than 1.120.0, redeploy it with the current CLI.`,
   ).pipe(withCommandTelemetry({ flags }), withJsonErrorHandling, Effect.provide(removedFlagLayer));
 };
 
 export const functionsDownloadCommand = Command.make("download", config).pipe(
   Command.withDescription(
-    "Download the source code for a Function from the linked Supabase project. If no function name is provided, downloads all functions.",
+    "Download the source code for a Function from the linked DBase project. If no function name is provided, downloads all functions.",
   ),
-  Command.withShortDescription("Download a Function from Supabase"),
+  Command.withShortDescription("Download a Function from DBase"),
   Command.withExamples([
     {
-      command: "supabase functions download hello-world",
+      command: "dbase functions download hello-world",
       description: "Download a single function from the linked project",
     },
     {
-      command: "supabase functions download --remote=abcdefghijklmnopqrst",
+      command: "dbase functions download --remote=abcdefghijklmnopqrst",
       description: "Download all functions from a specific project",
     },
   ]),

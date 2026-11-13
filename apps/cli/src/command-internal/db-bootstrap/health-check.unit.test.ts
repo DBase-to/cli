@@ -573,7 +573,7 @@ describe("waitForHealthyServices", () => {
       }),
     );
 
-    it.effect("leads the recovery sequence with supabase stop", () =>
+    it.effect("leads the recovery sequence with dbase stop", () =>
       Effect.gen(function* () {
         const mock = mockHealthSpawner(() => notRunning, {
           supabase_inbucket_proj: ["exec format error\n"],
@@ -585,16 +585,14 @@ describe("waitForHealthyServices", () => {
           new Map([["supabase_inbucket_proj", "public.ecr.aws/supabase/mailpit:v1.30.2"]]),
         );
 
-        // Without `supabase stop`, the `--ignore-health-check` path leaves the
-        // stack up and the next `supabase start` short-circuits on
+        // Without `dbase stop`, the `--ignore-health-check` path leaves the
+        // stack up and the next `dbase start` short-circuits on
         // already-running, never recreating the broken container.
         const suggestion = error.suggestion ?? "";
-        expect(suggestion).toContain("supabase stop");
-        expect(suggestion.indexOf("supabase stop")).toBeLessThan(suggestion.indexOf("image rm -f"));
-        expect(suggestion.indexOf("image rm -f")).toBeLessThan(
-          suggestion.indexOf("supabase start"),
-        );
-        // Both `supabase` steps resolve their own project, so a run made with
+        expect(suggestion).toContain("dbase stop");
+        expect(suggestion.indexOf("dbase stop")).toBeLessThan(suggestion.indexOf("image rm -f"));
+        expect(suggestion.indexOf("image rm -f")).toBeLessThan(suggestion.indexOf("dbase start"));
+        // Both `dbase` steps resolve their own project, so a run made with
         // `--workdir` has to repeat it rather than rely on the current directory.
         expect(suggestion).toContain("--workdir");
         // And a next step for the cause re-pulling cannot fix.
@@ -1195,7 +1193,7 @@ describe("waitForPostgresReady", () => {
           `${SHADOW_CONTAINER_ID}'s image public.ecr.aws/supabase/postgres:15.1.0.147`,
         );
         expect(error.suggestion).toContain(
-          "supabase stop\n  docker image rm -f public.ecr.aws/supabase/postgres:15.1.0.147\n  supabase start",
+          "dbase stop\n  docker image rm -f public.ecr.aws/supabase/postgres:15.1.0.147\n  dbase start",
         );
       }),
     );

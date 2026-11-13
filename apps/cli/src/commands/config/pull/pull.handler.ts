@@ -39,7 +39,7 @@ import type { ConfigPullFlags } from "./pull.command.ts";
  * prompt.
  * Its target resolution, fetch, and classify steps mirror `config diff`'s, up to the point where
  * the two commands diverge. The plan/apply run-core is hoisted to
- * `command-internal/config-pull-run.ts` so the `supabase pull` orchestrator can reuse it.
+ * `command-internal/config-pull-run.ts` so the `dbase pull` orchestrator can reuse it.
  */
 
 export { openConfigPullSource };
@@ -224,7 +224,7 @@ export const configPull = Effect.fn("config.pull")(function* (flags: ConfigPullF
     );
 
     // Opens the base config source (no [remotes.*] overlay, paired with its on-disk text)
-    // before any network call or target resolution, so a missing file points at supabase init
+    // before any network call or target resolution, so a missing file points at dbase init
     // and a malformed document doesn't burn a branch-resolution round trip.
     const source = yield* openConfigPullSource();
 

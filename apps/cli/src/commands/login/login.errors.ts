@@ -13,7 +13,7 @@ export const LOGIN_MISSING_TOKEN_MESSAGE =
 /**
  * Token-path save failure. Only ever constructed on the provided-token paths (`--token` /
  * `SUPABASE_ACCESS_TOKEN` / piped stdin); the browser flow saves via `credentials.saveAccessToken`
- * directly. A malformed provided token isn't fixable by `supabase login`, so the remediation is
+ * directly. A malformed provided token isn't fixable by `dbase login`, so the remediation is
  * to correct that input.
  */
 export class LoginSaveTokenError extends Data.TaggedError("LoginSaveTokenError")<{

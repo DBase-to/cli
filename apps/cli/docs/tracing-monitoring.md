@@ -10,23 +10,23 @@ For product analytics and command usage events, see [analytics.md](./analytics.m
 
 Pick one destination per run:
 
-| Variable                 | Effect                                                                   |
-| ------------------------ | ------------------------------------------------------------------------ |
-| `SUPABASE_TRACE_FILE`    | Appends one OTLP/JSON batch per line to this file (`0600` when allowed). |
-| `SUPABASE_OTLP_ENDPOINT` | Posts OTLP/HTTP JSON to `<endpoint>/v1/traces`.                          |
-| `SUPABASE_OTLP_HEADERS`  | Extra collector headers as `key=value,key2=value2` (percent-encoded).    |
-| `TRACEPARENT`            | W3C trace context adopted as the parent of `cli.run` when a sink is set. |
+| Variable              | Effect                                                                   |
+| --------------------- | ------------------------------------------------------------------------ |
+| `DBASE_TRACE_FILE`    | Appends one OTLP/JSON batch per line to this file (`0600` when allowed). |
+| `DBASE_OTLP_ENDPOINT` | Posts OTLP/HTTP JSON to `<endpoint>/v1/traces`.                          |
+| `DBASE_OTLP_HEADERS`  | Extra collector headers as `key=value,key2=value2` (percent-encoded).    |
+| `TRACEPARENT`         | W3C trace context adopted as the parent of `cli.run` when a sink is set. |
 
-Tracing never stops a command. When both `SUPABASE_TRACE_FILE` and `SUPABASE_OTLP_ENDPOINT` are
+Tracing never stops a command. When both `DBASE_TRACE_FILE` and `DBASE_OTLP_ENDPOINT` are
 set, the endpoint or headers are malformed, or the sink cannot start (for example, the trace
 file's directory is missing or the path is not a regular file, such as `/dev/null`), the CLI
 prints one `Warning: tracing disabled: <reason>` line on stderr and runs the command untraced with
-the same exit code and stdout. A relative `SUPABASE_TRACE_FILE` resolves against the directory the
+the same exit code and stdout. A relative `DBASE_TRACE_FILE` resolves against the directory the
 CLI started in. The generic `OTEL_EXPORTER_OTLP_*`, `OTEL_SERVICE_NAME`, and
 `OTEL_RESOURCE_ATTRIBUTES` variables are ignored. A sink records the run even when `TRACEPARENT`
 is marked unsampled.
 
-`SUPABASE_DEBUG=1` or `SUPABASE_TELEMETRY_DEBUG=1`, set in the environment or the project's
+`DBASE_DEBUG=1` or `DBASE_TELEMETRY_DEBUG=1`, set in the environment or the project's
 `supabase/.env`, also prints finished command spans to stderr: top-level spans, their children and
 grandchildren, plus every failed span at any depth. Spans that end before CLI settings load, and
 `cli.run` itself, are not printed. The `--debug` flag does not print spans.
@@ -38,7 +38,7 @@ implementation lives in
 ## Local trace file
 
 ```sh
-SUPABASE_TRACE_FILE=/tmp/supabase-trace.jsonl supabase db diff
+DBASE_TRACE_FILE=/tmp/supabase-trace.jsonl dbase db diff
 bun apps/cli/scripts/trace-report.ts /tmp/supabase-trace.jsonl
 ```
 
@@ -54,15 +54,15 @@ ended last, or the one passed with `--trace-id`.
 build against a branch build:
 
 ```sh
-bun apps/cli/scripts/bench-cli.ts --base /tmp/cli-base/apps/cli/dist/supabase --branch apps/cli/dist/supabase \
+bun apps/cli/scripts/bench-cli.ts --base /tmp/cli-base/apps/cli/dist/dbase --branch apps/cli/dist/dbase \
   --runs 10 --warmup 2 --command "--version" --command "status" --cwd-setup init --trace
 ```
 
 It alternates launches (`base`, `branch`, `base`, `branch`, ...) so neither binary runs consistently
-warmer, discards the first `--warmup` pairs, and gives each launch an isolated `SUPABASE_HOME` and
+warmer, discards the first `--warmup` pairs, and gives each launch an isolated `DBASE_HOME` and
 environment. For each command it reports the base and branch median, min, max, and p90 wall time in
 milliseconds, plus the branch-minus-base delta in ms and percent. With `--trace`, each measured
-launch is followed by an untimed launch with `SUPABASE_TRACE_FILE` set, so tracing never inflates
+launch is followed by an untimed launch with `DBASE_TRACE_FILE` set, so tracing never inflates
 the wall times, and the report adds, per span name, the median total duration and count for
 each build, sorted by the largest absolute delta; a span name present in only one build is flagged
 rather than compared. `--command` splits on whitespace and does not support shell quoting (use `--workloads` for quoted arguments); repeat the
@@ -70,9 +70,9 @@ flag for more than one command, and use `--cwd-setup init` when a command, such 
 run inside an initialized project. Pass `--json` for a machine-readable report, `--out <file>` to
 also write the raw per-run samples, and `--cpu-prof` to capture a Bun CPU profile of one untimed
 branch launch (`BUN_OPTIONS=--cpu-prof`), printing its `.cpuprofile` path. Launches set
-`SUPABASE_NO_UPDATE_NOTIFIER=1`, `DO_NOT_TRACK=1`, and `SUPABASE_TELEMETRY_DISABLED=1`, so benchmark
+`DBASE_NO_UPDATE_NOTIFIER=1`, `DO_NOT_TRACK=1`, and `DBASE_TELEMETRY_DISABLED=1`, so benchmark
 runs never send product telemetry; pass `--update-check` to include the release check. Each launch's
-fresh `SUPABASE_HOME` has no cached release tag, so the check calls GitHub on every launch, except
+fresh `DBASE_HOME` has no cached release tag, so the check calls GitHub on every launch, except
 with `--cwd-setup init`, where the setup `init` caches the tag in the project before the measured
 command runs. The extra traced launches add machine load, so take wall-time conclusions from a run
 without `--trace`.
@@ -82,13 +82,13 @@ To build a base binary from another commit without disturbing this worktree:
 ```sh
 mkdir /tmp/cli-base && git archive <sha> | tar -x -C /tmp/cli-base
 rm -f /tmp/cli-base/mise.toml /tmp/cli-base/mise.lock # if mise refuses the untrusted config
-(cd /tmp/cli-base && pnpm install && pnpm exec turbo run supabase#build)
+(cd /tmp/cli-base && pnpm install && pnpm exec turbo run @dbase/cli#build)
 ```
 
 ### Pull request benchmark
 
 `.github/workflows/cli-bench.yml` runs on every ready pull request into `develop` that touches the CLI, its packages, or
-the e2e replay fixtures. It builds the pull request and the base tip it merges into with `pnpm --filter supabase run build:binary`, runs both
+the e2e replay fixtures. It builds the pull request and the base tip it merges into with `pnpm --filter @dbase/cli run build:binary`, runs both
 through `bench-cli.ts` against a local replay server, and writes a job summary with `bench-summary.ts`.
 The job is report only: it never blocks a pull request, and a benchmark problem is reported in the
 summary instead of failing the job: a failed branch or base build or a replay server that does not
@@ -148,12 +148,12 @@ bun apps/cli/scripts/bench-summary.ts --report /tmp/report.json
 
 `--workloads` replaces repeated `--command` flags. `apps/cli/bench/workloads.pr.json` lists entries
 with an `id`, an `args` array (so quoting works), a `cwdSetup` of `none` or `init`, and optionally
-a replay `scenario`. `init` runs `supabase init` in the launch's project directory first. Setup runs
+a replay `scenario`. `init` runs `dbase init` in the launch's project directory first. Setup runs
 outside the timed region.
 
 `--api-url` (which requires `--trace`) points every launch at the replay server by writing a profile
-file into the launch's fresh `SUPABASE_HOME` and setting `SUPABASE_PROFILE`, plus a dummy access
-token. The profile is the CLI's only API redirect: `SUPABASE_API_URL` does not change where the
+file into the launch's fresh `DBASE_HOME` and setting `DBASE_PROFILE`, plus a dummy access
+token. The profile is the CLI's only API redirect: `DBASE_API_URL` does not change where the
 Management API client sends requests, so it is never set. Every launch gets the profile, including
 `--version` and `init`, so an unexpected new API call reaches the server and is counted. Before each
 launch the harness clears the server's request log and scenario, then selects the workload's
@@ -189,7 +189,7 @@ the timing ranges, API calls per command, and the slowest phases. It reports:
   Thresholds are named constants in `bench-report.ts`.
 - API calls per workload, base and branch.
 - Phase deltas: the three largest span deltas for each workload with a slower or faster verdict.
-- Binary size of `dist/supabase`.
+- Binary size of `dist/dbase`.
 
 The baseline API calls per workload on `develop` (a project-scoped command
 also refreshes the linked-project cache, so it makes two calls):
@@ -201,7 +201,7 @@ also refreshes the linked-project cache, so it makes two calls):
 | `gen-types`                                                  | 2: `GET /v1/projects/{ref}/types/typescript`, `GET /v1/projects/{ref}` |
 | `functions-list`                                             | 2: `GET /v1/projects/{ref}/functions`, `GET /v1/projects/{ref}`        |
 
-`SUPABASE_NO_KEYRING=1` disables the keyring (`CommandCredentials.load` reports
+`DBASE_NO_KEYRING=1` disables the keyring (`CommandCredentials.load` reports
 `keyring.enabled=false`); the value `true` is not recognized. Counts come from the untimed traced
 launch, so a launch that behaves differently when timed shows up only as an exit-code difference.
 
@@ -294,7 +294,7 @@ Runtimes are Docker (default-mode commands and `--runtime docker`) and the nativ
 (`--runtime native`), both on Linux x64. Cold downloads are not measured: images and native
 archives are fetched before the measured launches, and each shard shares one native artifact cache
 across all launches through `--artifact-cache`, which links it in as `cache/stack` of every launch's
-fresh `SUPABASE_HOME`.
+fresh `DBASE_HOME`.
 
 The workload manifest `apps/cli/bench/workloads.full.json` adds these fields to the entries
 described above:
@@ -303,7 +303,7 @@ described above:
 | ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
 | `setup`, `teardown`                  | Lists of CLI arguments run untimed with the build under test. `teardown` always runs, even after a failure or timeout. |
 | `setupScope`                         | `run` (default) repeats setup and teardown for every launch; `block` starts one stack per block of two launches.       |
-| `stack`                              | Sets `SUPABASE_EXPERIMENTAL_STACK=1` on every launch of the workload, the only variable a workload can set.            |
+| `stack`                              | Sets `DBASE_EXPERIMENTAL_STACK=1` on every launch of the workload, the only variable a workload can set.               |
 | `runtime`                            | `docker` or `native`. A stack workload must pass the same `--runtime` to every `stack start`.                          |
 | `fixture`                            | A directory under `apps/cli/bench/fixtures/` copied into the project's `supabase/` directory after `init`.             |
 | `fixtureAfterSetup`                  | Like `fixture`, but copied after `setup`, so the launch finds changes that setup has not applied. Not for `block`.     |
@@ -311,7 +311,7 @@ described above:
 | `timeoutSeconds`, `estimatedSeconds` | Launch timeout (default 60) and the seconds one pass over both builds takes, which sizes the shards.                   |
 
 Setup, the measured launches, and teardown of one run (or block) share one project directory and
-`SUPABASE_HOME`; every launch still gets its own telemetry and trace settings. Read-only workloads
+`DBASE_HOME`; every launch still gets its own telemetry and trace settings. Read-only workloads
 use `block` scope; workloads that change state use `run`. Only one stack is ever up at a time per
 runner. Stack mode supports only pg-delta for `db diff`, so the `db diff` workloads pass
 `--use-pg-delta` in both modes. A workload that fails on the base build, such as one using a flag
@@ -353,7 +353,7 @@ Run a local OpenTelemetry stack, for example Grafana's all-in-one image:
 
 ```sh
 docker run --rm -p 3000:3000 -p 4318:4318 grafana/otel-lgtm
-SUPABASE_OTLP_ENDPOINT=http://localhost:4318 supabase start
+DBASE_OTLP_ENDPOINT=http://localhost:4318 dbase start
 ```
 
 Open Grafana at `http://localhost:3000`, choose the Tempo data source, and search with TraceQL:
@@ -364,7 +364,7 @@ Open Grafana at `http://localhost:3000`, choose the Tempo data source, and searc
 { resource.service.name = "supabase-cli" && status = error }
 ```
 
-Any collector that accepts OTLP/HTTP JSON works; pass credentials with `SUPABASE_OTLP_HEADERS`.
+Any collector that accepts OTLP/HTTP JSON works; pass credentials with `DBASE_OTLP_HEADERS`.
 
 ## What a trace contains
 
@@ -406,7 +406,7 @@ Traces carry no free-form error or log text. Every batch and every console line 
   headers are kept.
 - String values under keys that mention tokens, passwords, secrets, API keys, authorization, or
   cookies are dropped; numeric and boolean values such as counts are kept.
-- Remaining string attributes lose URL credentials (everything before the last `@`), bearer tokens, JWTs, Supabase keys and access
+- Remaining string attributes lose URL credentials (everything before the last `@`), bearer tokens, JWTs, DBase keys and access
   tokens, password pairs, single-quoted SQL literals, and constraint key values such as
   `Key (email)=(…)`, and are capped at 2 KB.
 
@@ -422,7 +422,7 @@ batch, so a local write failure never triggers retries or duplicate lines.
 
 ## Old trace files
 
-Earlier versions wrote NDJSON files under `SUPABASE_HOME/traces/`. The CLI no longer writes or
+Earlier versions wrote NDJSON files under `DBASE_HOME/traces/`. The CLI no longer writes or
 cleans that directory; it is safe to delete.
 
 ## What tracing is not

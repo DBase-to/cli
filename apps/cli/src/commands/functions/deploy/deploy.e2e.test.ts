@@ -15,7 +15,7 @@ const SLUG = "deploy-e2e-basic";
 const FAKE_TOKEN = `sbp_${"0".repeat(40)}`;
 const FAKE_REF = "a".repeat(20);
 
-describe("supabase functions deploy — argument validation", () => {
+describe("dbase functions deploy — argument validation", () => {
   const conflicts = [
     { name: "--use-api + --use-docker", flags: ["--use-api", "--use-docker"] },
     { name: "--use-api + --legacy-bundle", flags: ["--use-api", "--legacy-bundle"] },
@@ -104,7 +104,7 @@ describe("supabase functions deploy — argument validation", () => {
             env: { HOME: home.dir, SUPABASE_ACCESS_TOKEN: FAKE_TOKEN },
           });
           expect(exitCode).not.toBe(0);
-          expect(stderr).toMatch(/Cannot find project ref|Have you run|supabase link/i);
+          expect(stderr).toMatch(/Cannot find project ref|Have you run|dbase link/i);
         }).pipe(Effect.scoped, Effect.provide(BunServices.layer)),
       ),
     E2E_TIMEOUT_MS,

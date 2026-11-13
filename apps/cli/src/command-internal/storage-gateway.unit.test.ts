@@ -115,7 +115,7 @@ describe("makeStorageGateway", () => {
       const gateway = yield* makeStorageGateway({
         baseUrl: "http://127.0.0.1:54321",
         apiKey: "service-key",
-        userAgent: "SupabaseCLI/test",
+        userAgent: "DBaseCLI/test",
       });
       const objects = yield* gateway.listObjects("private", "folder/name", 1);
       expect(objects).toEqual([

@@ -18,7 +18,7 @@ const seedTokenFile = (home: string) =>
     return tokenPath;
   });
 
-describe("supabase logout", () => {
+describe("dbase logout", () => {
   // Under SUPABASE_NO_KEYRING=1, keyring delete is unsupported, so logout removes the file
   // token yet still reports "not logged in" and exits 0.
   it.live(

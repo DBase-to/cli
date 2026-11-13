@@ -205,7 +205,7 @@ const setupSeedBuckets = Effect.fnUntraced(function* (
       opts.linkedFails === true
         ? Effect.fail(
             new ProjectRefNotLinkedError({
-              message: "Cannot find project ref. Have you run supabase link?",
+              message: "Cannot find project ref. Have you run dbase link?",
             }),
           )
         : Effect.succeed(projectRefRef),
@@ -213,7 +213,7 @@ const setupSeedBuckets = Effect.fnUntraced(function* (
       opts.linkedFails === true
         ? Effect.fail(
             new ProjectRefNotLinkedError({
-              message: "Cannot find project ref. Have you run supabase link?",
+              message: "Cannot find project ref. Have you run dbase link?",
             }),
           )
         : Effect.succeed(projectRefRef),
@@ -223,7 +223,7 @@ const setupSeedBuckets = Effect.fnUntraced(function* (
         : opts.linkedFails === true
           ? Effect.fail(
               new ProjectRefNotLinkedError({
-                message: "Cannot find project ref. Have you run supabase link?",
+                message: "Cannot find project ref. Have you run dbase link?",
               }),
             )
           : Effect.succeed({ ref: projectRefRef, source: "file" as const, matchesLinkedRef: true }),
@@ -700,7 +700,7 @@ describe("seed buckets", () => {
       expect(out.stderrText).toContain(
         "Vector buckets are not available in the local storage service",
       );
-      expect(out.stderrText).toContain("supabase link");
+      expect(out.stderrText).toContain("dbase link");
       expect(out.stderrText).toContain("restart the local stack");
     }).pipe(seedScenario),
   );
@@ -3134,7 +3134,7 @@ describe("stack backend", () => {
           (error) => error instanceof StackStorageUnavailableError,
         );
         expect(unavailable).toBeInstanceOf(StackStorageUnavailableError);
-        expect(unavailable?.suggestion).toContain("supabase start");
+        expect(unavailable?.suggestion).toContain("dbase start");
         expect(requests).toHaveLength(0);
       }).pipe(Effect.provide([BunServices.layer, BunCrypto.layer])),
   );

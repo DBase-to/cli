@@ -186,7 +186,7 @@ describe("compute push", () => {
         );
         expect(out.stdoutText).toContain("v1");
         // The build settled, so there is nothing left to follow up on.
-        expect(out.stderrText).not.toContain("supabase compute status api");
+        expect(out.stderrText).not.toContain("dbase compute status api");
       }).pipe(Effect.provide(layer));
     }).pipe(Effect.scoped, Effect.provide(BunServices.layer)),
   );
@@ -226,7 +226,7 @@ describe("compute push", () => {
         expect(out.stdoutText).toContain("Deployed Compute api");
         // No image exists yet, so the row is dropped rather than rendered empty.
         expect(out.stdoutText).not.toContain("Image");
-        expect(out.stderrText).toContain("supabase compute status api");
+        expect(out.stderrText).toContain("dbase compute status api");
       }).pipe(Effect.provide(layer));
     }).pipe(Effect.scoped, Effect.provide(BunServices.layer)),
   );
@@ -932,7 +932,7 @@ describe("compute push", () => {
         expect(error).toBeInstanceOf(ComputeBuildFailedError);
         expect(error).toMatchObject({
           detail: expect.stringContaining("error building image"),
-          suggestion: expect.stringContaining("supabase compute push api"),
+          suggestion: expect.stringContaining("dbase compute push api"),
         });
       }).pipe(Effect.provide(layer));
     }).pipe(Effect.scoped, Effect.provide(BunServices.layer)),
@@ -1034,7 +1034,7 @@ describe("compute push", () => {
 
         expect(error).toBeInstanceOf(ComputeBuildTimeoutError);
         expect(error).toMatchObject({
-          suggestion: expect.stringContaining("supabase compute status api"),
+          suggestion: expect.stringContaining("dbase compute status api"),
         });
       }).pipe(Effect.provide(layer));
     }).pipe(Effect.scoped, Effect.provide(BunServices.layer)),
@@ -1060,7 +1060,7 @@ describe("compute push", () => {
           yield* push({ ...withRef, noWait: true });
 
           expect(out.stderrText).toContain(
-            `supabase compute status api --remote=${COMPUTE_PROJECT_REF}`,
+            `dbase compute status api --remote=${COMPUTE_PROJECT_REF}`,
           );
         }).pipe(Effect.provide(layer));
       }).pipe(Effect.scoped, Effect.provide(BunServices.layer)),
@@ -1082,7 +1082,7 @@ describe("compute push", () => {
           expect(error).toBeInstanceOf(ComputeBuildFailedError);
           expect(error).toMatchObject({
             suggestion: expect.stringContaining(
-              `supabase compute push api --remote=${COMPUTE_PROJECT_REF}`,
+              `dbase compute push api --remote=${COMPUTE_PROJECT_REF}`,
             ),
           });
         }).pipe(Effect.provide(layer));
@@ -1107,7 +1107,7 @@ describe("compute push", () => {
           expect(error).toBeInstanceOf(ComputeBuildTimeoutError);
           expect(error).toMatchObject({
             suggestion: expect.stringContaining(
-              `supabase compute status api --remote=${COMPUTE_PROJECT_REF}`,
+              `dbase compute status api --remote=${COMPUTE_PROJECT_REF}`,
             ),
           });
         }).pipe(Effect.provide(layer));
@@ -1124,7 +1124,7 @@ describe("compute push", () => {
         return yield* Effect.gen(function* () {
           yield* push({ noWait: true });
 
-          expect(out.stderrText).toContain("supabase compute status api");
+          expect(out.stderrText).toContain("dbase compute status api");
           expect(out.stderrText).not.toContain("--remote");
         }).pipe(Effect.provide(layer));
       }).pipe(Effect.scoped, Effect.provide(BunServices.layer)),
@@ -1306,7 +1306,7 @@ describe("compute push", () => {
 
         assert.instanceOf(error, ComputeProjectNotFoundError);
         expect(error.suggestion).not.toContain("private alpha");
-        expect(error.suggestion).toContain("supabase link");
+        expect(error.suggestion).toContain("dbase link");
       }).pipe(Effect.provide(layer));
     }).pipe(Effect.scoped, Effect.provide(BunServices.layer)),
   );
@@ -1333,7 +1333,7 @@ describe("compute push", () => {
         const error = yield* push().pipe(Effect.flip);
 
         assert.instanceOf(error, ComputeRouteNotFoundError);
-        expect(error.suggestion).not.toContain("supabase link");
+        expect(error.suggestion).not.toContain("dbase link");
         expect(error.suggestion).not.toContain("private alpha");
       }).pipe(Effect.provide(layer));
     }).pipe(Effect.scoped, Effect.provide(BunServices.layer)),
@@ -1426,7 +1426,7 @@ describe("compute push", () => {
 
         expect(error).toBeInstanceOf(ComputeSourceMissingError);
         expect(error).toMatchObject({
-          suggestion: expect.stringContaining("supabase compute new api"),
+          suggestion: expect.stringContaining("dbase compute new api"),
         });
         expect(http.requests).toHaveLength(0);
       }).pipe(Effect.provide(layer));

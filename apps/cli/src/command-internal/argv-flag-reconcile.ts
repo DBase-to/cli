@@ -98,7 +98,7 @@ export function argvSliceValue(
  *   (`--domains --workdir`), the parsed flag (which read the following token as a normal
  *   value) is ignored in favor of the env var;
  * - otherwise the Effect-parsed value covers what the anchored scan cannot see: `--workdir`
- *   placed before the command path (`supabase --workdir x sso add …`).
+ *   placed before the command path (`dbase --workdir x sso add …`).
  */
 export function argvWorkdirValue(
   scan: Pick<ArgvFlagScan, "occurrences" | "consumedFlagNames" | "prePathOccurrences">,
@@ -169,7 +169,7 @@ export const validateArgvWorkdir = Effect.fnUntraced(function* (
  *   (`--domains --profile alternate.yml`), the parsed flag (which read the following token
  *   as a normal value) is ignored in favor of `SUPABASE_PROFILE`;
  * - otherwise the Effect-parsed value covers pre-command-path placement
- *   (`supabase --profile x sso add …`) the anchored scan cannot see. The parsed flag can't
+ *   (`dbase --profile x sso add …`) the anchored scan cannot see. The parsed flag can't
  *   distinguish an explicit `--profile supabase` from the flag's default, so that value is
  *   treated as unset.
  */
@@ -193,7 +193,7 @@ export function argvProfileValue(
       ? prePath
       : scan.consumedFlagNames.has("profile")
         ? Option.none<string>()
-        : Option.filter(parsedProfile, (value) => value !== "supabase");
+        : Option.filter(parsedProfile, (value) => value !== "dbase");
   if (Option.isSome(flagValue)) {
     return flagValue;
   }
@@ -210,7 +210,7 @@ export function argvProfileValue(
  * subsequent request targets.
  *
  * Only takes over where the two resolutions genuinely diverge (consumed tokens, flag-shaped
- * values, repeat resolution, an explicit `--profile supabase` shadowing the env, an untrimmed
+ * values, repeat resolution, an explicit `--profile dbase` shadowing the env, an untrimmed
  * persisted-file token) or when the resolved token is empty. On every normal invocation the
  * layer's resolution stands unchanged.
  *
@@ -222,7 +222,7 @@ export const resolveArgvProfile = Effect.fnUntraced(function* (
   scan: Pick<ArgvFlagScan, "occurrences" | "consumedFlagNames" | "prePathOccurrences">,
 ) {
   const parsedRaw = yield* Effect.serviceOption(ProfileFlag);
-  const parsedProfile = Option.filter(parsedRaw, (value) => value !== "supabase");
+  const parsedProfile = Option.filter(parsedRaw, (value) => value !== "dbase");
   const settings = yield* CommandSettings;
   const env = Option.getOrUndefined(settings.profileEnvValue);
   const envProfile = env !== undefined && env.length > 0 ? env : undefined;
@@ -270,14 +270,14 @@ export const resolveArgvProfile = Effect.fnUntraced(function* (
     ? argvExplicit.value
     : Option.isSome(fileRaw)
       ? fileRaw.value
-      : "supabase";
+      : "dbase";
   const layerToken = Option.isSome(layerExplicit)
     ? layerExplicit.value
     : Option.match(fileRaw, {
-        onNone: () => "supabase",
+        onNone: () => "dbase",
         onSome: (content) => {
           const trimmed = content.trim();
-          return trimmed.length === 0 ? "supabase" : trimmed;
+          return trimmed.length === 0 ? "dbase" : trimmed;
         },
       });
 

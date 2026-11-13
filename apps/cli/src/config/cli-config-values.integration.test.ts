@@ -336,6 +336,23 @@ major_version = 15
     ),
   );
 
+  it.live("selects the remote named by DBASE_REMOTES_<NAME>_PROJECT_ID", () =>
+    Effect.gen(function* () {
+      const root = yield* project(remoteConfig);
+      const layer = configValuesLayer();
+
+      const resolvedConfig = yield* CliConfigValues.use((values) =>
+        values.load({ workdir: root, projectRef: Option.some(OTHER) }),
+      ).pipe(Effect.provide(layer));
+
+      expect(resolvedConfig.appliedRemote).toEqual(Option.some("staging"));
+    }).pipe(
+      Effect.provide(BunServices.layer),
+      (effect) => withShell({ DBASE_REMOTES_STAGING_PROJECT_ID: OTHER }, effect),
+      Effect.scoped,
+    ),
+  );
+
   it.live("applies no remote when the ref matches none", () =>
     Effect.gen(function* () {
       const root = yield* project(remoteConfig);
@@ -614,7 +631,7 @@ describe("CliConfigValues schema declaration", () => {
 
       expect(loaded.materialized.config.db.port).toBe(54777);
       expect(output.stderrText).toBe(
-        "WARN: supabase/config.json declares schema https://example.com/x.json, which is not the Supabase CLI config schema, so it is read as v1. Set it to https://supabase.com/schemas/config/v1.json to remove this warning.\n",
+        "WARN: supabase/config.json declares schema https://example.com/x.json, which is not the DBase CLI config schema, so it is read as v1. Set it to https://supabase.com/schemas/config/v1.json to remove this warning.\n",
       );
       expect(output.stdoutText).toBe("");
       expect(output.messages).toEqual([]);
@@ -662,7 +679,7 @@ describe("CliConfigValues schema declaration", () => {
       }).pipe(Effect.provide(configValuesLayer({ output: output.layer })));
 
       expect(output.stderrText).toBe(
-        "WARN: supabase/config.toml has keys this version of the Supabase CLI does not recognize and ignores: api.foo, bogus. Check them for typos, remove keys older CLI versions used, or upgrade the CLI if they come from a newer version.\n",
+        "WARN: supabase/config.toml has keys this version of the DBase CLI does not recognize and ignores: api.foo, bogus. Check them for typos, remove keys older CLI versions used, or upgrade the CLI if they come from a newer version.\n",
       );
       expect(output.stdoutText).toBe("");
       expect(output.messages).toEqual([]);
@@ -677,7 +694,7 @@ describe("CliConfigValues schema declaration", () => {
       );
 
       expect(messages.stderr).toBe(
-        "WARN: supabase/config.toml has keys this version of the Supabase CLI does not recognize and ignores: remotes.staging.api.foo. Check them for typos, remove keys older CLI versions used, or upgrade the CLI if they come from a newer version.\n",
+        "WARN: supabase/config.toml has keys this version of the DBase CLI does not recognize and ignores: remotes.staging.api.foo. Check them for typos, remove keys older CLI versions used, or upgrade the CLI if they come from a newer version.\n",
       );
       expect(messages.messages).toEqual([]);
     }).pipe(Effect.scoped),
@@ -704,7 +721,7 @@ describe("CliConfigValues schema declaration", () => {
         );
 
         expect(messages.stderr).toBe(
-          "WARN: supabase/config.toml has keys this version of the Supabase CLI does not recognize and ignores: db.oops. Check them for typos, remove keys older CLI versions used, or upgrade the CLI if they come from a newer version.\n",
+          "WARN: supabase/config.toml has keys this version of the DBase CLI does not recognize and ignores: db.oops. Check them for typos, remove keys older CLI versions used, or upgrade the CLI if they come from a newer version.\n",
         );
         expect(messages.messages).toEqual([]);
       }).pipe(Effect.scoped),
@@ -760,7 +777,7 @@ describe("CliConfigValues schema declaration", () => {
       const warnings = yield* warningsFor("config.toml", '[auth.external]\nmy_oidc = "x"\n');
 
       expect(warnings.stderr).toBe(
-        "WARN: supabase/config.toml has keys this version of the Supabase CLI does not recognize and ignores: auth.external.my_oidc. Check them for typos, remove keys older CLI versions used, or upgrade the CLI if they come from a newer version.\n",
+        "WARN: supabase/config.toml has keys this version of the DBase CLI does not recognize and ignores: auth.external.my_oidc. Check them for typos, remove keys older CLI versions used, or upgrade the CLI if they come from a newer version.\n",
       );
     }).pipe(Effect.scoped),
   );
@@ -773,7 +790,7 @@ describe("CliConfigValues schema declaration", () => {
       );
 
       expect(warnings.stderr).toBe(
-        "WARN: supabase/config.toml has keys this version of the Supabase CLI does not recognize and ignores: auth.passkeys. Check them for typos, remove keys older CLI versions used, or upgrade the CLI if they come from a newer version.\n",
+        "WARN: supabase/config.toml has keys this version of the DBase CLI does not recognize and ignores: auth.passkeys. Check them for typos, remove keys older CLI versions used, or upgrade the CLI if they come from a newer version.\n",
       );
     }).pipe(Effect.scoped),
   );
@@ -785,7 +802,7 @@ describe("CliConfigValues schema declaration", () => {
         const warnings = yield* warningsFor("config.toml", '"bad\\u001b[31m" = 1\n');
 
         expect(warnings.stderr).toBe(
-          "WARN: supabase/config.toml has keys this version of the Supabase CLI does not recognize and ignores: bad\\u001b[31m. Check them for typos, remove keys older CLI versions used, or upgrade the CLI if they come from a newer version.\n",
+          "WARN: supabase/config.toml has keys this version of the DBase CLI does not recognize and ignores: bad\\u001b[31m. Check them for typos, remove keys older CLI versions used, or upgrade the CLI if they come from a newer version.\n",
         );
         expect(warnings.stderr.includes("\u001b")).toBe(false);
         expect(warnings.stdout).toBe("");
@@ -800,7 +817,7 @@ describe("CliConfigValues schema declaration", () => {
       );
 
       expect(warnings.stderr).toBe(
-        "WARN: supabase/config.json declares schema https://example.com/\\u001b[31mx.json, which is not the Supabase CLI config schema, so it is read as v1. Set it to https://supabase.com/schemas/config/v1.json to remove this warning.\n",
+        "WARN: supabase/config.json declares schema https://example.com/\\u001b[31mx.json, which is not the DBase CLI config schema, so it is read as v1. Set it to https://supabase.com/schemas/config/v1.json to remove this warning.\n",
       );
       expect(warnings.stderr.includes("\u001b")).toBe(false);
     }).pipe(Effect.scoped),
@@ -823,7 +840,7 @@ describe("CliConfigValues schema declaration", () => {
 
         expect(failure).toMatchObject({ _tag: "CliConfigSchemaVersionError" });
         expect(failure.message).toBe(
-          `${shown} declares config schema v2, but this version of the Supabase CLI only reads up to v1. Upgrade the Supabase CLI to use this config.`,
+          `${shown} declares config schema v2, but this version of the DBase CLI only reads up to v1. Upgrade the DBase CLI to use this config.`,
         );
         expect(describeConfigLoadFailure(failure)).toBe(failure.message);
       }).pipe(Effect.provide(BunServices.layer), (effect) => withShell({}, effect), Effect.scoped),

@@ -30,7 +30,7 @@ export const branchesUnpause = Effect.fn("branches.unpause")(function* (
   const linkedProjectCache = yield* LinkedProjectCache;
   const telemetryState = yield* TelemetryState;
 
-  // `branches` is parent-scoped: after `supabase link <branch>`, `supabase/.temp/project-ref`
+  // `branches` is parent-scoped: after `dbase link <branch>`, `supabase/.temp/project-ref`
   // holds the branch's own ref, which the platform 403s on for every branches-management endpoint.
   const ref = yield* resolveProjectTarget(
     { remote: flags.remote, projectRef: flags.projectRef },

@@ -304,7 +304,7 @@ describe("resolveProjectTarget", () => {
       );
       expect(failureOf(result.exit)).toMatchObject({
         _tag: "TargetRemoteAmbiguousError",
-        message: `"feature-x" is a branch of project ${FILE_REF}. For the branch: supabase functions deploy --remote=feature-x. For the linked project: supabase functions deploy feature-x --remote`,
+        message: `"feature-x" is a branch of project ${FILE_REF}. For the branch: dbase functions deploy --remote=feature-x. For the linked project: dbase functions deploy feature-x --remote`,
       });
     }),
   );
@@ -370,7 +370,7 @@ describe("resolveProjectTarget", () => {
       expect(failureOf(result.exit)).toMatchObject({
         _tag: "LinkBranchListStatusError",
         status: 404,
-        message: `Branch "${name}" not found. Run \`supabase branches list\` to see available branches.`,
+        message: `Branch "${name}" not found. Run \`dbase branches list\` to see available branches.`,
       });
       expect(result.requestedUrls).toEqual([]);
     }),

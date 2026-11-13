@@ -39,7 +39,7 @@ export class DbAdvisorsInvalidTokenError extends Data.TaggedError("DbAdvisorsInv
   readonly suggestion: string;
   /**
    * An env-var token (`SUPABASE_ACCESS_TOKEN`) takes precedence over stored credentials, so
-   * `supabase login` cannot fix it — the remediation is to correct the env var. A stored
+   * `dbase login` cannot fix it — the remediation is to correct the env var. A stored
    * (keyring/file) token, or an unknown source, is fixable by logging in again.
    */
   readonly source?: "env" | "stored";

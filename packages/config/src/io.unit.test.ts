@@ -3721,7 +3721,7 @@ describe("config io schema version", () => {
             supportedVersion: 1,
           });
           expect(error instanceof CliConfigSchemaVersionError ? error.message : "").toBe(
-            `supabase/${file} declares config schema v${version}, but this version of the Supabase CLI only reads up to v1. Upgrade the Supabase CLI to use this config.`,
+            `supabase/${file} declares config schema v${version}, but this version of the DBase CLI only reads up to v1. Upgrade the DBase CLI to use this config.`,
           );
         }),
       ),

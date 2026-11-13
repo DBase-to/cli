@@ -27,16 +27,16 @@ export type ComputeDeleteFlags = CliCommand.Command.Config.Infer<typeof config>;
 
 export const computeDeleteCommand = Command.make("delete", config).pipe(
   Command.withDescription(
-    "Delete a compute from the linked Supabase project. Irreversible; its local directory and config file entry are kept.",
+    "Delete a compute from the linked DBase project. Irreversible; its local directory and config file entry are kept.",
   ),
-  Command.withShortDescription("Delete a compute from Supabase"),
+  Command.withShortDescription("Delete a compute from DBase"),
   Command.withExamples([
     {
-      command: "supabase compute delete api",
+      command: "dbase compute delete api",
       description: "Delete a compute, confirming by typing its name",
     },
     {
-      command: "supabase compute delete api --yes",
+      command: "dbase compute delete api --yes",
       description: "Skip the confirmation prompt (scripts and CI)",
     },
   ]),

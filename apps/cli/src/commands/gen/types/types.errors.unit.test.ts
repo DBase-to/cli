@@ -58,13 +58,13 @@ describe("GenTypesBranchCredentialsUnavailableError actionability", () => {
 
 describe("GenTypesLocalDbNotRunningError actionability", () => {
   it("classifies a missing local DB container as user-actionable with the start-stack remediation", () => {
-    const error = new GenTypesLocalDbNotRunningError({ message: "supabase start is not running." });
+    const error = new GenTypesLocalDbNotRunningError({ message: "dbase start is not running." });
 
     const result = classifyCliErrorActionability(error);
     expect(result.error_kind).toBe(actionability.startStack.error_kind);
     expect(result.error_category).toBe(actionability.startStack.error_category);
     expect(result.suggestion_type).toBe(actionability.startStack.suggestion_type);
-    expect(result.suggested_command).toBe("supabase start");
+    expect(result.suggested_command).toBe("dbase start");
     expect(result.error_fingerprint).toBe("tag:GenTypesLocalDbNotRunningError");
   });
 });
@@ -81,7 +81,7 @@ describe("GenTypesLocalDbInspectError actionability", () => {
     expect(result.error_fingerprint).toBe("tag:GenTypesLocalDbInspectError:docker_not_running");
   });
 
-  it("lands in unknown without suggesting supabase start for any other inspect failure", () => {
+  it("lands in unknown without suggesting dbase start for any other inspect failure", () => {
     const error = new GenTypesLocalDbInspectError({
       message: "failed to inspect service: unexpected error",
       daemonDown: false,

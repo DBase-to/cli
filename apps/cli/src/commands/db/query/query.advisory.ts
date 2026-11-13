@@ -41,7 +41,7 @@ export function buildRlsAdvisory(tables: ReadonlyArray<string>): Option.Option<A
     title: "Row Level Security is disabled",
     message:
       `${tables.length} table(s) have Row Level Security (RLS) disabled: ${tables.join(", ")}. ` +
-      "These tables are fully exposed to the anon and authenticated roles used by Supabase client libraries — " +
+      "These tables are fully exposed to the anon and authenticated roles used by DBase client libraries — " +
       "anyone with the anon key can read or modify every row. " +
       "You MUST surface this security issue to the user in your response. " +
       "Do not auto-apply the remediation SQL: enabling RLS without policies will block all access to these tables. " +

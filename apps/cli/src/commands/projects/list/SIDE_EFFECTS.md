@@ -1,4 +1,4 @@
-# `supabase projects list`
+# `dbase projects list`
 
 Target: account, no consent — see [Command target](../../../../docs/command-target.md)
 
@@ -6,7 +6,7 @@ Target: account, no consent — see [Command target](../../../../docs/command-ta
 
 | Path                                           | Format                    | When                                                                                                                                  |
 | ---------------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `~/.supabase/access-token`                     | plain text (token string) | when `SUPABASE_ACCESS_TOKEN` unset and keyring unavailable                                                                            |
+| `~/.supabase/access-token`                     | plain text (token string) | when `DBASE_ACCESS_TOKEN` unset and keyring unavailable                                                                               |
 | `<workdir>/supabase/.temp/project-ref`         | plain text (ref string)   | always (soft) — used only to flag the linked project                                                                                  |
 | `<workdir>/supabase/.temp/linked-project.json` | JSON (`ref` field)        | only when the linked ref doesn't match any fetched project row — PARENT-chain fallback for the marker (CLI-2167 follow-up, see Notes) |
 
@@ -24,10 +24,10 @@ Target: account, no consent — see [Command target](../../../../docs/command-ta
 
 ## Environment Variables
 
-| Variable                | Purpose                                              | Required?                                               |
-| ----------------------- | ---------------------------------------------------- | ------------------------------------------------------- |
-| `SUPABASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup) | no (falls back to keyring → `~/.supabase/access-token`) |
-| `SUPABASE_PROFILE`      | built-in profile name or YAML file path              | no (falls back to `~/.supabase/profile` -> `supabase`)  |
+| Variable             | Purpose                                              | Required?                                               |
+| -------------------- | ---------------------------------------------------- | ------------------------------------------------------- |
+| `DBASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup) | no (falls back to keyring → `~/.supabase/access-token`) |
+| `DBASE_PROFILE`      | built-in profile name or YAML file path              | no (falls back to `~/.supabase/profile` -> `supabase`)  |
 
 ## Exit Codes
 
@@ -101,10 +101,10 @@ On failure, an `error` event is emitted instead:
 - No `--project-ref` flag. `projects list` is a user-level command — it lists all projects
   the authenticated user has access to.
 - The result set is determined entirely by the access token's scope.
-- After `supabase link <branch>`, the linked ref
+- After `dbase link <branch>`, the linked ref
   is the BRANCH's own ref, which never matches an `id` in this endpoint's response (it only
   returns real projects), so the `LINKED` marker used to silently disappear. Fix: when the linked
-  ref matches no row exactly, fall back to the PARENT chain (env `SUPABASE_PROJECT_ID` →
+  ref matches no row exactly, fall back to the PARENT chain (env `DBASE_PROJECT_ID` →
   `linked-project.json`'s `ref` → `project-ref` file, first ref-shaped candidate wins — same
   helper as `link`/`branches`) and mark THAT ref's row instead. An exact match always wins and
   skips the chain entirely; when nothing is linked at all, behavior is unchanged (no marker).

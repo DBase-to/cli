@@ -694,7 +694,7 @@ describe("db schema declarative generate integration", () => {
     return Effect.gen(function* () {
       const error = yield* Effect.flip(dbSchemaDeclarativeGenerate(flags({ reset: true })));
       expect(error).toMatchObject({
-        message: "database reset failed: supabase start is not running.",
+        message: "database reset failed: dbase start is not running.",
       });
       expect(localResetRemovedContainers(s.child.spawned)).toEqual([]);
       expect(s.engineExportCalls).toEqual([]);

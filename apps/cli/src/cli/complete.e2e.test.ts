@@ -5,7 +5,7 @@ import { runSupabaseEffect, withTempCliProject, withTempHome } from "../../tests
 
 const E2E_TIMEOUT_MS = 30_000;
 
-describe("supabase __complete", () => {
+describe("dbase __complete", () => {
   it.live(
     "migration li completes to list with a description and the NoFileComp directive",
     () =>

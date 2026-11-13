@@ -615,7 +615,7 @@ export const genTypes = Effect.fn("gen.types")(function* (flags: GenTypesFlags) 
           const suggestion = linkedCheckout ? SUGGEST_LINKED_PROJECT : undefined;
           if (message.toLowerCase().includes("no such container")) {
             return yield* new GenTypesLocalDbNotRunningError({
-              message: "supabase start is not running.",
+              message: "dbase start is not running.",
               suggestion,
             });
           }
@@ -639,7 +639,7 @@ export const genTypes = Effect.fn("gen.types")(function* (flags: GenTypesFlags) 
     );
 
     // `--network-id` can no longer be honored: generation runs in-process, not in a Docker
-    // container. It is a persistent flag, so a pre-command occurrence (`supabase --network-id
+    // container. It is a persistent flag, so a pre-command occurrence (`dbase --network-id
     // net gen types ...`) lands in `prePathOccurrences`, not `occurrences` — check both.
     if (occurrences.has("network-id") || scan.prePathOccurrences.has("network-id")) {
       return yield* new GenTypesNetworkIdUnsupportedError({
@@ -705,7 +705,7 @@ export const genTypes = Effect.fn("gen.types")(function* (flags: GenTypesFlags) 
       ? resolution
       : resolution.pipe(
           withUnresolvedBranchSuggestion(
-            `To generate ${languageNamedBranch} types for the linked project, run supabase gen types --lang=${languageNamedBranch} --remote.`,
+            `To generate ${languageNamedBranch} types for the linked project, run dbase gen types --lang=${languageNamedBranch} --remote.`,
           ),
         );
 

@@ -26,7 +26,7 @@ import {
 import type { NotebooksPushFlags } from "./push.command.ts";
 
 /**
- * `supabase notebooks push [name]` — write `supabase/notebooks/` into the
+ * `dbase notebooks push [name]` — write `supabase/notebooks/` into the
  * project.
  *
  * The mirror of `pull`: the checkout is the source, and every file is written to
@@ -63,8 +63,7 @@ export const notebooksPush = Effect.fn("notebooks.push")(function* (flags: Noteb
       if (requested !== undefined && !local.includes(requested)) {
         return yield* new NotebookNotFoundError({
           detail: `${dir} has no notebook named "${requested}".`,
-          suggestion:
-            "Run supabase notebooks pull <notebook-id> to write the project's copy first.",
+          suggestion: "Run dbase notebooks pull <notebook-id> to write the project's copy first.",
         });
       }
 

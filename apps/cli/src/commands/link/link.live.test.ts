@@ -18,7 +18,7 @@ test("links a project and writes its workspace cache", ({
     Effect.gen(function* () {
       const result = yield* cliEffect(["link", "--project-ref", project.ref, "--skip-pooler"]);
       expect(result.exitCode, result.stderr).toBe(0);
-      expect(result.stdout).toContain("Finished supabase link");
+      expect(result.stdout).toContain("Finished dbase link");
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const cache = yield* linkedProjectCache(

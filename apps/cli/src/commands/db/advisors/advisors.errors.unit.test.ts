@@ -6,7 +6,7 @@ describe("DbAdvisorsInvalidTokenError actionability", () => {
   const build = (source?: "env" | "stored") =>
     new DbAdvisorsInvalidTokenError({
       message: "Invalid access token format. Must be like `sbp_0102...1920`.",
-      suggestion: "Run supabase login first.",
+      suggestion: "Run dbase login first.",
       source,
     });
 
@@ -23,12 +23,12 @@ describe("DbAdvisorsInvalidTokenError actionability", () => {
     expect(result.error_kind).toBe("user_actionable");
     expect(result.error_category).toBe("auth");
     expect(result.suggestion_type).toBe("login");
-    expect(result.suggested_command).toBe("supabase login");
+    expect(result.suggested_command).toBe("dbase login");
   });
 
   it("defaults to a re-login remediation when the source is unknown", () => {
     const result = classifyCliErrorActionability(build());
     expect(result.suggestion_type).toBe("login");
-    expect(result.suggested_command).toBe("supabase login");
+    expect(result.suggested_command).toBe("dbase login");
   });
 });

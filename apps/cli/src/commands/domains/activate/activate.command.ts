@@ -33,12 +33,12 @@ export type DomainsActivateFlags = CliCommand.Command.Config.Infer<typeof config
 
 export const domainsActivateCommand = Command.make("activate", config).pipe(
   Command.withDescription(
-    "Activates the custom hostname configuration for a project. This reconfigures your Supabase project to respond to requests on your custom hostname. After the custom hostname is activated, your project's auth services will no longer function on the Supabase-provisioned subdomain.",
+    "Activates the custom hostname configuration for a project. This reconfigures your DBase project to respond to requests on your custom hostname. After the custom hostname is activated, your project's auth services will no longer function on the DBase-provisioned subdomain.",
   ),
   Command.withShortDescription("Activate the custom hostname for a project"),
   Command.withExamples([
     {
-      command: "supabase domains activate --remote=abcdefghijklmnopqrst",
+      command: "dbase domains activate --remote=abcdefghijklmnopqrst",
       description: "Activate the custom hostname for a project",
     },
   ]),

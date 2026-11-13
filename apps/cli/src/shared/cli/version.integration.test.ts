@@ -27,7 +27,7 @@ describe("CLI --help (text)", () => {
         Effect.provide(builtinLayer(["--help"], console)),
       );
       const help = calls.join("\n");
-      expect(help).toContain("Supabase CLI (development build).");
+      expect(help).toContain("DBase CLI (development build).");
       expect(help).not.toContain("stable channel");
     }),
   );

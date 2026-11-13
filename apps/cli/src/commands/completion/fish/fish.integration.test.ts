@@ -13,7 +13,7 @@ function setupCompletionFish() {
 }
 
 function testRoot() {
-  return Command.make("supabase").pipe(Command.withSubcommands([completionFishCommand]));
+  return Command.make("dbase").pipe(Command.withSubcommands([completionFishCommand]));
 }
 
 describe("completion fish", () => {
@@ -21,7 +21,7 @@ describe("completion fish", () => {
     const out = setupCompletionFish();
     return Effect.gen(function* () {
       yield* completionFish({ noDescriptions: false });
-      expect(out.stdoutText).toContain("# fish completion for supabase");
+      expect(out.stdoutText).toContain("# fish completion for dbase");
       expect(out.stdoutText).not.toContain("__completeNoDesc");
       expect(out.stdoutText).toContain("__complete");
     }).pipe(Effect.provide(out.layer));

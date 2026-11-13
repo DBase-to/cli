@@ -72,7 +72,7 @@ export const readShellEnvironment = Effect.fn("CliConfigEnv.readShell")(function
   } satisfies CliShellEnvironment;
 });
 
-/** The dotenv filenames for a `SUPABASE_ENV` value, highest precedence first. */
+/** The dotenv filenames for a `DBASE_ENV` (or legacy `SUPABASE_ENV`) value, highest precedence first. */
 export const candidateDotenvFilenames = (env: string): ReadonlyArray<string> => [
   `.env.${env}.local`,
   ...(env === "test" ? [] : [".env.local"]),
@@ -100,7 +100,7 @@ interface CliProjectEnvFiles {
 
 /**
  * Loads the project `.env*` files without touching the process environment. Files are read in
- * `SUPABASE_ENV` order under `supabase/` and then the workdir; the first writer of a key wins, and a
+ * `DBASE_ENV` (or legacy `SUPABASE_ENV`) order under `supabase/` and then the workdir; the first writer of a key wins, and a
  * key the shell already sets, even to the empty string, is never taken from a file.
  */
 export const loadCliProjectEnvFiles = Effect.fn("CliConfigEnv.load")(function* (
@@ -111,9 +111,9 @@ export const loadCliProjectEnvFiles = Effect.fn("CliConfigEnv.load")(function* (
   const path = yield* Path.Path;
   const shell = options?.shell ?? (yield* readShellEnvironment());
 
-  yield* shell.load(["SUPABASE_ENV"]);
+  yield* shell.load(["DBASE_ENV", "SUPABASE_ENV"]);
   const selected = Option.filter(
-    Option.fromNullishOr(shell.get("SUPABASE_ENV")),
+    Option.fromNullishOr(shell.get("DBASE_ENV") ?? shell.get("SUPABASE_ENV")),
     (value) => value.length > 0,
   );
   const env = Option.getOrElse(selected, () => DEFAULT_SUPABASE_ENV);

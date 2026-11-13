@@ -1,4 +1,4 @@
-# `supabase projects` (group)
+# `dbase projects` (group)
 
 Target: account, consent default Yes for `create`, No for `delete`, no consent for `list`; `api-keys` is hosted, no consent — see [Command target](../../../docs/command-target.md)
 
@@ -10,7 +10,7 @@ subcommand's own `SIDE_EFFECTS.md`.
 
 | Path                                   | Format                    | When                                                                     |
 | -------------------------------------- | ------------------------- | ------------------------------------------------------------------------ |
-| `~/.supabase/access-token`             | plain text (token string) | when `SUPABASE_ACCESS_TOKEN` unset and keyring unavailable               |
+| `~/.supabase/access-token`             | plain text (token string) | when `DBASE_ACCESS_TOKEN` unset and keyring unavailable                  |
 | `<workdir>/supabase/.temp/project-ref` | plain text (ref string)   | `list` (linked marker), `api-keys` (ref source), `delete` (unlink match) |
 
 ## Files Written / Removed
@@ -42,11 +42,11 @@ subcommand's own `SIDE_EFFECTS.md`.
 
 ## Environment Variables
 
-| Variable                | Purpose                                              | Required?                                                                                                              |
-| ----------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `SUPABASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup) | no (falls back to keyring → `~/.supabase/access-token`)                                                                |
-| `SUPABASE_PROJECT_ID`   | linked project ref (via the config layer)            | no (used by the `list` marker and the `api-keys` ref; `delete` ignores it and reads only `supabase/.temp/project-ref`) |
-| `SUPABASE_PROFILE`      | built-in profile name or YAML file path              | no (falls back to `~/.supabase/profile` -> `supabase`)                                                                 |
+| Variable             | Purpose                                              | Required?                                                                                                              |
+| -------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `DBASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup) | no (falls back to keyring → `~/.supabase/access-token`)                                                                |
+| `DBASE_PROJECT_ID`   | linked project ref (via the config layer)            | no (used by the `list` marker and the `api-keys` ref; `delete` ignores it and reads only `supabase/.temp/project-ref`) |
+| `DBASE_PROFILE`      | built-in profile name or YAML file path              | no (falls back to `~/.supabase/profile` -> `supabase`)                                                                 |
 
 > `DB_PASSWORD` is **not** consumed by `projects create`.
 
@@ -76,8 +76,8 @@ subcommand's own `SIDE_EFFECTS.md`.
 `--output-format {text|json|stream-json}` applies.
 
 - **list** — pretty/text: table `LINKED | ORG ID | REFERENCE ID | NAME | REGION | CREATED AT (UTC)`; `--output json/yaml/toml` encode the `linkedProject[]` (`{projects=[...]}` for toml); `--output env` is an error; `--output-format json/stream-json` `success("", {projects})`.
-- **create** — a confirmation question (default Yes) first, unless `--yes`/`SUPABASE_YES` answers it; stderr `Created a new project at <dashboard>/project/<id>` for all formats; pretty/text: table `ORG ID | REFERENCE ID | NAME | REGION | CREATED AT (UTC)`; `--output json/yaml/toml/env` encode the created project (env supported here); `--output-format json/stream-json` `success("Created project", {...project})`.
-- **delete** — text: confirmation prompt (default No, `--yes`/`SUPABASE_YES` answers it) then stdout `Deleted project: <name>`; `--output-format json/stream-json` need `--yes` and emit `success("Deleted project", {name})`.
+- **create** — a confirmation question (default Yes) first, unless `--yes`/`DBASE_YES` answers it; stderr `Created a new project at <dashboard>/project/<id>` for all formats; pretty/text: table `ORG ID | REFERENCE ID | NAME | REGION | CREATED AT (UTC)`; `--output json/yaml/toml/env` encode the created project (env supported here); `--output-format json/stream-json` `success("Created project", {...project})`.
+- **delete** — text: confirmation prompt (default No, `--yes`/`DBASE_YES` answers it) then stdout `Deleted project: <name>`; `--output-format json/stream-json` need `--yes` and emit `success("Deleted project", {name})`.
 - **api-keys** — pretty/text: table `NAME | KEY VALUE` (`******` masks null keys); `--output toml/env` encode the `SUPABASE_<NAME>_KEY` map; `--output json/yaml` encode `ApiKeyResponse[]`; `--output-format json/stream-json` `success("", {keys})`.
 
 ## Notes

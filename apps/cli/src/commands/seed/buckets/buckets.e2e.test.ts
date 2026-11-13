@@ -19,7 +19,7 @@ const makeProjectDir = Effect.fnUntraced(function* (prefix: string) {
 });
 
 /** Network-free golden paths only; the integration and unit suites cover seeding itself. */
-describe("supabase seed buckets", () => {
+describe("dbase seed buckets", () => {
   it.live(
     "is a no-op with exit 0 when no buckets are configured",
     () =>

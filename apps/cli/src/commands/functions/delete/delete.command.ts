@@ -31,16 +31,16 @@ const functionsDeleteHandler = (flags: FunctionsDeleteFlags) =>
 
 export const functionsDeleteCommand = Command.make("delete", config).pipe(
   Command.withDescription(
-    "Delete a Function from the linked Supabase project. This does NOT remove the Function locally.",
+    "Delete a Function from the linked DBase project. This does NOT remove the Function locally.",
   ),
-  Command.withShortDescription("Delete a Function from Supabase"),
+  Command.withShortDescription("Delete a Function from DBase"),
   Command.withExamples([
     {
-      command: "supabase functions delete hello-world",
+      command: "dbase functions delete hello-world",
       description: "Delete a deployed function from the linked project",
     },
     {
-      command: "supabase functions delete hello-world --remote=abcdefghijklmnopqrst",
+      command: "dbase functions delete hello-world --remote=abcdefghijklmnopqrst",
       description: "Delete a deployed function from a specific project",
     },
   ]),

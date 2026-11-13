@@ -54,7 +54,7 @@ const toLogMessage = (version: string): string =>
   version.length > 0 ? ` to version: ${version}` : "...";
 
 /**
- * `supabase db reset` — reinitializes a database from local migrations (+ seed). The local
+ * `dbase db reset` — reinitializes a database from local migrations (+ seed). The local
  * composition is hoisted into `resetLocalDatabase` so `db schema declarative`'s recovery reset
  * can reuse it; a versionless `--experimental` remote reset with pg-delta disabled takes the
  * declarative schema-files branch instead of replaying migrations, matching the local path.

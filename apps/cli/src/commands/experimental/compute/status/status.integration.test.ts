@@ -267,7 +267,7 @@ describe("compute status", () => {
         yield* computeStatus({ name: "api", remote: Option.none(), projectRef: Option.none() });
 
         expect(out.stdoutText).toContain("deleting");
-        expect(out.stdoutText).not.toContain("re-run supabase compute push");
+        expect(out.stdoutText).not.toContain("re-run dbase compute push");
       }).pipe(Effect.provide(layer));
     }).pipe(Effect.scoped, Effect.provide(BunServices.layer)),
   );
@@ -298,7 +298,7 @@ describe("compute status", () => {
         expect(out.stdoutText).toContain("failed");
         expect(out.stdoutText).toContain("exit status 1");
         // The retry hint is a success trailer, which lands on stderr.
-        expect(out.stderrText).toContain("supabase compute push api");
+        expect(out.stderrText).toContain("dbase compute push api");
       }).pipe(Effect.provide(layer));
     }).pipe(Effect.scoped, Effect.provide(BunServices.layer)),
   );
@@ -348,7 +348,7 @@ describe("compute status", () => {
 
         expect(error).toBeInstanceOf(ComputeNotDeployedError);
         const suggestion = error instanceof ComputeNotDeployedError ? error.suggestion : "";
-        expect(suggestion).toContain("supabase compute push api");
+        expect(suggestion).toContain("dbase compute push api");
         expect(http.routeKeys).toEqual([getRoute]);
         assertPermissionDrift({
           command: "compute status",
@@ -413,7 +413,7 @@ describe("compute status", () => {
 
         expect(error).toBeInstanceOf(ComputeProjectNotFoundError);
         expect(error).not.toBeInstanceOf(ComputeNotDeployedError);
-        expect(error).toMatchObject({ suggestion: expect.stringContaining("supabase link") });
+        expect(error).toMatchObject({ suggestion: expect.stringContaining("dbase link") });
       }).pipe(Effect.provide(layer));
     }).pipe(Effect.scoped, Effect.provide(BunServices.layer)),
   );

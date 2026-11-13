@@ -1,19 +1,19 @@
-# `supabase db remote commit`
+# `dbase db remote commit`
 
 Removed. The command is a tombstone: it fails with a removal error and a
 replacement suggestion instead of connecting to any database.
 
 ## Files Read
 
-| Path                                            | Format | When                                     |
-| ----------------------------------------------- | ------ | ---------------------------------------- |
-| `<SUPABASE_HOME or ~/.supabase>/telemetry.json` | JSON   | always (post-run `TelemetryState.flush`) |
+| Path                                         | Format | When                                     |
+| -------------------------------------------- | ------ | ---------------------------------------- |
+| `<DBASE_HOME or ~/.supabase>/telemetry.json` | JSON   | always (post-run `TelemetryState.flush`) |
 
 ## Files Written
 
-| Path                                            | Format | When                                                                                       |
-| ----------------------------------------------- | ------ | ------------------------------------------------------------------------------------------ |
-| `<SUPABASE_HOME or ~/.supabase>/telemetry.json` | JSON   | always (post-run `TelemetryState.flush`), created if missing, even with telemetry disabled |
+| Path                                         | Format | When                                                                                       |
+| -------------------------------------------- | ------ | ------------------------------------------------------------------------------------------ |
+| `<DBASE_HOME or ~/.supabase>/telemetry.json` | JSON   | always (post-run `TelemetryState.flush`), created if missing, even with telemetry disabled |
 
 ## API Routes
 
@@ -23,9 +23,9 @@ replacement suggestion instead of connecting to any database.
 
 ## Environment Variables
 
-| Variable        | Purpose                            | Required?                      |
-| --------------- | ---------------------------------- | ------------------------------ |
-| `SUPABASE_HOME` | directory holding `telemetry.json` | no (defaults to `~/.supabase`) |
+| Variable     | Purpose                            | Required?                      |
+| ------------ | ---------------------------------- | ------------------------------ |
+| `DBASE_HOME` | directory holding `telemetry.json` | no (defaults to `~/.supabase`) |
 
 ## Exit Codes
 
@@ -41,8 +41,8 @@ Writes the removal message and the replacement suggestion to stderr, two lines,
 regardless of `-o`/`--output`:
 
 ```
-supabase db remote commit was removed.
-Use `supabase db pull --remote` instead.
+dbase db remote commit was removed.
+Use `dbase db pull --remote` instead.
 ```
 
 ### `--output-format json` / `stream-json`

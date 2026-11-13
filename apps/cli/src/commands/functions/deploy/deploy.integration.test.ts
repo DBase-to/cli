@@ -553,7 +553,7 @@ describe("functions deploy", () => {
 
         expect(error).toMatchObject({
           _tag: "TargetRemoteAmbiguousError",
-          message: `"feature-x" is a branch of project ${VALID_REF}. For the branch: supabase functions deploy --remote=feature-x. For the linked project: supabase functions deploy feature-x --remote`,
+          message: `"feature-x" is a branch of project ${VALID_REF}. For the branch: dbase functions deploy --remote=feature-x. For the linked project: dbase functions deploy feature-x --remote`,
         });
         expect(deployedTo()).toEqual([]);
       }).pipe(Effect.provide(layer), Effect.ensuring(removeTempRoot));

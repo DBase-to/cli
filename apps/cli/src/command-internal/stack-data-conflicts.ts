@@ -27,7 +27,7 @@ export const warnDataConflicts = Effect.fn("StackLock.dataConflicts")(
       conflicts,
       (conflict) =>
         options.output.warn(
-          `stack ${conflict.stackId}: the next supabase start refuses these pins: ${conflict.message}`,
+          `stack ${conflict.stackId}: the next dbase start refuses these pins: ${conflict.message}`,
         ),
       { discard: true },
     );

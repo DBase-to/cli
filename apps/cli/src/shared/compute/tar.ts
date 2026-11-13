@@ -1,5 +1,5 @@
 /**
- * A minimal USTAR writer for the `.tar.gz` build context `supabase compute push`
+ * A minimal USTAR writer for the `.tar.gz` build context `dbase compute push`
  * uploads, needed because shelling out to `tar` isn't portable (BSD tar, GNU tar, and no tar
  * at all on Windows produce different bytes for the same directory) and `Bun.Archive` builds
  * from path-to-contents pairs with no per-entry metadata, so symlinks and the executable bit

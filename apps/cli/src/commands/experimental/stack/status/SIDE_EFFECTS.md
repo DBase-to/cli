@@ -1,10 +1,10 @@
-# `supabase stack status`
+# `dbase stack status`
 
 Reports the saved identity and the observed state of a managed local stack.
 The command is available when the `experimental.stack` feature flag is enabled.
-The top-level `supabase status` command uses this handler when the same flag is
+The top-level `dbase status` command uses this handler when the same flag is
 enabled. Routing may read `supabase/config.toml` or `supabase/config.json` to
-select the experimental backend; set `SUPABASE_EXPERIMENTAL_STACK=1` to inspect
+select the experimental backend; set `DBASE_EXPERIMENTAL_STACK=1` to inspect
 a stack addressed with `--stack-id` when project configuration is missing or
 invalid.
 
@@ -91,7 +91,7 @@ without shell expansion fail with a pointer to `--output-format json`.
 
 The command reads the selected project configuration for ordinary drift
 messaging, the CLI's persisted stack state under
-`<SUPABASE_HOME or ~/.supabase>/stacks/<id>/`, and the owner's local RPC
+`<DBASE_HOME or ~/.supabase>/stacks/<id>/`, and the owner's local RPC
 endpoint when it exists. `--env` skips project configuration loading. It calls
 no management API routes and writes no files besides `telemetry.json`.
 

@@ -261,7 +261,7 @@ export function pushNotes(input: PushNotesInput): string {
   if (input.unmanagedCount > 0) {
     const n = input.unmanagedCount;
     lines.push(
-      `Note: ${configPlural(n, "declared property", "declared properties")} ${n === 1 ? "is" : "are"} not managed by config push and ${n === 1 ? "was" : "were"} not compared; run \`supabase config diff\` to list them.`,
+      `Note: ${configPlural(n, "declared property", "declared properties")} ${n === 1 ? "is" : "are"} not managed by config push and ${n === 1 ? "was" : "were"} not compared; run \`dbase config diff\` to list them.`,
     );
   }
 
@@ -285,7 +285,7 @@ export function pushNotes(input: PushNotesInput): string {
   if (input.remoteOnly > 0) {
     const n = input.remoteOnly;
     lines.push(
-      `Note: ${configPlural(n, "remote property", "remote properties")} ${n === 1 ? "is" : "are"} not declared in ${input.configPath ?? DEFAULT_CONFIG_FILE.path} and ${n === 1 ? "was" : "were"} left unchanged (config push no longer resets undeclared properties to their defaults; run \`supabase config diff\` to inspect).`,
+      `Note: ${configPlural(n, "remote property", "remote properties")} ${n === 1 ? "is" : "are"} not declared in ${input.configPath ?? DEFAULT_CONFIG_FILE.path} and ${n === 1 ? "was" : "were"} left unchanged (config push no longer resets undeclared properties to their defaults; run \`dbase config diff\` to inspect).`,
     );
   }
 

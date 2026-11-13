@@ -59,7 +59,7 @@ type ResolvedFormat = "json" | "table" | "csv";
 
 // Established output contract for a missing access token.
 const MISSING_TOKEN_MESSAGE =
-  "Access token not provided. Supply an access token by running `supabase login` or setting the SUPABASE_ACCESS_TOKEN environment variable.";
+  "Access token not provided. Supply an access token by running `dbase login` or setting the DBASE_ACCESS_TOKEN environment variable.";
 
 const BOUNDARY_BYTES = 16;
 
@@ -299,7 +299,7 @@ export const dbQuery = Effect.fn("db.query")(function* (flags: DbQueryFlags) {
         if (Option.isNone(tokenOpt)) {
           return yield* new DbQueryLoginRequiredError({
             message: MISSING_TOKEN_MESSAGE,
-            suggestion: "Run supabase login first.",
+            suggestion: "Run dbase login first.",
           });
         }
         return { kind: "linked", ref: target.ref } satisfies QueryRoute;

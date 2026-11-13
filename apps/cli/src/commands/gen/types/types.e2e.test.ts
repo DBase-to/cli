@@ -345,7 +345,7 @@ describe("gen types e2e", () => {
                   exitTimeoutMs: TYPEGEN_TIMEOUT_MS,
                 },
               );
-              expectSucceeded(`supabase gen types --lang ${lang}`, result);
+              expectSucceeded(`dbase gen types --lang ${lang}`, result);
               expectNoRemoteAuthPath(result);
               expectLanguageShape(lang, result.stdout);
               expectLocalSmokeTable(lang, result.stdout);
@@ -403,7 +403,7 @@ describe("gen types e2e", () => {
                 exitTimeoutMs: TYPEGEN_TIMEOUT_MS,
               },
             );
-            expectSucceeded(`supabase gen types --remote=<ref> --lang ${lang}`, result);
+            expectSucceeded(`dbase gen types --remote=<ref> --lang ${lang}`, result);
             expectLanguageShape(lang, result.stdout);
           }
         }),

@@ -279,7 +279,7 @@ describe("compute list", () => {
         yield* computeList({ remote: Option.none(), projectRef: Option.none() });
 
         expect(out.stdoutText).toContain(
-          "No compute found. Scaffold one with supabase compute new <name>.",
+          "No compute found. Scaffold one with dbase compute new <name>.",
         );
       }).pipe(Effect.provide(layer));
     }).pipe(Effect.scoped, Effect.provide(BunServices.layer)),
@@ -470,8 +470,8 @@ describe("compute list", () => {
         assert.instanceOf(error, ComputeRouteNotFoundError);
         expect(error).not.toBeInstanceOf(ComputeProjectNotFoundError);
         expect(error.detail).toContain(`GET /v2/projects/${COMPUTE_PROJECT_REF}/compute`);
-        expect(error.suggestion).toContain("supabase issue");
-        expect(error.suggestion).not.toContain("supabase link");
+        expect(error.suggestion).toContain("dbase issue");
+        expect(error.suggestion).not.toContain("dbase link");
       }).pipe(Effect.provide(layer));
     }).pipe(Effect.scoped, Effect.provide(BunServices.layer)),
   );
@@ -495,7 +495,7 @@ describe("compute list", () => {
         );
 
         expect(error).toBeInstanceOf(ComputeProjectNotFoundError);
-        expect(error).toMatchObject({ suggestion: expect.stringContaining("supabase link") });
+        expect(error).toMatchObject({ suggestion: expect.stringContaining("dbase link") });
       }).pipe(Effect.provide(layer));
     }).pipe(Effect.scoped, Effect.provide(BunServices.layer)),
   );

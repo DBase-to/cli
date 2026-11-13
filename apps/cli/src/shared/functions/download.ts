@@ -181,7 +181,7 @@ function validateRemoteSlug(
 
   return Effect.fail(
     Object.assign(new Error(`failed to download function ${slug}: ${invalidFunctionSlugDetail}`), {
-      suggestion: `The Supabase API returned an unexpected function slug (${styleAqua(slug)}). Retry the command, and if this keeps happening, verify your network connection is not being intercepted before contacting Supabase support.`,
+      suggestion: `The DBase API returned an unexpected function slug (${styleAqua(slug)}). Retry the command, and if this keeps happening, verify your network connection is not being intercepted before contacting DBase support.`,
     }),
   );
 }
@@ -729,12 +729,12 @@ const getRemoteFunction = Effect.fnUntraced(function* (
       break;
     case 404:
       return yield* new FunctionDownloadNotFoundError({
-        message: `Function ${slug} does not exist on the Supabase project.`,
+        message: `Function ${slug} does not exist on the DBase project.`,
       });
     default:
       return yield* new FunctionsApiStatusError({
         status: response.status,
-        message: `Failed to download Function ${slug} on the Supabase project: ${body}`,
+        message: `Failed to download Function ${slug} on the DBase project: ${body}`,
       });
   }
 
@@ -825,7 +825,7 @@ function suggestUseApiRetry(
   styleAqua: (text: string) => string = (text) => text,
 ): string {
   // Preserves the established leading newline.
-  return `\nRetry with ${styleAqua(`supabase functions download --use-api ${slug}`)} to unbundle server-side. If that also fails and the Function was deployed with a CLI older than 1.120.0, redeploy it with the current CLI.`;
+  return `\nRetry with ${styleAqua(`dbase functions download --use-api ${slug}`)} to unbundle server-side. If that also fails and the Function was deployed with a CLI older than 1.120.0, redeploy it with the current CLI.`;
 }
 
 function suggestDenoV2(
@@ -1160,7 +1160,7 @@ const downloadSingle = Effect.fn("functions.download.single")(function* (
  * so every caller's `_tag`/`instanceof` check on this loop's heterogeneous
  * error classes stays unchanged. Field name matches the established
  * `MigrationFetchWriteError.writtenSoFar` precedent, read by
- * `pull.aggregate.ts`'s `hasWrittenSoFar` duck-type so `supabase pull` can
+ * `pull.aggregate.ts`'s `hasWrittenSoFar` duck-type so `dbase pull` can
  * report partial progress. Omitted entirely (not an empty array) when
  * nothing had downloaded yet, since the duck-type checks presence, not
  * non-emptiness.

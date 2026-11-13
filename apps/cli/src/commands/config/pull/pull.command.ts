@@ -59,15 +59,15 @@ export const configPullCommand = Command.make("pull", config).pipe(
   Command.withShortDescription("Pull remote config into the project config file"),
   Command.withExamples([
     {
-      command: "supabase config pull",
+      command: "dbase config pull",
       description: "Pull from the linked project into the config root",
     },
     {
-      command: "supabase config pull --remote=staging",
+      command: "dbase config pull --remote=staging",
       description: "Pull from the 'staging' branch into remotes.staging",
     },
     {
-      command: "supabase config pull --dry-run",
+      command: "dbase config pull --dry-run",
       description: "Preview the changes without writing the config file",
     },
   ]),

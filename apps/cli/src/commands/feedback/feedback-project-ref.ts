@@ -14,7 +14,7 @@ import { readLinkSnapshotSoft } from "../../shared/config/link-snapshot.ts";
 //   same hard check every project-ref caller applies to a value
 //   the user typed, so a typo is reported instead of silently falling through
 //   to a different project's context.
-// - The link `supabase link` records is the soft half (`resolveOptional`): it is
+// - The link `dbase link` records is the soft half (`resolveOptional`): it is
 //   read directly rather than through `ProjectRefResolver`, because that layer requires
 //   `CommandPlatformApiFactory` for its prompt path, and feedback must keep working
 //   when the user isn't logged in. A broken or malformed link degrades to

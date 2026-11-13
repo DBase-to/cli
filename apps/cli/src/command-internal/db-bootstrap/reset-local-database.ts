@@ -89,7 +89,7 @@ const PLAIN_FULL_RESET: ResetLocalDatabaseInput = { version: "" };
 
 const notRunning = () =>
   new ResetLocalDbNotRunningError({
-    message: `${aqua("supabase start")} is not running.`,
+    message: `${aqua("dbase start")} is not running.`,
   });
 
 const resetFailed = (message: string, cause?: unknown) =>
@@ -225,7 +225,7 @@ export const resetLocalDatabase = Effect.fn("DbBootstrap.resetLocalDatabase")(fu
     // waits for `ready`. See docs/stack-commands.md#storage-and-bucket-seeding.
     const skipSeeding = (
       reason: string,
-      nextStep = "Run supabase seed buckets once Storage is available.",
+      nextStep = "Run dbase seed buckets once Storage is available.",
     ) =>
       output.raw(
         `${yellow("WARNING:")} skipped seeding storage buckets: ${reason} ${nextStep}\n`,
@@ -244,7 +244,7 @@ export const resetLocalDatabase = Effect.fn("DbBootstrap.resetLocalDatabase")(fu
         yield* skipSeeding(
           describeStorageCapability(capability),
           decision === "disabled"
-            ? `${enableStorageAdvice(configFile)}, run supabase stack stop followed by supabase stack start without -x storage, then supabase seed buckets.`
+            ? `${enableStorageAdvice(configFile)}, run dbase stack stop followed by dbase stack start without -x storage, then dbase seed buckets.`
             : undefined,
         );
         return;
@@ -270,7 +270,7 @@ export const resetLocalDatabase = Effect.fn("DbBootstrap.resetLocalDatabase")(fu
     );
     const branch = yield* detectGitBranch(workdir);
     yield* output.raw(
-      `Finished ${aqua("supabase db reset")}${branchClause(branch, aqua)}.\n`,
+      `Finished ${aqua("dbase db reset")}${branchClause(branch, aqua)}.\n`,
       "stderr",
     );
     return;
@@ -372,8 +372,5 @@ export const resetLocalDatabase = Effect.fn("DbBootstrap.resetLocalDatabase")(fu
   }).pipe(Effect.withSpan("DbBootstrap.seedStorageBuckets"));
 
   const branch = yield* detectGitBranch(workdir);
-  yield* output.raw(
-    `Finished ${aqua("supabase db reset")}${branchClause(branch, aqua)}.\n`,
-    "stderr",
-  );
+  yield* output.raw(`Finished ${aqua("dbase db reset")}${branchClause(branch, aqua)}.\n`, "stderr");
 });

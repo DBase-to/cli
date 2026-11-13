@@ -46,7 +46,7 @@ describe("readServiceVersionOverrides", () => {
       expect(error).toEqual(
         new InvalidServiceVersionTagError({
           message:
-            'invalid storage image tag "vv1.77.1-versions" in supabase/.temp/storage-version; run supabase link again',
+            'invalid storage image tag "vv1.77.1-versions" in supabase/.temp/storage-version; run dbase link again',
         }),
       );
       expect(yield* fs.readFileString(pinPath)).toBe("vv1.77.1-versions\n");
@@ -61,7 +61,7 @@ describe("readServiceVersionOverrides", () => {
       expect(error).toEqual(
         new InvalidServiceVersionTagError({
           message:
-            'invalid postgrest image tag "vv12.2.0" in supabase/.temp/rest-version; run supabase link again',
+            'invalid postgrest image tag "vv12.2.0" in supabase/.temp/rest-version; run dbase link again',
         }),
       );
     }).pipe(Effect.provide(BunServices.layer)),

@@ -5,7 +5,7 @@ import { networkRestrictionsCommand } from "../../commands/network-restrictions/
 import { rootCommandForFeatures } from "../../cli/root.ts";
 import { formatCliErrorsForDisplay } from "./subcommand-flag-suggestions.ts";
 
-const testRoot = Command.make("supabase").pipe(
+const testRoot = Command.make("dbase").pipe(
   Command.withSubcommands([branchesCommand, networkRestrictionsCommand]),
 );
 
@@ -15,12 +15,12 @@ describe("subcommand flag placement suggestions", () => {
       [
         new CliError.UnrecognizedOption({
           option: "--project-ref",
-          command: ["supabase", "network-restrictions"],
+          command: ["dbase", "network-restrictions"],
           suggestions: [],
         }),
         new CliError.UnknownSubcommand({
           subcommand: "jacraenyzrorgjhsdvvf",
-          parent: ["supabase", "network-restrictions"],
+          parent: ["dbase", "network-restrictions"],
           suggestions: [],
         }),
       ],
@@ -39,13 +39,13 @@ describe("subcommand flag placement suggestions", () => {
     expect(errors.changed).toBe(true);
     expect(errors.errors).toHaveLength(1);
     expect(errors.errors[0]?.message).toContain(
-      "Unrecognized flag: --project-ref in command supabase network-restrictions",
+      "Unrecognized flag: --project-ref in command dbase network-restrictions",
     );
     expect(errors.errors[0]?.message).toContain(
-      "Hint: --project-ref is available on `supabase network-restrictions get` and `supabase network-restrictions update`.",
+      "Hint: --project-ref is available on `dbase network-restrictions get` and `dbase network-restrictions update`.",
     );
     expect(errors.errors[0]?.message).toContain(
-      "supabase network-restrictions get --project-ref <value>",
+      "dbase network-restrictions get --project-ref <value>",
     );
     expect(errors.errors[0]?.message).not.toContain("Unknown subcommand");
   });
@@ -55,7 +55,7 @@ describe("subcommand flag placement suggestions", () => {
       [
         new CliError.UnrecognizedOption({
           option: "--definitely-not-a-child-flag",
-          command: ["supabase", "network-restrictions"],
+          command: ["dbase", "network-restrictions"],
           suggestions: [],
         }),
       ],
@@ -69,7 +69,7 @@ describe("subcommand flag placement suggestions", () => {
     expect(errors.errors).toHaveLength(1);
     expect(errors.errors[0]?.changed).toBe(false);
     expect(errors.errors[0]?.message).toBe(
-      "Unrecognized flag: --definitely-not-a-child-flag in command supabase network-restrictions",
+      "Unrecognized flag: --definitely-not-a-child-flag in command dbase network-restrictions",
     );
   });
 
@@ -78,12 +78,12 @@ describe("subcommand flag placement suggestions", () => {
       [
         new CliError.UnrecognizedOption({
           option: "--project-ref",
-          command: ["supabase", "branches"],
+          command: ["dbase", "branches"],
           suggestions: [],
         }),
         new CliError.UnknownSubcommand({
           subcommand: "abcdefghijklmnopqrst",
-          parent: ["supabase", "branches"],
+          parent: ["dbase", "branches"],
           suggestions: [],
         }),
       ],
@@ -95,7 +95,7 @@ describe("subcommand flag placement suggestions", () => {
 
     expect(errors.changed).toBe(true);
     expect(errors.errors).toHaveLength(1);
-    expect(errors.errors[0]?.message).toContain("`supabase branches get`");
+    expect(errors.errors[0]?.message).toContain("`dbase branches get`");
     expect(errors.errors[0]?.message).not.toContain("branches disable");
   });
 
@@ -104,7 +104,7 @@ describe("subcommand flag placement suggestions", () => {
       [
         new CliError.UnrecognizedOption({
           option: "--remote",
-          command: ["supabase", "network-restrictions"],
+          command: ["dbase", "network-restrictions"],
           suggestions: [],
         }),
       ],
@@ -116,10 +116,10 @@ describe("subcommand flag placement suggestions", () => {
 
     expect(errors.changed).toBe(true);
     expect(errors.errors[0]?.message).toContain(
-      "Hint: --remote is available on `supabase network-restrictions get` and `supabase network-restrictions update`.",
+      "Hint: --remote is available on `dbase network-restrictions get` and `dbase network-restrictions update`.",
     );
     expect(errors.errors[0]?.message).toContain(
-      "supabase network-restrictions get --remote[=<value>]",
+      "dbase network-restrictions get --remote[=<value>]",
     );
   });
 
@@ -128,12 +128,12 @@ describe("subcommand flag placement suggestions", () => {
       [
         new CliError.UnrecognizedOption({
           option: "--remote",
-          command: ["supabase", "network-restrictions"],
+          command: ["dbase", "network-restrictions"],
           suggestions: [],
         }),
         new CliError.UnknownSubcommand({
           subcommand: "get",
-          parent: ["supabase", "network-restrictions"],
+          parent: ["dbase", "network-restrictions"],
           suggestions: [],
         }),
       ],
@@ -152,7 +152,7 @@ describe("subcommand flag placement suggestions", () => {
       [
         new CliError.UnrecognizedOption({
           option: "--project-ref=jacraenyzrorgjhsdvvf",
-          command: ["supabase", "network-restrictions"],
+          command: ["dbase", "network-restrictions"],
           suggestions: [],
         }),
       ],
@@ -164,10 +164,10 @@ describe("subcommand flag placement suggestions", () => {
 
     expect(errors.changed).toBe(true);
     expect(errors.errors[0]?.message).toContain(
-      "Hint: --project-ref is available on `supabase network-restrictions get` and `supabase network-restrictions update`.",
+      "Hint: --project-ref is available on `dbase network-restrictions get` and `dbase network-restrictions update`.",
     );
     expect(errors.errors[0]?.message).toContain(
-      "supabase network-restrictions get --project-ref <value>",
+      "dbase network-restrictions get --project-ref <value>",
     );
     expect(errors.errors[0]?.message).not.toContain("--project-ref=jacraenyzrorgjhsdvvf <value>");
   });
@@ -285,7 +285,7 @@ describe("--remote where it does not apply", () => {
       [
         new CliError.UnrecognizedOption({
           option,
-          command: ["supabase", ...path],
+          command: ["dbase", ...path],
           suggestions: [],
         }),
       ],
@@ -294,31 +294,29 @@ describe("--remote where it does not apply", () => {
 
   it("points link at its ref-or-branch argument", () => {
     expect(messageFor(["link"])).toBe(
-      "supabase link takes the project ref or branch as its argument: supabase link <ref-or-branch>",
+      "dbase link takes the project ref or branch as its argument: dbase link <ref-or-branch>",
     );
   });
 
   it.each([["start"], ["stop"], ["db", "start"], ["init"]])("says %s is local only", (...path) => {
-    expect(messageFor(path)).toBe(
-      `supabase ${path.join(" ")} is local only; --remote doesn't apply.`,
-    );
+    expect(messageFor(path)).toBe(`dbase ${path.join(" ")} is local only; --remote doesn't apply.`);
   });
 
   it("rewrites --remote=<value> the same way", () => {
     expect(messageFor(["start"], "--remote=staging")).toBe(
-      "supabase start is local only; --remote doesn't apply.",
+      "dbase start is local only; --remote doesn't apply.",
     );
   });
 
   it("leaves --remote on an account command with the library's message", () => {
     expect(messageFor(["projects", "list"])).toBe(
-      "Unrecognized flag: --remote in command supabase projects list",
+      "Unrecognized flag: --remote in command dbase projects list",
     );
   });
 
   it("leaves other unrecognized flags on link and local-only commands unchanged", () => {
     expect(messageFor(["start"], "--bogus")).toBe(
-      "Unrecognized flag: --bogus in command supabase start",
+      "Unrecognized flag: --bogus in command dbase start",
     );
   });
 });

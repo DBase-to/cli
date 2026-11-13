@@ -64,7 +64,7 @@ export const warnIfPostgres14Deprecated = Effect.fn("DbImage.warnIfPostgres14Dep
     if (majorVersion !== 14) return;
     const output = yield* Output;
     yield* output.raw(
-      `${yellow("WARNING:")} Postgres 14 reached end of life on November 12, 2026, and the Supabase CLI will drop support for it soon. ` +
+      `${yellow("WARNING:")} Postgres 14 reached end of life on November 12, 2026, and the DBase CLI will drop support for it soon. ` +
         "Upgrade your project to Postgres 17, then set db.major_version = 17 in your project config: " +
         "https://supabase.com/docs/guides/platform/upgrading\n",
       "stderr",
@@ -89,7 +89,7 @@ export const recordOrioleDbTelemetry = (
 
 /**
  * Resolves the Postgres image for `majorVersion`, honoring the pinned version written by
- * `supabase start` to `supabase/.temp/postgres-version`. The tag is only replaced when the
+ * `dbase start` to `supabase/.temp/postgres-version`. The tag is only replaced when the
  * configured image is at/above 15.1.0.55. Stack state mode has no `.temp` pin: the bundled
  * image applies, and callers that run it take the stack's selection instead.
  */

@@ -1,13 +1,13 @@
-# `supabase projects api-keys`
+# `dbase projects api-keys`
 
 Target: hosted, no consent — see [Command target](../../../../docs/command-target.md)
 
 ## Files Read
 
-| Path                                   | Format                    | When                                                                                                                                                  |
-| -------------------------------------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `~/.supabase/access-token`             | plain text (token string) | when `SUPABASE_ACCESS_TOKEN` unset and keyring unavailable                                                                                            |
-| `<workdir>/supabase/.temp/project-ref` | plain text (ref string)   | when `--remote=<ref>` and `SUPABASE_PROJECT_ID` are not provided, to resolve the linked project ref, and as the linked parent for `--remote=<branch>` |
+| Path                                   | Format                    | When                                                                                                                                               |
+| -------------------------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `~/.supabase/access-token`             | plain text (token string) | when `DBASE_ACCESS_TOKEN` unset and keyring unavailable                                                                                            |
+| `<workdir>/supabase/.temp/project-ref` | plain text (ref string)   | when `--remote=<ref>` and `DBASE_PROJECT_ID` are not provided, to resolve the linked project ref, and as the linked parent for `--remote=<branch>` |
 
 ## Files Written
 
@@ -17,11 +17,11 @@ Target: hosted, no consent — see [Command target](../../../../docs/command-tar
 
 ## API Routes
 
-| Method | Path                                        | Auth         | Request body | Response (used fields)                                                                                                                                                                                                                                   |
-| ------ | ------------------------------------------- | ------------ | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `GET`  | `/v1/projects/{parent}/branches`            | Bearer token | none         | `[{id, name, project_ref, is_default}]` — only for `--remote=<branch>` (or the deprecated `--project-ref=<branch>`), and for a bare `--remote` followed by a word that could name a branch; `{parent}` is `SUPABASE_PROJECT_ID`, else the linked project |
-| `GET`  | `/v1/branches/{id}`                         | Bearer token | none         | `{ref, status, …}` — only for `--remote=<branch UUID>` when no project is linked                                                                                                                                                                         |
-| `GET`  | `/v1/projects/{ref}/api-keys[?reveal=true]` | Bearer token | none         | `[{name: string, api_key: string \| null}]`                                                                                                                                                                                                              |
+| Method | Path                                        | Auth         | Request body | Response (used fields)                                                                                                                                                                                                                                |
+| ------ | ------------------------------------------- | ------------ | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET`  | `/v1/projects/{parent}/branches`            | Bearer token | none         | `[{id, name, project_ref, is_default}]` — only for `--remote=<branch>` (or the deprecated `--project-ref=<branch>`), and for a bare `--remote` followed by a word that could name a branch; `{parent}` is `DBASE_PROJECT_ID`, else the linked project |
+| `GET`  | `/v1/branches/{id}`                         | Bearer token | none         | `{ref, status, …}` — only for `--remote=<branch UUID>` when no project is linked                                                                                                                                                                      |
+| `GET`  | `/v1/projects/{ref}/api-keys[?reveal=true]` | Bearer token | none         | `[{name: string, api_key: string \| null}]`                                                                                                                                                                                                           |
 
 The `reveal=true` query param is sent only when `--reveal` is passed; it instructs the
 Management API to return the full secret keys (`sb_secret_...`) in `api_key` instead of
@@ -29,10 +29,10 @@ Management API to return the full secret keys (`sb_secret_...`) in `api_key` ins
 
 ## Environment Variables
 
-| Variable                | Purpose                                              | Required?                                               |
-| ----------------------- | ---------------------------------------------------- | ------------------------------------------------------- |
-| `SUPABASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup) | no (falls back to keyring → `~/.supabase/access-token`) |
-| `SUPABASE_PROFILE`      | built-in profile name or YAML file path              | no (falls back to `~/.supabase/profile` -> `supabase`)  |
+| Variable             | Purpose                                              | Required?                                               |
+| -------------------- | ---------------------------------------------------- | ------------------------------------------------------- |
+| `DBASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup) | no (falls back to keyring → `~/.supabase/access-token`) |
+| `DBASE_PROFILE`      | built-in profile name or YAML file path              | no (falls back to `~/.supabase/profile` -> `supabase`)  |
 
 ## Flags
 

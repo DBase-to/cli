@@ -21,7 +21,7 @@ const config = {
   ),
   projectRef: Flag.String("project-ref").pipe(
     Flag.withDescription(
-      "Project ref to attribute the feedback to (defaults to SUPABASE_PROJECT_ID, then the linked project).",
+      "Project ref to attribute the feedback to (defaults to DBASE_PROJECT_ID, then the linked project).",
     ),
     Flag.optional,
   ),
@@ -42,20 +42,19 @@ export const feedbackAddHandler = (args: FeedbackAddArgs) =>
   );
 
 export const feedbackAddCommand = Command.make("add", config).pipe(
-  Command.withDescription("Send quick feedback about the Supabase CLI to the Supabase team."),
-  Command.withShortDescription("Send feedback to the Supabase team"),
+  Command.withDescription("Send quick feedback about the DBase CLI to the DBase team."),
+  Command.withShortDescription("Send feedback to the DBase team"),
   Command.withExamples([
     {
-      command:
-        'supabase feedback add "when I run multiple stacks in parallel I get port conflicts"',
+      command: 'dbase feedback add "when I run multiple stacks in parallel I get port conflicts"',
       description: "Send quick feedback about a papercut in one line",
     },
     {
-      command: 'supabase feedback add -- "--yes should be the default in CI"',
+      command: 'dbase feedback add -- "--yes should be the default in CI"',
       description: "Use -- when the message starts with a dash",
     },
     {
-      command: 'supabase feedback add --project-ref abcdefghijklmnopqrst "branching is slow here"',
+      command: 'dbase feedback add --project-ref abcdefghijklmnopqrst "branching is slow here"',
       description: "Attribute the feedback to a project from an unlinked directory",
     },
   ]),

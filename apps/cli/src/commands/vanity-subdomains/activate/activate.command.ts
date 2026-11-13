@@ -25,7 +25,7 @@ const config = {
   // resolution all run first; required-ness is enforced in the handler after ref
   // resolution.
   desiredSubdomain: Flag.String("desired-subdomain").pipe(
-    Flag.withDescription("The desired vanity subdomain to use for your Supabase project."),
+    Flag.withDescription("The desired vanity subdomain to use for your DBase project."),
     Flag.optional,
   ),
 } as const;
@@ -34,7 +34,7 @@ export type VanitySubdomainsActivateFlags = CliCommand.Command.Config.Infer<type
 
 export const vanitySubdomainsActivateCommand = Command.make("activate", config).pipe(
   Command.withDescription(
-    "Activate a vanity subdomain for your Supabase project. This reconfigures your Supabase project to respond to requests on your vanity subdomain. After the vanity subdomain is activated, your project's auth services will no longer function on the {project-ref}.{supabase-domain} hostname.",
+    "Activate a vanity subdomain for your DBase project. This reconfigures your DBase project to respond to requests on your vanity subdomain. After the vanity subdomain is activated, your project's auth services will no longer function on the {project-ref}.{supabase-domain} hostname.",
   ),
   Command.withShortDescription("Activate a vanity subdomain"),
   withPermissions(

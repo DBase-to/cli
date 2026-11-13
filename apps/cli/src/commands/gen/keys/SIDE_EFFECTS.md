@@ -1,19 +1,19 @@
-# `supabase gen keys`
+# `dbase gen keys`
 
 Removed and unlisted. The command is a tombstone: it fails with a removal error
 and a replacement suggestion instead of contacting the Management API.
 
 ## Files Read
 
-| Path                                            | Format | When                                     |
-| ----------------------------------------------- | ------ | ---------------------------------------- |
-| `<SUPABASE_HOME or ~/.supabase>/telemetry.json` | JSON   | always (post-run `TelemetryState.flush`) |
+| Path                                         | Format | When                                     |
+| -------------------------------------------- | ------ | ---------------------------------------- |
+| `<DBASE_HOME or ~/.supabase>/telemetry.json` | JSON   | always (post-run `TelemetryState.flush`) |
 
 ## Files Written
 
-| Path                                            | Format | When                                                                                       |
-| ----------------------------------------------- | ------ | ------------------------------------------------------------------------------------------ |
-| `<SUPABASE_HOME or ~/.supabase>/telemetry.json` | JSON   | always (post-run `TelemetryState.flush`), created if missing, even with telemetry disabled |
+| Path                                         | Format | When                                                                                       |
+| -------------------------------------------- | ------ | ------------------------------------------------------------------------------------------ |
+| `<DBASE_HOME or ~/.supabase>/telemetry.json` | JSON   | always (post-run `TelemetryState.flush`), created if missing, even with telemetry disabled |
 
 ## API Routes
 
@@ -23,9 +23,9 @@ and a replacement suggestion instead of contacting the Management API.
 
 ## Environment Variables
 
-| Variable        | Purpose                            | Required?                      |
-| --------------- | ---------------------------------- | ------------------------------ |
-| `SUPABASE_HOME` | directory holding `telemetry.json` | no (defaults to `~/.supabase`) |
+| Variable     | Purpose                            | Required?                      |
+| ------------ | ---------------------------------- | ------------------------------ |
+| `DBASE_HOME` | directory holding `telemetry.json` | no (defaults to `~/.supabase`) |
 
 ## Exit Codes
 
@@ -41,8 +41,8 @@ Writes the removal message and the replacement suggestion to stderr, two lines,
 regardless of `-o`/`--output`:
 
 ```
-supabase gen keys was removed.
-Use `supabase projects api-keys --remote=<ref>` to read a project's API keys.
+dbase gen keys was removed.
+Use `dbase projects api-keys --remote=<ref>` to read a project's API keys.
 ```
 
 ### `--output-format json` / `stream-json`
@@ -58,6 +58,6 @@ One `cli_command_executed` event per invocation, with `exit_code: 1` and an
 
 ## Notes
 
-- Unlisted (not shown in `supabase gen --help`), still reachable by exact name.
+- Unlisted (not shown in `dbase gen --help`), still reachable by exact name.
 - No flag value is read; the command fails identically regardless of
   `--remote`/`--project-ref`/`--override-name`.

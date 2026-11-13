@@ -797,7 +797,7 @@ describe("commandSettingsLayer", () => {
     Effect.gen(function* () {
       const config = yield* CommandSettings;
       // The sentinel `0.0.0-dev` value applies when SUPABASE_CLI_VERSION is unset (tests).
-      expect(config.userAgent).toMatch(/^SupabaseCLI\//);
+      expect(config.userAgent).toMatch(/^DBaseCLI\//);
     }).pipe(Effect.provide(makeLayer({ cwd: tempRoot.current }))),
   );
 });

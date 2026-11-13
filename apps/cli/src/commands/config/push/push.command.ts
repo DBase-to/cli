@@ -33,20 +33,20 @@ const configPushHandler = (flags: ConfigPushFlags) =>
 
 export const configPushCommand = Command.make("push", config).pipe(
   Command.withDescription(
-    "Pushes the properties your local config file declares to the linked project or one of its branches. Properties the file does not declare are left unchanged; run `supabase config diff` to preview. Shows the exact diff for every changed resource, then asks once before anything is written (the default answer is no). Piped answers are not read: non-interactive and JSON runs need --yes or a SUPABASE_YES set in the shell. Run `supabase config diff` first to review the changes.",
+    "Pushes the properties your local config file declares to the linked project or one of its branches. Properties the file does not declare are left unchanged; run `dbase config diff` to preview. Shows the exact diff for every changed resource, then asks once before anything is written (the default answer is no). Piped answers are not read: non-interactive and JSON runs need --yes or a SUPABASE_YES set in the shell. Run `dbase config diff` first to review the changes.",
   ),
   Command.withShortDescription("Push local config to linked project"),
   Command.withExamples([
     {
-      command: "supabase config push",
+      command: "dbase config push",
       description: "Push local config to the linked project",
     },
     {
-      command: "supabase config push --remote=abcdefghijklmnopqrst",
+      command: "dbase config push --remote=abcdefghijklmnopqrst",
       description: "Push local config to a specific project",
     },
     {
-      command: "supabase config push --remote=staging",
+      command: "dbase config push --remote=staging",
       description: "Push local config to the 'staging' branch",
     },
   ]),

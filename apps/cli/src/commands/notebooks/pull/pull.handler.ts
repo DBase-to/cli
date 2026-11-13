@@ -25,7 +25,7 @@ import {
 import type { NotebooksPullFlags } from "./pull.command.ts";
 
 /**
- * `supabase notebooks pull [id]` — write the project's notebooks into
+ * `dbase notebooks pull [id]` — write the project's notebooks into
  * `supabase/notebooks/`.
  *
  * The checkout is the source: a whole-directory pull only writes notebooks that

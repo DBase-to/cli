@@ -420,7 +420,7 @@ export type PoolerConfigResult =
 export const POOLER_URL_UNPARSABLE = "failed to parse pooler URL";
 
 /**
- * Parse + validate a Supabase transaction-pooler URL: strip the dashboard password placeholder,
+ * Parse + validate a DBase transaction-pooler URL: strip the dashboard password placeholder,
  * require the project ref in the tenant user/options, verify the pooler domain belongs to the
  * active profile, and force transaction-pooler port 5432.
  */

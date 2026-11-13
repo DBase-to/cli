@@ -1,4 +1,4 @@
-# `supabase stack destroy`
+# `dbase stack destroy`
 
 Permanently removes each selected managed namespace, its service registrations,
 owned database data, Storage upload files, port claims, and attached jobs. The experimental feature flag controls command registration.
@@ -35,7 +35,7 @@ that engine's containers to the new registration; a registration that lands
 later is not noticed, which is harmless because it cannot own containers while a
 cleanup holds the lease. The deleted stack's data in the state root's shared
 database volume stays, and containers of other state roots are never touched;
-for a deleted `SUPABASE_HOME`, run destroy with that `SUPABASE_HOME`.
+for a deleted `DBASE_HOME`, run destroy with that `DBASE_HOME`.
 
 After confirmation the command opens each selected handle in turn and destroys its
 entire namespace; a stack that fails to be destroyed does not stop the rest.
@@ -51,7 +51,7 @@ shutdown is refused.
 When no owner is running and the engine reports that its daemon cannot be
 reached, destruction removes nothing: the registration, port claims and host
 data stay as they are, and the command exits 1 with one error whose suggestion
-gives the exact `supabase stack destroy --stack-id <id> --yes` command to run
+gives the exact `dbase stack destroy --stack-id <id> --yes` command to run
 once the engine is reachable. Any other engine failure, an owner starting during
 destruction, an instance whose data (including a native database's socket
 directory) cannot be removed, or a labelled container that survives removal,
@@ -62,10 +62,10 @@ in place.
 
 ## Files and network
 
-Reads identity/state under `<SUPABASE_HOME or ~/.supabase>/stacks/<id>/` and, for
+Reads identity/state under `<DBASE_HOME or ~/.supabase>/stacks/<id>/` and, for
 implicit selection, the project's canonical Git context. Removes only the
 selected namespace's owned state/data and its `uploads/` directory
-(`<SUPABASE_HOME or ~/.supabase>/stacks/<id>/uploads`), after the namespace is destroyed and
+(`<DBASE_HOME or ~/.supabase>/stacks/<id>/uploads`), after the namespace is destroyed and
 including for the containers of a deleted stack; a failure to remove it fails the command naming
 the directory. This leaves the stack directory holding only an empty `data/`, which a later
 registry sweep prunes. Other stack namespaces and files outside the stack directory
@@ -74,7 +74,7 @@ with the local owner and selected runtime, with no hosted API calls. Shared
 routing/settings can read project configuration and profiles.
 
 Destruction releases this stack's rows in the per-user port registry at
-`<passwd home>/.supabase/ports.sqlite` (independent of `SUPABASE_HOME`, with no
+`<passwd home>/.supabase/ports.sqlite` (independent of `DBASE_HOME`, with no
 override; WAL mode, with `ports.sqlite-wal` and `ports.sqlite-shm` alongside
 while open) only once cleanup is confirmed complete; a destroy that fails
 keeps the stack's automatic reservations, and those ports remain unavailable
@@ -105,4 +105,4 @@ when a container stack next starts under the same state root or by
 `destroy --stack-id`, and its port reservations are released when another stack
 needs them; its data in the shared database volume is not removed. Standard command telemetry is unchanged, with no custom events.
 Telemetry flushes on success and failure to
-`<SUPABASE_HOME or ~/.supabase>/telemetry.json`.
+`<DBASE_HOME or ~/.supabase>/telemetry.json`.

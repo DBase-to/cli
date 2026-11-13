@@ -10,7 +10,7 @@ export interface StatusEnvPointerInput {
   readonly stackId?: string;
 }
 
-/** The `supabase status --env ...` pointer `start` prints to reproduce this stack's selection. */
+/** The `dbase status --env ...` pointer `start` prints to reproduce this stack's selection. */
 export const statusEnvPointer = (input: StatusEnvPointerInput, platform: ShellPlatform): string => {
   const selector = [
     ...(input.explicitWorkdir ? ["--workdir", input.projectRoot] : []),
@@ -19,5 +19,5 @@ export const statusEnvPointer = (input: StatusEnvPointerInput, platform: ShellPl
   ]
     .map((argument) => ` ${shellQuoteArgument(argument, platform)}`)
     .join("");
-  return `supabase status --env${selector}`;
+  return `dbase status --env${selector}`;
 };

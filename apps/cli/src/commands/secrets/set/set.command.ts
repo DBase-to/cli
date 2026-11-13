@@ -30,15 +30,15 @@ const config = {
 export type SecretsSetFlags = CliCommand.Command.Config.Infer<typeof config>;
 
 export const secretsSetCommand = Command.make("set", config).pipe(
-  Command.withDescription("Set a secret(s) to the linked Supabase project."),
-  Command.withShortDescription("Set a secret(s) on Supabase"),
+  Command.withDescription("Set a secret(s) to the linked DBase project."),
+  Command.withShortDescription("Set a secret(s) on DBase"),
   Command.withExamples([
     {
-      command: "supabase secrets set MY_SECRET=myvalue",
+      command: "dbase secrets set MY_SECRET=myvalue",
       description: "Set a secret by name and value",
     },
     {
-      command: "supabase secrets set --env-file .env",
+      command: "dbase secrets set --env-file .env",
       description: "Set secrets from a .env file",
     },
   ]),

@@ -27,7 +27,7 @@ const withStorageProject = <A, E, R>(
  * list/copy/move/remove behavior is covered by the integration and unit suites, which don't
  * need a live local stack.
  */
-describe("supabase storage", () => {
+describe("dbase storage", () => {
   it.live(
     "lists the four subcommands in --help",
     () =>

@@ -15,7 +15,7 @@ const config = {
     Argument.withDescription("Deletion token (UUID) printed when the feedback was submitted."),
   ),
   projectRef: Flag.String("project-ref").pipe(
-    Flag.withDescription("Project ref of the Supabase project the feedback was submitted with."),
+    Flag.withDescription("Project ref of the DBase project the feedback was submitted with."),
     Flag.optional,
   ),
 } as const;
@@ -41,7 +41,7 @@ export const feedbackDeleteCommand = Command.make("delete", config).pipe(
   Command.withShortDescription("Delete previously submitted feedback"),
   Command.withExamples([
     {
-      command: "supabase feedback delete 123e4567-e89b-12d3-a456-426614174000",
+      command: "dbase feedback delete 123e4567-e89b-12d3-a456-426614174000",
       description: "Delete feedback using the token printed when it was submitted",
     },
   ]),

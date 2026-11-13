@@ -10,7 +10,7 @@ export class InvalidAccessTokenError extends Data.TaggedError("InvalidAccessToke
   /**
    * Where the malformed token was read from. An env-var token
    * (`SUPABASE_ACCESS_TOKEN`) takes precedence over stored credentials, so
-   * `supabase login` cannot fix it — the remediation is to correct the env
+   * `dbase login` cannot fix it — the remediation is to correct the env
    * var. A stored (keyring/file) token, or an unknown source, is fixable by
    * logging in again.
    */
@@ -32,7 +32,7 @@ export class AccessTokenRequiredError extends Data.TaggedError("AccessTokenRequi
 /**
  * Raised by `deleteProjectCredential` when removing a stored database-password
  * credential from the OS keyring fails for a reason other than "entry not
- * found" (which is ignored), as part of `supabase unlink`.
+ * found" (which is ignored), as part of `dbase unlink`.
  */
 export class CredentialDeleteError extends Data.TaggedError("CredentialDeleteError")<{
   readonly message: string;
@@ -45,7 +45,7 @@ export class CredentialDeleteError extends Data.TaggedError("CredentialDeleteErr
 /**
  * Raised by `deleteAccessToken` when there is no access token to delete, i.e.
  * the profile keyring entry is absent or the keyring backend is unavailable
- * (WSL / `SUPABASE_NO_KEYRING` / unsupported platform). `supabase logout`
+ * (WSL / `SUPABASE_NO_KEYRING` / unsupported platform). `dbase logout`
  * surfaces this as `You were not logged in, nothing to do.` on stderr while
  * still exiting 0.
  */

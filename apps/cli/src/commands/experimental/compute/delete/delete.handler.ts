@@ -28,7 +28,7 @@ import {
 import type { ComputeDeleteFlags } from "./delete.command.ts";
 
 /**
- * `supabase compute delete [name]` — deletes the compute via the API
+ * `dbase compute delete [name]` — deletes the compute via the API
  * (never checking local files); an already-absent compute counts as success. The
  * compute's directory and `config.toml` entry stay on disk so `push <name>` can
  * redeploy it. Interactive runs require typing the name to confirm (`--yes`/
@@ -94,7 +94,7 @@ export const computeDelete = Effect.fn("compute.delete")(function* (flags: Compu
         // `status`'s wording, inherited, pointed the wrong way here: somebody
         // deleting "api" and hearing "nothing is deployed" does not want to
         // deploy it — they want to see what *is* deployed.
-        suggestion: `See what is deployed with \`supabase compute list${refSuffix}\`.`,
+        suggestion: `See what is deployed with \`dbase compute list${refSuffix}\`.`,
       });
     }
 
@@ -179,7 +179,7 @@ export const computeDelete = Effect.fn("compute.delete")(function* (flags: Compu
         // command this line recommends.
         if (keptSource !== undefined) {
           yield* emitSuccessTrailer(
-            `Redeploy it with ${aqua(`supabase compute push ${name}${refSuffix}`)}.\n`,
+            `Redeploy it with ${aqua(`dbase compute push ${name}${refSuffix}`)}.\n`,
           );
         }
       } else {

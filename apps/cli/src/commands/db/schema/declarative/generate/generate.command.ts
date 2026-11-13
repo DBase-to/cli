@@ -108,10 +108,10 @@ export const dbSchemaDeclarativeGenerateCommand = Command.make("generate", confi
           Effect.gen(function* () {
             const output = yield* Output;
             if (output.format === "text") {
-              yield* output.raw(`Finished ${aqua("supabase db schema declarative generate")}.\n`);
+              yield* output.raw(`Finished ${aqua("dbase db schema declarative generate")}.\n`);
               return;
             }
-            yield* output.success("Finished supabase db schema declarative generate.");
+            yield* output.success("Finished dbase db schema declarative generate.");
           }),
         ),
         withCommandTelemetry({

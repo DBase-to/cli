@@ -64,7 +64,7 @@ export class CliConfigSchemaVersionError extends Data.TaggedError("CliConfigSche
 }> {
   override get message(): string {
     const file = this.path.split(/[\\/]/).slice(-2).join("/");
-    return `${file} declares config schema v${this.declaredVersion}, but this version of the Supabase CLI only reads up to v${this.supportedVersion}. Upgrade the Supabase CLI to use this config.`;
+    return `${file} declares config schema v${this.declaredVersion}, but this version of the DBase CLI only reads up to v${this.supportedVersion}. Upgrade the DBase CLI to use this config.`;
   }
 }
 
@@ -84,7 +84,7 @@ export function formatProjectConfigParseErrorMessage(
 
 /** Suggested remediation attached to every {@link ProjectConfigParseError}. */
 export const PROJECT_CONFIG_PARSE_ERROR_SUGGESTION =
-  "Try upgrading the Supabase CLI to the latest version. If the error persists on the latest version, report it at https://github.com/supabase/cli/issues.";
+  "Try upgrading the DBase CLI to the latest version. If the error persists on the latest version, report it at https://github.com/DBase-to/cli/issues.";
 
 /**
  * A Management API v2 project-config response failed to map into a {@link ProjectConfig}.

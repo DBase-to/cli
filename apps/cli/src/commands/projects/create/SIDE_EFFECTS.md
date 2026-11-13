@@ -1,12 +1,12 @@
-# `supabase projects create`
+# `dbase projects create`
 
 Target: account, consent default Yes — see [Command target](../../../../docs/command-target.md)
 
 ## Files Read
 
-| Path                       | Format                    | When                                                       |
-| -------------------------- | ------------------------- | ---------------------------------------------------------- |
-| `~/.supabase/access-token` | plain text (token string) | when `SUPABASE_ACCESS_TOKEN` unset and keyring unavailable |
+| Path                       | Format                    | When                                                    |
+| -------------------------- | ------------------------- | ------------------------------------------------------- |
+| `~/.supabase/access-token` | plain text (token string) | when `DBASE_ACCESS_TOKEN` unset and keyring unavailable |
 
 ## Files Written
 
@@ -23,11 +23,11 @@ Target: account, consent default Yes — see [Command target](../../../../docs/c
 
 ## Environment Variables
 
-| Variable                | Purpose                                              | Required?                                               |
-| ----------------------- | ---------------------------------------------------- | ------------------------------------------------------- |
-| `SUPABASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup) | no (falls back to keyring → `~/.supabase/access-token`) |
-| `SUPABASE_PROFILE`      | built-in profile name or YAML file path              | no (falls back to `~/.supabase/profile` -> `supabase`)  |
-| `DB_PASSWORD`           | **not consumed** by `projects create`                | n/a                                                     |
+| Variable             | Purpose                                              | Required?                                               |
+| -------------------- | ---------------------------------------------------- | ------------------------------------------------------- |
+| `DBASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup) | no (falls back to keyring → `~/.supabase/access-token`) |
+| `DBASE_PROFILE`      | built-in profile name or YAML file path              | no (falls back to `~/.supabase/profile` -> `supabase`)  |
+| `DB_PASSWORD`        | **not consumed** by `projects create`                | n/a                                                     |
 
 ## Exit Codes
 
@@ -107,6 +107,6 @@ One `result` event on success.
   fields that the upstream Management API OpenAPI spec deliberately hides (typed as
   `{"deprecated": true, "type": "null"}`) even though `POST /v1/projects` accepts them — restored via
   `packages/api/scripts/openapi-overrides.json` (CLI-2180). Both flags are hidden and require
-  `--experimental` (or the `SUPABASE_EXPERIMENTAL` env var); setting either one without either
+  `--experimental` (or the `DBASE_EXPERIMENTAL` env var); setting either one without either
   fails with `must set the --experimental flag to run this command` and makes no API call.
 - The `--plan` flag is hidden and reserved.

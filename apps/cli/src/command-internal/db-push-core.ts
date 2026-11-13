@@ -277,9 +277,9 @@ export const dbPushCore = Effect.fn("DbPush.run")(function* (input: DbPushCoreIn
       }
 
       if (output.format === "text") {
-        yield* output.raw(`Finished ${aqua("supabase db push")}.\n`);
+        yield* output.raw(`Finished ${aqua("dbase db push")}.\n`);
       } else if (emitStructuredResult) {
-        yield* output.success("Finished supabase db push.", {
+        yield* output.success("Finished dbase db push.", {
           upToDate: false,
           dryRun,
           migrations: pending.map((p) => path.basename(p)),

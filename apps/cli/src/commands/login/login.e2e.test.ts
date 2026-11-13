@@ -7,7 +7,7 @@ import { runSupabaseEffect, withTempHome } from "../../../tests/helpers/cli.ts";
 const E2E_TIMEOUT_MS = 30_000;
 const VALID_TOKEN = "sbp_" + "a".repeat(40);
 
-describe("supabase login", () => {
+describe("dbase login", () => {
   // The e2e harness sets SUPABASE_NO_KEYRING=1, so the token lands in
   // <SUPABASE_HOME>/access-token rather than the OS keyring.
   it.live(

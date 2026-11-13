@@ -94,7 +94,7 @@ describe("detectGitBranch", () => {
   it.effect("walks from an explicit startDir instead of the runtime CWD", () =>
     Effect.gen(function* () {
       // The project repo (with .git/HEAD) is the startDir; the runtime CWD is an
-      // unrelated dir with no repo, mirroring `supabase --workdir <project>` run
+      // unrelated dir with no repo, mirroring `dbase --workdir <project>` run
       // from elsewhere.
       const project = yield* makeTempDir("git-branch-workdir-");
       yield* writeHead(project, "ref: refs/heads/project-branch\n");

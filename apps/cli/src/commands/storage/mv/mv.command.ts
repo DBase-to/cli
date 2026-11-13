@@ -31,7 +31,7 @@ export const storageMvCommand = Command.make("mv", config).pipe(
   Command.withShortDescription("Move objects from src to dst path"),
   Command.withExamples([
     {
-      command: "supabase storage mv -r ss:///bucket/docs ss:///bucket/www/docs",
+      command: "dbase storage mv -r ss:///bucket/docs ss:///bucket/www/docs",
       description: "Recursively move a directory within storage",
     },
   ]),

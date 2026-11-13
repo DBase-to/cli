@@ -6,7 +6,7 @@ const E2E_TIMEOUT_MS = 30_000;
 const TEST_PROJECT_REF = "abcdefghijklmnopqrst";
 const TEST_TOKEN = "sbp_" + "a".repeat(40);
 
-describe("supabase snippets", () => {
+describe("dbase snippets", () => {
   // Golden-path e2e: exercises the real subprocess boundary for the only
   // API-free code path in `snippets download` — the UUID pre-check surfacing
   // the `invalid snippet ID:` prefix to stdout/stderr with exit code 1.

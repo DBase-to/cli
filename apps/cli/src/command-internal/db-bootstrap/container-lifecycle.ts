@@ -188,7 +188,7 @@ function parsePortBindError(stderr: string): string | undefined {
 function portConflictSuggestion(hostPort: string, serviceLabel: string): string {
   return (
     `\nTry stopping the project or container already using ${hostPort} ` +
-    "(`docker ps` lists what's bound to it, or `supabase stop` for another local Supabase project), " +
+    "(`docker ps` lists what's bound to it, or `dbase stop` for another local DBase project), " +
     `or configure a different ${serviceLabel} port in your config file.`
   );
 }

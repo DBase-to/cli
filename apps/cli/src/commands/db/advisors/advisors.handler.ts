@@ -37,7 +37,7 @@ import { fetchPerformanceAdvisors, fetchSecurityAdvisors } from "./advisors.link
 import { splitLintsSql } from "./advisors.lints-sql.ts";
 
 /** Established output-contract suggestion for a missing/invalid access token. */
-const loginSuggestion = (): string => `Run ${aqua("supabase login")} first.`;
+const loginSuggestion = (): string => `Run ${aqua("dbase login")} first.`;
 
 /** Queries and scans the lints, minus the transaction the caller owns. */
 const queryLints = Effect.fn("DbAdvisors.queryLints")(function* (session: DbSession) {
@@ -146,7 +146,7 @@ const runLinked = Effect.fn("db.advisors.runLinked")(function* (
             message: cause.message,
             suggestion: loginSuggestion(),
             // Preserve the token source so an env-provided malformed token keeps
-            // its `set_env_var` remediation instead of degrading to `supabase login`.
+            // its `set_env_var` remediation instead of degrading to `dbase login`.
             source: cause.source,
           }),
         ),

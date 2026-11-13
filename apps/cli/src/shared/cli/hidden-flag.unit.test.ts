@@ -61,7 +61,7 @@ const testRootLayer = (formatter: CliOutput.Formatter, args: ReadonlyArray<strin
   );
 };
 
-const testRoot = Command.make("supabase").pipe(
+const testRoot = Command.make("dbase").pipe(
   Command.withSubcommands([
     startCommand,
     stopCommand,
@@ -164,7 +164,7 @@ describe("native hidden flags", () => {
         parserCommand(functionsServeCommand, parsed),
       ]),
     );
-    const parserRoot = Command.make("supabase").pipe(
+    const parserRoot = Command.make("dbase").pipe(
       Command.withSubcommands([
         parserCommand(startCommand, parsed),
         parserCommand(stopCommand, parsed),
@@ -267,26 +267,26 @@ describe("hidden subcommands", () => {
           [["db", "branch", "list"], [], undefined],
           [["db", "remote", "changes"], ["--schema", "public", "--linked"], undefined],
           [["gen", "keys"], ["--project-ref", "abcdefghijklmnopqrst"], undefined],
-          [["db", "remote", "commit"], [], "Use `supabase db pull --remote` instead."],
+          [["db", "remote", "commit"], [], "Use `dbase db pull --remote` instead."],
           [
             ["db", "remote", "commit"],
             ["--schema", "public", "--linked", "-p", "secret"],
-            "Use `supabase db pull --remote` instead.",
+            "Use `dbase db pull --remote` instead.",
           ],
           [
             ["inspect", "db", "total-index-size"],
             ["--linked"],
-            "Use `supabase inspect db index-stats` instead.",
+            "Use `dbase inspect db index-stats` instead.",
           ],
           [
             ["inspect", "db", "total-table-sizes"],
             ["--db-url", "postgresql://u:p@h/db"],
-            "Use `supabase inspect db table-stats` instead.",
+            "Use `dbase inspect db table-stats` instead.",
           ],
           [
             ["inspect", "db", "table-index-sizes"],
             ["--local"],
-            "Use `supabase inspect db table-stats` instead.",
+            "Use `dbase inspect db table-stats` instead.",
           ],
         ] as const) {
           const args = [...path, ...flags];
@@ -305,7 +305,7 @@ describe("hidden subcommands", () => {
           expect(error).toBeInstanceOf(RemovedSurfaceError);
           if (!(error instanceof RemovedSurfaceError) || suggestion === undefined) continue;
           expect(error.kind).toBe("command");
-          expect(error.message).toBe(`supabase ${path.join(" ")} was removed.`);
+          expect(error.message).toBe(`dbase ${path.join(" ")} was removed.`);
           expect(error.suggestion).toBe(suggestion);
         }
       }).pipe(Effect.provide([BunServices.layer, BunCrypto.layer])),

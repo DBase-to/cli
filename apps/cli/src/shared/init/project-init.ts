@@ -25,7 +25,7 @@ function parseJsonObject(pathname: string, contents: string) {
   const parseFailure = (reason: string) =>
     new InitParseSettingsError({
       detail: `Could not parse JSON in ${pathname}: ${reason}`,
-      suggestion: `Fix or remove ${pathname}, then rerun \`supabase init\`.`,
+      suggestion: `Fix or remove ${pathname}, then rerun \`dbase init\`.`,
     });
   return Effect.try({
     try: () => parseJsonc(contents),

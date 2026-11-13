@@ -41,7 +41,7 @@ interface ProjectRefResolverShape {
     never
   >;
   /**
-   * Resolution chain used by `supabase link`, skipping the existing link:
+   * Resolution chain used by `dbase link`, skipping the existing link:
    * flag → `cliSettings.projectId` (env `SUPABASE_PROJECT_ID`) → (TTY) prompt. Fails with
    * `ProjectRefRequiredError` on a non-TTY when neither is set, with the
    * `required flag(s) "project-ref" not set` wording. Announces the resolved target.
@@ -81,7 +81,7 @@ export class ProjectRefResolver extends Context.Service<
 
 export const PROJECT_REF_PATTERN = BRANCH_PROJECT_REF_PATTERN;
 
-export const PROJECT_NOT_LINKED_MESSAGE = "Cannot find project ref. Have you run supabase link?";
+export const PROJECT_NOT_LINKED_MESSAGE = "Cannot find project ref. Have you run dbase link?";
 
 export const INVALID_PROJECT_REF_MESSAGE =
   "Invalid project ref format. Must be like `abcdefghijklmnopqrst`.";

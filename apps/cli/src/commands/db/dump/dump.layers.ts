@@ -17,7 +17,7 @@ import { stackApiLayer } from "../../../command-internal/stack-api.ts";
 import { bundledPostgresClientLayer } from "../../../command-internal/bundled-postgres-client.ts";
 
 /**
- * Runtime layer for `supabase db dump`.
+ * Runtime layer for `dbase db dump`.
  *
  * Mirrors `test db`'s composition: most of the Management API stack builds lazily
  * inside the resolver's hosted-target branch. `ProjectRefResolver` is exposed here (like

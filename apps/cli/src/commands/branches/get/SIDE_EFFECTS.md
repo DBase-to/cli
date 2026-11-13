@@ -1,10 +1,10 @@
-# `supabase branches get`
+# `dbase branches get`
 
 Target: hosted, no consent — see [Command target](../../../../docs/command-target.md)
 
 ## Files Read
 
-Same auth fallback chain (env / keyring / `~/.supabase/access-token`) as every Management-API command. Project-ref discovery is PARENT-scoped (CLI-2167 follow-up): env `SUPABASE_PROJECT_ID` → `<workdir>/supabase/.temp/linked-project.json`'s `ref` → `<workdir>/supabase/.temp/project-ref`, first ref-shaped candidate wins — see `branches list/SIDE_EFFECTS.md` for the full chain and rationale.
+Same auth fallback chain (env / keyring / `~/.supabase/access-token`) as every Management-API command. Project-ref discovery is PARENT-scoped (CLI-2167 follow-up): env `DBASE_PROJECT_ID` → `<workdir>/supabase/.temp/linked-project.json`'s `ref` → `<workdir>/supabase/.temp/project-ref`, first ref-shaped candidate wins — see `branches list/SIDE_EFFECTS.md` for the full chain and rationale.
 
 ## Files Written
 
@@ -15,19 +15,19 @@ Same auth fallback chain (env / keyring / `~/.supabase/access-token`) as every M
 
 ## API Routes
 
-| Method | Path                                        | Auth         | When                                                                                                                                                         | Response (used fields)                                                                  |
-| ------ | ------------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
-| `GET`  | `/v1/projects/{ref}/branches/{name}`        | Bearer token | input is neither a UUID nor a `^[a-z]{20}$` ref pattern (named-branch lookup)                                                                                | `{project_ref, ...}`                                                                    |
-| `GET`  | `/v1/branches/{branch_id_or_ref}`           | Bearer token | always — branch detail / config                                                                                                                              | `{ref, db_host, db_port, db_user?, db_pass?, jwt_secret?, postgres_version, status, …}` |
-| `GET`  | `/v1/projects/{ref}/api-keys`               | Bearer token | with `-o` other than `pretty`, or with no `-o` when the output format is json or stream-json (`--output-format`, `--agent yes`, or a detected coding agent)  | `[{name, api_key?}]`                                                                    |
-| `GET`  | `/v1/projects/{ref}/config/database/pooler` | Bearer token | with `-o` other than `pretty`, or with no `-o` when the output format is json or stream-json (`--output-format`, `--agent yes`, or a detected coding agent)  | `[SupavisorConfigResponse]` — handler filters for `database_type === "PRIMARY"`         |
-| `GET`  | `/v1/projects/{ref}/branches`               | Bearer token | branch argument omitted or empty and stdin is a TTY (branch picker)                                                                                          | `[{name, project_ref, …}]`                                                              |
-| `GET`  | `/v1/projects`                              | Bearer token | no project ref from `--remote=<ref>`, `SUPABASE_PROJECT_ID` or `.temp/project-ref`, with stdin and stdout TTYs and a non-JSON output format (project picker) | `[{id, name, organization_slug, region, …}]`                                            |
-| `GET`  | `/v1/projects/{ref}`                        | Bearer token | linked-project cache miss only (best-effort, after the command)                                                                                              | `{ref, name, organization_id, organization_slug}`                                       |
+| Method | Path                                        | Auth         | When                                                                                                                                                        | Response (used fields)                                                                  |
+| ------ | ------------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `GET`  | `/v1/projects/{ref}/branches/{name}`        | Bearer token | input is neither a UUID nor a `^[a-z]{20}$` ref pattern (named-branch lookup)                                                                               | `{project_ref, ...}`                                                                    |
+| `GET`  | `/v1/branches/{branch_id_or_ref}`           | Bearer token | always — branch detail / config                                                                                                                             | `{ref, db_host, db_port, db_user?, db_pass?, jwt_secret?, postgres_version, status, …}` |
+| `GET`  | `/v1/projects/{ref}/api-keys`               | Bearer token | with `-o` other than `pretty`, or with no `-o` when the output format is json or stream-json (`--output-format`, `--agent yes`, or a detected coding agent) | `[{name, api_key?}]`                                                                    |
+| `GET`  | `/v1/projects/{ref}/config/database/pooler` | Bearer token | with `-o` other than `pretty`, or with no `-o` when the output format is json or stream-json (`--output-format`, `--agent yes`, or a detected coding agent) | `[SupavisorConfigResponse]` — handler filters for `database_type === "PRIMARY"`         |
+| `GET`  | `/v1/projects/{ref}/branches`               | Bearer token | branch argument omitted or empty and stdin is a TTY (branch picker)                                                                                         | `[{name, project_ref, …}]`                                                              |
+| `GET`  | `/v1/projects`                              | Bearer token | no project ref from `--remote=<ref>`, `DBASE_PROJECT_ID` or `.temp/project-ref`, with stdin and stdout TTYs and a non-JSON output format (project picker)   | `[{id, name, organization_slug, region, …}]`                                            |
+| `GET`  | `/v1/projects/{ref}`                        | Bearer token | linked-project cache miss only (best-effort, after the command)                                                                                             | `{ref, name, organization_id, organization_slug}`                                       |
 
 ## Environment Variables
 
-`SUPABASE_ACCESS_TOKEN`, `SUPABASE_PROFILE`, `SUPABASE_PROJECT_ID`, `SUPABASE_WORKDIR` — same semantics as `branches list` (including the CLI-2167 PARENT-scoped resolution chain).
+`DBASE_ACCESS_TOKEN`, `DBASE_PROFILE`, `DBASE_PROJECT_ID`, `DBASE_WORKDIR` — same semantics as `branches list` (including the CLI-2167 PARENT-scoped resolution chain).
 
 ## Exit Codes
 
@@ -58,4 +58,4 @@ Emits the standard-env projection: `POSTGRES_URL` (pooled, falls back to direct 
 
 ## Notes
 
-- `--remote=<ref>` names the parent project; with no selector or a bare `--remote` the parent comes from the chain above. A branch name or UUID is rejected with `` `supabase branches get` acts on a parent project, so --remote takes its project ref, not a branch name. Use --remote=<ref>. `` The branch itself stays a positional argument.
+- `--remote=<ref>` names the parent project; with no selector or a bare `--remote` the parent comes from the chain above. A branch name or UUID is rejected with `` `dbase branches get` acts on a parent project, so --remote takes its project ref, not a branch name. Use --remote=<ref>. `` The branch itself stays a positional argument.

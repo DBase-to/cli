@@ -64,7 +64,7 @@ function splitNonEmptyLines(text: string): ReadonlyArray<string> {
 // `start`'s correctness genuinely depends on a real Docker daemon — real label filtering and
 // container lifecycle, not just CLI exit codes. See `stop.e2e.test.ts` and AGENTS.md's "e2e
 // tests" section for the runner-gating convention.
-describe("supabase start (e2e)", () => {
+describe("dbase start (e2e)", () => {
   it.live(
     "recreates a stopped real stack and preserves database data",
     () =>

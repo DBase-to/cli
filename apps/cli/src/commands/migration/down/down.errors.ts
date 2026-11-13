@@ -17,7 +17,7 @@ export class MigrationLastZeroError extends Data.TaggedError("MigrationLastZeroE
 /**
  * `--last` >= the number of applied migrations. Matches the established
  * `--last must be smaller than total applied migrations: <total>` text;
- * the `supabase db reset` suggestion is attached separately.
+ * the `dbase db reset` suggestion is attached separately.
  */
 export class MigrationLastTooLargeError extends Data.TaggedError("MigrationLastTooLargeError")<{
   readonly message: string;

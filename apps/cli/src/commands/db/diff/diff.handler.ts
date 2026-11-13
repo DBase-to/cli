@@ -106,7 +106,7 @@ import {
 import { diffSchemaPgAdmin } from "./pgadmin-diff.ts";
 
 const warnDiff = `WARNING: The diff tool is not foolproof, so you may need to manually rearrange and modify the generated migration.
-Run ${aqua("supabase db reset")} to verify that the new migration does not generate errors.`;
+Run ${aqua("dbase db reset")} to verify that the new migration does not generate errors.`;
 
 const declarativeBaselineAdvisory = (declarativePath: string | null) => ({
   code: "DeclarativeSchemaNotUsedAsDiffBaseline",
@@ -120,7 +120,7 @@ const declarativeBaselineAdvisory = (declarativePath: string | null) => ({
 });
 
 const declarativeNextSteps = (suggestMigra: boolean, syncNeedsExperimental: boolean) =>
-  `Run ${aqua(`supabase db schema declarative sync${syncNeedsExperimental ? " --experimental" : ""}`)} to generate a migration from them${suggestMigra ? `, or pass ${aqua("--use-migra")} to diff them with migra` : ""}.`;
+  `Run ${aqua(`dbase db schema declarative sync${syncNeedsExperimental ? " --experimental" : ""}`)} to generate a migration from them${suggestMigra ? `, or pass ${aqua("--use-migra")} to diff them with migra` : ""}.`;
 
 const declarativeBaselineNote = (displayPath: string, nextSteps: string) =>
   `Note: db diff -f uses supabase/migrations as its baseline. Declarative schema files in ${displayPath} are not part of that baseline. If migrations are empty or outdated, the generated migration may include existing declarative objects. -f names the migration; it does not filter objects. ${nextSteps}\n`;
@@ -573,7 +573,7 @@ export const dbDiff = Effect.fn("db.diff")(function* (flags: DbDiffFlags) {
         );
         if (!running) {
           return yield* new DbDiffDbNotRunningError({
-            message: `${aqua("supabase start")} is not running.`,
+            message: `${aqua("dbase start")} is not running.`,
           });
         }
         yield* emitStatus("Creating shadow database...");
@@ -714,11 +714,11 @@ export const dbDiff = Effect.fn("db.diff")(function* (flags: DbDiffFlags) {
     // The pgAdmin path skips the branch banner and drop-statement scan below entirely.
     if (!usePgAdmin) {
       // Detect the branch from the resolved workdir, not the caller's CWD, so
-      // `supabase --workdir … db diff` reports the project's branch, not the
+      // `dbase --workdir … db diff` reports the project's branch, not the
       // directory the command was invoked from.
       const branch = yield* detectGitBranch(cliSettings.workdir);
       yield* output.raw(
-        `Finished ${aqua("supabase db diff")}${branchClause(branch, aqua)}.\n\n`,
+        `Finished ${aqua("dbase db diff")}${branchClause(branch, aqua)}.\n\n`,
         "stderr",
       );
     }

@@ -9,7 +9,7 @@ import {
 } from "../../shared/pgdelta-declarative-shadow-prep.ts";
 import type { PgDeltaRemovalSummary } from "../../shared/pgdelta-engine.service.ts";
 
-/** Extensions that legacy pg-delta treated as part of its implicit Supabase baseline. */
+/** Extensions that legacy pg-delta treated as part of its implicit DBase baseline. */
 const IMPLICIT_EXTENSIONS = ["pg_net", "pgcrypto", "uuid-ossp"] as const;
 
 type DeclarativeImplicitExtension = (typeof IMPLICIT_EXTENSIONS)[number];
@@ -269,7 +269,7 @@ const formatDeclarativeSyncCommand = (
   schema: ReadonlyArray<string>,
   platform: ShellPlatform,
 ): string =>
-  `  supabase db schema declarative sync --no-apply${schemaArguments(schema, platform)} --experimental`;
+  `  dbase db schema declarative sync --no-apply${schemaArguments(schema, platform)} --experimental`;
 
 const adoptionCommand = (
   declarativeDir: string,
@@ -306,10 +306,10 @@ function stagedExportCommands(context: StagedExportContext): ReadonlyArray<strin
   const generateCommand =
     context.platform === "windows"
       ? [
-          `  supabase db schema declarative generate --overwrite --output-dir ${staged}${schemas} --experimental`,
+          `  dbase db schema declarative generate --overwrite --output-dir ${staged}${schemas} --experimental`,
         ]
       : [
-          "  supabase db schema declarative generate --overwrite \\",
+          "  dbase db schema declarative generate --overwrite \\",
           `    --output-dir ${staged}${schemas} --experimental`,
         ];
   return [

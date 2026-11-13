@@ -30,7 +30,7 @@ export const queryLogs = Effect.fn("Logs.query")(function* (
         : {}),
       message:
         response.status === 401
-          ? "The logs API rejected your credentials (HTTP 401). Run supabase login and retry."
+          ? "The logs API rejected your credentials (HTTP 401). Run dbase login and retry."
           : response.status === 403
             ? "The logs API denied access (HTTP 403). Check that your account or token has permission to read this project's logs."
             : response.status === 402

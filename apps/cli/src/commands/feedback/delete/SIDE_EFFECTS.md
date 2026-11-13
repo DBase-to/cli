@@ -1,21 +1,21 @@
-# `supabase feedback delete <token> [--project-ref <ref>]`
+# `dbase feedback delete <token> [--project-ref <ref>]`
 
 Target: account, consent default No — see [Command target](../../../../docs/command-target.md)
 
 ## Files Read
 
-| Path                                            | Format                              | When                                                                                                                                                                                   |
-| ----------------------------------------------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `~/.supabase/profile`                           | plain text (profile name)           | when `--profile` and `SUPABASE_PROFILE` are unset (profile resolution via `commandSettingsLayer`)                                                                                      |
-| `$SUPABASE_PROFILE`                             | YAML (`api_url:` / `gotrue_url:` …) | when `SUPABASE_PROFILE` is set to a file path instead of a built-in profile name                                                                                                       |
-| `<workdir>/supabase/.temp/project-ref`          | plain text (project ref)            | when `--project-ref` and `SUPABASE_PROJECT_ID` are unset — supplies the `x-feedback-project-ref` context. Absent, blank, or unreadable → header omitted (never fails the command)      |
-| `<SUPABASE_HOME or ~/.supabase>/telemetry.json` | JSON (telemetry state)              | read at startup by the shared telemetry runtime — its `distinct_id` (gotrue user id stamped at login) supplies the `x-feedback-user-id` context. Absent or logged-out → header omitted |
+| Path                                         | Format                              | When                                                                                                                                                                                   |
+| -------------------------------------------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `~/.supabase/profile`                        | plain text (profile name)           | when `--profile` and `DBASE_PROFILE` are unset (profile resolution via `commandSettingsLayer`)                                                                                         |
+| `$DBASE_PROFILE`                             | YAML (`api_url:` / `gotrue_url:` …) | when `DBASE_PROFILE` is set to a file path instead of a built-in profile name                                                                                                          |
+| `<workdir>/supabase/.temp/project-ref`       | plain text (project ref)            | when `--project-ref` and `DBASE_PROJECT_ID` are unset — supplies the `x-feedback-project-ref` context. Absent, blank, or unreadable → header omitted (never fails the command)         |
+| `<DBASE_HOME or ~/.supabase>/telemetry.json` | JSON (telemetry state)              | read at startup by the shared telemetry runtime — its `distinct_id` (gotrue user id stamped at login) supplies the `x-feedback-user-id` context. Absent or logged-out → header omitted |
 
 ## Files Written
 
-| Path                                            | Format | When                                                                                                                  |
-| ----------------------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------- |
-| `<SUPABASE_HOME or ~/.supabase>/telemetry.json` | JSON   | every invocation, success or failure — the shared telemetry-state finalizer (device id persistence, session rotation) |
+| Path                                         | Format | When                                                                                                                  |
+| -------------------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------- |
+| `<DBASE_HOME or ~/.supabase>/telemetry.json` | JSON   | every invocation, success or failure — the shared telemetry-state finalizer (device id persistence, session rotation) |
 
 ## API Routes
 
@@ -42,13 +42,13 @@ appear in shareable debug output.
 
 ## Environment Variables
 
-| Variable                | Purpose                                                                                                      | Required?                                                           |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------- |
-| `SUPABASE_PROFILE`      | built-in profile name or YAML file path                                                                      | no (falls back to `~/.supabase/profile` → `supabase`)               |
-| `SUPABASE_WORKDIR`      | project directory override                                                                                   | no (falls back to `--workdir` → cwd)                                |
-| `SUPABASE_ACCESS_TOKEN` | access token captured by `commandSettingsLayer`                                                              | no (unused by this command)                                         |
-| `SUPABASE_PROJECT_ID`   | supplies the project-ref context when `--project-ref` is unset; must be a well-formed ref (exit 1 otherwise) | no (falls back to `<workdir>/supabase/.temp/project-ref` → omitted) |
-| `SUPABASE_YES`          | auto-confirms the deletion prompt, same as `--yes`; a project `.env` value is ignored                        | no                                                                  |
+| Variable             | Purpose                                                                                                      | Required?                                                           |
+| -------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------- |
+| `DBASE_PROFILE`      | built-in profile name or YAML file path                                                                      | no (falls back to `~/.supabase/profile` → `supabase`)               |
+| `DBASE_WORKDIR`      | project directory override                                                                                   | no (falls back to `--workdir` → cwd)                                |
+| `DBASE_ACCESS_TOKEN` | access token captured by `commandSettingsLayer`                                                              | no (unused by this command)                                         |
+| `DBASE_PROJECT_ID`   | supplies the project-ref context when `--project-ref` is unset; must be a well-formed ref (exit 1 otherwise) | no (falls back to `<workdir>/supabase/.temp/project-ref` → omitted) |
+| `DBASE_YES`          | auto-confirms the deletion prompt, same as `--yes`; a project `.env` value is ignored                        | no                                                                  |
 
 Global telemetry consent env applies as with every command.
 
@@ -58,7 +58,7 @@ Global telemetry consent env applies as with every command.
 | ---- | ---------------------------------------------------------------------------------------------------------- |
 | `0`  | feedback deleted                                                                                           |
 | `1`  | token argument is not a UUID                                                                               |
-| `1`  | `--project-ref` or `SUPABASE_PROJECT_ID` is set but not a well-formed project ref (no request sent)        |
+| `1`  | `--project-ref` or `DBASE_PROJECT_ID` is set but not a well-formed project ref (no request sent)           |
 | `1`  | no feedback matched (wrong token, already deleted, or project-ref/user-id context mismatch)                |
 | `1`  | confirmation declined                                                                                      |
 | `1`  | confirmation needed but this run can't prompt (non-interactive, `-o json`, or machine mode) and no `--yes` |
@@ -124,11 +124,11 @@ every `output.task`.
 - The feedback text is never read or shown: the command is a token-scoped
   hard delete, and the confirmation prompt is the only guard against a
   mistyped or pasted token. Deleting is harmless to the user (the row exists
-  for Supabase's benefit), so nothing is fetched first.
+  for DBase's benefit), so nothing is fetched first.
 - Deletion is a hard delete with no undo; tokens never expire.
 - Project-ref resolution order: `--project-ref` (an empty value counts as
-  unset) → `SUPABASE_PROJECT_ID` → `<workdir>/supabase/.temp/project-ref`
-  (written by `supabase link`) → omitted. The flag and env values are validated
+  unset) → `DBASE_PROJECT_ID` → `<workdir>/supabase/.temp/project-ref`
+  (written by `dbase link`) → omitted. The flag and env values are validated
   like every other command's explicit ref (a malformed value fails with the
   shared invalid-ref error before any request); a missing, unreadable, or
   malformed ref file degrades to "omitted". A row submitted from a linked
@@ -139,7 +139,7 @@ every `output.task`.
   and can only be deleted while logged in as that same user — the
   persisted `distinct_id` is presented automatically as `x-feedback-user-id`.
   The lookup is a synchronous in-memory read; logged-out runs simply omit the
-  header, which still matches all anonymous rows. `supabase logout` wipes the
+  header, which still matches all anonymous rows. `dbase logout` wipes the
   persisted identity, so a delete token for an attributed row reports "not
   found" until the user logs back in as the same account (login re-stamps the
   same gotrue UUID, restoring delete access).

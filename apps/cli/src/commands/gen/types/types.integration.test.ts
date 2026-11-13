@@ -1275,7 +1275,7 @@ describe("gen types", () => {
 
     describe("--remote <language> read as a branch name", () => {
       const languageSuggestion = (language: string) =>
-        `To generate ${language} types for the linked project, run supabase gen types --lang=${language} --remote.`;
+        `To generate ${language} types for the linked project, run dbase gen types --lang=${language} --remote.`;
 
       it.effect.each([
         { typed: "typescript", language: "typescript" },
@@ -2156,7 +2156,7 @@ describe("gen types", () => {
       { dbHost: "127.0.0.1", pinned: false },
     ]) {
       it.effect(
-        `falls back to preview branch config for non-TypeScript project refs (${pinned ? "Supabase" : "other"} host)`,
+        `falls back to preview branch config for non-TypeScript project refs (${pinned ? "DBase" : "other"} host)`,
         () =>
           Effect.gen(function* () {
             const { layer, api, dbConfig, generator } = yield* setup({
@@ -2598,10 +2598,10 @@ describe("gen types", () => {
           error: () =>
             new DbConfigIpv6Error({
               message: "IPv6 is not supported on your current network",
-              suggestion: "Run supabase link --project-ref demo to setup IPv4 connection",
+              suggestion: "Run dbase link --project-ref demo to setup IPv4 connection",
             }),
           reason: "IPv6 is not supported on your current network",
-          suggestion: "Run supabase link --project-ref demo to setup IPv4 connection",
+          suggestion: "Run dbase link --project-ref demo to setup IPv4 connection",
         },
         {
           name: "a network ban that was not approved for removal",
@@ -3209,8 +3209,8 @@ describe("gen types", () => {
     );
   });
 
-  describe("TLS: pin the Supabase CA only where the design calls for it", () => {
-    it.effect("pins the Supabase CA for a db-url pointing at a direct database host", () =>
+  describe("TLS: pin the DBase CA only where the design calls for it", () => {
+    it.effect("pins the DBase CA for a db-url pointing at a direct database host", () =>
       Effect.gen(function* () {
         const { layer, generator } = yield* setup({
           dbConfigResolve: () =>
@@ -3238,7 +3238,7 @@ describe("gen types", () => {
       }).pipe(Effect.provide(BunServices.layer)),
     );
 
-    it.effect("pins the Supabase CA for a db-url pointing at the pooler host", () =>
+    it.effect("pins the DBase CA for a db-url pointing at the pooler host", () =>
       Effect.gen(function* () {
         const { layer, generator } = yield* setup({
           dbConfigResolve: () =>
@@ -3266,7 +3266,7 @@ describe("gen types", () => {
       }).pipe(Effect.provide(BunServices.layer)),
     );
 
-    it.effect("honors an explicit sslmode from the db-url's DSN on a Supabase host", () =>
+    it.effect("honors an explicit sslmode from the db-url's DSN on a DBase host", () =>
       Effect.gen(function* () {
         const { layer, generator } = yield* setup({
           dbConfigResolve: () =>
@@ -3295,7 +3295,7 @@ describe("gen types", () => {
       }).pipe(Effect.provide(BunServices.layer)),
     );
 
-    it.effect("leaves a non-Supabase db-url host unpinned", () =>
+    it.effect("leaves a non-DBase db-url host unpinned", () =>
       Effect.gen(function* () {
         const { layer, generator } = yield* setup({
           dbConfigResolve: () =>
@@ -3658,7 +3658,7 @@ describe("gen types", () => {
         expect(Exit.isFailure(exit)).toBe(true);
         expect(out.stderrText).toContain("Target: local stack (");
         if (Exit.isFailure(exit)) {
-          expect(String(exit.cause)).toContain("supabase start is not running.");
+          expect(String(exit.cause)).toContain("dbase start is not running.");
           expect(
             Option.exists(
               Cause.findErrorOption(exit.cause),
@@ -3698,7 +3698,7 @@ describe("gen types", () => {
           );
 
           expect(error).toBeInstanceOf(GenTypesLocalDbNotRunningError);
-          expect(error.message).toBe("supabase start is not running.");
+          expect(error.message).toBe("dbase start is not running.");
           expect(child.calls.map((call) => call.command)).toEqual(["docker", "podman"]);
         }).pipe(Effect.provide(BunServices.layer)),
     );
@@ -3752,7 +3752,7 @@ describe("gen types", () => {
         stderr: "Error: No such container: supabase_db_demo",
         expected: {
           code: "GenTypesLocalDbNotRunningError",
-          message: "supabase start is not running.",
+          message: "dbase start is not running.",
           suggestion: "To use the linked project instead, pass --remote.",
         },
       },
@@ -3772,7 +3772,7 @@ describe("gen types", () => {
         stderr: "Error: No such container: supabase_db_demo",
         expected: {
           code: "GenTypesLocalDbNotRunningError",
-          message: "supabase start is not running.",
+          message: "dbase start is not running.",
         },
       },
     ])("reports $name in the JSON error envelope", ({ linked, stderr, expected }) =>
@@ -3796,12 +3796,12 @@ describe("gen types", () => {
         name: "a linked checkout",
         linked: true,
         suggestion:
-          "Make sure Docker is running, then run: supabase start\nTo use the linked project instead, pass --remote.",
+          "Make sure Docker is running, then run: dbase start\nTo use the linked project instead, pass --remote.",
       },
       {
         name: "an unlinked checkout",
         linked: false,
-        suggestion: "Make sure Docker is running, then run: supabase start",
+        suggestion: "Make sure Docker is running, then run: dbase start",
       },
     ])(
       "reports a refused local connection in $name in the JSON error envelope",

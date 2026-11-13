@@ -26,7 +26,7 @@ import {
 import type { ComputeStatusFlags } from "./status.command.ts";
 
 /**
- * `supabase compute status [name]` — everything known about one compute.
+ * `dbase compute status [name]` — everything known about one compute.
  *
  * `list`'s companion: the size, image and URL a `push` printed once and then
  * scrolled away, plus the live instance tally, which is the only place it is
@@ -64,7 +64,7 @@ export const computeStatus = Effect.fn("compute.status")(function* (flags: Compu
     if (Option.isNone(found)) {
       return yield* new ComputeNotDeployedError({
         detail: `Nothing is deployed for "${name}" in project ${projectRef}.`,
-        suggestion: `Deploy it with \`supabase compute push ${name}${refSuffix}\`.`,
+        suggestion: `Deploy it with \`dbase compute push ${name}${refSuffix}\`.`,
       });
     }
 
@@ -144,7 +144,7 @@ export const computeStatus = Effect.fn("compute.status")(function* (flags: Compu
     if (record.buildState === "failed" && record.deleting !== true) {
       // A trailer, since the command reports a failed build but exits 0.
       yield* emitSuccessTrailer(
-        `Fix the issue, then re-run ${aqua(`supabase compute push ${name}${refSuffix}`)}.\n`,
+        `Fix the issue, then re-run ${aqua(`dbase compute push ${name}${refSuffix}`)}.\n`,
       );
     }
   }).pipe(

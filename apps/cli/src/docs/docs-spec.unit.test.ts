@@ -74,11 +74,11 @@ describe("docsOverlayPath", () => {
 
 describe("docsStripOverlayHeading", () => {
   it("drops a leading heading line but keeps its newline", () => {
-    expect(docsStripOverlayHeading("## supabase-link\n\nBody text.\n")).toBe("\n\nBody text.\n");
+    expect(docsStripOverlayHeading("## dbase-link\n\nBody text.\n")).toBe("\n\nBody text.\n");
   });
 
   it("returns empty for a heading-only file", () => {
-    expect(docsStripOverlayHeading("## supabase-link")).toBe("");
+    expect(docsStripOverlayHeading("## dbase-link")).toBe("");
   });
 
   it("keeps content that does not start with a heading", () => {
@@ -107,7 +107,7 @@ describe("buildDocsSpec", () => {
   beforeAll(() => Effect.runPromise(Effect.asVoid(loadDocsContent)));
 
   it("never publishes an unlisted command subtree", () => {
-    // Walks the tree rather than matching a `supabase-experimental*` prefix, so it also
+    // Walks the tree rather than matching a `dbase-experimental*` prefix, so it also
     // catches any other unlisted subtree, present or future.
     const { spec } = builtSpec();
     const emitted = new Set(spec.commands.map((command) => command.id));
@@ -123,7 +123,7 @@ describe("buildDocsSpec", () => {
       // Unlisted is inherited: hiding a parent hides everything beneath it.
       const hiddenHere = unlisted || node.unlisted === true;
       if (hiddenHere && here.length > 0) {
-        hidden.push(`supabase-${here.join("-")}`);
+        hidden.push(`dbase-${here.join("-")}`);
       }
       for (const group of node.subcommands ?? []) {
         for (const child of group.commands ?? []) {
@@ -154,12 +154,10 @@ describe("buildDocsSpec", () => {
   it("excludes gated Compute and Stack commands from the default docs spec", () => {
     const { spec } = builtSpec();
     const computeCommands = spec.commands.filter((command) =>
-      command.id.startsWith("supabase-compute"),
+      command.id.startsWith("dbase-compute"),
     );
     expect(computeCommands).toEqual([]);
-    const stackCommands = spec.commands.filter((command) =>
-      command.id.startsWith("supabase-stack"),
-    );
+    const stackCommands = spec.commands.filter((command) => command.id.startsWith("dbase-stack"));
     expect(stackCommands).toEqual([]);
   });
 
@@ -183,46 +181,44 @@ describe("buildDocsSpec", () => {
     for (const excluded of DOCS_EXCLUDED) {
       expect(byId.has(excluded)).toBe(false);
     }
-    expect(byId.get("supabase-gen")?.subcommands).not.toContain("supabase-gen-keys");
-    expect(byId.get("supabase-inspect-db")?.subcommands).not.toContain(
-      "supabase-inspect-db-cache-hit",
-    );
+    expect(byId.get("dbase-gen")?.subcommands).not.toContain("dbase-gen-keys");
+    expect(byId.get("dbase-inspect-db")?.subcommands).not.toContain("dbase-inspect-db-cache-hit");
   });
 
   it("includes the TS-only completion and issue families", () => {
     const { byId } = builtSpec();
-    expect(byId.get("supabase-completion")?.subcommands).toContain("supabase-completion-zsh");
-    expect(byId.get("supabase-issue")?.tags).toEqual(["other-commands"]);
+    expect(byId.get("dbase-completion")?.subcommands).toContain("dbase-completion-zsh");
+    expect(byId.get("dbase-issue")?.tags).toEqual(["other-commands"]);
   });
 
   it("includes the top-level whoami command in the Management API reference", () => {
-    const whoami = builtSpec().byId.get("supabase-whoami");
+    const whoami = builtSpec().byId.get("dbase-whoami");
     expect(whoami).toBeDefined();
     expect(whoami?.tags).toEqual(["management-api"]);
-    expect(whoami?.usage).toBe("supabase whoami [flags]");
+    expect(whoami?.usage).toBe("dbase whoami [flags]");
     expect(whoami?.subcommands).toEqual([]);
     expect(whoami?.description).toBe("Show information about the currently logged-in user.");
   });
 
   it("renders link with its overlay description and flag display names", () => {
     const { byId, content } = builtSpec();
-    const link = byId.get("supabase-link");
+    const link = byId.get("dbase-link");
     expect(link).toBeDefined();
     expect(link?.tags).toEqual(["local-dev"]);
-    expect(link?.usage).toBe("supabase link [ref-or-branch] [flags]");
+    expect(link?.usage).toBe("dbase link [ref-or-branch] [flags]");
     expect(link?.flags.map((flag) => flag.id)).toEqual(["project-ref", "skip-pooler"]);
     expect(link?.description).toBe(
-      docsStripOverlayHeading(content.overlays.get("supabase/link.md") ?? ""),
+      docsStripOverlayHeading(content.overlays.get("dbase/link.md") ?? ""),
     );
-    expect(content.overlays.has("supabase/db/diff.md")).toBe(true);
-    expect(byId.get("supabase-db-diff")?.description).toBe(
-      docsStripOverlayHeading(content.overlays.get("supabase/db/diff.md") ?? ""),
+    expect(content.overlays.has("dbase/db/diff.md")).toBe(true);
+    expect(byId.get("dbase-db-diff")?.description).toBe(
+      docsStripOverlayHeading(content.overlays.get("dbase/db/diff.md") ?? ""),
     );
   });
 
   it("injects the required --experimental flag into experimental leaves only", () => {
     const { byId } = builtSpec();
-    const storageLs = byId.get("supabase-storage-ls");
+    const storageLs = byId.get("dbase-storage-ls");
     const experimental = storageLs?.flags.find((flag) => flag.id === "experimental");
     expect(experimental).toMatchObject({ required: true, default_value: "false" });
     expect(Object.keys(experimental ?? {})).toEqual([
@@ -232,11 +228,9 @@ describe("buildDocsSpec", () => {
       "required",
       "default_value",
     ]);
-    expect(byId.get("supabase-db-push")?.flags.some((flag) => flag.id === "experimental")).toBe(
-      false,
-    );
+    expect(byId.get("dbase-db-push")?.flags.some((flag) => flag.id === "experimental")).toBe(false);
     const declarativeSync = byId
-      .get("supabase-db-schema-declarative-sync")
+      .get("dbase-db-schema-declarative-sync")
       ?.flags.find((flag) => flag.id === "experimental");
     expect(declarativeSync).toBeDefined();
     expect(declarativeSync?.required).toBeUndefined();
@@ -245,7 +239,7 @@ describe("buildDocsSpec", () => {
   it("emits enum flags with accepted_values and defaults", () => {
     const { byId } = builtSpec();
     const algorithm = byId
-      .get("supabase-gen-signing-key")
+      .get("dbase-gen-signing-key")
       ?.flags.find((flag) => flag.id === "algorithm");
     expect(algorithm?.name).toBe("--algorithm <[ ES256 | RS256 ]>");
     expect(algorithm?.default_value).toBe("ES256");
@@ -254,35 +248,33 @@ describe("buildDocsSpec", () => {
 
   it("marks required flags with a required badge", () => {
     const { byId } = builtSpec();
-    const status = byId
-      .get("supabase-migration-repair")
-      ?.flags.find((flag) => flag.id === "status");
+    const status = byId.get("dbase-migration-repair")?.flags.find((flag) => flag.id === "status");
     expect(status?.required).toBe(true);
   });
 
   it("renders flag display types from the Effect tree, matching --help", () => {
     const { byId } = builtSpec();
-    const jobs = byId.get("supabase-functions-deploy")?.flags.find((flag) => flag.id === "jobs");
+    const jobs = byId.get("dbase-functions-deploy")?.flags.find((flag) => flag.id === "jobs");
     expect(jobs?.name).toBe("-j, --jobs <int>");
     const validFor = byId
-      .get("supabase-gen-bearer-jwt")
+      .get("dbase-gen-bearer-jwt")
       ?.flags.find((flag) => flag.id === "valid-for");
     expect(validFor?.name).toBe("--valid-for <string>");
   });
 
   it("keeps flags off group commands but always as an array", () => {
     const { byId } = builtSpec();
-    const db = byId.get("supabase-db");
+    const db = byId.get("dbase-db");
     expect(db?.flags).toEqual([]);
     expect(db?.usage).toBeUndefined();
-    expect(db?.subcommands).toContain("supabase-db-push");
+    expect(db?.subcommands).toContain("dbase-db-push");
   });
 
   it("sources examples from examples.yaml, falling back to Command.withExamples", () => {
     const { byId } = builtSpec();
-    const initExamples = byId.get("supabase-init")?.examples;
-    expect(initExamples?.[0]).toMatchObject({ id: "basic-usage", code: "supabase init" });
-    const snippetsExamples = byId.get("supabase-snippets-list")?.examples;
+    const initExamples = byId.get("dbase-init")?.examples;
+    expect(initExamples?.[0]).toMatchObject({ id: "basic-usage", code: "dbase init" });
+    const snippetsExamples = byId.get("dbase-snippets-list")?.examples;
     expect(snippetsExamples?.length).toBeGreaterThan(0);
     expect(snippetsExamples?.[0]?.id).toBe("example-1");
     expect(snippetsExamples?.[0]?.response).toBeUndefined();
@@ -290,13 +282,13 @@ describe("buildDocsSpec", () => {
 
   it("documents db query's output formats via the injected flag", () => {
     const { byId } = builtSpec();
-    const output = byId.get("supabase-db-query")?.flags.find((flag) => flag.id === "output");
+    const output = byId.get("dbase-db-query")?.flags.find((flag) => flag.id === "output");
     expect(output?.name).toBe("-o, --output <[ json | table | csv ]>");
     expect(output?.default_value).toBe("json");
     expect(output?.accepted_values?.map((value) => value.id)).toEqual(["json", "table", "csv"]);
   });
 
-  it.each(["supabase-logs", "supabase-logs-sources"])(
+  it.each(["dbase-logs", "dbase-logs-sources"])(
     "keeps legacy output off the native logs %s page",
     (id) => {
       const command = builtSpec().byId.get(id);
@@ -307,14 +299,14 @@ describe("buildDocsSpec", () => {
 
   it("documents the executable logs root alongside its source catalog", () => {
     const { byId } = builtSpec();
-    const logs = byId.get("supabase-logs");
-    expect(logs?.usage).toBe("supabase logs [subcommand] [flags]");
+    const logs = byId.get("dbase-logs");
+    expect(logs?.usage).toBe("dbase logs [subcommand] [flags]");
     expect(logs?.flags.map((flag) => flag.id)).toEqual(
       expect.arrayContaining(["sql", "file", "limit", "since", "from", "to", "service"]),
     );
-    expect(byId.has("supabase-logs-sources")).toBe(true);
-    expect(byId.has("supabase-logs-query")).toBe(false);
-    expect(byId.has("supabase-logs-tail")).toBe(false);
+    expect(byId.has("dbase-logs-sources")).toBe(true);
+    expect(byId.has("dbase-logs-query")).toBe(false);
+    expect(byId.has("dbase-logs-tail")).toBe(false);
   });
 
   it("quotes YAML 1.1 boolean-like scalars in the serialized spec", () => {
@@ -352,15 +344,13 @@ describe("review fixes stay fixed", () => {
         `${command.id} publishes include-raw-output`,
       ).toBe(false);
     }
-    expect(byId.get("supabase-domains-get")?.flags.map((flag) => flag.id)).toContain("remote");
+    expect(byId.get("dbase-domains-get")?.flags.map((flag) => flag.id)).toContain("remote");
   });
 
   it("renders required variadic usage from the override table", () => {
     const { byId } = builtSpec();
-    expect(byId.get("supabase-storage-rm")?.usage).toBe("supabase storage rm <file> ... [flags]");
-    expect(byId.get("supabase-secrets-set")?.usage).toBe(
-      "supabase secrets set <NAME=VALUE> ... [flags]",
-    );
+    expect(byId.get("dbase-storage-rm")?.usage).toBe("dbase storage rm <file> ... [flags]");
+    expect(byId.get("dbase-secrets-set")?.usage).toBe("dbase secrets set <NAME=VALUE> ... [flags]");
   });
 
   it("normalizes tabs to four spaces in descriptions", () => {
@@ -371,7 +361,7 @@ describe("review fixes stay fixed", () => {
         expect(flag.description.includes("\t"), `${command.id} --${flag.id} has a tab`).toBe(false);
       }
     }
-    expect(byIdDescription("supabase-completion-bash")).toContain("    source <(");
+    expect(byIdDescription("dbase-completion-bash")).toContain("    source <(");
   });
 
   it("serializes without YAML anchors or aliases", () => {
@@ -394,12 +384,12 @@ describe("build guards fail loudly", () => {
   const emptyInput = { version: "0", overlays: new Map<string, string>(), examples: {} };
 
   it("throws when the root declares no --experimental global flag", () => {
-    const root = Command.make("supabase").pipe(Command.withSubcommands([Command.make("link")]));
+    const root = Command.make("dbase").pipe(Command.withSubcommands([Command.make("link")]));
     expect(() => buildDocsSpec({ root, ...emptyInput })).toThrow(/no --experimental global flag/);
   });
 
   it("throws for a top-level command without a docs section tag", () => {
-    const root = Command.make("supabase").pipe(
+    const root = Command.make("dbase").pipe(
       Command.withSubcommands([Command.make("not-a-real-command")]),
       Command.withGlobalFlags([ExperimentalFlag]),
     );
@@ -407,7 +397,7 @@ describe("build guards fail loudly", () => {
   });
 
   it("throws listing stale static-table entries for a shrunken tree", () => {
-    const root = Command.make("supabase").pipe(
+    const root = Command.make("dbase").pipe(
       Command.withSubcommands([Command.make("link")]),
       Command.withGlobalFlags([ExperimentalFlag]),
     );
@@ -417,7 +407,7 @@ describe("build guards fail loudly", () => {
   });
 
   it("throws when a declared flag shadows an extra-flags table entry", () => {
-    const root = Command.make("supabase").pipe(
+    const root = Command.make("dbase").pipe(
       Command.withSubcommands([
         Command.make("db").pipe(
           Command.withSubcommands([Command.make("query", { output: Flag.String("output") })]),
@@ -426,14 +416,14 @@ describe("build guards fail loudly", () => {
       Command.withGlobalFlags([ExperimentalFlag]),
     );
     expect(() => buildDocsSpec({ root, ...emptyInput })).toThrow(
-      /DOCS_EXTRA_FLAGS entry "supabase-db-query" is shadowed by declared flag\(s\) --output/,
+      /DOCS_EXTRA_FLAGS entry "dbase-db-query" is shadowed by declared flag\(s\) --output/,
     );
   });
 
   it.effect("throws for orphaned overlays and examples keys", () =>
     Effect.gen(function* () {
       yield* loadDocsContent;
-      const root = Command.make("supabase").pipe(
+      const root = Command.make("dbase").pipe(
         Command.withSubcommands([Command.make("link")]),
         Command.withGlobalFlags([ExperimentalFlag]),
       );
@@ -443,13 +433,13 @@ describe("build guards fail loudly", () => {
           root,
           version: "0",
           overlays,
-          examples: { "supabase-lonk": [{ id: "a", code: "x" }] },
+          examples: { "dbase-lonk": [{ id: "a", code: "x" }] },
         });
       // The synthetic tree fails table validation before it reaches content validation; the
       // content guard is asserted separately below against the real tree.
       expect(build).toThrow(/stale static-table entries/);
       const { content } = builtSpec();
-      const badExamples = { ...content.examples, "supabase-not-a-command": [{ id: "a" }] };
+      const badExamples = { ...content.examples, "dbase-not-a-command": [{ id: "a" }] };
       expect(() =>
         buildDocsSpec({
           root: rootCommand,
@@ -457,7 +447,7 @@ describe("build guards fail loudly", () => {
           overlays: content.overlays,
           examples: badExamples,
         }),
-      ).toThrow(/content inputs match no command[^]*supabase-not-a-command/);
+      ).toThrow(/content inputs match no command[^]*dbase-not-a-command/);
       const badOverlays = new Map(content.overlays);
       badOverlays.set("supabase/not-a-real-command.md", "## x\n\nBody.\n");
       expect(() =>
@@ -478,12 +468,9 @@ describe("readDocsContent rejects malformed examples.yaml", () => {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const dir = yield* fs.makeTempDirectoryScoped({ prefix: "docs-spec-test-" });
-      yield* fs.makeDirectory(path.join(dir, "supabase"), { recursive: true });
+      yield* fs.makeDirectory(path.join(dir, "dbase"), { recursive: true });
       yield* fs.makeDirectory(path.join(dir, "templates"), { recursive: true });
-      yield* fs.writeFileString(
-        path.join(dir, "supabase", "link.md"),
-        "## supabase-link\n\nBody.\n",
-      );
+      yield* fs.writeFileString(path.join(dir, "dbase", "link.md"), "## dbase-link\n\nBody.\n");
       yield* fs.writeFileString(path.join(dir, "templates", "examples.yaml"), examplesYaml);
       const error = yield* Effect.flip(readDocsContent(dir));
       expect(error).toBeInstanceOf(DocsExamplesError);
@@ -498,19 +485,19 @@ describe("readDocsContent rejects malformed examples.yaml", () => {
   );
 
   it.effect("rejects a nested-array entry (mis-indented list)", () =>
-    Effect.map(readTempDocsError("supabase-link:\n  - - id: oops\n"), (error) =>
+    Effect.map(readTempDocsError("dbase-link:\n  - - id: oops\n"), (error) =>
       expect(error.message).toMatch(/must be a mapping/),
     ),
   );
 
   it.effect("rejects unknown fields (typo'd keys)", () =>
-    Effect.map(readTempDocsError("supabase-link:\n  - titel: typo\n    code: x\n"), (error) =>
+    Effect.map(readTempDocsError("dbase-link:\n  - titel: typo\n    code: x\n"), (error) =>
       expect(error.message).toMatch(/unknown field "titel"/),
     ),
   );
 
   it.effect("rejects non-string field values", () =>
-    Effect.map(readTempDocsError("supabase-link:\n  - id: 5\n"), (error) =>
+    Effect.map(readTempDocsError("dbase-link:\n  - id: 5\n"), (error) =>
       expect(error.message).toMatch(/id must be a string/),
     ),
   );
@@ -523,15 +510,15 @@ describe("readDocsContent walk", () => {
       const path = yield* Path.Path;
       const dir = yield* fs.makeTempDirectoryScoped({ prefix: "docs-spec-test-" });
       const outside = yield* fs.makeTempDirectoryScoped({ prefix: "docs-spec-test-" });
-      yield* fs.makeDirectory(path.join(dir, "supabase"), { recursive: true });
+      yield* fs.makeDirectory(path.join(dir, "dbase"), { recursive: true });
       yield* fs.makeDirectory(path.join(dir, "templates"), { recursive: true });
-      yield* fs.writeFileString(path.join(dir, "supabase", "link.md"), "## supabase-link\n");
+      yield* fs.writeFileString(path.join(dir, "dbase", "link.md"), "## dbase-link\n");
       yield* fs.writeFileString(path.join(outside, "outside.md"), "## outside\n");
-      yield* fs.symlink(outside, path.join(dir, "supabase", "linked"));
-      yield* fs.symlink("..", path.join(dir, "supabase", "up"));
+      yield* fs.symlink(outside, path.join(dir, "dbase", "linked"));
+      yield* fs.symlink("..", path.join(dir, "dbase", "up"));
       yield* fs.writeFileString(path.join(dir, "templates", "examples.yaml"), "{}\n");
       const content = yield* readDocsContent(dir);
-      expect([...content.overlays.keys()]).toEqual(["supabase/link.md"]);
+      expect([...content.overlays.keys()]).toEqual(["dbase/link.md"]);
     }).pipe(Effect.scoped, Effect.provide(BunServices.layer)),
   );
 });
@@ -560,7 +547,7 @@ describe("DOCS_EXPERIMENTAL mirrors the runtime gate", () => {
             else if (name.endsWith(".command.ts")) {
               if ((yield* fs.readFileString(entryPath)).includes("yield* requireExperimental")) {
                 const relative = path.relative(commandsDir, path.dirname(entryPath));
-                gated.add(`supabase-${relative.split(path.sep).join("-")}`);
+                gated.add(`dbase-${relative.split(path.sep).join("-")}`);
               }
             }
           }

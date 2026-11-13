@@ -5,8 +5,8 @@ import { postgresVersionCompare } from "../../command-internal/db-bootstrap/post
 const CONFIG_TEMPLATE_RAW = `#:schema ${CLI_CONFIG_SCHEMA_URL}
 # For detailed configuration reference documentation, visit:
 # https://supabase.com/docs/guides/local-development/cli/config
-# A string used to distinguish different Supabase projects on the same host. Defaults to the
-# working directory name when running \`supabase init\`.
+# A string used to distinguish different DBase projects on the same host. Defaults to the
+# working directory name when running \`dbase init\`.
 project_id = "__PROJECT_ID__"
 
 [api]
@@ -102,11 +102,11 @@ enabled = true
 
 [studio]
 enabled = true
-# Port to use for Supabase Studio.
+# Port to use for DBase Studio.
 port = 54323
 # External URL of the API server that frontend connects to.
 api_url = "http://127.0.0.1"
-# OpenAI API Key to use for Supabase AI in the Supabase Studio.
+# OpenAI API Key to use for DBase AI in the DBase Studio.
 openai_api_key = "env(OPENAI_API_KEY)"
 
 # Email testing server. Emails sent with the local dev setup are not actually sent - rather, they
@@ -137,7 +137,7 @@ file_size_limit = "50MiB"
 [storage.s3_protocol]
 enabled = true
 
-# Image transformation API is available to Supabase Pro plan.
+# Image transformation API is available to DBase Pro plan.
 # [storage.image_transformation]
 # enabled = true
 
@@ -149,7 +149,7 @@ max_namespaces = 5
 max_tables = 10
 max_catalogs = 2
 
-# Analytics Buckets is available to Supabase Pro plan.
+# Analytics Buckets is available to DBase Pro plan.
 # [storage.analytics.buckets.my-warehouse]
 
 # Store vector embeddings in S3 for large and durable datasets
@@ -158,7 +158,7 @@ enabled = true
 max_buckets = 10
 max_indexes = 5
 
-# Vector Buckets is available to Supabase Pro plan.
+# Vector Buckets is available to DBase Pro plan.
 # [storage.vector.buckets.documents-openai]
 
 [auth]
@@ -199,7 +199,7 @@ password_requirements = ""
 
 # Configure WebAuthn relying party settings (required when passkey is enabled).
 # [auth.webauthn]
-# rp_display_name = "Supabase"
+# rp_display_name = "DBase"
 # rp_id = "localhost"
 # rp_origins = ["http://127.0.0.1:3000"]
 
@@ -308,7 +308,7 @@ message_service_sid = ""
 # DO NOT commit your Twilio auth token to git. Use environment variable substitution instead:
 auth_token = "env(SUPABASE_AUTH_SMS_TWILIO_AUTH_TOKEN)"
 
-# Multi-factor-authentication is available to Supabase Pro plan.
+# Multi-factor-authentication is available to DBase Pro plan.
 [auth.mfa]
 # Control how many MFA factors can be enrolled at once per user.
 max_enrolled_factors = 10
@@ -358,24 +358,24 @@ enabled = false
 # [auth.web3.ethereum]
 # enabled = true
 
-# Use Firebase Auth as a third-party provider alongside Supabase Auth.
+# Use Firebase Auth as a third-party provider alongside DBase Auth.
 [auth.third_party.firebase]
 enabled = false
 # project_id = "my-firebase-project"
 
-# Use Auth0 as a third-party provider alongside Supabase Auth.
+# Use Auth0 as a third-party provider alongside DBase Auth.
 [auth.third_party.auth0]
 enabled = false
 # tenant = "my-auth0-tenant"
 # tenant_region = "us"
 
-# Use AWS Cognito (Amplify) as a third-party provider alongside Supabase Auth.
+# Use AWS Cognito (Amplify) as a third-party provider alongside DBase Auth.
 [auth.third_party.aws_cognito]
 enabled = false
 # user_pool_id = "my-user-pool-id"
 # user_pool_region = "us-east-1"
 
-# Use Clerk as a third-party provider alongside Supabase Auth.
+# Use Clerk as a third-party provider alongside DBase Auth.
 [auth.third_party.clerk]
 enabled = false
 # Obtain from https://clerk.com/setup/supabase
@@ -433,7 +433,7 @@ enabled = true
 # format_options = "{\\"keywordCase\\":\\"upper\\",\\"indent\\":2,\\"maxWidth\\":180,\\"commaStyle\\":\\"trailing\\"}"
 `;
 
-export const INIT_GITIGNORE_TEMPLATE = `# Supabase
+export const INIT_GITIGNORE_TEMPLATE = `# DBase
 .branches
 .temp
 
@@ -517,7 +517,7 @@ shadow_port = 54320
   `# Port to use for the local connection pooler.
 port = 54329
 `,
-  `# Port to use for Supabase Studio.
+  `# Port to use for DBase Studio.
 port = 54323
 `,
   `# Port to use for the email testing server web interface.

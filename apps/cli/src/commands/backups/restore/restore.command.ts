@@ -29,7 +29,7 @@ export const backupsRestoreCommand = Command.make("restore", config).pipe(
   Command.withShortDescription("Restore to a specific timestamp using PITR"),
   Command.withExamples([
     {
-      command: "supabase backups restore --timestamp 1707407047",
+      command: "dbase backups restore --timestamp 1707407047",
       description: "Restore to the given Unix epoch timestamp",
     },
   ]),

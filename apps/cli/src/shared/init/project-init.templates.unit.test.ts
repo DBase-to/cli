@@ -45,7 +45,7 @@ function resolveTemplateEscapes(template: string): string {
   return template.replace(/\{\{\s*`([^`]*)`\s*\}\}/g, "$1");
 }
 
-// Emulates what the scaffold writes to disk for a fresh `supabase init` project.
+// Emulates what the scaffold writes to disk for a fresh `dbase init` project.
 const renderExpectedInitOutput = readVendoredTemplate("config.toml").pipe(
   Effect.map((template) =>
     resolveTemplateEscapes(template)
@@ -56,7 +56,7 @@ const renderExpectedInitOutput = readVendoredTemplate("config.toml").pipe(
         /^orioledb_version = "(.*)"$/m.exec(renderCliConfigTemplate("demo-project", true))?.[1] ??
           "",
       )
-      // supabase init always opts new projects into pg-delta; the template
+      // dbase init always opts new projects into pg-delta; the template
       // renders this from a flag only set on the init path.
       .replace("{{ .Experimental.PgDeltaInitEnabled }}", "true"),
   ),

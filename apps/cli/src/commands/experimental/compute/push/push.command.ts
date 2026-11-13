@@ -89,28 +89,28 @@ export type ComputePushFlags = CliCommand.Command.Config.Infer<typeof config>;
 export const computePushCommand = Command.make("push", config).pipe(
   Command.withAlias("deploy"),
   Command.withDescription(
-    "Build and deploy compute into the linked Supabase project. Reads each compute's runtime, size, exposure and source directory from the project config file.",
+    "Build and deploy compute into the linked DBase project. Reads each compute's runtime, size, exposure and source directory from the project config file.",
   ),
   Command.withShortDescription("Build and deploy compute"),
   Command.withExamples([
     {
-      command: "supabase compute push",
+      command: "dbase compute push",
       description: "Deploy every compute in the project",
     },
     {
-      command: "supabase compute push api",
+      command: "dbase compute push api",
       description: "Deploy a single compute",
     },
     {
-      command: "supabase compute push api web",
+      command: "dbase compute push api web",
       description: "Deploy several compute by name",
     },
     {
-      command: "supabase compute push api --exposure private",
+      command: "dbase compute push api --exposure private",
       description: "Deploy without an internet-facing URL",
     },
     {
-      command: "supabase compute push api --no-wait",
+      command: "dbase compute push api --no-wait",
       description: "Deploy without blocking on the build",
     },
   ]),

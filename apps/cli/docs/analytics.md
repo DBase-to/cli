@@ -5,7 +5,7 @@ context, identity stitching, and group analytics.
 
 For tracing and monitoring, see [tracing-monitoring.md](./tracing-monitoring.md).
 
-For where CLI-owned global state lives, including telemetry state under `SUPABASE_HOME`, see
+For where CLI-owned global state lives, including telemetry state under `DBASE_HOME`, see
 [supabase-home.md](./supabase-home.md).
 
 ## Purpose
@@ -110,7 +110,7 @@ Local-runtime commands also carry properties that split error rates by runtime:
   only; for `--remote` targets it says nothing about the remote database
 - `serve_end_reason` on the Docker-runtime `functions serve`, set once its final outcome is known:
   `signal` (the CLI received a shutdown signal), `container_stopped` (an external supervisor
-  stopped the Edge Runtime container, e.g. `supabase stop`), `container_exited` (the container
+  stopped the Edge Runtime container, e.g. `dbase stop`), `container_exited` (the container
   exited on its own with code 0), `container_removed` (the container disappeared), or
   `container_crashed` (the container exited with a crash code, which also fails the command). A
   restart records nothing; only the final end does
@@ -143,14 +143,14 @@ The analytics layer attaches a base set of properties to every PostHog event:
 - `is_agent`
 - `agent_name` (the detected agent, such as `claude`, `codex`, or `cursor_cli`; only when
   `is_agent` is true)
-- `is_eval` (true when `SUPABASE_EVAL` is `1` or `true`, so automated evaluation runs can be
+- `is_eval` (true when `DBASE_EVAL` is `1` or `true`, so automated evaluation runs can be
   excluded from usage metrics)
 - `env_signals` (allowlisted agent and terminal environment variables, when any are set)
 - `os`
 - `arch`
 - `cli_version`
 
-Identity is resolved from `SUPABASE_HOME/telemetry.json`:
+Identity is resolved from `DBASE_HOME/telemetry.json`:
 
 - `device_id` is the anonymous CLI device identity
 - `$session_id` is the current CLI session grouping identifier
@@ -174,9 +174,9 @@ When a project is linked, the CLI can also attach PostHog groups for:
 
 The linked project snapshot cached in repo-local `.supabase/project.json` includes organization and
 project metadata used for this purpose, while the user-level telemetry state remains in
-`SUPABASE_HOME/telemetry.json`.
+`DBASE_HOME/telemetry.json`.
 
-During `supabase link`, the CLI:
+During `dbase link`, the CLI:
 
 - refreshes linked project metadata
 - calls `groupIdentify()` for organization and project
@@ -190,19 +190,19 @@ state when available.
 
 Analytics follows the shared CLI telemetry consent model:
 
-- telemetry state is stored under `SUPABASE_HOME/telemetry.json`
+- telemetry state is stored under `DBASE_HOME/telemetry.json`
 - project `supabase/config.*` does not store telemetry consent
 - repo-local `.supabase/` does not store telemetry consent
 - environment overrides can still disable telemetry in CI or sandboxed runs, primarily
-  `SUPABASE_TELEMETRY_DISABLED=1`
+  `DBASE_TELEMETRY_DISABLED=1`
 
 The CLI also honors `DO_NOT_TRACK=1` as a broader system-level opt-out signal.
 
 The telemetry commands:
 
-- `supabase telemetry enable`
-- `supabase telemetry disable`
-- `supabase telemetry status`
+- `dbase telemetry enable`
+- `dbase telemetry disable`
+- `dbase telemetry status`
 
 read and update that same `telemetry.json` file.
 
@@ -212,14 +212,14 @@ This layout is intentionally similar to the Vercel CLI in one important way: tel
 treated as global CLI state, not project config.
 
 Vercel persists telemetry choice in a user-level global config file rather than `vercel.json`.
-The Supabase CLI follows the same high-level rule:
+The DBase CLI follows the same high-level rule:
 
-- telemetry choice belongs under `SUPABASE_HOME`
+- telemetry choice belongs under `DBASE_HOME`
 - telemetry choice does not belong in repo-local project config
 
 The main difference is storage shape.
 
-Vercel stores a simple `telemetry.enabled` flag inside its broader global config. The Supabase CLI
+Vercel stores a simple `telemetry.enabled` flag inside its broader global config. The DBase CLI
 uses a dedicated `telemetry.json` file because analytics state also carries runtime-owned identity
 and session fields such as:
 
@@ -231,9 +231,9 @@ and session fields such as:
 That makes a dedicated telemetry file a better fit for the current CLI design than folding these
 fields into a more generic global config structure.
 
-For environment-based opt-out, the Supabase CLI follows the same naming convention as Vercel:
+For environment-based opt-out, the DBase CLI follows the same naming convention as Vercel:
 
-- `SUPABASE_TELEMETRY_DISABLED=1`
+- `DBASE_TELEMETRY_DISABLED=1`
 
 ## PostHog Role
 

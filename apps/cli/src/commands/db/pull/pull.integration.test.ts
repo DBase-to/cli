@@ -656,7 +656,7 @@ describe("db pull", () => {
       expect(s.engineCalls[0]?.operation).toBe("diff");
       expect(s.engineCalls[0]?.strictCoverage).toBe(true);
       expect(s.edgeRunCount).toBe(0);
-      expect(streamText(s.out, "stdout")).toContain("Finished supabase db pull.");
+      expect(streamText(s.out, "stdout")).toContain("Finished dbase db pull.");
       // The linked ref is pre-loaded before `resolve()` runs, so the cache still gets
       // it, matching the `db reset`/`db push` pattern.
       expect(s.cache.cached).toBe(true);
@@ -930,7 +930,7 @@ describe("db pull", () => {
       const dir = path.join(tmp.current, "supabase", "migrations");
       const file = (yield* fs.readDirectory(dir)).find((f) => f.endsWith("_remote_schema.sql"));
       expect(yield* readFileText(path.join(dir, file ?? ""))).toContain("create table remote ();");
-      expect(streamText(s.out, "stdout")).toContain("Finished supabase db pull.");
+      expect(streamText(s.out, "stdout")).toContain("Finished dbase db pull.");
     }).pipe(Effect.provide(s.layer));
   });
 
@@ -1593,7 +1593,7 @@ describe("db pull", () => {
     });
     return Effect.gen(function* () {
       yield* dbPull(flags({ remote: REMOTE_LINKED, diffEngine: Option.some("migra") }));
-      expect(streamText(s.out, "stdout")).not.toContain("Finished supabase db pull.");
+      expect(streamText(s.out, "stdout")).not.toContain("Finished dbase db pull.");
       // Diagnostics still go to stderr in machine mode; stdout stays payload-only.
       expect(streamText(s.out, "stderr")).toContain("Schema written to");
       const success = s.out.messages.find((m) => m.type === "success");

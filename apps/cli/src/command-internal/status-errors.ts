@@ -59,11 +59,11 @@ export class StatusDbNotRunningError extends Data.TaggedError("StatusDbNotRunnin
   }
 }
 
-/** The db container exists but is not running; `supabase stop` clears the stopped project. */
+/** The db container exists but is not running; `dbase stop` clears the stopped project. */
 export const dbNotRunningError = (containerId: string, status: string) =>
   new StatusDbNotRunningError({
     message: `${containerId} container is not running: ${status || "unknown"}`,
-    suggestion: `Run ${aqua("supabase stop")} to remove this project's stopped containers, then run ${aqua("supabase start")} again.`,
+    suggestion: `Run ${aqua("dbase stop")} to remove this project's stopped containers, then run ${aqua("dbase start")} again.`,
   });
 
 /** The db container is running but its Docker health check is not `healthy`. */

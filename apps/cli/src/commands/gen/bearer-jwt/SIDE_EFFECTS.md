@@ -1,4 +1,4 @@
-# `supabase gen bearer-jwt`
+# `dbase gen bearer-jwt`
 
 ## Files Read
 

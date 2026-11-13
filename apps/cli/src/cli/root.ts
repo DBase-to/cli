@@ -79,12 +79,12 @@ import {
 
 // The stack backend's `start`/`status`/`stop` are the same commands as `stack
 // start`/`stack status`/`stack stop`, aliased to the top level — their help text
-// is rewritten below so `--help` refers to `supabase start` etc., not `stack start`.
+// is rewritten below so `--help` refers to `dbase start` etc., not `stack start`.
 export const stackStartAliasCommand = stackStartCommand.pipe(
   Command.provide(commandRuntimeLayer(["start"])),
   Command.provide(stackRuntimeLayer),
   Command.provide(stackStartRuntimeLayer),
-  Command.withShortDescription("Start the local Supabase stack"),
+  Command.withShortDescription("Start the local DBase stack"),
   Command.withExamples([
     {
       command: "dbase start",
@@ -99,7 +99,7 @@ export const stackStartAliasCommand = stackStartCommand.pipe(
 export const stackStopAliasCommand = stackStopCommand.pipe(
   Command.provide(commandRuntimeLayer(["stop"])),
   Command.provide(stackRuntimeLayer),
-  Command.withShortDescription("Stop the local Supabase stack"),
+  Command.withShortDescription("Stop the local DBase stack"),
   Command.withExamples([
     {
       command: "dbase stop --stack feature-a",
@@ -110,7 +110,7 @@ export const stackStopAliasCommand = stackStopCommand.pipe(
 export const stackStatusAliasCommand = stackStatusCommand.pipe(
   Command.provide(commandRuntimeLayer(["status"])),
   Command.provide(stackRuntimeLayer),
-  Command.withShortDescription("Show the local Supabase stack status"),
+  Command.withShortDescription("Show the local DBase stack status"),
   Command.withExamples([
     {
       command: "dbase status",
@@ -131,15 +131,15 @@ export const stackStatusAliasCommand = stackStatusCommand.pipe(
 export function rootDescription(version: string): string {
   switch (cliBuildChannel(version)) {
     case "stable":
-      return "Supabase CLI.";
+      return "DBase CLI.";
     case "beta":
-      return "Supabase CLI (beta channel).";
+      return "DBase CLI (beta channel).";
     case "next":
-      return "Supabase CLI (next channel).";
+      return "DBase CLI (next channel).";
     case "preview":
-      return "Supabase CLI (preview build).";
+      return "DBase CLI (preview build).";
     case "development":
-      return "Supabase CLI (development build).";
+      return "DBase CLI (development build).";
   }
 }
 

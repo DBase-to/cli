@@ -299,7 +299,7 @@ function remoteFlagMisuseMessage(
 ): string | undefined {
   const command = findCommand(rootCommand, commandPath.slice(1));
   if (command === undefined) return undefined;
-  const usage = `supabase ${commandPath.slice(1).join(" ")}`;
+  const usage = `dbase ${commandPath.slice(1).join(" ")}`;
   if (command.name === "link" && commandPath.length === 2) {
     return `${usage} takes the project ref or branch as its argument: ${usage} <ref-or-branch>`;
   }
@@ -331,7 +331,7 @@ function buildStackOptInHint(
   if (!command || !commandFlagsFor(command).some((flag) => flagMatchesOption(flag, error.option))) {
     return undefined;
   }
-  return `${optionToken(error.option)} needs the stack backend. Set SUPABASE_EXPERIMENTAL_STACK=1, or set stack = true under [experimental] in your project config and leave SUPABASE_EXPERIMENTAL_STACK unset.`;
+  return `${optionToken(error.option)} needs the stack backend. Set DBASE_EXPERIMENTAL_STACK=1, or set stack = true under [experimental] in your project config and leave DBASE_EXPERIMENTAL_STACK unset.`;
 }
 
 function buildSubcommandFlagHint(

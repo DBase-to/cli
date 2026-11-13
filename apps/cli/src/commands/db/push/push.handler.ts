@@ -16,7 +16,7 @@ import { TelemetryState } from "../../../telemetry/telemetry-state.service.ts";
 import type { DbPushFlags } from "./push.command.ts";
 
 /**
- * `supabase db push` — apply pending local migrations (and optionally seed data
+ * `dbase db push` — apply pending local migrations (and optionally seed data
  * and custom roles) to the local database by default, or to the project, branch or database URL
  * that `--remote` names (the linked project when bare).
  *

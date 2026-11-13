@@ -33,8 +33,8 @@ const config = {
 export type BootstrapFlags = CliCommand.Command.Config.Infer<typeof config>;
 
 export const bootstrapCommand = Command.make("bootstrap", config).pipe(
-  Command.withDescription("Bootstrap a Supabase project from a starter template."),
-  Command.withShortDescription("Bootstrap a Supabase project from a starter template"),
+  Command.withDescription("Bootstrap a DBase project from a starter template."),
+  Command.withShortDescription("Bootstrap a DBase project from a starter template"),
   withPermissions(
     compose(
       {

@@ -8,7 +8,7 @@ export interface ConfigFileRef {
   readonly path: string;
 }
 
-/** Where `supabase init` writes the config, so the file a project without one will get. */
+/** Where `dbase init` writes the config, so the file a project without one will get. */
 export const DEFAULT_CONFIG_FILE: ConfigFileRef = {
   format: "toml",
   path: "supabase/config.toml",

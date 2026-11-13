@@ -1,16 +1,16 @@
-# `supabase functions new <Function name>`
+# `dbase functions new <Function name>`
 
 ## Files Read
 
 | Path                                                              | Format              | When                                                                                                                                                                                      |
 | ----------------------------------------------------------------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `~/.supabase/profile`                                             | plain text          | when `--profile` and `SUPABASE_PROFILE` are both unset                                                                                                                                    |
-| `<profile>.yaml`                                                  | YAML                | when `SUPABASE_PROFILE` or `--profile` points to a file                                                                                                                                   |
+| `~/.supabase/profile`                                             | plain text          | when `--profile` and `DBASE_PROFILE` are both unset                                                                                                                                       |
+| `<profile>.yaml`                                                  | YAML                | when `DBASE_PROFILE` or `--profile` points to a file                                                                                                                                      |
 | `<workdir>/supabase/config.json`, `config.jsonc` or `config.toml` | JSON / JSONC / TOML | best-effort when resolving template values, detecting existing `functions.<name>` declarations, and scanning declared function slugs; `config.json`/`config.jsonc` win over `config.toml` |
 | `<workdir>/supabase/functions/*/index.ts`                         | TypeScript          | when checking whether this is the first local function                                                                                                                                    |
 | `<workdir>/.vscode/extensions.json`                               | JSONC               | when merging VS Code recommendations into an existing file                                                                                                                                |
 | `<workdir>/.vscode/settings.json`                                 | JSONC               | when merging Deno settings into an existing file (nested objects merge key by key, template values win)                                                                                   |
-| `<SUPABASE_HOME or ~/.supabase>/telemetry.json`                   | JSON                | when present, before post-run telemetry state is refreshed                                                                                                                                |
+| `<DBASE_HOME or ~/.supabase>/telemetry.json`                      | JSON                | when present, before post-run telemetry state is refreshed                                                                                                                                |
 
 ## Files Written
 
@@ -24,7 +24,7 @@
 | `<workdir>/.vscode/extensions.json`                | JSON         | text mode only, when this is the first function and VS Code settings are accepted or auto-accepted                                                  |
 | `<workdir>/.vscode/settings.json`                  | JSON         | text mode only, when this is the first function and VS Code settings are accepted or auto-accepted                                                  |
 | `<workdir>/.idea/deno.xml`                         | XML          | text mode only, when this is the first function, VS Code settings are declined, and IntelliJ settings are accepted                                  |
-| `<SUPABASE_HOME or ~/.supabase>/telemetry.json`    | JSON         | after command completion, flushed on both success and failure paths                                                                                 |
+| `<DBASE_HOME or ~/.supabase>/telemetry.json`       | JSON         | after command completion, flushed on both success and failure paths                                                                                 |
 
 ## API Routes
 
@@ -34,23 +34,23 @@
 
 ## Environment Variables
 
-| Variable                | Purpose                                                                             | Required?                                                         |
-| ----------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| `SUPABASE_ACCESS_TOKEN` | resolved into CLI config even though this command performs no API calls             | no (falls back to credential lookup paths that are not used here) |
-| `SUPABASE_HOME`         | changes where telemetry state is persisted                                          | no (defaults to `~/.supabase`)                                    |
-| `SUPABASE_PROFILE`      | selects a built-in profile or YAML profile path during CLI config resolution        | no (falls back to `~/.supabase/profile` -> `supabase`)            |
-| `SUPABASE_PROJECT_ID`   | resolved into CLI config even though this command does not use a linked project ref | no                                                                |
-| `SUPABASE_WORKDIR`      | sets `<workdir>` for all local project reads and writes                             | no (falls back to `--workdir` -> current working dir)             |
+| Variable             | Purpose                                                                             | Required?                                                         |
+| -------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `DBASE_ACCESS_TOKEN` | resolved into CLI config even though this command performs no API calls             | no (falls back to credential lookup paths that are not used here) |
+| `DBASE_HOME`         | changes where telemetry state is persisted                                          | no (defaults to `~/.supabase`)                                    |
+| `DBASE_PROFILE`      | selects a built-in profile or YAML profile path during CLI config resolution        | no (falls back to `~/.supabase/profile` -> `supabase`)            |
+| `DBASE_PROJECT_ID`   | resolved into CLI config even though this command does not use a linked project ref | no                                                                |
+| `DBASE_WORKDIR`      | sets `<workdir>` for all local project reads and writes                             | no (falls back to `--workdir` -> current working dir)             |
 
 ## Exit Codes
 
-| Code | Condition                                                                                                                                                  |
-| ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `0`  | success                                                                                                                                                    |
-| `1`  | resolved `--workdir`/`SUPABASE_WORKDIR` doesn't exist or isn't a directory (`FunctionsNewWorkdirError`) — beats slug validation and every filesystem write |
-| `1`  | invalid function name                                                                                                                                      |
-| `1`  | function entrypoint already exists                                                                                                                         |
-| `1`  | local file write failed, or the JSON/JSONC config edit was refused (`FunctionsNewWriteError`)                                                              |
+| Code | Condition                                                                                                                                               |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `0`  | success                                                                                                                                                 |
+| `1`  | resolved `--workdir`/`DBASE_WORKDIR` doesn't exist or isn't a directory (`FunctionsNewWorkdirError`) — beats slug validation and every filesystem write |
+| `1`  | invalid function name                                                                                                                                   |
+| `1`  | function entrypoint already exists                                                                                                                      |
+| `1`  | local file write failed, or the JSON/JSONC config edit was refused (`FunctionsNewWriteError`)                                                           |
 
 ## Telemetry Events Fired
 
@@ -83,5 +83,5 @@ Emits a structured success result event with `path`, `function_name`, and `auth`
 - IDE settings scaffolding (`.vscode`, `.idea`) only runs in `--output-format text`; json / stream-json runs are payload-only.
 - The VS Code settings come from the shared `init` helper, so `.vscode/settings.json` also includes `json.schemaDownload.trustedDomains` trusting `https://supabase.com/schemas/`.
 - No Management API requests are made; all behavior is local filesystem work plus telemetry flush.
-- A non-existent `--workdir`/`SUPABASE_WORKDIR` now fails before any directory or file is created (CLI-2285) — previously a typo'd `--workdir` could scaffold a fresh `supabase/functions/…` tree (plus a new `config.toml`) at the wrong path.
+- A non-existent `--workdir`/`DBASE_WORKDIR` now fails before any directory or file is created (CLI-2285) — previously a typo'd `--workdir` could scaffold a fresh `supabase/functions/…` tree (plus a new `config.toml`) at the wrong path.
 - With a `config.json`/`config.jsonc` project the `functions.<name>` entry (`enabled`, `verify_jwt`, `import_map`, `entrypoint`) is span-edited into that file via `applyConfigEdits`; the file is never rewritten wholesale and no `config.toml` is created. A refused edit fails the command instead of falling back.

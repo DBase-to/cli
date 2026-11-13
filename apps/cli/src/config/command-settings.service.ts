@@ -8,19 +8,25 @@ import { Context } from "effect";
  * this also supports YAML profile files where `name:` is arbitrary user
  * input. See `command-settings.layer.ts` for the resolution semantics.
  */
-export type ProfileName = "supabase" | "supabase-staging" | "supabase-local" | "snap";
+export type ProfileName =
+  | "dbase"
+  | "dbase-test"
+  | "supabase"
+  | "supabase-staging"
+  | "supabase-local"
+  | "snap";
 
 interface CommandSettingsShape {
   readonly profile: string;
   readonly apiUrl: string;
-  /** Raw SUPABASE_PROFILE value; Some("") differs from an absent variable. */
+  /** Raw DBASE_PROFILE value; Some("") differs from an absent variable. */
   readonly profileEnvValue: Option.Option<string>;
   /** Resolved global state directory used for profiles and credentials. */
   readonly supabaseHome: string;
   /**
    * Project subdomain host for the active profile. Used to build the
    * expected CNAME target (`<ref>.<projectHost>`) in `domains create`.
-   * Defaults to `supabase.co` for the built-in `supabase` profile.
+   * Defaults to `dbase.to` for the built-in `dbase` profile.
    */
   readonly projectHost: string;
   /**

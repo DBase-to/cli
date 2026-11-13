@@ -30,8 +30,8 @@ const unlinkRuntimeLayer = Layer.mergeAll(
 );
 
 export const unlinkCommand = Command.make("unlink").pipe(
-  Command.withDescription("Unlink a Supabase project."),
-  Command.withShortDescription("Unlink a Supabase project"),
+  Command.withDescription("Unlink a DBase project."),
+  Command.withShortDescription("Unlink a DBase project"),
   withPermissions({ operations: [] }),
   Command.withHandler(() => unlink().pipe(withCommandTelemetry(), withJsonErrorHandling)),
   Command.provide(unlinkRuntimeLayer),

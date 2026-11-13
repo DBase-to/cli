@@ -59,7 +59,7 @@ import type { ComputeNewFlags } from "./new.command.ts";
 import { ComputeNewWorkdirError } from "./new.errors.ts";
 
 /**
- * `supabase compute new [name]` — scaffold `supabase/compute/<name>/` from the
+ * `dbase compute new [name]` — scaffold `supabase/compute/<name>/` from the
  * chosen runtime's starter files and record the choice in `config.toml`.
  * Nothing is deployed; this is entirely local-disk work.
  *
@@ -121,7 +121,7 @@ const resolveName = Effect.fnUntraced(function* (options: {
 
   return yield* new MissingComputeNameError({
     detail: "Compute name is required in non-interactive mode.",
-    suggestion: "Pass a compute name, for example `supabase compute new api`.",
+    suggestion: "Pass a compute name, for example `dbase compute new api`.",
   });
 });
 
@@ -489,6 +489,6 @@ export const computeNew = Effect.fn("compute.new")(function* (flags: ComputeNewF
     // On the success trailer rather than inline, the way `bootstrap` emits its
     // "start your app" line: the shell prints trailers once at the end of the
     // run, so the next step is the last thing on screen.
-    yield* emitSuccessTrailer(`Deploy it with ${aqua(`supabase compute push ${name}`)}.\n`);
+    yield* emitSuccessTrailer(`Deploy it with ${aqua(`dbase compute push ${name}`)}.\n`);
   }).pipe(Effect.ensuring(telemetryState.flush));
 });

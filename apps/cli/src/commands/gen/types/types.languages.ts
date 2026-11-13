@@ -106,7 +106,7 @@ export const flagDefaultsFor = (
 ): Readonly<Record<string, string>> =>
   Object.fromEntries(
     specs.flatMap((spec) =>
-      spec.default === undefined ? [] : [[`supabase-gen-types ${spec.name}`, String(spec.default)]],
+      spec.default === undefined ? [] : [[`dbase-gen-types ${spec.name}`, String(spec.default)]],
     ),
   );
 

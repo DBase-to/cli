@@ -1,16 +1,16 @@
-# `supabase sso remove`
+# `dbase sso remove`
 
 Target: hosted, consent default No — see [Command target](../../../../docs/command-target.md)
 
 ## Files Read
 
-| Path                                           | Format                    | When                                                                                                            |
-| ---------------------------------------------- | ------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| keyring `"Supabase CLI"` / `<profile>`         | OS keychain               | when `SUPABASE_ACCESS_TOKEN` unset and keyring available; account = `CommandSettings.profile`                   |
-| keyring `"Supabase CLI"` / `access-token`      | OS keychain               | legacy-key fallback when the profile-keyed lookup misses                                                        |
-| `~/.supabase/access-token`                     | plain text (token string) | last-resort fallback after env + keyring miss                                                                   |
-| `<workdir>/supabase/.temp/linked-project.json` | JSON                      | always — `linkedProjectCache` reads to decide whether to write                                                  |
-| `<workdir>/supabase/.temp/project-ref`         | plain text                | when `--remote=<ref>` and `SUPABASE_PROJECT_ID` env are unset, and as the linked parent for `--remote=<branch>` |
+| Path                                           | Format                    | When                                                                                                         |
+| ---------------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| keyring `"DBase CLI"` / `<profile>`            | OS keychain               | when `DBASE_ACCESS_TOKEN` unset and keyring available; account = `CommandSettings.profile`                   |
+| keyring `"DBase CLI"` / `access-token`         | OS keychain               | legacy-key fallback when the profile-keyed lookup misses                                                     |
+| `~/.supabase/access-token`                     | plain text (token string) | last-resort fallback after env + keyring miss                                                                |
+| `<workdir>/supabase/.temp/linked-project.json` | JSON                      | always — `linkedProjectCache` reads to decide whether to write                                               |
+| `<workdir>/supabase/.temp/project-ref`         | plain text                | when `--remote=<ref>` and `DBASE_PROJECT_ID` env are unset, and as the linked parent for `--remote=<branch>` |
 
 ## Files Written
 
@@ -21,24 +21,24 @@ Target: hosted, consent default No — see [Command target](../../../../docs/com
 
 ## API Routes
 
-| Method   | Path                                                         | Auth         | Request body | Response (used fields)                                                                                                                                                                                                                                   |
-| -------- | ------------------------------------------------------------ | ------------ | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `GET`    | `/v1/projects`                                               | Bearer token | none         | project list for the interactive picker — only when no ref comes from `--remote=<ref>`, `SUPABASE_PROJECT_ID` or `.temp/project-ref` and stdin is a TTY with interactive output                                                                          |
-| `GET`    | `/v1/projects/{parent}/branches`                             | Bearer token | none         | `[{id, name, project_ref, is_default}]` — only for `--remote=<branch>` (or the deprecated `--project-ref=<branch>`), and for a bare `--remote` followed by a word that could name a branch; `{parent}` is `SUPABASE_PROJECT_ID`, else the linked project |
-| `GET`    | `/v1/branches/{id}`                                          | Bearer token | none         | `{ref, status, …}` — only for `--remote=<branch UUID>` when no project is linked                                                                                                                                                                         |
-| `DELETE` | `/v1/projects/{ref}/config/auth/sso/providers/{provider_id}` | Bearer token | none         | `{id, saml?, domains?, created_at?, updated_at?}`                                                                                                                                                                                                        |
-| `GET`    | `/v1/projects/{ref}`                                         | Bearer token | none         | `{organization_slug}` — upgrade-gate side-call on a 4xx with no plan-gate error in the body                                                                                                                                                              |
-| `GET`    | `/v1/organizations/{slug}/entitlements`                      | Bearer token | none         | `{entitlements[].feature.key, .hasAccess}` — upgrade-gate side-call on a 4xx with no plan-gate error in the body                                                                                                                                         |
-| `GET`    | `/v1/projects/{ref}`                                         | Bearer token | none         | `{ref, name, organization_id, organization_slug}` — `linkedProjectCache` fill, best-effort, skipped when `.temp/linked-project.json` exists, `.temp/project-ref` names another ref, or no token is available                                             |
-| `GET`    | `/v1/projects/{ref}`                                         | Bearer token | none         | `{status}` — health lookup after a transport failure or 5xx from the SSO call; warns when not `ACTIVE_HEALTHY`, no retries, 10s timeout                                                                                                                  |
+| Method   | Path                                                         | Auth         | Request body | Response (used fields)                                                                                                                                                                                                                                |
+| -------- | ------------------------------------------------------------ | ------------ | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET`    | `/v1/projects`                                               | Bearer token | none         | project list for the interactive picker — only when no ref comes from `--remote=<ref>`, `DBASE_PROJECT_ID` or `.temp/project-ref` and stdin is a TTY with interactive output                                                                          |
+| `GET`    | `/v1/projects/{parent}/branches`                             | Bearer token | none         | `[{id, name, project_ref, is_default}]` — only for `--remote=<branch>` (or the deprecated `--project-ref=<branch>`), and for a bare `--remote` followed by a word that could name a branch; `{parent}` is `DBASE_PROJECT_ID`, else the linked project |
+| `GET`    | `/v1/branches/{id}`                                          | Bearer token | none         | `{ref, status, …}` — only for `--remote=<branch UUID>` when no project is linked                                                                                                                                                                      |
+| `DELETE` | `/v1/projects/{ref}/config/auth/sso/providers/{provider_id}` | Bearer token | none         | `{id, saml?, domains?, created_at?, updated_at?}`                                                                                                                                                                                                     |
+| `GET`    | `/v1/projects/{ref}`                                         | Bearer token | none         | `{organization_slug}` — upgrade-gate side-call on a 4xx with no plan-gate error in the body                                                                                                                                                           |
+| `GET`    | `/v1/organizations/{slug}/entitlements`                      | Bearer token | none         | `{entitlements[].feature.key, .hasAccess}` — upgrade-gate side-call on a 4xx with no plan-gate error in the body                                                                                                                                      |
+| `GET`    | `/v1/projects/{ref}`                                         | Bearer token | none         | `{ref, name, organization_id, organization_slug}` — `linkedProjectCache` fill, best-effort, skipped when `.temp/linked-project.json` exists, `.temp/project-ref` names another ref, or no token is available                                          |
+| `GET`    | `/v1/projects/{ref}`                                         | Bearer token | none         | `{status}` — health lookup after a transport failure or 5xx from the SSO call; warns when not `ACTIVE_HEALTHY`, no retries, 10s timeout                                                                                                               |
 
 ## Environment Variables
 
-| Variable                | Purpose                                                                                               | Required?                                               |
-| ----------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| `SUPABASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup)                                                  | no (falls back to keyring → `~/.supabase/access-token`) |
-| `SUPABASE_PROFILE`      | profile selector (built-in name or YAML file path)                                                    | no (defaults to `supabase`)                             |
-| `SUPABASE_YES`          | confirms the hosted mutation without asking; only the shell environment counts, never `supabase/.env` | no (falls back to the interactive prompt)               |
+| Variable             | Purpose                                                                                               | Required?                                               |
+| -------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| `DBASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup)                                                  | no (falls back to keyring → `~/.supabase/access-token`) |
+| `DBASE_PROFILE`      | profile selector (built-in name or YAML file path)                                                    | no (defaults to `supabase`)                             |
+| `DBASE_YES`          | confirms the hosted mutation without asking; only the shell environment counts, never `supabase/.env` | no (falls back to the interactive prompt)               |
 
 ## Exit Codes
 

@@ -523,7 +523,7 @@ describe("functions list integration", () => {
         resolve: () =>
           Effect.fail(
             new ProjectRefNotLinkedError({
-              message: "Cannot find project ref. Have you run supabase link?",
+              message: "Cannot find project ref. Have you run dbase link?",
             }),
           ),
         resolveForLink: () => Effect.die("not used in functions list test"),

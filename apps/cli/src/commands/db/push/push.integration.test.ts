@@ -246,7 +246,7 @@ function setup(
         : opts.linkedFails === true
           ? Effect.fail(
               new ProjectRefNotLinkedError({
-                message: "Cannot find project ref. Have you run supabase link?",
+                message: "Cannot find project ref. Have you run dbase link?",
               }),
             )
           : Effect.succeed({
@@ -376,7 +376,7 @@ describe("db push", () => {
       expect(out.promptConfirmCalls).toEqual([]);
       expect(out.stderrText).toContain("Applying migration 20240101000000_test.sql...");
       expect(out.stdoutText).toContain("Finished");
-      expect(out.stdoutText).toContain("supabase db push");
+      expect(out.stdoutText).toContain("dbase db push");
       expect(conn.execs).toContain("BEGIN");
       expect(conn.execs).toContain("COMMIT");
       expect(conn.queries.some((q) => q.sql.includes("INSERT INTO supabase_migrations"))).toBe(
@@ -476,7 +476,7 @@ describe("db push", () => {
         expect(failSuggestion(exit)).toContain(
           "migration repair --status reverted 20240101000000\n",
         );
-        expect(failSuggestion(exit)).toContain("supabase db pull\n");
+        expect(failSuggestion(exit)).toContain("dbase db pull\n");
       }
       expect(out).toBeDefined();
     });
@@ -496,7 +496,7 @@ describe("db push", () => {
       expect(failSuggestion(exit)).toContain(
         "migration repair --status reverted 20240101000000 --remote=<db-url>",
       );
-      expect(failSuggestion(exit)).toContain("supabase db pull --remote=<db-url>");
+      expect(failSuggestion(exit)).toContain("dbase db pull --remote=<db-url>");
       expect(failSuggestion(exit)).not.toContain("s3cret");
     });
   });
@@ -514,7 +514,7 @@ describe("db push", () => {
       expect(failSuggestion(exit)).toContain(
         "migration repair --status reverted 20240101000000 --remote",
       );
-      expect(failSuggestion(exit)).toContain("supabase db pull --remote");
+      expect(failSuggestion(exit)).toContain("dbase db pull --remote");
       expect(failSuggestion(exit)).not.toContain("--local");
     });
   });
@@ -1174,7 +1174,7 @@ describe("db push", () => {
             "Hint: This type may be defined in a schema that's not in your search_path.\n" +
             "      Use schema-qualified type references to avoid this error:\n" +
             "        CREATE TABLE example (col extensions.ltree);\n" +
-            "      Learn more: supabase migration new --help\n" +
+            "      Learn more: dbase migration new --help\n" +
             "At statement: 0\n" +
             "CREATE TABLE test (path ltree NOT NULL)\n" +
             "                        ^",

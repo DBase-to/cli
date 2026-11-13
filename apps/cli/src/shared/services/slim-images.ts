@@ -5,7 +5,8 @@ import {
 } from "@supabase/stack/internal/artifacts";
 import { Config, ConfigProvider, Effect, Option } from "effect";
 
-const SLIM_IMAGES_ENV = "SUPABASE_USE_SLIM_IMAGES";
+const SLIM_IMAGES_ENV = "DBASE_USE_SLIM_IMAGES";
+const LEGACY_SLIM_IMAGES_ENV = "SUPABASE_USE_SLIM_IMAGES";
 
 /** Dockerfile alias to slim service; kong, `pg14`, and the job images have no slim build. */
 const SLIM_SERVICE_BY_ALIAS = {
@@ -46,7 +47,12 @@ const V_PREFIXED_SERVICES: ReadonlySet<SlimServiceName> = new Set([
 
 /** The slim-image flag from the process environment, never the active `ConfigProvider`. */
 export const slimImagesEnabled = Effect.suspend(() =>
-  Config.option(Config.String(SLIM_IMAGES_ENV)).parse(ConfigProvider.fromEnv()),
+  Effect.gen(function* () {
+    const provider = ConfigProvider.fromEnv();
+    const preferred = yield* Config.option(Config.String(SLIM_IMAGES_ENV)).parse(provider);
+    if (Option.isSome(preferred) && preferred.value !== "") return preferred;
+    return yield* Config.option(Config.String(LEGACY_SLIM_IMAGES_ENV)).parse(provider);
+  }),
 ).pipe(Effect.map(Option.exists((value) => value === "true" || value === "1")), Effect.orDie);
 
 /** Catalog tag: `v`-prefixed for application services; postgres, studio, and vector stay bare. */

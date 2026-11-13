@@ -310,7 +310,7 @@ const removeBans = Effect.fnUntraced(function* (ref: string, addrs: ReadonlyArra
 const networkBannedError = (ref: string, addrs: ReadonlyArray<string>) =>
   new Errors.LinkedDbNetworkBannedError({
     message: `Network bans (${addrs.join(", ")}) may be blocking the connection. Removing them clears every listed address, so it needs --yes.`,
-    suggestion: `Re-run with --yes to remove them, or run supabase network-bans remove --db-unban-ip ${addrs.join(",")} --experimental --yes --remote=${ref}`,
+    suggestion: `Re-run with --yes to remove them, or run dbase network-bans remove --db-unban-ip ${addrs.join(",")} --experimental --yes --remote=${ref}`,
   });
 
 interface BanState {
@@ -506,7 +506,7 @@ export const resolveLinkedPassword = Effect.fn("DbConfig.resolveLinkedPassword")
   ) {
     noticedWithheldPassword.add(resolvedConfig);
     yield* output.warn(
-      `Not sending ${withheld.envName} to ${withheld.targetRef}: this directory is linked to ${withheld.linkedRef}. Using a temporary login role instead (needs supabase login or SUPABASE_ACCESS_TOKEN).${
+      `Not sending ${withheld.envName} to ${withheld.targetRef}: this directory is linked to ${withheld.linkedRef}. Using a temporary login role instead (needs dbase login or SUPABASE_ACCESS_TOKEN).${
         hasPasswordFlag ? ` Pass --password to use a password for ${withheld.targetRef}.` : ""
       }`,
     );
@@ -593,7 +593,7 @@ const resolvePoolerConn = Effect.fn("DbConfig.resolvePoolerConn")(function* (
 
 /**
  * Resolves the linked project's connection: dial the direct host, and — when unreachable (the
- * common case, since new Supabase projects have IPv6-only direct DB hosts) — transparently fall
+ * common case, since new DBase projects have IPv6-only direct DB hosts) — transparently fall
  * back to the project's IPv4 transaction pooler.
  *
  * `workdir`/`projectHost`/`poolerHost` are explicit parameters rather than read from
@@ -624,7 +624,7 @@ export const resolveLinkedConn = Effect.fn("DbConfig.resolveLinkedConn")(functio
     /**
      * Requests the Management API pooler-config fetch on an IPv4-only network independent of
      * `adHocProjectRef`'s saved-URL semantics, so a workdir with no usable saved pooler URL still
-     * reaches the primary pooler config instead of ending in the "run supabase link" IPv6 error.
+     * reaches the primary pooler config instead of ending in the "run dbase link" IPv6 error.
      */
     readonly fetchPoolerFromApi?: boolean;
     /** Whether the calling command binds `--password`, so the withheld-password notice can name it. */
@@ -655,7 +655,7 @@ export const resolveLinkedConn = Effect.fn("DbConfig.resolveLinkedConn")(functio
   if (reachable) {
     /* Same libpq TLS and timeout precedence as the pooler URL; host, port, role and database stay
        pinned. The empty `passfile=` skips a `.pgpass` read for a password that is discarded. Absent an
-       explicit `sslmode`/`sslrootcert`, the Supabase CA is pinned, as on the pooler path. */
+       explicit `sslmode`/`sslrootcert`, the DBase CA is pinned, as on the pooler path. */
     const parsed = yield* parseConnectionString(
       `postgresql://postgres@${host}:${DIRECT_PORT}/postgres?passfile=`,
     );
@@ -703,7 +703,7 @@ export const resolveLinkedConn = Effect.fn("DbConfig.resolveLinkedConn")(functio
       remedy: adHocProjectRef ? "pooler-url" : "link",
       suggestion: adHocProjectRef
         ? "Pass the project's connection pooler URL with --remote=<pooler db-url> to connect over IPv4."
-        : `Run supabase link --project-ref ${ref} to setup IPv4 connection.`,
+        : `Run dbase link --project-ref ${ref} to setup IPv4 connection.`,
     });
   }
   return poolerConn.value;

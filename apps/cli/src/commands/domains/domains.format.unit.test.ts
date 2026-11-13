@@ -60,7 +60,7 @@ describe("formatHostnameStatus", () => {
     );
     expect(out).toBe(
       "Custom hostname configuration complete, and ready for activation.\n\n" +
-        "Please ensure that your custom domain is set up as a CNAME record to your Supabase subdomain:\n" +
+        "Please ensure that your custom domain is set up as a CNAME record to your DBase subdomain:\n" +
         "shop.acme.dev CNAME -> abc.supabase.co",
     );
   });

@@ -20,7 +20,7 @@ import { vanitySubdomainsCommand } from "./vanity-subdomains.command.ts";
 
 const tempRoot = useTempWorkdir("supabase-vanity-subdomains-experimental-int-");
 
-const testRoot = Command.make("supabase").pipe(
+const testRoot = Command.make("dbase").pipe(
   Command.withSubcommands([vanitySubdomainsCommand]),
   Command.withGlobalFlags(GLOBAL_FLAGS),
 );

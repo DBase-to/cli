@@ -234,7 +234,7 @@ const preservedUnmanagedDeclarativeFilesWarning = (
       ", ",
     )}`,
   )}\n${yellow(
-    `These files still contribute to future declarative plans. To regenerate the directory cleanly, remove ${dir} and re-run supabase db schema declarative generate.`,
+    `These files still contribute to future declarative plans. To regenerate the directory cleanly, remove ${dir} and re-run dbase db schema declarative generate.`,
   )}\n`;
 
 /**

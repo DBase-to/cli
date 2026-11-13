@@ -22,9 +22,10 @@ if (!candidates) throw new Error(`Unsupported architecture: ${os.arch()} on ${pr
 const ext = process.platform === "win32" ? ".exe" : "";
 const require = createRequire(import.meta.url);
 
-// `SUPABASE_CLI_BINARY_OVERRIDE` lets tests and local dev point the shim at a specific compiled
+// `DBASE_CLI_BINARY_OVERRIDE` (or legacy `SUPABASE_CLI_BINARY_OVERRIDE`) lets tests and local dev point the shim at a specific compiled
 // binary on disk, bypassing the optional-dependency lookup.
-let binPath = process.env["SUPABASE_CLI_BINARY_OVERRIDE"];
+let binPath =
+  process.env["DBASE_CLI_BINARY_OVERRIDE"] ?? process.env["SUPABASE_CLI_BINARY_OVERRIDE"];
 
 if (!binPath) {
   for (const suffix of candidates) {
@@ -40,7 +41,7 @@ if (!binPath) {
 
 if (!binPath) {
   throw new Error(
-    `No matching Supabase CLI binary package found for ${process.platform}-${os.arch()}`,
+    `No matching DBase CLI binary package found for ${process.platform}-${os.arch()}`,
   );
 }
 

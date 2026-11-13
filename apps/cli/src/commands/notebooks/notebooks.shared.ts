@@ -21,7 +21,7 @@ import {
 } from "./notebooks.errors.ts";
 
 /**
- * The shared half of `supabase notebooks push` / `pull`: where notebooks live on
+ * The shared half of `dbase notebooks push` / `pull`: where notebooks live on
  * disk, what a notebook file is, and the five Management API routes both
  * commands drive. The handlers own the flow — which side is copied where, and
  * what to do about the notebooks only one side has. This module provides the
@@ -260,8 +260,7 @@ export const readNotebookFile = Effect.fnUntraced(function* (workdir: string, na
     catch: (cause) =>
       new NotebookFileError({
         detail: `${path} is not valid JSON: ${String(cause)}`,
-        suggestion:
-          "Run supabase notebooks pull <notebook-id> to replace it with the project's copy.",
+        suggestion: "Run dbase notebooks pull <notebook-id> to replace it with the project's copy.",
       }),
   });
 
@@ -271,7 +270,7 @@ export const readNotebookFile = Effect.fnUntraced(function* (workdir: string, na
         new NotebookFileError({
           detail: `${path} is not a notebook: ${cause.message}`,
           suggestion:
-            "Run supabase notebooks pull <notebook-id> to replace it with the project's copy.",
+            "Run dbase notebooks pull <notebook-id> to replace it with the project's copy.",
         }),
     ),
   );

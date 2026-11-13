@@ -19,7 +19,7 @@ import {
 
 // Real command tree, not a stand-in, so alias resolution (`flagAliasesFor`) has real
 // `Flag.withAlias` declarations to walk.
-const testRoot = Command.make("supabase").pipe(
+const testRoot = Command.make("dbase").pipe(
   Command.withSubcommands([branchesCommand, migrationCommand, ssoCommand]),
 );
 

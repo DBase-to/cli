@@ -56,6 +56,6 @@ export const encryptionUpdateRootKey = Effect.fn("encryption.update-root-key")(f
       return;
     }
 
-    yield* output.raw(`Finished ${aqua("supabase root-key update")}.\n`, "stderr");
+    yield* output.raw(`Finished ${aqua("dbase root-key update")}.\n`, "stderr");
   }).pipe(Effect.ensuring(linkedProjectCache.cache(ref)), Effect.ensuring(telemetryState.flush));
 });

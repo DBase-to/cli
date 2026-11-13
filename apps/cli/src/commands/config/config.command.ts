@@ -5,7 +5,7 @@ import { configPullCommand } from "./pull/pull.command.ts";
 import { configPushCommand } from "./push/push.command.ts";
 
 export const configCommand = Command.make("config").pipe(
-  Command.withDescription("Manage Supabase project configurations."),
+  Command.withDescription("Manage DBase project configurations."),
   Command.withShortDescription("Manage project configurations"),
   Command.withSubcommands([
     configConvertCommand,

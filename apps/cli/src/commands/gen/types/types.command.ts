@@ -122,19 +122,19 @@ export const genTypesCommand = Command.make("types", commandConfig).pipe(
   Command.withShortDescription("Generate types from Postgres schema"),
   Command.withExamples([
     {
-      command: "supabase gen types",
+      command: "dbase gen types",
       description: "Generate types from the local dev database",
     },
     {
-      command: "supabase gen types --lang=go --remote",
+      command: "dbase gen types --lang=go --remote",
       description: "Generate Go types from the linked project",
     },
     {
-      command: "supabase gen types --schema public --schema private --remote=abcdefghijklmnopqrst",
+      command: "dbase gen types --schema public --schema private --remote=abcdefghijklmnopqrst",
       description: "Generate types from a project ref with specific schemas",
     },
     {
-      command: "supabase gen types --schema public --schema auth --remote='postgresql://...'",
+      command: "dbase gen types --schema public --schema auth --remote='postgresql://...'",
       description: "Generate types from a database URL",
     },
   ]),

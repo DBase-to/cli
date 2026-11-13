@@ -18,11 +18,11 @@ const config = {
 export type ProjectsDeleteFlags = CliCommand.Command.Config.Infer<typeof config>;
 
 export const projectsDeleteCommand = Command.make("delete", config).pipe(
-  Command.withDescription("Delete a Supabase project."),
+  Command.withDescription("Delete a DBase project."),
   Command.withShortDescription("Delete a project"),
   Command.withExamples([
     {
-      command: "supabase projects delete abcdefghijklmnopqrst",
+      command: "dbase projects delete abcdefghijklmnopqrst",
       description: "Delete a project by ref",
     },
   ]),
@@ -34,7 +34,7 @@ export const projectsDeleteCommand = Command.make("delete", config).pipe(
             operationId: "v1-list-all-projects",
             kind: "required",
             context:
-              "no ref argument (or an empty one) and an interactive terminal (stdin TTY and text output); SUPABASE_PROJECT_ID and supabase/.temp/project-ref are ignored",
+              "no ref argument (or an empty one) and an interactive terminal (stdin TTY and text output); DBASE_PROJECT_ID and supabase/.temp/project-ref are ignored",
           },
           { operationId: "v1-delete-a-project", kind: "required" },
         ],

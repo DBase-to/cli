@@ -73,7 +73,7 @@ import {
 import type { ComputePushFlags } from "./push.command.ts";
 
 /**
- * `supabase compute push [name...]` — deploys the named compute
+ * `dbase compute push [name...]` — deploys the named compute
  * (or every compute, if none are named), reading runtime, size, exposure, and
  * source from `[compute.<name>]`; an unrecorded runtime is guessed and
  * reported. Builds run server-side from an uploaded context and are waited on
@@ -269,7 +269,7 @@ function missingSourceSuggestion(input: {
   readonly entry: ComputeEntry | undefined;
 }): string {
   if (input.entry === undefined) {
-    return `Scaffold it with \`supabase compute new ${input.name}\`.`;
+    return `Scaffold it with \`dbase compute new ${input.name}\`.`;
   }
   if (input.entry.source !== undefined) {
     return `Create ${input.sourceDisplay}, or correct \`source\` under ${entryRef(input.config, input.name)} in ${input.config.path}.`;
@@ -516,7 +516,7 @@ const deployOneCompute = Effect.fn("compute.push.deployOne")(function* (input: {
       detail: `The build for "${name}" failed${
         settled.stateReason === undefined ? "" : `: ${settled.stateReason}`
       }.`,
-      suggestion: `Fix the issue, then re-run \`supabase compute push ${name}${input.refSuffix}\`.`,
+      suggestion: `Fix the issue, then re-run \`dbase compute push ${name}${input.refSuffix}\`.`,
     });
   }
 
@@ -569,7 +569,7 @@ const deployOneCompute = Effect.fn("compute.push.deployOne")(function* (input: {
       // unpredictably and buried the command mid-sentence.
       yield* emitSuccessTrailer(
         `\nYour build was submitted successfully.\n` +
-          `Run ${aqua(`supabase compute status ${name}${input.refSuffix}`)} to check on it.\n`,
+          `Run ${aqua(`dbase compute status ${name}${input.refSuffix}`)} to check on it.\n`,
       );
     }
   }
@@ -623,7 +623,7 @@ const reportStillBuilding = Effect.fnUntraced(function* (building: ReadonlyArray
 });
 
 /**
- * `supabase compute push [name...]` — deploys the named compute,
+ * `dbase compute push [name...]` — deploys the named compute,
  * or every compute when none are named.
  *
  * Deploys run one at a time: each is a server-side container build, and several
@@ -663,7 +663,7 @@ export const computePush = Effect.fn("compute.push")(function* (
           project.projectRoot,
           project.computeDir,
         )}.`,
-        suggestion: "Scaffold one with `supabase compute new <name>`.",
+        suggestion: "Scaffold one with `dbase compute new <name>`.",
       });
     }
 
@@ -677,7 +677,7 @@ export const computePush = Effect.fn("compute.push")(function* (
         if (compute.entry === undefined && compute.sourceExists) {
           return yield* new MissingComputeExposureError({
             detail: `No exposure is configured for the unconfigured compute "${name}".`,
-            suggestion: `Run \`supabase compute push ${name} --exposure public${refSuffix}\` or \`supabase compute push ${name} --exposure private${refSuffix}\`.`,
+            suggestion: `Run \`dbase compute push ${name} --exposure public${refSuffix}\` or \`dbase compute push ${name} --exposure private${refSuffix}\`.`,
           });
         }
       }

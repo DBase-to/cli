@@ -17,9 +17,9 @@ export const completionFishCommand = Command.make("fish", config).pipe(
   Command.withDescription(
     "Generate the autocompletion script for the fish shell.\n\n" +
       "To load completions in your current shell session:\n\n" +
-      "\tsupabase completion fish | source\n\n" +
+      "\tdbase completion fish | source\n\n" +
       "To load completions for every new session, execute once:\n\n" +
-      "\tsupabase completion fish > ~/.config/fish/completions/supabase.fish\n\n" +
+      "\tdbase completion fish > ~/.config/fish/completions/dbase.fish\n\n" +
       "You will need to start a new shell for this setup to take effect.",
   ),
   Command.withShortDescription("Generate the autocompletion script for fish"),

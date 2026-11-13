@@ -2115,7 +2115,7 @@ describe("withCommandTelemetry", () => {
           if (!(error instanceof RemovedSurfaceError)) return;
           expect(error.kind).toBe("flag");
           expect(error.message).toBe("--create-ticket was removed.");
-          expect(error.suggestion).toBe("Report CLI problems with `supabase issue bug`.");
+          expect(error.suggestion).toBe("Report CLI problems with `dbase issue bug`.");
           expect(didRun()).toBe(false);
           expect(telemetryState.flushCount).toBe(1);
           expect(analytics.captured).toHaveLength(1);

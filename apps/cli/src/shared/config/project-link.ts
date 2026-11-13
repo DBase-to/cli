@@ -59,7 +59,7 @@ export class ProjectLinkMalformedError extends Schema.TaggedError<ProjectLinkMal
   { path: Schema.String, message: Schema.String },
 ) {
   get suggestion(): string {
-    return "Run `supabase link` to write the project link again.";
+    return "Run `dbase link` to write the project link again.";
   }
 
   get [ErrorActionabilityId](): CliErrorActionabilityDeclaration {

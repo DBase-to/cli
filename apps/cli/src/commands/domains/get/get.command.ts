@@ -33,12 +33,12 @@ export type DomainsGetFlags = CliCommand.Command.Config.Infer<typeof config>;
 
 export const domainsGetCommand = Command.make("get", config).pipe(
   Command.withDescription(
-    "Retrieve the custom hostname config for your project, as stored in the Supabase platform.",
+    "Retrieve the custom hostname config for your project, as stored in the DBase platform.",
   ),
   Command.withShortDescription("Get the current custom hostname config"),
   Command.withExamples([
     {
-      command: "supabase domains get --remote=abcdefghijklmnopqrst",
+      command: "dbase domains get --remote=abcdefghijklmnopqrst",
       description: "Get the custom hostname config for a project",
     },
   ]),

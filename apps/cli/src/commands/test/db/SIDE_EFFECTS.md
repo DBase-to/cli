@@ -1,4 +1,4 @@
-# `supabase test db [path...]`
+# `dbase test db [path...]`
 
 Target: selectable, consent default No — see [Command target](../../../../docs/command-target.md)
 
@@ -7,16 +7,16 @@ remote `--remote=<url>`) asks for one confirmation before anything runs; the loc
 
 ## Files Read
 
-| Path                                   | Format | When                                                                                                                                                   |
-| -------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `<cwd>/supabase/tests/**/*.{sql,pg}`   | SQL    | default test discovery when no `[path]` given                                                                                                          |
-| `<path...>`                            | SQL    | when explicit test files/dirs are passed                                                                                                               |
-| `<workdir>/supabase/config.toml`       | TOML   | always: `db.port`, `db.shadow_port`, `db.password`, `project_id`. Absent → defaults; **present but malformed → command fails**                         |
-| `<workdir>/supabase/.temp/pooler-url`  | text   | remote-project pooler fallback only — the connection-pooler URL written by `supabase link` (read from this file rather than from config.toml)          |
-| `~/.supabase/access-token`             | text   | a remote project or branch only, when `SUPABASE_ACCESS_TOKEN` unset                                                                                    |
-| `<workdir>/supabase/.temp/project-ref` | text   | bare `--remote` only, to resolve the ref — skipped when `SUPABASE_PROJECT_ID` is set; with no selector, only to name the project in the `Target:` hint |
-| `<supabaseHome>/stacks/*/state.json`   | JSON   | managed local stack: discover the project stack and open its saved definition                                                                          |
-| `PGSSL*` PEM files                     | PEM    | remote project, when set; see `db push`                                                                                                                |
+| Path                                   | Format | When                                                                                                                                                |
+| -------------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `<cwd>/supabase/tests/**/*.{sql,pg}`   | SQL    | default test discovery when no `[path]` given                                                                                                       |
+| `<path...>`                            | SQL    | when explicit test files/dirs are passed                                                                                                            |
+| `<workdir>/supabase/config.toml`       | TOML   | always: `db.port`, `db.shadow_port`, `db.password`, `project_id`. Absent → defaults; **present but malformed → command fails**                      |
+| `<workdir>/supabase/.temp/pooler-url`  | text   | remote-project pooler fallback only — the connection-pooler URL written by `dbase link` (read from this file rather than from config.toml)          |
+| `~/.supabase/access-token`             | text   | a remote project or branch only, when `DBASE_ACCESS_TOKEN` unset                                                                                    |
+| `<workdir>/supabase/.temp/project-ref` | text   | bare `--remote` only, to resolve the ref — skipped when `DBASE_PROJECT_ID` is set; with no selector, only to name the project in the `Target:` hint |
+| `<supabaseHome>/stacks/*/state.json`   | JSON   | managed local stack: discover the project stack and open its saved definition                                                                       |
+| `PGSSL*` PEM files                     | PEM    | remote project, when set; see `db push`                                                                                                             |
 
 ## Files Written
 
@@ -47,27 +47,27 @@ Managed local stack prove runs the catalog `pg_prove` tool through the owning st
 
 ## API Routes (remote project or branch only)
 
-| Method | Path                                       | Auth         | Request body                              | Response (used fields)                                                                                                                                                                          |
-| ------ | ------------------------------------------ | ------------ | ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| POST   | `/v1/projects/{ref}/cli/login-role`        | access token | `{ read_only: false }`                    | `{ role, password }`                                                                                                                                                                            |
-| POST   | `/v1/projects/{ref}/network-bans/retrieve` | access token | —                                         | `{ banned_ipv4_addresses }`                                                                                                                                                                     |
-| DELETE | `/v1/projects/{ref}/network-bans`          | access token | `{ ipv4_addresses, requester_ip: false }` | —                                                                                                                                                                                               |
-| GET    | `/v1/projects/{parent}/branches`           | access token | —                                         | `[{id, name, project_ref}]` — only for `--remote=<branch>`, and for a bare `--remote` followed by a word that could name a branch; `{parent}` is `SUPABASE_PROJECT_ID`, else the linked project |
-| GET    | `/v1/branches/{id}`                        | access token | —                                         | `{ref, status, …}` — only for `--remote=<branch UUID>` when no project is linked                                                                                                                |
+| Method | Path                                       | Auth         | Request body                              | Response (used fields)                                                                                                                                                                       |
+| ------ | ------------------------------------------ | ------------ | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| POST   | `/v1/projects/{ref}/cli/login-role`        | access token | `{ read_only: false }`                    | `{ role, password }`                                                                                                                                                                         |
+| POST   | `/v1/projects/{ref}/network-bans/retrieve` | access token | —                                         | `{ banned_ipv4_addresses }`                                                                                                                                                                  |
+| DELETE | `/v1/projects/{ref}/network-bans`          | access token | `{ ipv4_addresses, requester_ip: false }` | —                                                                                                                                                                                            |
+| GET    | `/v1/projects/{parent}/branches`           | access token | —                                         | `[{id, name, project_ref}]` — only for `--remote=<branch>`, and for a bare `--remote` followed by a word that could name a branch; `{parent}` is `DBASE_PROJECT_ID`, else the linked project |
+| GET    | `/v1/branches/{id}`                        | access token | —                                         | `{ref, status, …}` — only for `--remote=<branch UUID>` when no project is linked                                                                                                             |
 
 ## Environment Variables
 
-| Variable                     | Purpose                                                                                                                                                                   | Required?                                     |
-| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
-| `SUPABASE_DB_PASSWORD`       | remote project or branch: skip temporary login-role creation                                                                                                              | no                                            |
-| `SUPABASE_ACCESS_TOKEN`      | remote project or branch: Management API auth                                                                                                                             | no (falls back to keyring/file)               |
-| `SUPABASE_PROJECT_ID`        | linked project ref override and the parent that `--remote=<branch>` is resolved against (superseded by `--remote=<ref>`)                                                  | no                                            |
-| `SUPABASE_YES`               | grants the hosted-target confirmation (shell only; `supabase/.env` is ignored)                                                                                            | no (also `--yes`)                             |
-| `SUPABASE_SERVICES_HOSTNAME` | local stack: overrides the local DB host (dev-container/remote Docker)                                                                                                    | no (defaults via `DOCKER_HOST` → `127.0.0.1`) |
-| `DOCKER_HOST`                | local stack: tcp daemon host used when no services-hostname override                                                                                                      | no                                            |
-| `BITBUCKET_CLONE_DIR`        | when set, omit `--security-opt label:disable` (Bitbucket rejects it)                                                                                                      | no                                            |
-| `DEBUG` / `--debug`          | append `--verbose` to `pg_prove`                                                                                                                                          | no                                            |
-| `PG*` libpq                  | remote project, the CLI's own connection: remote-project TLS, timeout, service; see `db push`. A native `pg_prove` sees shell values only; `pg_prove` containers get none | no                                            |
+| Variable                  | Purpose                                                                                                                                                                   | Required?                                     |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| `DBASE_DB_PASSWORD`       | remote project or branch: skip temporary login-role creation                                                                                                              | no                                            |
+| `DBASE_ACCESS_TOKEN`      | remote project or branch: Management API auth                                                                                                                             | no (falls back to keyring/file)               |
+| `DBASE_PROJECT_ID`        | linked project ref override and the parent that `--remote=<branch>` is resolved against (superseded by `--remote=<ref>`)                                                  | no                                            |
+| `DBASE_YES`               | grants the hosted-target confirmation (shell only; `supabase/.env` is ignored)                                                                                            | no (also `--yes`)                             |
+| `DBASE_SERVICES_HOSTNAME` | local stack: overrides the local DB host (dev-container/remote Docker)                                                                                                    | no (defaults via `DOCKER_HOST` → `127.0.0.1`) |
+| `DOCKER_HOST`             | local stack: tcp daemon host used when no services-hostname override                                                                                                      | no                                            |
+| `BITBUCKET_CLONE_DIR`     | when set, omit `--security-opt label:disable` (Bitbucket rejects it)                                                                                                      | no                                            |
+| `DEBUG` / `--debug`       | append `--verbose` to `pg_prove`                                                                                                                                          | no                                            |
+| `PG*` libpq               | remote project, the CLI's own connection: remote-project TLS, timeout, service; see `db push`. A native `pg_prove` sees shell values only; `pg_prove` containers get none | no                                            |
 
 ## Exit Codes
 
@@ -77,7 +77,7 @@ Managed local stack prove runs the catalog `pg_prove` tool through the owning st
 | `1`  | `pg_prove` exits non-zero (test failures) — `error running container: exit N`, or `error running pg_prove: exit N` on a managed stack or native external client |
 | `1`  | `pg_prove` ran no tests (`Result: NOTESTS`) — `no pgTAP tests found in <paths>`                                                                                 |
 | `1`  | database connection failure / pgTAP enable failure / docker failure / remote-project auth or IPv6 errors                                                        |
-| `1`  | hosted target in a JSON, piped, agent or non-TTY run without `--yes` or a shell `SUPABASE_YES` (`HostedMutationConsentRequiredError`); nothing runs             |
+| `1`  | hosted target in a JSON, piped, agent or non-TTY run without `--yes` or a shell `DBASE_YES` (`HostedMutationConsentRequiredError`); nothing runs                |
 | `1`  | hosted target confirmation declined (`HostedMutationDeclinedError`, `context canceled`); nothing runs                                                           |
 
 ## Telemetry Events Fired
@@ -152,11 +152,11 @@ command (exit 1).
   `pg_extension` by extension name (any schema) before enabling — including when the user pre-installed pgTAP in a non-`extensions`
   schema such as `public`.
 - The remote connection pooler URL is read from `supabase/.temp/pooler-url` (written by
-  `supabase link`) rather than from config.toml — the `[db.pooler]` config.toml field
+  `dbase link`) rather than from config.toml — the `[db.pooler]` config.toml field
   is intentionally ignored. The pooler's `?options=reference=<ref>` startup param is
   carried through to the connection for the legacy pooler-URL format. The saved URL is used
   only when the target ref is the linked project's ref (`.temp/project-ref`); a `--remote=<ref>`
-  or `SUPABASE_PROJECT_ID` naming another project fetches that project's pooler config from the
+  or `DBASE_PROJECT_ID` naming another project fetches that project's pooler config from the
   Management API instead.
 - Compose pg_prove image is fixed at `supabase/pg_prove:3.36`; there is no `[images] pgprove`
   config override in the TS config schema.

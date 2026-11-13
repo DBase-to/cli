@@ -69,7 +69,7 @@ const makeProjectLinkState = Effect.gen(function* () {
     if (Option.isNone(current)) {
       return yield* new ProjectNotLinkedError({
         detail: "Cannot set active branch: no linked project found.",
-        suggestion: "Run `supabase link` to link this checkout to a Supabase project first.",
+        suggestion: "Run `dbase link` to link this checkout to a DBase project first.",
       });
     }
     yield* save({ ...current.value, active_branch: branch });

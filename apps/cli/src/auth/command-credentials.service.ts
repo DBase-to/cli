@@ -27,7 +27,7 @@ interface CommandCredentialsShape {
     NotLoggedInError | DeleteTokenError | PlatformError
   >;
   /**
-   * Deletes every entry in the `"Supabase CLI"` keyring namespace (project database passwords
+   * Deletes every entry in the `"DBase CLI"` keyring namespace (project database passwords
    * stored by `link`). Best-effort: never fails, and no-ops when the keyring is unavailable.
    */
   readonly deleteAllProjectCredentials: Effect.Effect<void>;

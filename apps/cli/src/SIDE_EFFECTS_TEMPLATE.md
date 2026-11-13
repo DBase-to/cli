@@ -15,9 +15,9 @@
 
 ---
 
-# `supabase <command> [subcommand]`
+# `dbase <command> [subcommand]`
 
-<!-- Replace the heading above with the exact CLI invocation, e.g. `supabase orgs list` -->
+<!-- Replace the heading above with the exact CLI invocation, e.g. `dbase orgs list` -->
 
 ## Files Read
 
@@ -25,12 +25,12 @@
      Path notation: use ~ for $HOME, ./ for CWD-relative paths.
      Format: the file encoding / structure (plain text, JSON, TOML, …).
      When: the condition under which this file is read (e.g. "always", "when --flag is set",
-     "when SUPABASE_ACCESS_TOKEN is not set"). -->
+     "when DBASE_ACCESS_TOKEN is not set"). -->
 
-| Path                              | Format                    | When                                                       |
-| --------------------------------- | ------------------------- | ---------------------------------------------------------- |
-| `~/.supabase/access-token`        | plain text (token string) | when `SUPABASE_ACCESS_TOKEN` unset and keyring unavailable |
-| `<workdir>/.supabase/config.json` | JSON                      | always, to resolve linked project ref                      |
+| Path                              | Format                    | When                                                    |
+| --------------------------------- | ------------------------- | ------------------------------------------------------- |
+| `~/.supabase/access-token`        | plain text (token string) | when `DBASE_ACCESS_TOKEN` unset and keyring unavailable |
+| `<workdir>/.supabase/config.json` | JSON                      | always, to resolve linked project ref                   |
 
 ## Files Written
 
@@ -58,11 +58,11 @@
 <!-- List every env var the command reads, directly or via a service.
      Required?: "yes" / "no (falls back to …)" -->
 
-| Variable                   | Purpose                                                                                    | Required?                                               |
-| -------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------- |
-| `SUPABASE_ACCESS_TOKEN`    | auth token (bypasses credential file/keyring lookup)                                       | no (falls back to keyring → `~/.supabase/access-token`) |
-| `SUPABASE_PROFILE`         | built-in profile name or YAML file path                                                    | no (falls back to `~/.supabase/profile` -> `supabase`)  |
-| `SUPABASE_API_MAX_RETRIES` | Management API client retries after the first attempt (`0` = send once), not command loops | no (falls back to 5)                                    |
+| Variable                | Purpose                                                                                    | Required?                                               |
+| ----------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------- |
+| `DBASE_ACCESS_TOKEN`    | auth token (bypasses credential file/keyring lookup)                                       | no (falls back to keyring → `~/.supabase/access-token`) |
+| `DBASE_PROFILE`         | built-in profile name or YAML file path                                                    | no (falls back to `~/.supabase/profile` -> `supabase`)  |
+| `DBASE_API_MAX_RETRIES` | Management API client retries after the first attempt (`0` = send once), not command loops | no (falls back to 5)                                    |
 
 ## Exit Codes
 

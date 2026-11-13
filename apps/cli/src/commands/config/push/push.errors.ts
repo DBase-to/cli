@@ -7,7 +7,7 @@ import {
 } from "../../../shared/telemetry/error-actionability.ts";
 
 /**
- * Tagged errors for `supabase config push`.
+ * Tagged errors for `dbase config push`.
  *
  * Two shapes recur:
  *   - **network** errors carry `{ message }` (and sometimes `decode` — a 200

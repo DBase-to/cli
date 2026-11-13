@@ -4,7 +4,7 @@ import { orgsListCommand } from "./list/list.command.ts";
 import { orgsMembersCommand } from "./members/members.command.ts";
 
 // There is no Long description, so the Short string is reused for both the subcommand
-// summary and the `supabase orgs --help` long description. No trailing
+// summary and the `dbase orgs --help` long description. No trailing
 // period.
 export const orgsCommand = Command.make("orgs").pipe(
   Command.withDescription("Manage DBase organizations"),

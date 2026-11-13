@@ -149,7 +149,7 @@ describe("secrets unset integration", () => {
         expect(out.stderrText).toBe(
           `${unverifiedTargetBanner()}Confirmed by --yes: Unset 2 secrets on ${ON_TARGET}\n`,
         );
-        expect(out.stdoutText).toBe("Finished supabase secrets unset.\n");
+        expect(out.stdoutText).toBe("Finished dbase secrets unset.\n");
         assertPermissionDrift({
           command: "secrets unset",
           activeFlags: { all: false, "dry-run": false },
@@ -169,7 +169,7 @@ describe("secrets unset integration", () => {
         expect(out.stderrText).toContain("Secrets to unset:\n • FOO\n");
         expect(methods(api)).toEqual(["DELETE"]);
         expect(api.requests[0]?.body).toEqual(["FOO"]);
-        expect(out.stdoutText).toBe("Finished supabase secrets unset.\n");
+        expect(out.stdoutText).toBe("Finished dbase secrets unset.\n");
       }).pipe(Effect.provide(layer));
     });
   });
@@ -226,7 +226,7 @@ describe("secrets unset integration", () => {
         `GET ${projectUrl}`,
       ]);
       expect(api.requests[2]?.body).toEqual(["FOO"]);
-      expect(out.stdoutText).toBe("Finished supabase secrets unset.\n");
+      expect(out.stdoutText).toBe("Finished dbase secrets unset.\n");
       expect(yield* decodeJson(yield* fs.readFileString(cachePath))).toMatchObject({
         ref: VALID_REF,
       });
@@ -368,7 +368,7 @@ describe("secrets unset integration", () => {
           expect(successes).toEqual([
             {
               type: "success",
-              message: "Finished supabase secrets unset.",
+              message: "Finished dbase secrets unset.",
               data: { project_ref: VALID_REF, count: 2, names: ["FOO", "BAR"], dry_run: false },
             },
           ]);
@@ -408,7 +408,7 @@ describe("secrets unset integration", () => {
       const { layer, out } = setup({ yes: true, outputFlag: "json" });
       return Effect.gen(function* () {
         yield* unset({ names: ["FOO"] });
-        expect(out.stdoutText).toBe("Finished supabase secrets unset.\n");
+        expect(out.stdoutText).toBe("Finished dbase secrets unset.\n");
       }).pipe(Effect.provide(layer));
     });
   });

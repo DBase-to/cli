@@ -103,7 +103,7 @@ describe("upgrade notice user-level cache", () => {
       const { fetchCalls, stderr } = yield* runHook(ctx, "v99.99.100");
 
       expect(fetchCalls).toBe(0);
-      expect(stderr).toContain("A new version of Supabase CLI is available: v99.99.99");
+      expect(stderr).toContain("A new version of DBase CLI is available: v99.99.99");
     }).pipe(Effect.provide(Layer.mergeAll(BunServices.layer, runtimeInfoLayer))),
   );
 
@@ -136,7 +136,7 @@ describe("upgrade notice user-level cache", () => {
         const { fetchCalls, stderr } = yield* runHook(ctx, "v99.99.100");
 
         expect(fetchCalls).toBe(0);
-        expect(stderr).toContain("A new version of Supabase CLI is available: v99.99.99");
+        expect(stderr).toContain("A new version of DBase CLI is available: v99.99.99");
       }).pipe(Effect.provide(Layer.mergeAll(BunServices.layer, runtimeInfoLayer))),
     );
 
@@ -147,7 +147,7 @@ describe("upgrade notice user-level cache", () => {
         const { fetchCalls, stderr } = yield* runHook(ctx, "v99.99.100", { stack: true });
 
         expect(fetchCalls).toBe(1);
-        expect(stderr).toContain("A new version of Supabase CLI is available: v99.99.100");
+        expect(stderr).toContain("A new version of DBase CLI is available: v99.99.100");
         expect(yield* ctx.fs.readFileString(ctx.cacheFile)).toBe("v99.99.100");
         expect(yield* ctx.fs.readFileString(ctx.legacyCache)).toBe("v99.99.99");
       }).pipe(Effect.provide(Layer.mergeAll(BunServices.layer, runtimeInfoLayer))),

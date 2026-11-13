@@ -1,4 +1,4 @@
-# `supabase completion`
+# `dbase completion`
 
 ## Files Read
 
@@ -9,14 +9,14 @@
 ## Files Written
 
 These are written by the dynamic `__complete`/`__completeNoDesc` responder
-(`cli/complete.ts`), not by `supabase completion <shell>` itself —
+(`cli/complete.ts`), not by `dbase completion <shell>` itself —
 documented here for the same reason the Environment Variables section below
 covers that responder's own env vars: this is the only `SIDE_EFFECTS.md` for
 the completion family.
 
-| Path                                            | Format | When                                                                                                                                                                                                                                                                                                          |
-| ----------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `<SUPABASE_HOME or ~/.supabase>/telemetry.json` | JSON   | Best-effort, on every `__complete`/`__completeNoDesc` request — written by the shared `TelemetryRuntime`/consent bootstrap the `cli_command_executed` capture below runs through (`telemetry/telemetry-state.layer.ts`'s file, same path/format), regardless of whether the PostHog delivery itself succeeds. |
+| Path                                         | Format | When                                                                                                                                                                                                                                                                                                          |
+| -------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `<DBASE_HOME or ~/.supabase>/telemetry.json` | JSON   | Best-effort, on every `__complete`/`__completeNoDesc` request — written by the shared `TelemetryRuntime`/consent bootstrap the `cli_command_executed` capture below runs through (`telemetry/telemetry-state.layer.ts`'s file, same path/format), regardless of whether the PostHog delivery itself succeeds. |
 
 ## API Routes
 
@@ -28,13 +28,13 @@ the completion family.
 
 These two are consumed by the dynamic `__complete`/`__completeNoDesc` responder
 (`cli/complete.ts`, `resolveIncludeDescriptions`), not by
-`supabase completion <shell>` itself — documented here because this is the only
+`dbase completion <shell>` itself — documented here because this is the only
 `SIDE_EFFECTS.md` for the completion family, and the two hidden commands are only
 ever reached via a script this family generates.
 
-| Variable                           | Purpose                                                                                                                                                                                                                                                                    | Required? |
-| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| `SUPABASE_COMPLETION_DESCRIPTIONS` | Program-specific override for whether `__complete` includes descriptions (accepted spellings: `1/t/T/TRUE/true/True` = include, `0/f/F/FALSE/false/False` = omit; anything else ignored). Has no effect on `__completeNoDesc`, which always omits descriptions regardless. | No        |
+| Variable                        | Purpose                                                                                                                                                                                                                                                                    | Required? |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| `DBASE_COMPLETION_DESCRIPTIONS` | Program-specific override for whether `__complete` includes descriptions (accepted spellings: `1/t/T/TRUE/true/True` = include, `0/f/F/FALSE/false/False` = omit; anything else ignored). Has no effect on `__completeNoDesc`, which always omits descriptions regardless. | No        |
 
 ### Telemetry
 
@@ -59,14 +59,14 @@ always discard this process's stderr, so an upgrade message would never be seen.
 
 ## Exit Codes
 
-| Code | Condition                                                                                                                                                                                                                                                                                                             |
-| ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `0`  | success — completion script for the chosen shell printed to stdout; also `__complete`/`__completeNoDesc`'s normal case (candidates + `:<directive>` line, even when zero candidates match)                                                                                                                            |
-| `1`  | unknown shell subcommand, or bare `completion` with no shell subcommand — **see Notes (CLI-1906)**; also `__complete`/`__completeNoDesc` invoked with no completion args at all (`supabase __complete` alone) — realistically unreachable, since every generated script always appends at least an empty trailing arg |
+| Code | Condition                                                                                                                                                                                                                                                                                                          |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `0`  | success — completion script for the chosen shell printed to stdout; also `__complete`/`__completeNoDesc`'s normal case (candidates + `:<directive>` line, even when zero candidates match)                                                                                                                         |
+| `1`  | unknown shell subcommand, or bare `completion` with no shell subcommand — **see Notes (CLI-1906)**; also `__complete`/`__completeNoDesc` invoked with no completion args at all (`dbase __complete` alone) — realistically unreachable, since every generated script always appends at least an empty trailing arg |
 
 ## Output
 
-`supabase completion <shell>` prints a shell-specific autocompletion script to stdout.
+`dbase completion <shell>` prints a shell-specific autocompletion script to stdout.
 Supports four shells: `bash`, `fish`, `powershell`, `zsh`.
 
 Each leaf is generated **natively in TypeScript** by
@@ -82,11 +82,11 @@ bit values, and the two activeHelp constants. Each handler prints the generated
 script verbatim via `Output.raw` (no framing, spinner, or JSON envelope). The
 scripts are stable across releases, so users who
 installed completions previously — cached bytes in their `~/.zshrc`
-(`eval "$(supabase completion zsh)"`), brew-managed `_supabase` files in their
+(`eval "$(dbase completion zsh)"`), brew-managed `_dbase` files in their
 `fpath`, or analogous bash/fish/powershell artifacts — see no behavior change.
 
-The generated scripts call back to `supabase __complete <args>` on every tab press to
-fetch dynamic completion candidates, or `supabase __completeNoDesc <args>` when the
+The generated scripts call back to `dbase __complete <args>` on every tab press to
+fetch dynamic completion candidates, or `dbase __completeNoDesc <args>` when the
 script was generated with `--no-descriptions` (an alias for the same hidden
 command) — see `apps/cli/src/cli/complete.ts`, which intercepts both
 `__complete` and `__completeNoDesc` before Effect's argv parser and natively

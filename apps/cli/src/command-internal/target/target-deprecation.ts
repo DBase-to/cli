@@ -40,7 +40,7 @@ const replacementOf = (value: RemoteValue): string => {
   }
 };
 
-/** The ref a Supabase connection string names: `db.<ref>.<host>` or a `postgres.<ref>` user. */
+/** The ref a DBase connection string names: `db.<ref>.<host>` or a `postgres.<ref>` user. */
 const refFromDbUrl = (url: string, projectHost: string): string | undefined => {
   try {
     const parsed = new URL(url);

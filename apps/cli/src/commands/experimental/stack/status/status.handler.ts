@@ -213,10 +213,7 @@ const renderDrift = (drift: StackReport["config_drift"]): ReadonlyArray<string> 
     ? [
         yellow(drift.message, process.stdout),
         ...(drift.paths ?? []).map((path) => `  ${path}`),
-        gray(
-          "Run supabase stack stop, then supabase stack start to apply the changes.",
-          process.stdout,
-        ),
+        gray("Run dbase stack stop, then dbase stack start to apply the changes.", process.stdout),
       ]
     : [gray(drift.message, process.stdout)];
 
@@ -230,7 +227,7 @@ const render = (
   const header = `${bold(`Stack ${report.identity.name}`, process.stdout)} · ${readinessColor(report.readiness)} · ${report.runtime} · ${gray(report.identity.project_root, process.stdout)}`;
   const owner =
     report.owner === "unavailable"
-      ? [gray("The stack owner is not running. Run supabase stack start.", process.stdout)]
+      ? [gray("The stack owner is not running. Run dbase stack start.", process.stdout)]
       : [];
   const summary = renderStackSummary(
     observed.map(({ instance, observation, error }) => ({
@@ -262,7 +259,7 @@ const findTarget = Effect.fn("experimental.stack.status.findTarget")(function* (
     return yield* new StackCommandStatusError({
       reason: "not-found",
       message: "No managed stack exists for the selected project.",
-      suggestion: "Run supabase stack start first.",
+      suggestion: "Run dbase stack start first.",
     });
   return {
     ...target,
@@ -405,20 +402,20 @@ export const stackStatus = Effect.fn("experimental.stack.status")(function* (
         return yield* new StackCommandStatusError({
           reason: "lifecycle",
           message: "The stack owner or primary database is unavailable for environment export.",
-          suggestion: "Run supabase stack start first.",
+          suggestion: "Run dbase stack start first.",
         });
       if (databaseObservation.config.service !== "database")
         return yield* new StackCommandStatusError({
           reason: "lifecycle",
           message: "The primary database configuration is unavailable for environment export.",
-          suggestion: "Run supabase stack start first.",
+          suggestion: "Run dbase stack start first.",
         });
       const identity = yield* stack.credentials.get.pipe(Effect.mapError(mapStackError));
       if (identity === undefined)
         return yield* new StackCommandStatusError({
           reason: "lifecycle",
           message: "The stack's active credentials are unavailable for environment export.",
-          suggestion: "Run supabase stack start first.",
+          suggestion: "Run dbase stack start first.",
         });
       const connections = stackConnections(members);
       const values = stackEnvValues(connections, identity, envNames);

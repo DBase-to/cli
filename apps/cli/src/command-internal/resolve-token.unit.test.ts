@@ -21,7 +21,7 @@ const settings = (accessToken: Option.Option<Redacted.Redacted<string>>) =>
     explicitWorkdir: false,
     workdirEnvValue: Option.none(),
     githubToken: Option.none(),
-    userAgent: "SupabaseCLI/test",
+    userAgent: "DBaseCLI/test",
     apiMaxRetries: Option.none(),
   });
 

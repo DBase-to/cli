@@ -33,11 +33,11 @@ export const stackDestroyCommand = Command.make("destroy", config).pipe(
   Command.withShortDescription("Destroy a managed local stack"),
   Command.withExamples([
     {
-      command: "supabase stack destroy --stack feature-a --yes",
+      command: "dbase stack destroy --stack feature-a --yes",
       description: "Permanently destroy the feature-a stack",
     },
     {
-      command: "supabase stack destroy --stack-id 019532ab --stack-id 019532cd --yes",
+      command: "dbase stack destroy --stack-id 019532ab --stack-id 019532cd --yes",
       description: "Permanently destroy multiple stacks by id or unique id prefix",
     },
   ]),

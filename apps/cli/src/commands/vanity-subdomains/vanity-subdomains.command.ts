@@ -5,7 +5,7 @@ import { vanitySubdomainsDeleteCommand } from "./delete/delete.command.ts";
 import { vanitySubdomainsGetCommand } from "./get/get.command.ts";
 
 export const vanitySubdomainsCommand = Command.make("vanity-subdomains").pipe(
-  Command.withDescription("Manage vanity subdomains for Supabase projects."),
+  Command.withDescription("Manage vanity subdomains for DBase projects."),
   Command.withShortDescription("Manage vanity subdomains"),
   Command.withSubcommands([
     vanitySubdomainsGetCommand,

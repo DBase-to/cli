@@ -18,7 +18,7 @@ export class MigrationDropError extends Data.TaggedError("MigrationDropError")<{
 
 /**
  * A single PL/pgSQL `DO` block that drops user schemas, non-managed extensions, and
- * `public`-schema objects, drops every RLS policy and every non-Supabase publication
+ * `public`-schema objects, drops every RLS policy and every non-DBase publication
  * database-wide (not just in `public`), then truncates the managed
  * `auth`/`supabase_functions`/`supabase_migrations` tables. The schema loop anti-joins
  * `pg_depend` scoped by `classid` to `pg_namespace` rows so an oid collision with another
@@ -64,7 +64,7 @@ begin
     execute format('drop routine if exists %I.%I(%s) cascade', rec.pronamespace::regnamespace::name, rec.proname, pg_catalog.pg_get_function_identity_arguments(rec.oid));
   end loop;
 
-  -- views (necessary for views referencing objects in Supabase-managed schemas)
+  -- views (necessary for views referencing objects in DBase-managed schemas)
   for rec in
     select *
     from pg_class c
@@ -76,7 +76,7 @@ begin
     execute format('drop view if exists %I.%I cascade', rec.relnamespace::regnamespace::name, rec.relname);
   end loop;
 
-  -- materialized views (necessary for materialized views referencing objects in Supabase-managed schemas)
+  -- materialized views (necessary for materialized views referencing objects in DBase-managed schemas)
   for rec in
     select *
     from pg_class c

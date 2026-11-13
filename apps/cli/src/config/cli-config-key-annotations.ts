@@ -292,12 +292,12 @@ export const CLI_CONFIG_FAMILIES: ReadonlyArray<CliConfigFamilyDef> = [
 ];
 
 /**
- * `SUPABASE_*` variables the CLI reads that are not config overrides, with their owner. A derived
- * config env name must never equal one of these.
+ * `DBASE_*`/`SUPABASE_*` variables the CLI reads that are not config overrides, with their
+ * owner. A derived config env name must never equal one of these.
  */
-export const CLI_NON_CONFIG_ENV_NAMES: Readonly<Record<string, string>> = {
+const CLI_NON_CONFIG_ENV_NAMES_BASE: Readonly<Record<string, string>> = {
   SUPABASE_ACCESS_TOKEN: "platform auth",
-  SUPABASE_ACTIVE_HELP: "shell completion",
+  DBASE_ACTIVE_HELP: "shell completion",
   SUPABASE_ANON_KEY: "functions runtime env",
   SUPABASE_API_MAX_RETRIES: "platform api retries",
   SUPABASE_API_URL: "platform profile",
@@ -360,3 +360,15 @@ export const CLI_NON_CONFIG_ENV_NAMES: Readonly<Record<string, string>> = {
   SUPABASE_WORKDIR: "global flag",
   SUPABASE_YES: "global flag",
 };
+
+/** The base names plus the `DBASE_*` twin of every `SUPABASE_*` entry. */
+export const CLI_NON_CONFIG_ENV_NAMES: Readonly<Record<string, string>> = Object.fromEntries(
+  Object.entries(CLI_NON_CONFIG_ENV_NAMES_BASE).flatMap(([name, owner]) =>
+    name.startsWith("SUPABASE_")
+      ? [
+          [name, owner],
+          [`DBASE_${name.slice("SUPABASE_".length)}`, owner],
+        ]
+      : [[name, owner]],
+  ),
+);

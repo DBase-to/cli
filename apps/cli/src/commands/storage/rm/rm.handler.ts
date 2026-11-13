@@ -42,7 +42,7 @@ interface RmSummary {
 }
 
 /**
- * `supabase storage rm <file>...` — remove objects by path. Paths are
+ * `dbase storage rm <file>...` — remove objects by path. Paths are
  * grouped by bucket; each bucket is confirmed, its explicit prefixes are
  * deleted (chunked at 1000), and any prefix that resolved to a directory is
  * removed recursively when `-r` is set.

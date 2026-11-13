@@ -53,7 +53,7 @@ interface CpSummary {
 }
 
 /**
- * `supabase storage cp <src> <dst>` — copy objects between local paths and
+ * `dbase storage cp <src> <dst>` — copy objects between local paths and
  * the Storage service. The scheme of `src`/`dst` selects the operation:
  * `ss://`→local download, local→`ss://` upload, both `ss://` → error, both
  * local → unsupported.

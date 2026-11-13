@@ -123,7 +123,7 @@ function setupLogin(opts: SetupOpts = {}) {
       : loginApiLayer.pipe(Layer.provide(httpApi.httpClientLayer), Layer.provide(cliSettings)),
     mockStdin(isTTY, opts.pipedStdin),
     mockBrowser,
-    Layer.succeed(ProfileFlag, opts.profileFlag ?? "supabase"),
+    Layer.succeed(ProfileFlag, opts.profileFlag ?? "dbase"),
     ...(opts.argv !== undefined ? [Layer.succeed(CliArgs, { args: opts.argv })] : []),
   );
   return { layer, out, credentials, crypto, loginApi, telemetry, analytics, httpApi };
@@ -190,7 +190,7 @@ describe("login integration", () => {
     return Effect.gen(function* () {
       yield* login(flags());
       expect(out.stdoutText).toContain(
-        "Hello from Supabase! Press Enter to open browser and login automatically.",
+        "Hello from DBase! Press Enter to open browser and login automatically.",
       );
       expect(out.stdoutText).toContain("/cli/login?session_id=test-session-id");
       expect(out.stdoutText).toContain("Token my-machine created successfully.");

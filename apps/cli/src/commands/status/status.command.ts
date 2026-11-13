@@ -75,15 +75,15 @@ const statusRuntimeLayer = Layer.mergeAll(
 );
 
 export const statusCommand = Command.make("status", config).pipe(
-  Command.withDescription("Show status of local Supabase containers."),
-  Command.withShortDescription("Show status of local Supabase containers"),
+  Command.withDescription("Show status of local DBase containers."),
+  Command.withShortDescription("Show status of local DBase containers"),
   Command.withExamples([
     {
-      command: "supabase status -o env --override-name api.url=NEXT_PUBLIC_SUPABASE_URL",
+      command: "dbase status -o env --override-name api.url=NEXT_PUBLIC_SUPABASE_URL",
       description: "Output env vars with custom variable names",
     },
     {
-      command: "supabase status -o json",
+      command: "dbase status -o json",
       description: "Output status as JSON",
     },
   ]),

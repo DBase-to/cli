@@ -371,10 +371,8 @@ describe("migration repair", () => {
       const stderr = stripAnsi(out.stderrText);
       const stdout = stripAnsi(out.stdoutText);
       expect(stderr).toContain("Repaired migration history: [20240101000000] => applied");
-      expect(stdout).toContain("Finished supabase migration repair.");
-      expect(stderr).toContain(
-        "Run supabase migration list to show the updated migration history.",
-      );
+      expect(stdout).toContain("Finished dbase migration repair.");
+      expect(stderr).toContain("Run dbase migration list to show the updated migration history.");
     }).pipe(Effect.provide(layer));
   });
 
@@ -390,7 +388,7 @@ describe("migration repair", () => {
         }),
       );
       expect(stripAnsi(ctx.out.stderrText)).toContain(
-        `Run supabase migration list --remote=${FLAG_REF} to show the updated migration history.`,
+        `Run dbase migration list --remote=${FLAG_REF} to show the updated migration history.`,
       );
     }).pipe(Effect.provide(ctx.layer));
   });

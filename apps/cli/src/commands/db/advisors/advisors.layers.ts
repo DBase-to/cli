@@ -14,7 +14,7 @@ import { linkedProjectCacheLayer } from "../../../telemetry/linked-project-cache
 import { telemetryStateLayer } from "../../../telemetry/telemetry-state.layer.ts";
 
 /**
- * Runtime layer for `supabase db advisors`, which spans two backends:
+ * Runtime layer for `dbase db advisors`, which spans two backends:
  *
  *   - **`--local` / `--db-url`** — the Postgres connection + db-config resolver.
  *   - **`--linked`** — typed advisor GETs via the lazy platform-API factory, project-ref

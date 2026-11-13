@@ -175,10 +175,12 @@ export const commandSettingsLayer = Layer.unwrap(
           configOptionBoth("DBASE_ACCESS_TOKEN", "SUPABASE_ACCESS_TOKEN"),
         );
         const accessToken = Option.filter(rawAccessToken, (value) => value.length > 0).pipe(
-          Option.map((value) => Redacted.make(value, { label: "SUPABASE_ACCESS_TOKEN" })),
+          Option.map((value) => Redacted.make(value, { label: "DBASE_ACCESS_TOKEN" })),
         );
 
-        const rawProjectId = yield* read(Config.option(Config.String(CliEnvNames.projectId.name)));
+        const rawProjectId = yield* read(
+          configOptionBoth(CliEnvNames.projectId.name, CliEnvNames.projectIdLegacy.name),
+        );
         const projectId = Option.filter(rawProjectId, (value) => value.length > 0);
 
         const workdirEnvValue = yield* read(configOptionBoth("DBASE_WORKDIR", "SUPABASE_WORKDIR"));
@@ -209,7 +211,7 @@ export const commandSettingsLayer = Layer.unwrap(
           },
         );
 
-        const userAgent = `SupabaseCLI/${CLI_VERSION}`;
+        const userAgent = `DBaseCLI/${CLI_VERSION}`;
 
         yield* Effect.annotateCurrentSpan({
           "config.workdir_explicit": explicitWorkdir,

@@ -13,7 +13,7 @@ import { aqua, yellow } from "../../command-internal/colors.ts";
  * delegates entirely to `status`'s own rendering.
  */
 export function startAlreadyRunningMessage(): string {
-  return `${aqua("supabase start")} is already running.\n`;
+  return `${aqua("dbase start")} is already running.\n`;
 }
 
 /**
@@ -33,7 +33,7 @@ export const START_WAITING_FOR_HEALTH_CHECKS_MESSAGE = "Waiting for health check
  * the status table renders to stdout.
  */
 export function startCompletedMessage(): string {
-  return `Started ${aqua("supabase")} local development setup.\n\n`;
+  return `Started ${aqua("dbase")} local development setup.\n\n`;
 }
 
 /**

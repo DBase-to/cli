@@ -51,7 +51,7 @@ export class DbQueryReadFileError extends Data.TaggedError("DbQueryReadFileError
 
 /**
  * `--linked` was used without an access token; message text and the
- * `Run supabase login first.` suggestion are an established output contract.
+ * `Run dbase login first.` suggestion are an established output contract.
  */
 export class DbQueryLoginRequiredError extends Data.TaggedError("DbQueryLoginRequiredError")<{
   readonly message: string;

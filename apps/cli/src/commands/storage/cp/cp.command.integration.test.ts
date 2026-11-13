@@ -24,7 +24,7 @@ import { commandTargetLayer } from "../../../shared/output/command-target.layer.
 // `--experimental` gate and the `--remote`/`--local` mutex check in the handler — not just
 // reachable by calling `storageCp` directly with a handcrafted flags object, which
 // `cp.integration.test.ts` can't exercise since it calls the handler directly.
-const testRoot = Command.make("supabase").pipe(
+const testRoot = Command.make("dbase").pipe(
   Command.withSubcommands([storageCommand]),
   Command.withGlobalFlags(GLOBAL_FLAGS),
 );

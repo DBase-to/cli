@@ -12,7 +12,7 @@ export const inspectDbTotalIndexSizeCommand = Command.make(
   "total-index-size",
   INSPECT_DB_FLAGS,
 ).pipe(
-  Command.withDescription("Removed: use `supabase inspect db index-stats` instead."),
+  Command.withDescription("Removed: use `dbase inspect db index-stats` instead."),
   Command.withShortDescription("Removed: use `inspect db index-stats` instead"),
   // Removed: fails before any Management API call, so no flag changes what it calls.
   withPermissions({
@@ -20,7 +20,7 @@ export const inspectDbTotalIndexSizeCommand = Command.make(
     noApiEffectFlags: ["db-url", "linked", "local", "project-ref", "remote"],
   }),
   Command.withHandler(() =>
-    removedCommand("Use `supabase inspect db index-stats` instead.").pipe(
+    removedCommand("Use `dbase inspect db index-stats` instead.").pipe(
       withCommandTelemetry(),
       withJsonErrorHandling,
     ),

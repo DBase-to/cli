@@ -10,7 +10,7 @@ const TEST_TIMEOUT_MS = COMMAND_TIMEOUT_MS + AUX_TIMEOUT_MS * 5 + 2 * 60_000;
 
 const decodeJson = Schema.decodeUnknownEffect(Schema.fromJsonString(Schema.Unknown));
 
-describe("supabase db start (e2e, role alignment)", () => {
+describe("dbase db start (e2e, role alignment)", () => {
   it.live(
     "keeps CLI migration and shadow consumers on postgres",
     () =>

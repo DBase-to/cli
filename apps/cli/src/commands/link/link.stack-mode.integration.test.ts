@@ -355,7 +355,7 @@ describe("link integration in stack mode", () => {
       const error = yield* resolver.resolve(Option.none()).pipe(Effect.flip);
 
       expect(error).toBeInstanceOf(ProjectLinkMalformedError);
-      expect(error).toHaveProperty("suggestion", expect.stringContaining("supabase link"));
+      expect(error).toHaveProperty("suggestion", expect.stringContaining("dbase link"));
     }).pipe(Effect.provide(layer));
   });
 

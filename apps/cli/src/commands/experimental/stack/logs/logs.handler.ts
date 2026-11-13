@@ -137,14 +137,14 @@ export const stackLogs = Effect.fn("experimental.stack.logs")(function* (flags: 
       return yield* new StackCommandLogsError({
         reason: "flags",
         message: "No managed stack exists for the selected project.",
-        suggestion: "Run supabase stack start first.",
+        suggestion: "Run dbase stack start first.",
       });
     if (flags.follow && !target.hostRunning)
       return yield* new StackCommandLogsError({
         reason: "lifecycle",
         message: "The stack is not running, so there are no new lines to follow.",
         suggestion:
-          "Run supabase stack logs without --follow to read retained logs, or supabase stack start first.",
+          "Run dbase stack logs without --follow to read retained logs, or dbase stack start first.",
       });
     const selected = yield* select(target.definition, flags.service);
     yield* Effect.annotateCurrentSpan({ "stack.service_count": selected.length });
@@ -207,7 +207,7 @@ export const stackLogs = Effect.fn("experimental.stack.logs")(function* (flags: 
             reason: "lifecycle",
             message:
               "The running stack serves none of the selected services, so there are no new lines to follow.",
-            suggestion: "Run supabase stack logs without --follow to read retained logs.",
+            suggestion: "Run dbase stack logs without --follow to read retained logs.",
           });
         if (missing.length > 0)
           yield* output.warn(

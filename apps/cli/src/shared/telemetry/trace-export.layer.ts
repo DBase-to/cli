@@ -20,6 +20,7 @@ import { SecureRandom } from "effect/crypto";
 import { Headers, HttpTraceContext } from "effect/http";
 import { CLI_VERSION } from "../cli/version.ts";
 import { CliSettings } from "../config/cli-settings.service.ts";
+import { configOptionBoth } from "../config/env-names.ts";
 import { writeStdio } from "../output/output.layer.ts";
 import { RuntimeInfo } from "../runtime/runtime-info.service.ts";
 import { makeDebugConsoleExporter } from "./exporters/debug-console.ts";
@@ -49,10 +50,16 @@ export interface TraceSettings {
   readonly sink: Option.Option<TraceSink>;
 }
 
-const optionalEnv = (name: string) =>
+const optionalEnvName = (name: string) =>
   Config.option(Config.String(name)).pipe(
     Effect.map(Option.filter((value) => value.trim().length > 0)),
     Effect.mapError(() => `${name} could not be read`),
+  );
+
+const optionalEnv = (dbaseName: string, supabaseName: string) =>
+  configOptionBoth(dbaseName, supabaseName).pipe(
+    Effect.map(Option.filter((value) => value.trim().length > 0)),
+    Effect.mapError(() => `${dbaseName} could not be read`),
   );
 
 function otlpTracesUrl(endpoint: string): Option.Option<string> {
@@ -91,11 +98,11 @@ function parseOtlpHeaders(value: string): Option.Option<Record<string, string>> 
 }
 
 const resolveSink = Effect.fnUntraced(function* () {
-  const file = yield* optionalEnv("SUPABASE_TRACE_FILE");
-  const endpoint = yield* optionalEnv("SUPABASE_OTLP_ENDPOINT");
+  const file = yield* optionalEnv("DBASE_TRACE_FILE", "SUPABASE_TRACE_FILE");
+  const endpoint = yield* optionalEnv("DBASE_OTLP_ENDPOINT", "SUPABASE_OTLP_ENDPOINT");
   if (Option.isSome(file) && Option.isSome(endpoint)) {
     return yield* Effect.fail(
-      "SUPABASE_TRACE_FILE and SUPABASE_OTLP_ENDPOINT are both set; choose one trace destination",
+      "DBASE_TRACE_FILE and DBASE_OTLP_ENDPOINT are both set; choose one trace destination",
     );
   }
   if (Option.isSome(file)) {
@@ -108,20 +115,20 @@ const resolveSink = Effect.fnUntraced(function* () {
   const url = otlpTracesUrl(endpoint.value);
   if (Option.isNone(url)) {
     return yield* Effect.fail(
-      "SUPABASE_OTLP_ENDPOINT must be an http(s) URL, for example http://localhost:4318",
+      "DBASE_OTLP_ENDPOINT must be an http(s) URL, for example http://localhost:4318",
     );
   }
-  const rawHeaders = yield* optionalEnv("SUPABASE_OTLP_HEADERS");
+  const rawHeaders = yield* optionalEnv("DBASE_OTLP_HEADERS", "SUPABASE_OTLP_HEADERS");
   const headers = Option.isSome(rawHeaders) ? parseOtlpHeaders(rawHeaders.value) : Option.some({});
   if (Option.isNone(headers)) {
     return yield* Effect.fail(
-      "SUPABASE_OTLP_HEADERS must be a comma-separated list of key=value pairs",
+      "DBASE_OTLP_HEADERS must be a comma-separated list of key=value pairs",
     );
   }
   return Option.some<TraceSink>({
     _tag: "Otlp",
     url: url.value,
-    headers: Redacted.make(headers.value, { label: "SUPABASE_OTLP_HEADERS" }),
+    headers: Redacted.make(headers.value, { label: "DBASE_OTLP_HEADERS" }),
   });
 });
 
@@ -133,7 +140,7 @@ export const resolveTraceSettings: Effect.Effect<TraceSettings, never, Path.Path
   );
 
 // An explicitly configured sink records the run even when the caller's context is unsampled.
-const externalParent = optionalEnv("TRACEPARENT").pipe(
+const externalParent = optionalEnvName("TRACEPARENT").pipe(
   Effect.orElseSucceed(() => Option.none<string>()),
   Effect.map(
     Option.flatMap((traceparent) =>

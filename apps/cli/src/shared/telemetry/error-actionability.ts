@@ -69,13 +69,13 @@ export const CliSuggestionType = {
 export type CliSuggestionType = (typeof CliSuggestionType)[keyof typeof CliSuggestionType];
 
 const CLI_SUGGESTED_COMMANDS = [
-  "supabase branches create",
-  "supabase link",
-  "supabase login",
-  "supabase network-bans remove",
-  "supabase seed buckets",
-  "supabase start",
-  "supabase stop",
+  "dbase branches create",
+  "dbase link",
+  "dbase login",
+  "dbase network-bans remove",
+  "dbase seed buckets",
+  "dbase start",
+  "dbase stop",
 ] as const;
 
 type CliSuggestedCommand = (typeof CLI_SUGGESTED_COMMANDS)[number];
@@ -241,22 +241,22 @@ type CliErrorSuggestion =
   | {
       readonly has_suggestion: true;
       readonly suggestion_type: typeof CliSuggestionType.Login;
-      readonly suggested_command?: "supabase login";
+      readonly suggested_command?: "dbase login";
     }
   | {
       readonly has_suggestion: true;
       readonly suggestion_type: typeof CliSuggestionType.LinkProject;
-      readonly suggested_command?: "supabase link";
+      readonly suggested_command?: "dbase link";
     }
   | {
       readonly has_suggestion: true;
       readonly suggestion_type: typeof CliSuggestionType.RunCommand;
       readonly suggested_command?:
-        | "supabase branches create"
-        | "supabase network-bans remove"
-        | "supabase seed buckets"
-        | "supabase start"
-        | "supabase stop";
+        | "dbase branches create"
+        | "dbase network-bans remove"
+        | "dbase seed buckets"
+        | "dbase start"
+        | "dbase stop";
     }
   | {
       readonly has_suggestion: true;
@@ -323,7 +323,7 @@ export const actionability = {
     error_category: CliErrorCategory.Auth,
     has_suggestion: true,
     suggestion_type: CliSuggestionType.Login,
-    suggested_command: "supabase login",
+    suggested_command: "dbase login",
   },
   authToken: {
     error_kind: CliErrorKind.UserActionable,
@@ -389,7 +389,7 @@ export const actionability = {
     error_category: CliErrorCategory.Permission,
     has_suggestion: true,
     suggestion_type: CliSuggestionType.Login,
-    suggested_command: "supabase login",
+    suggested_command: "dbase login",
   },
   planLimit: {
     error_kind: CliErrorKind.UserActionable,
@@ -402,14 +402,14 @@ export const actionability = {
     error_category: CliErrorCategory.ProjectNotLinked,
     has_suggestion: true,
     suggestion_type: CliSuggestionType.LinkProject,
-    suggested_command: "supabase link",
+    suggested_command: "dbase link",
   },
   missingProjectRef: {
     error_kind: CliErrorKind.UserActionable,
     error_category: CliErrorCategory.MissingProjectRef,
     has_suggestion: true,
     suggestion_type: CliSuggestionType.LinkProject,
-    suggested_command: "supabase link",
+    suggested_command: "dbase link",
   },
   /** Local link state exists but is unusable — re-linking repairs it. */
   relinkProject: {
@@ -417,7 +417,7 @@ export const actionability = {
     error_category: CliErrorCategory.InvalidConfig,
     has_suggestion: true,
     suggestion_type: CliSuggestionType.LinkProject,
-    suggested_command: "supabase link",
+    suggested_command: "dbase link",
   },
   dockerNotRunning: {
     error_kind: CliErrorKind.UserActionable,
@@ -430,14 +430,14 @@ export const actionability = {
     error_category: CliErrorCategory.InvalidConfig,
     has_suggestion: true,
     suggestion_type: CliSuggestionType.RunCommand,
-    suggested_command: "supabase start",
+    suggested_command: "dbase start",
   },
   stopStack: {
     error_kind: CliErrorKind.UserActionable,
     error_category: CliErrorCategory.InvalidConfig,
     has_suggestion: true,
     suggestion_type: CliSuggestionType.RunCommand,
-    suggested_command: "supabase stop",
+    suggested_command: "dbase stop",
   },
   /** The stack is up but bucket seeding failed; re-running the seed step recovers. */
   seedBuckets: {
@@ -445,7 +445,7 @@ export const actionability = {
     error_category: CliErrorCategory.InvalidConfig,
     has_suggestion: true,
     suggestion_type: CliSuggestionType.RunCommand,
-    suggested_command: "supabase seed buckets",
+    suggested_command: "dbase seed buckets",
   },
   /**
    * A container was killed for exceeding its memory limit — the user can raise
@@ -785,14 +785,14 @@ function sanitizeSuggestion(
     return { has_suggestion: true, suggestion_type: suggestionType };
   }
   if (!isSuggestedCommand(suggestedCommand)) return undefined;
-  if (suggestionType === CliSuggestionType.Login && suggestedCommand === "supabase login") {
+  if (suggestionType === CliSuggestionType.Login && suggestedCommand === "dbase login") {
     return {
       has_suggestion: true,
       suggestion_type: suggestionType,
       suggested_command: suggestedCommand,
     };
   }
-  if (suggestionType === CliSuggestionType.LinkProject && suggestedCommand === "supabase link") {
+  if (suggestionType === CliSuggestionType.LinkProject && suggestedCommand === "dbase link") {
     return {
       has_suggestion: true,
       suggestion_type: suggestionType,
@@ -801,10 +801,10 @@ function sanitizeSuggestion(
   }
   if (
     suggestionType === CliSuggestionType.RunCommand &&
-    (suggestedCommand === "supabase branches create" ||
-      suggestedCommand === "supabase seed buckets" ||
-      suggestedCommand === "supabase start" ||
-      suggestedCommand === "supabase stop")
+    (suggestedCommand === "dbase branches create" ||
+      suggestedCommand === "dbase seed buckets" ||
+      suggestedCommand === "dbase start" ||
+      suggestedCommand === "dbase stop")
   ) {
     return {
       has_suggestion: true,

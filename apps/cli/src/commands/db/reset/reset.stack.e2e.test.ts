@@ -154,7 +154,7 @@ const composeStack = Effect.fn("DbResetStackE2e.composeStack")(function* (
   return stack;
 });
 
-describe("supabase db reset (stack e2e)", () => {
+describe("dbase db reset (stack e2e)", () => {
   for (const runtime of ["native", "docker"] as const) {
     if (runtime === "native" && !nativeSupported) continue;
 

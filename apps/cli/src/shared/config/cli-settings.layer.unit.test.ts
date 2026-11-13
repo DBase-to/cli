@@ -83,7 +83,7 @@ describe("cliSettingsLayer", () => {
     );
   }
 
-  it.effect("falls back to ambient env when no Supabase project is found", () =>
+  it.effect("falls back to ambient env when no DBase project is found", () =>
     Effect.gen(function* () {
       const path = yield* Path.Path;
       const tempDir = yield* makeTempDir;
