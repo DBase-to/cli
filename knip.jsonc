@@ -47,7 +47,7 @@
         // apps/cli/tests/smoke-test-windows.ts
         "scoop",
         // The CLI under test in apps/cli/tests/smoke-test-{macos,windows}.ts.
-        "supabase",
+        "dbase",
       ],
       // TODO(CLI-2424): spawned through a node_modules/.bin path in scripts/publish-docs-spec.ts.
       "ignoreDependencies": ["prettier"],

@@ -91,7 +91,7 @@ describe("orgs members list integration", () => {
       const exit = yield* Effect.exit(orgsMembersList({ slug: "acme" }));
       expect(Exit.isFailure(exit)).toBe(true);
       if (Exit.isFailure(exit)) {
-        expect(JSON.stringify(exit.cause)).toContain("OrgsMembersListUnexpectedStatusError");
+        expect(String(exit.cause)).toContain("OrgsMembersListUnexpectedStatusError");
       }
     }).pipe(Effect.provide(layer));
   });

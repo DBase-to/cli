@@ -91,10 +91,6 @@ export const SYNC_PAIRS = [
 /** Login of the release GitHub App, the only author of sync pull requests. */
 export const RELEASE_BOT_LOGIN = "supabase-cli-releaser[bot]";
 
-export function isAllowedSyncPair(source: string, target: string): boolean {
-  return SYNC_PAIRS.some((pair) => pair.source === source && pair.target === target);
-}
-
 /** GraphQL. Errors in the response body are thrown. */
 export async function githubGraphql<T>(
   token: string,

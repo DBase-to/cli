@@ -11,8 +11,7 @@ export const CLI_VERSION =
  * anything telling a user to upgrade has to send them here rather than name an
  * invocation.
  */
-export const CLI_UPGRADE_GUIDE_URL =
-  "https://dbase.to/docs/guides/cli/getting-started";
+export const CLI_UPGRADE_GUIDE_URL = "https://dbase.to/docs/guides/cli/getting-started";
 
 export interface ParsedSemver {
   readonly nums: readonly [string, string, string];

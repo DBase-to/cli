@@ -69,12 +69,8 @@ const main = Effect.gen(function* () {
 
   // Published releases use unversioned Windows tarball names (release-shared.yml copies the
   // versioned build); local builds only emit versioned archives, so --local keeps those names.
-  const amd64Tar = local
-    ? `dbase_${version}_windows_amd64.tar.gz`
-    : "dbase_windows_amd64.tar.gz";
-  const arm64Tar = local
-    ? `dbase_${version}_windows_arm64.tar.gz`
-    : "dbase_windows_arm64.tar.gz";
+  const amd64Tar = local ? `dbase_${version}_windows_amd64.tar.gz` : "dbase_windows_amd64.tar.gz";
+  const arm64Tar = local ? `dbase_${version}_windows_arm64.tar.gz` : "dbase_windows_arm64.tar.gz";
 
   const manifest = {
     version,

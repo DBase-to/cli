@@ -4,7 +4,7 @@
  */
 
 /** Native targets every slim release publishes, in catalog serialization order. */
-export const NATIVE_TARGETS = ["darwin-arm64", "linux-amd64", "linux-arm64"] as const;
+const NATIVE_TARGETS = ["darwin-arm64", "linux-amd64", "linux-arm64"] as const;
 
 export type SlimNativeTarget = (typeof NATIVE_TARGETS)[number];
 

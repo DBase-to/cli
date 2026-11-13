@@ -48,7 +48,7 @@ const listDeclarationFiles = Effect.fnUntraced(function* (fs: FileSystem.FileSys
 });
 
 /* `ignoreBOM` keeps a leading BOM, which `readFileString` would strip. */
-export const readUtf8 = (fs: FileSystem.FileSystem, filePath: string) =>
+const readUtf8 = (fs: FileSystem.FileSystem, filePath: string) =>
   fs
     .readFile(filePath)
     .pipe(Effect.map((bytes) => new TextDecoder("utf-8", { ignoreBOM: true }).decode(bytes)));

@@ -33,11 +33,11 @@ linked-project cache is never written.
 
 ## Environment Variables
 
-| Variable                | Purpose                                                                                                                                       | Required?                                            |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| `SUPABASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup)                                                                                          | no (falls back to keyring → `~/.dbase/access-token`) |
+| Variable                | Purpose                                                                                                                                       | Required?                                                     |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `SUPABASE_ACCESS_TOKEN` | auth token (bypasses credential file/keyring lookup)                                                                                          | no (falls back to keyring → `~/.dbase/access-token`)          |
 | `SUPABASE_YES`          | answers the creation confirmation, as `--yes` does                                                                                            | no (defaults to prompting; a project `.env` value is ignored) |
-| `SUPABASE_PROFILE`      | selects API base URL (`supabase`, `supabase-staging`, `supabase-local`), or a filesystem path to a YAML profile (used by the cli-e2e harness) | no (defaults to `dbase`)                             |
+| `SUPABASE_PROFILE`      | selects API base URL (`supabase`, `supabase-staging`, `supabase-local`), or a filesystem path to a YAML profile (used by the cli-e2e harness) | no (defaults to `dbase`)                                      |
 
 ## Confirmation
 

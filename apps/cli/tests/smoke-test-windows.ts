@@ -89,11 +89,7 @@ const main = Effect.gen(function* () {
   {
     const archiveArch = arch === "arm64" ? "arm64" : "amd64";
     const name = `windows-${archiveArch}-tarball`;
-    const archivePath = path.join(
-      root,
-      "dist",
-      `dbase_${version}_windows_${archiveArch}.tar.gz`,
-    );
+    const archivePath = path.join(root, "dist", `dbase_${version}_windows_${archiveArch}.tar.gz`);
     const extractDir = yield* fs.makeTempDirectory({ prefix: "supabase-windows-tarball-" });
 
     yield* Console.log(`[${name}] Extracting ${archivePath}...`);
@@ -155,9 +151,7 @@ const main = Effect.gen(function* () {
           const shellCheck = yield* verifyExpectedShellEffect("supabase");
           const passed = /^\d+\.\d+\.\d+/.test(trimmed) && shellCheck.passed;
 
-          yield* Console.log(
-            `[scoop] ${passed ? "PASS" : "FAIL"} — dbase --version: ${trimmed}`,
-          );
+          yield* Console.log(`[scoop] ${passed ? "PASS" : "FAIL"} — dbase --version: ${trimmed}`);
           yield* Console.log(`[scoop] ${shellCheck.detail}`);
           results.push({ name: "scoop", status: passed ? "pass" : "fail" });
         }),
