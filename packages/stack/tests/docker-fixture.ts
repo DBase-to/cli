@@ -58,6 +58,9 @@ export interface StubContainer {
 const encodeLabels = Schema.encodeEffect(
   Schema.fromJsonString(Schema.Tuple([Schema.String, Schema.String])),
 );
+const encodeLabelMap = Schema.encodeEffect(
+  Schema.fromJsonString(Schema.Record(Schema.String, Schema.String)),
+);
 
 /** The connection options `resolveEngineTarget` pins in front of a subcommand. */
 const TARGET_OPTIONS = ["--context", "--host", "--url", "--connection"];
@@ -104,13 +107,34 @@ export const engineStub = (
           ].includes(filter),
         ),
       );
+      const formatIndex = commandArgs.indexOf("--format");
+      const format = formatIndex === -1 ? undefined : commandArgs[formatIndex + 1];
       const listing = Effect.gen(function* () {
-        if (!commandArgs.includes("--format")) return listed.map(({ id }) => id).join("\n");
+        if (format === undefined) return listed.map(({ id }) => id).join("\n");
+        // `listStackLabels` now asks for ids and then inspects each label map.
+        if (format.includes("{{.ID}}")) return [...listed.map(({ id }) => id), ...noise].join("\n");
         const labels = yield* Effect.forEach(listed, ({ stackId, root }) =>
           encodeLabels([stackId, root]).pipe(Effect.orDie),
         );
         return [...labels, ...noise].join("\n");
       });
+      const inspected = commandArgs.at(-1);
+      const inspectedContainer = inventory.find(({ id }) => id === inspected);
+      const inspectFailure =
+        subcommand === "inspect" &&
+        inspectedContainer === undefined &&
+        !noise.includes(inspected ?? "")
+          ? "no such container"
+          : undefined;
+      const inspectStdout =
+        subcommand === "inspect" && inspectedContainer !== undefined
+          ? yield* encodeLabelMap({
+              "com.supabase.stack": inspectedContainer.stackId,
+              "com.supabase.stack-root": inspectedContainer.root,
+            }).pipe(Effect.orDie)
+          : noise.includes(inspected ?? "")
+            ? "not-json"
+            : "";
       const identity =
         command.command === "podman" ? "false|false|stub-host|/stub/graph" : "stub-id";
       const stdout =
@@ -122,7 +146,9 @@ export const engineStub = (
               ? identity
               : subcommand === "ps"
                 ? yield* listing
-                : "";
+                : subcommand === "inspect"
+                  ? inspectStdout
+                  : "";
       if (failure === undefined && subcommand === "rm")
         inventories.set(
           command.command,
@@ -131,13 +157,19 @@ export const engineStub = (
       yield* onCommand(argv);
       return ChildProcessSpawner.makeHandle({
         pid: ChildProcessSpawner.ProcessId(0),
-        exitCode: Effect.succeed(ChildProcessSpawner.ExitCode(failure === undefined ? 0 : 1)),
+        exitCode: Effect.succeed(
+          ChildProcessSpawner.ExitCode(
+            failure === undefined && inspectFailure === undefined ? 0 : 1,
+          ),
+        ),
         isRunning: Effect.succeed(false),
         kill: () => Effect.void,
         stdin: Sink.drain,
         stdout: Stream.succeed(new TextEncoder().encode(stdout)),
         stderr:
-          failure === undefined ? Stream.empty : Stream.succeed(new TextEncoder().encode(failure)),
+          failure === undefined && inspectFailure === undefined
+            ? Stream.empty
+            : Stream.succeed(new TextEncoder().encode(failure ?? inspectFailure)),
         all: Stream.empty,
         getInputFd: () => Sink.drain,
         getOutputFd: () => Stream.empty,

@@ -1323,37 +1323,59 @@ export const removeStackContainers = Effect.fn("Container.removeStackContainers"
   },
 );
 
-const decodeStackLabels = Schema.decodeEffect(
-  Schema.fromJsonString(Schema.Tuple([Schema.String, Schema.String])),
+const decodeStackLabelMap = Schema.decodeEffect(
+  Schema.fromJsonString(Schema.Record(Schema.String, Schema.String)),
 );
+
+const stackLabel = (labels: Readonly<Record<string, string>>, name: string) => {
+  const value = labels[name];
+  return value === undefined ? Option.none<string>() : Option.some(value);
+};
 
 /**
  * Lists the stack id and data-root labels of every stack-labelled container on the pinned
- * engine, for finding stacks that no registration accounts for. A line that is not a label pair
- * is skipped.
+ * engine, for finding stacks that no registration accounts for. The container ids come from
+ * `ps`; each label map comes from `inspect`, because Podman 4.9's `ps --format` reporter has no
+ * `.Label` field (Docker's does).
  */
 export const listStackLabels = Effect.fn("Container.listStackLabels")(function* (
   target: EngineTarget,
 ) {
   const spawner = yield* ChildProcessSpawner.ChildProcessSpawner;
-  const output = yield* runRaw(
+  const ids = (yield* runRaw(
     spawner,
     target.engine,
-    [
-      "ps",
-      "--all",
-      "--filter",
-      "label=com.supabase.stack",
-      "--format",
-      '[{{json (.Label "com.supabase.stack")}},{{json (.Label "com.supabase.stack-root")}}]',
-    ],
+    ["ps", "--all", "--filter", "label=com.supabase.stack", "--format", "{{.ID}}"],
     target.argv,
+  ))
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0);
+  const labels = yield* Effect.forEach(ids, (id) =>
+    runRaw(
+      spawner,
+      target.engine,
+      ["inspect", "--format", "{{json .Config.Labels}}", id],
+      target.argv,
+    ).pipe(
+      Effect.flatMap(decodeStackLabelMap),
+      Effect.map((value) => {
+        const stackId = stackLabel(value, "com.supabase.stack");
+        const root = stackLabel(value, "com.supabase.stack-root");
+        return Option.all({ stackId, root });
+      }),
+      // A container can disappear between `ps` and `inspect`; a label map that is not a
+      // string record (or no longer exists) contributes no sweep candidate, as before.
+      Effect.catchTags({
+        ContainerError: (error) =>
+          /no such (?:container|object)/iu.test(error.message)
+            ? Effect.succeed(Option.none())
+            : Effect.fail(error),
+        SchemaError: () => Effect.succeed(Option.none()),
+      }),
+    ),
   );
-  const labels = yield* Effect.forEach(
-    output.split("\n").filter((line) => line.length > 0),
-    (line) => decodeStackLabels(line).pipe(Effect.option),
-  );
-  const containers = labels.flatMap(Option.toArray).map(([stackId, root]) => ({ stackId, root }));
+  const containers = labels.flatMap(Option.toArray).map(({ stackId, root }) => ({ stackId, root }));
   yield* Effect.annotateCurrentSpan("container.count", containers.length);
   return containers;
 });
